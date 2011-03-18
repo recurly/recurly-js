@@ -33,4 +33,30 @@ recurly = new Recurly(require('./config'));
 
 //recurly.subscriptions.getAssociatedWithAccount('robrighter@gmail.com',callback);
 
-recurly.subscriptionPlans.listAll(callback);
+//recurly.subscriptionPlans.listAll(callback);
+//recurly.subscriptions.refund('robrighter@gmail.com',callback,'partial');
+
+// recurly.subscriptions.create('robrighter@gmail.com',{
+//   plan_code: 'test-plan',
+//   quantity: 1,
+//   account: {
+//     billing_info: {
+//       first_name: 'berty',
+//       last_name: 'tester',
+//       address1: '123 my street',
+//       address2: '',
+//       city: 'Chattanooga',
+//       state: 'TN',
+//       zip: '37408',
+//       country: 'US'
+//     }
+//   }
+// },callback);
+
+// recurly.transactions.createImmediateOneTimeTransaction('robrighter@gmail.com',{
+//   account:{
+//     account_code: 'robrighter'
+//   },
+//   amount_in_cents: 600,
+//   description: 'just testing things out'
+// },callback)
