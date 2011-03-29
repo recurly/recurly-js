@@ -60,3 +60,18 @@ recurly = new Recurly(require('./config'));
 //   amount_in_cents: 600,
 //   description: 'just testing things out'
 // },callback)
+
+var data = { 
+	'account[account_code]': 'demo-1301435036',
+	'account[username]': 'username123',
+	'redirect_url': 'http://localhost/subscribe.php',
+	'subscription[plan_code]': 'test-plan'
+}
+
+console.log(recurly.transparent.hidden_field(data));
+
+recurly.transparent.getResults('dfd82a741b3e5f15e32439fb66f7696046138105',//confirm
+ 																'31c6f6c96f3045cdbc126934295e889b',//result
+																'422',//status
+																'subscription',//type
+																 callback)
