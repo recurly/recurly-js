@@ -68,6 +68,8 @@ var data = {
 	'subscription[plan_code]': 'test-plan'
 }
 
+console.log(recurly.transparent.subscribeUrl());
+
 console.log(recurly.transparent.hidden_field(data));
 
 recurly.transparent.getResults('dfd82a741b3e5f15e32439fb66f7696046138105',//confirm

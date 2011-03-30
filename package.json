@@ -1,7 +1,7 @@
 { "name" : "node-recurly"
 , "description" : "Library for accessing the api for the Recurly recurring billing service."
 , "keywords" : [ "recurly", "e-commerce", "recurring billing" ]
-, "version" : "0.0.1"
+, "version" : "0.0.2"
 , "homepage" : "https://github.com/robrighter/node-recurly"
 , "author" : "Rob Righter <robrighter@gmail.com> (http://github.com/robrighter)"
 , "contributors" :
