@@ -168,8 +168,8 @@ function requires access to and transmission of customer credit card information
 
 	recurly.transactions.createImmediateOneTimeTransaction(accountcode, details, callback)
 
-Transparent
-==============
+Transparent Post
+==================
 http://docs.recurly.com/transparent-post/basics
 
 	recurly.transparent.billingInfoUrl
