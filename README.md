@@ -15,13 +15,11 @@ Recurly.js comes with:
   * Does inline validation, and server-side validation.
   * Talks to Recurly (through a JSONP API), pulling down plan criteria, and creating subscriptions. 
  
-2. A stock stylesheet that is also very similar to our hosted payment pages. It is coded in stylus, and comes with sass, scss, and css compilations.
-  * Take this stylesheet and tweak it to your heart's desire to match the look and feel of your design.
+2. A stock stylesheet that is also very similar to our hosted payment pages. It is coded in stylus, and comes with the css compilations.
+  * Take this stylesheet and tweak it to your heart's content to match the look and feel of your design.
 
 
 # Getting Started
-
-Download the zip/tar or clone this repository, and take a look at the examples.
 
 Accepting subscriptions is as simple as dropping in this js:
 <pre>
@@ -37,7 +35,7 @@ Recurly.buildSubscribeForm({
 });
 </pre>
 
-# Additional Options
+## Additional Options
 <pre>
 Recurly.config({
  subdomain: 'mycompany', 
@@ -57,13 +55,13 @@ Recurly.buildSubscribeForm({
 });
 </pre>
 
-# Customizing the style
+## Customizing the style
 A stock stylesheet is provided that is coded in stylus, a wonderful language that compiles to CSS.
 
 The first thing you'll want to do is take a look at the variables defined at the top. You'll notice that the default stylesheets is all centered around defined grid system dimensions, making customization a breeze.
 
 # Responding to subscription creates
-Once the user subscribes through the recurly.js form on your site, you have to do act accordingly with your respective business logic. (giving your users what it is they just paid for)
+Once the user subscribes through the recurly.js form on your site, you have to act accordingly with your respective business logic. (giving your users what it is they just paid for)
 
 The easiest way to do this is by simply passing a <pre>successURL</pre> option to buildSubscribeForm.
 When the user's credit card is processed successfully, recurly.js will redirect to successURL replacing {account_code} with the newly created account.

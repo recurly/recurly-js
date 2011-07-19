@@ -11,8 +11,10 @@
 <script>
   $(function() {
     Recurly.config({
-      environment: 'sandbox'
-    , subdomain: 'recurlyjsdemo-test'
+      /* environment: 'sandbox' */
+    /* , subdomain: 'recurlyjsdemo-test' */
+
+      baseURL: 'https://api-sandbox.dev.recurly.com/jsonp/emery-test/'
     , currency: 'GBP'
     , country: 'GB'
     , VATPercent: 10
@@ -20,7 +22,7 @@
 
     Recurly.buildSubscribeForm({
       target: '#recurly-subscribe'
-    , plan: 'complex'
+    , plan: 'gold'
     , addressRequirement: 'full'
     , successURL: 'success.html?account_code={account_code}'
     });
@@ -56,9 +58,6 @@
 		<div id="content">
 
       <div id="recurly-subscribe">
-        <noscript>
-          <a href="http://mycompany.recurly.com/subscribe/gold">Click here to Pay</a>
-        </noscript>
       </div>
 
 		</div>

@@ -1039,6 +1039,7 @@ R.buildSubscribeForm = function(options) {
           updateTotals();
         }, function() {
 
+          subscription.coupon = undefined;
           $coupon.removeClass('checking');
           $coupon.removeClass('valid').addClass('invalid');
 

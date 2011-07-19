@@ -71,7 +71,7 @@
 }
 .recurly_subscribe .setup_fee {
   clear: both;
-  background: url("../images/dash.png") repeat-x 1px top;
+  background: url("images/dash.png") repeat-x 1px top;
   padding: 20px 0;
 }
 .recurly_subscribe .setup_fee .title {
@@ -88,7 +88,7 @@
   height: 24px;
   padding: 20px 20px;
   display: none;
-  background: url("../images/dash.png") repeat-x 1px top;
+  background: url("images/dash.png") repeat-x 1px top;
 }
 .recurly_subscribe .vat.applicable {
   display: block;
@@ -203,11 +203,11 @@
   text-shadow: none;
 }
 .recurly_subscribe ul.add_ons li.selected {
-  background: #fff url("../images/check.png") no-repeat 10px center;
+  background: #fff url("images/check.png") no-repeat 10px center;
   padding-left: 24px;
 }
 .recurly_subscribe ul.add_ons li.selected:hover {
-  background: #fcf5f0 url("../images/uncheck.png") no-repeat 10px center;
+  background: #fcf5f0 url("images/uncheck.png") no-repeat 10px center;
 }
 .recurly_subscribe ul.add_ons li.selected .quantity {
   display: block;
@@ -218,7 +218,7 @@
   color: #333;
   padding: 20px 20px;
   position: relative;
-  background: rgba(0,0,40,0.02) url("../images/dash.png") repeat-x 1px top;
+  background: rgba(0,0,40,0.02) url("images/dash.png") repeat-x 1px top;
 }
 .recurly_subscribe .coupon .check {
   width: 26px;
@@ -227,24 +227,24 @@
   border-radius: 15px 15px 15px 15px;
   background: #70ccf8;
   border: 1px solid #0090c9;
-  background: url("../images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #61bDFA 0%, #35afF5 50%, #00a1e6 50%, #61bEFB 100%);
-  background: url("../images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #61bDFA 0%, #35afF5 50%, #00a1e6 50%, #61bEFB 100%);
-  background: url("../images/coupon_check.png") no-repeat center center, -o-linear-gradient(top, #61bDFA 0%, #35afF5 50%, #00a1e6 50%, #61bEFB 100%);
-  background: url("../images/coupon_check.png") no-repeat center center linear-gradient(top, #61bDFA 0%, #35afF5 50%, #00a1e6 50%, #61bEFB 100%);
+  background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #61bDFA 0%, #35afF5 50%, #00a1e6 50%, #61bEFB 100%);
+  background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #61bDFA 0%, #35afF5 50%, #00a1e6 50%, #61bEFB 100%);
+  background: url("images/coupon_check.png") no-repeat center center, -o-linear-gradient(top, #61bDFA 0%, #35afF5 50%, #00a1e6 50%, #61bEFB 100%);
+  background: url("images/coupon_check.png") no-repeat center center linear-gradient(top, #61bDFA 0%, #35afF5 50%, #00a1e6 50%, #61bEFB 100%);
   margin: 3px 0 1px 10px;
   box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.35), 0 1px 1px 0 rgba(0,0,0,0.1);
 }
 .recurly_subscribe .coupon .check:hover {
   box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.75), 0 1px 1px 0 rgba(0,0,0,0.1);
-  background: url("../images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #71cdfa 0%, #43bef9 50%, #00b1f6 50%, #71cefb 100%);
+  background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #71cdfa 0%, #43bef9 50%, #00b1f6 50%, #71cefb 100%);
 }
 .recurly_subscribe .coupon .check:active {
-  background: url("../images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #f0f0f0, #fff);
+  background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #f0f0f0, #fff);
   box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.025);
   border: 1px solid #999;
 }
 .recurly_subscribe .coupon.checking .check {
-  background: #f0f0f0 url("../images/coupon_checking.gif") no-repeat center center;
+  background: #f0f0f0 url("images/coupon_checking.gif") no-repeat center center;
   box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.025);
   border: 1px solid #999;
 }
@@ -307,7 +307,7 @@
 }
 .recurly_subscribe .contact_info.billing_info,
 .recurly_subscribe .billing_info.billing_info {
-  background: url("../images/dash.png") repeat-x 1px top;
+  background: url("images/dash.png") repeat-x 1px top;
   padding-bottom: 0;
 }
 .recurly_subscribe .contact_info .title,
@@ -490,16 +490,16 @@
   float: left;
 }
 .recurly_subscribe ul.accepted_cards li.mastercard {
-  background-image: url("../images/creditcards/mastercard.gif");
+  background-image: url("images/creditcards/mastercard.gif");
 }
 .recurly_subscribe ul.accepted_cards li.american_express {
-  background-image: url("../images/creditcards/amex.gif");
+  background-image: url("images/creditcards/amex.gif");
 }
 .recurly_subscribe ul.accepted_cards li.visa {
-  background-image: url("../images/creditcards/visa.gif");
+  background-image: url("images/creditcards/visa.gif");
 }
 .recurly_subscribe ul.accepted_cards li.discover {
-  background-image: url("../images/creditcards/discover.gif");
+  background-image: url("images/creditcards/discover.gif");
 }
 .recurly_subscribe ul.accepted_cards li.no_match {
   opacity: 0.5;
@@ -543,7 +543,7 @@
   color: inherit;
 }
 .recurly_subscribe .due_now {
-  background: url("../images/due_now.png") no-repeat top left;
+  background: url("images/due_now.png") no-repeat top left;
   clear: both;
   color: #2a3a3c;
   height: 70px;
@@ -576,7 +576,7 @@
   padding: 20px;
 }
 .recurly_subscribe.submitting .footer {
-  background: url("../images/submitting.gif") no-repeat 180px 28px;
+  background: url("images/submitting.gif") no-repeat 180px 28px;
 }
 .recurly_subscribe button.subscribe {
   position: relative;
