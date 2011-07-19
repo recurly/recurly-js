@@ -10,7 +10,9 @@
 <script>
   $(function() {
     Recurly.config({
-      baseURL: 'https://api-sandbox.dev.recurly.com/jsonp/emery-test/'
+//    environment: 'sandbox'
+//  , subdomain: 'recurlyjsdemo-test'
+      baseURL: 'https://api-sandbox.dev.recurly.com/jsonp/recurlyjsdemo-test/'
     , currency: 'GBP'
     , country: 'GB'
     , VATPercent: 10
@@ -18,17 +20,9 @@
 
     Recurly.buildSubscribeForm({
       target: '#recurly-subscribe'
-    , plan: 'test'
-    , addressRequirement: 'zip'
-    , successURL: 'http://google.com?account_code={account_code}'
-    });
-
-    $('#test').click(function() {
-      $('.first_name input').val('emery').change();
-      $('.last_name input').val('denuccio').change();
-      $('.email input').val('emery+test@recurly.com').change();
-      $('.card_number input').val('4111-1111-1111-1111').change();
-      $('.cvv input').val('123').change();
+    , plan: 'simpleplan'
+    , addressRequirement: 'zipstreet'
+    , successURL: 'confirmation.html?account_code={account_code}'
     });
   });
 </script> 

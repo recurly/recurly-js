@@ -594,6 +594,12 @@ R.BillingInfo = {
     , year: this.expires.getFullYear()
     , number: this.number
     , verification_value: this.cvv
+    , address1: this.address1
+    , address2: this.address2
+    , city: this.city
+    , state: this.state
+    , zip: this.zip
+    , country: this.country
     };
   }
 };
@@ -1185,7 +1191,7 @@ R.buildSubscribeForm = function(options) {
         }
  
         // Treat nonexistence as removed deliberately
-        if($input.length == 0) return null;
+        if($input.length == 0) return undefined;
 
         var val = $input.val();
 

@@ -11,10 +11,9 @@
 <script>
   $(function() {
     Recurly.config({
-      /* environment: 'sandbox' */
-    /* , subdomain: 'recurlyjsdemo-test' */
-
-      baseURL: 'https://api-sandbox.dev.recurly.com/jsonp/emery-test/'
+//    environment: 'sandbox'
+//  , subdomain: 'recurlyjsdemo-test'
+      baseURL: 'https://api-sandbox.dev.recurly.com/jsonp/recurlyjsdemo-test/'
     , currency: 'GBP'
     , country: 'GB'
     , VATPercent: 10
@@ -22,15 +21,16 @@
 
     Recurly.buildSubscribeForm({
       target: '#recurly-subscribe'
-    , plan: 'gold'
+    , plan: 'complexplan'
     , addressRequirement: 'full'
-    , successURL: 'success.html?account_code={account_code}'
+    , successURL: 'confirmation.html?account_code={account_code}'
+    , enableCoupons: false
     });
 
     $('#test').click(function() {
-      $('.first_name input').val('emery').change();
-      $('.last_name input').val('denuccio').change();
-      $('.email input').val('emery+test@recurly.com').change();
+      $('.first_name input').val('joe').change();
+      $('.last_name input').val('user').change();
+      $('.email input').val('joeuser@example.com').change();
       $('.card_number input').val('4111-1111-1111-1111').change();
       $('.cvv input').val('123').change();
     });
@@ -73,10 +73,10 @@
       </p>
 		</div>
 		<div id="footer">
-      <button id="test">test</button>
 
       <div id="demo480">480px</div>
       <div id="demo960">960px</div>
+      <button id="test">test</button>
 		</div>
 	</div>
 </div>
