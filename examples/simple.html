@@ -1,0 +1,41 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<title>RecurlyJS Simple Example</title> 
+<!-- <link rel="stylesheet" href="../style/reset.css" type="text/css" />  -->
+<link rel="stylesheet" href="simple.css" type="text/css" /> 
+<link rel="stylesheet" href="../recurly.css" type="text/css" /> 
+<script src="lib/jquery-1.6.1.js"></script> 
+<script src="../recurly.js"></script> 
+<script>
+  $(function() {
+    Recurly.config({
+      baseURL: 'https://api-sandbox.dev.recurly.com/jsonp/emery-test/'
+    , currency: 'GBP'
+    , country: 'GB'
+    , VATPercent: 10
+    });
+
+    Recurly.buildSubscribeForm({
+      target: '#recurly-subscribe'
+    , plan: 'test'
+    , addressRequirement: 'zip'
+    , successURL: 'http://google.com?account_code={account_code}'
+    });
+
+    $('#test').click(function() {
+      $('.first_name input').val('emery').change();
+      $('.last_name input').val('denuccio').change();
+      $('.email input').val('emery+test@recurly.com').change();
+      $('.card_number input').val('4111-1111-1111-1111').change();
+      $('.cvv input').val('123').change();
+    });
+  });
+</script> 
+</head> 
+  <body> 
+    <div id="recurly-subscribe">
+      <a href="http://mycompany@recurly.com/subscribe/failover">Click here to Subscribe</a>
+    </div>
+  </body>
+</html>

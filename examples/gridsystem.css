@@ -1,0 +1,110 @@
+body {
+  font: 18px "helvetica neue", helvetica, arial
+}
+
+#container
+{
+	margin: 0 auto;
+	width: 980px;
+	background: #fff;
+}
+
+#header
+{
+	background: #ccc;
+	padding: 20px;
+}
+
+#header h1 { margin: 0; }
+
+#navigation
+{
+	float: left;
+	width: 980px;
+	background: #333;
+}
+
+#navigation ul
+{
+	margin: 0;
+	padding: 0;
+}
+
+#navigation ul li
+{
+	list-style-type: none;
+	display: inline;
+}
+
+#navigation li a
+{
+	display: block;
+	float: left;
+	padding: 5px 10px;
+	color: #fff;
+	text-decoration: none;
+	border-right: 1px solid #fff;
+}
+
+#navigation li a:hover { background: #383; }
+
+#content-container
+{
+	float: left;
+	width: 980px;
+	background: #f0f0f0 url(../images/grid_demo.png) repeat 20px 0;
+}
+
+#content
+{
+	clear: left;
+	float: left;
+	width: 520px;
+	margin: 0 0 0 0px;
+	display: inline;
+}
+
+#sidebar
+{
+	float: right;
+  font-weight: 100;
+  letter-spacing: 1px;
+	width: 400px;
+	padding: 20px 0;
+	margin: 0 0 0 0;
+	display: inline;
+	background: #333;
+  color: white;
+}
+
+#sidebar p { margin: 20px; }
+
+#footer
+{
+	clear: both;
+	background: #ccc;
+	text-align: right;
+	padding: 20px;
+	height: 1%;
+}
+
+
+#demo480 {
+  background: skyblue;
+  width: 480px;
+  padding: 5px 0;
+}
+
+
+#demo960 {
+  background: seagreen;
+  width: 960px;
+  padding: 5px 0;
+}
+
+
+#recurly-subscribe {
+  padding 40px;
+  height 100px;
+}
+

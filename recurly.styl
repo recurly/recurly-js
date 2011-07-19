@@ -1,0 +1,685 @@
+// Base grid system dimensions
+grid_width = 480px
+grid_columns = 12
+outer_margin = 20px
+column_space = 20px
+column_width = grid_width / grid_columns - column_space
+base_font_size = round(grid_width * 0.033333)
+
+input_border = 1px
+input_padding = 5px
+input_height = base_font_size + 6px
+field_height = input_height + (input_padding + input_border)*2
+
+columns(n)
+  (column_width * n + column_space * (-1+n))
+
+// Some CSS3 property mixins
+user-select()
+  -webkit-user-select  arguments
+  -khtml-user-select  arguments
+  -moz-user-select  arguments
+  -o-user-select  arguments
+  user-select  arguments
+
+linear-gradient(start, stops...)
+  prop = current-property[0]
+  stops = unquote(join(', ', stops))
+  add-property(prop, '-webkit-linear-gradient(%s, %s)' % (start stops) )
+  add-property(prop, '-moz-linear-gradient(%s, %s)' % (start stops) )
+  add-property(prop, '-o-linear-gradient(%s, %s)' % (start stops) )
+  'linear-gradient(%s, %s)' % (start stops)
+
+image-linear-gradient(image, start, stops...)
+  prop = current-property[0]
+  stops = unquote(join(', ', stops))
+
+  add-property(prop, '%s, -webkit-linear-gradient(%s, %s)' % (image start stops) )
+  add-property(prop, '%s, -moz-linear-gradient(%s, %s)' % (image start stops) )
+  add-property(prop, '%s, -o-linear-gradient(%s, %s)' % (image start stops) )
+  '%s linear-gradient(%s, %s)' % (image start stops)
+
+
+transition()
+  -webkit-transition arguments
+  -moz-transition arguments
+
+// For IE6/7 support we use this for all inputs,
+// in lieu of border-box sizing 100%
+field-width(v)
+  width v
+
+  // Fit the input by subtracting padding and border from box
+  input
+    width v - (input_border+input_padding)*2
+
+// Horizontally stack a field on the preceeding field
+hstack(cols)
+  // add-property(width, columns(cols))
+  field-width columns(cols)
+  add-property(margin-left, column_space)
+  add-property(clear, none)
+
+// Subscription form
+.recurly_subscribe 
+  display block
+  position relative
+  // overflow hidden
+  width columns(grid_columns) + (outer_margin*2)
+
+  .cost, .discount
+    text-align right
+
+  // .subscription.with_trial .cost
+  //  text-decoration line-through
+
+  .subscription
+    border-radius 9px 9px 0 0 
+    text-shadow 0 1px 0 white
+    padding-top 20px
+    overflow hidden
+
+  .plan
+    color #333
+    // padding 10px 0
+    overflow hidden
+    position relative
+
+    .name
+      float left
+      // min-height 48px
+      font-size 32px
+      min-width columns(6) - column_space
+      margin-right (column_space*2)
+      margin-left outer_margin
+
+
+    .quantity.field
+      clear none
+      field-width columns(2)
+      margin 4px 0
+
+      &:before 
+        content "\d7"
+        height 48px
+        line-height 30px
+        position absolute
+        right 100% 
+        width column_space * 2
+        font-size 20px
+        text-align center
+        vertical-align middle
+        z-index 1337
+        color #666
+
+    .recurring_cost
+      float right
+      // height 48px
+      margin-right outer_margin
+      text-align right
+
+      .cost
+        font-size 28px
+
+      .interval
+        font-size 13px
+        height 22px
+
+  .free_trial
+    clear left
+    float left
+    font-size 13px
+    height 22px
+    margin 0
+    position absolute
+    top 35px 
+    left outer_margin
+    font-style italic
+
+
+  .setup_fee
+    clear both
+    background url(../images/dash.png) repeat-x 1px top 
+    padding column_space 0
+
+    .title
+      float left
+      margin-left outer_margin
+      font-weight bold
+      font-size 15px
+    .cost
+      float right
+      margin-right outer_margin
+
+  .vat 
+    height 24px
+    padding column_space outer_margin
+    display none
+    background url(../images/dash.png) repeat-x 1px top 
+
+    &.applicable
+      display block
+
+    label
+      font-size 18px
+      font-weight normal
+      float left
+
+    .cost
+      float right
+      font-size 18px
+
+  ul.add_ons
+    clear both
+    margin 0
+    // background url(../images/dash.png) repeat-x 1px top 
+
+    &.any
+      padding (outer_margin/2)
+
+    li
+      background linear-gradient(top, #ecedee, #e5e6e7)
+      margin 0
+      height 43px
+      line-height 42px
+      width columns(12) + (-2+outer_margin)
+      vertical-align middle
+      clear both
+      overflow hidden
+      border-top 1px solid #ccc
+      border-left 1px solid #ccc
+      border-right 1px solid #ccc
+      text-shadow 0 1px 0 white
+      color #999
+      font-weight 300
+      font-size 16px
+      user-select none
+
+      &:first-child
+        border-top-left-radius 10px
+        border-top-right-radius 10px
+      &:last-child
+        border-bottom 1px solid #ccc
+        border-bottom-left-radius 10px
+        border-bottom-right-radius 10px
+
+      .name 
+        font-size inherit
+        font-weight inherit
+        color inherit
+        float left
+        width columns(6) - outer_margin 
+        margin-left (outer_margin/2) - 1
+        margin-right column_space
+
+        font-style italic
+
+      .quantity.field
+        clear none
+        margin 4px 0
+        field-width columns(2)
+        display none
+
+        &:before 
+          content "\d7"
+          height 48px
+          line-height 30px
+          position absolute
+          right 100% 
+          width column_space * 2
+          font-size 20px
+          text-align center
+          vertical-align middle
+          z-index 1337
+          color #666
+
+      .cost
+        float right
+        margin 0px (outer_margin/2) 0px 55px
+        font-size inherit
+        line-height inherit
+        vertical-align middle
+        // visibility hidden
+
+
+      &:hover
+        background linear-gradient(top, '#f0f0f0 0%', '#dfdfdf 50%', '#d5d5d5 50%', '#e0e0e0 100%')
+        box-shadow inset 0 1px 0 #fff
+        text-shadow none
+        color #111
+
+      &:active
+      &.selected
+        color #111
+        background linear-gradient(top, #f0f0f0, #fff)
+        width auto
+        box-shadow inset 0 1px 4px 0 rgba(0,0,0,0.075)
+        text-shadow none
+
+      &.selected
+        background #fff url(../images/check.png) no-repeat (outer_margin/2) center
+        padding-left 24px
+
+        &:hover
+          background #fcf5f0 url(../images/uncheck.png) no-repeat (outer_margin/2) center
+
+      &.selected .quantity
+          display block
+
+  .coupon
+    clear both
+    height field_height
+    color #333
+    padding column_space outer_margin
+    position relative
+    background rgba(0,0,40,0.02) url(../images/dash.png) repeat-x 1px top 
+   
+    .check
+      width 26px
+      height 26px
+      float left
+      border-radius 15px 15px 15px 15px
+      background #70CCF8
+      border 1px solid #0090C9
+      background image-linear-gradient(url(../images/coupon_check.png) no-repeat center center, top, '#61bDFA 0%', '#35afF5 50%', '#00a1e6 50%', '#61bEFB 100%')
+
+      margin 3px 0 1px 10px
+
+      box-shadow inset 0 1px 0 0 rgba(255,255,255,.35), 0 1px 1px 0 rgba(0,0,0,0.1)
+
+      &:hover
+        box-shadow inset 0 1px 0 0 rgba(255,255,255,.75), 0 1px 1px 0 rgba(0,0,0,0.1)
+        background url(../images/coupon_check.png) no-repeat center center, -webkit-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%)
+
+      &:active
+        background url(../images/coupon_check.png) no-repeat center center, -webkit-linear-gradient(top, #f0f0f0, #fff)
+        box-shadow inset 0 3px 3px 0 rgba(0,0,0,0.025)
+        border 1px solid #999
+
+
+    &.checking .check
+      background #f0f0f0 url(../images/coupon_checking.gif) no-repeat center center
+      box-shadow inset 0 3px 3px 0 rgba(0,0,0,0.025)
+      border 1px solid #999
+
+    &.invalid .coupon_code
+      border-color #a55
+      background #fee
+      color #311
+
+
+
+    .description
+      float left
+      margin-left column_space
+      height field_height
+      line-height field_height
+      vertical-align middle
+      font-size base_font_size * 0.9
+
+    .discount
+      float right
+      height field_height
+      line-height field_height
+      vertical-align middle
+
+  .error
+    padding column_space
+    color black
+    text-shadow 0 1px 0 #fec
+    background rgba(240,250,0,0.5)
+    border 1px solid #ba1
+    box-shadow 3px 5px 5px 0 rgba(0,0,0,0.1) 
+    border-radius 5px
+    font-size 13px
+    line-height 16px
+    vertical-align middle
+ 
+
+  .server_errors
+    color #fff
+    text-shadow 0 1px 0 black
+    margin column_space outer_margin
+
+    &.none
+     display none 
+
+  .field .error
+    width columns(4) - (input_padding+1)*2
+    padding input_padding
+    line-height input_height
+
+    position absolute
+    top 0
+    left 100%
+    margin-left column_space 
+ 
+  .contact_info
+  .billing_info
+    margin 0
+    display block
+    position relative
+    border none
+    // overflow hidden
+    padding outer_margin
+    overflow hidden
+
+    &.billing_info
+      background url(../images/dash.png) repeat-x 1px top
+      padding-bottom 0
+
+    .title 
+      float left
+      font-size base_font_size
+      font-weight bold
+      padding-bottom 20px
+      color #404041
+      text-shadow 0 1px 0 white
+
+    .credit_card
+      clear both
+
+  .field
+    display inline // IE margin bug hack
+    float left
+    clear left
+    field-width columns(8) // Default field is full width
+    height field_height
+    // margin-left column_space
+    padding 0
+    margin 0
+    margin-bottom column_space
+    position relative
+
+    .placeholder
+      position absolute
+      top 0
+      left 0
+      right 0
+      bottom 0
+      padding-left input_padding + 2px
+      font-size base_font_size
+      font-weight normal
+      line-height field_height
+      vertical-align middle
+      color rgba(0,0,0,0.5)
+      cursor text
+      overflow hidden
+      white-space nowrap
+      user-select none
+      font-weight 300
+
+    &.focus .placeholder
+      color rgba(0,0,0,0.25)
+
+    // Special field sizes
+    &.coupon_code
+      field-width columns(4)
+
+    &.first_name
+      field-width columns(4)
+
+      .error
+        left columns(8)
+
+    &.last_name 
+      hstack(4)
+
+    &.card_number 
+      field-width columns(6) 
+
+      .error
+        left columns(8)
+
+    &.cvv 
+      hstack(2) 
+
+    &.expires 
+      field-width columns(8)
+
+      label
+        float left
+        line-height 24px
+        vertical-align middle 
+
+        &:after
+          content ':'
+
+      .month
+        field-width columns(3)
+
+      .year
+        * html & // IE6
+          field-width columns(2)
+
+      .month
+      .year 
+        float right
+        margin-left 10px
+ 
+    &.state
+      field-width columns(5) 
+      .error
+        left columns(8)
+  
+    &.zip
+      hstack(3) 
+
+    &.vat_number
+      field-width columns(4) 
+      display none
+      &.applicable
+        display block
+
+  // Special limited address cases for zip
+  .only_zipstreet .zip.field
+  .only_zip .zip.field
+    margin-left 0
+    clear left
+
+  ul.accepted_cards 
+    float right
+    margin 0
+    padding 0
+    margin-right columns(4) + column_space
+    width 204px 
+    list-style-type none
+
+    li
+      background-position 0px 0px
+      background-repeat no-repeat
+      text-indent -3000px
+      width 50px
+      height 30px
+      margin 0 0 10px 1px 
+      padding 0
+      float left
+      
+      &.mastercard
+        background-image url(../images/creditcards/mastercard.gif)
+      &.american_express
+        background-image url(../images/creditcards/amex.gif)
+      &.visa
+        background-image url(../images/creditcards/visa.gif)
+      &.discover
+        background-image url(../images/creditcards/discover.gif)
+
+      &.match
+        // nothing
+
+      &.no_match
+        opacity 0.5 
+
+   // /fieldset
+  
+  label 
+    display block
+    font-size 13px
+    color #333
+    font-weight bold
+
+
+  // General
+  input,
+  textarea,
+  select
+    vertical-align middle
+    color #000000
+
+    &.invalid
+      border-color #a55
+      background #fee
+      color #311
+
+  input 
+    // margin 0 0 5px 0
+    background white
+    border input_border solid #a0a0a5
+    box-shadow inset 0 2px 3px rgba(0,0,0,0.1)    
+    display block
+    font-family inherit
+    font-size base_font_size
+    padding input_padding
+    height input_height
+
+  select 
+    color inherit
+    font-family inherit
+    font-size 13px
+    width 100%
+
+    > option 
+      color inherit
+
+   // DUE NOW BAR
+  .due_now
+    background url(../images/due_now.png) no-repeat top left
+    clear both
+    color #2a3a3c
+    height 70px
+    line-height 67px
+    vertical-align middle
+    // overflow hidden
+    padding 0 outer_margin + 5px 
+    width columns(12) 
+    position relative
+    left -5px 
+    text-shadow 0 1px 0 rgba(255,255,255,0.5)
+
+    .title
+      float left
+      font-size 29px
+      position relative 
+
+    .cost 
+      color #fff
+      float right
+      font-size 33px
+      font-weight bold
+      letter-spacing  1px
+      margin 0
+      position relative
+      text-shadow  0px 1px 1px rgba(0,0,0,0.9)
+
+  .footer
+    border-radius 0px 0px 9px 9px
+    margin 0px
+    padding outer_margin 
+
+  &.submitting .footer
+    background url(../images/submitting.gif) no-repeat columns(5) 28px
+
+  button.subscribe
+    position relative
+    height  46px
+    max-width  600px
+    width columns(4)
+    font-size  18px
+    font-weight  700
+    color  #302106
+    text-shadow  rgba(255,255,255, .5694) 0 1px 0
+    text-align  center
+    margin-left 0px
+    
+    border  1px solid #767674
+    background  #e7a500
+    
+    border-radius  10px
+    
+    -webkit-user-select  none
+    -moz-user-select  -moz-none
+    outline  none
+
+    box-shadow  inset rgba(255, 255, 255, 0.7) 0px 1px 0px, rgba(0,0,0, 0.5) 0px 1px 3px
+    
+    background-image  -webkit-gradient(linear, 0% 20%, 0% 100%, from(#FECD00), to(#CE7B00))
+    background  -moz-linear-gradient(top, #fecd00, #ce7b00)
+
+    cursor pointer
+   
+   
+  
+  button.subscribe hover
+    color  #555
+
+   
+  button.subscribe active
+    top  2px
+    
+    color  #302106
+    text-shadow  rgba(255,255,255, .5694) 0 -1px 0
+    
+    -webkit-user-select  none
+    -moz-user-select  -moz-none
+    outline  none
+        
+    background-image  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#CE7B00), to(#FECD00))
+    background  -moz-linear-gradient(top, #ce7b00, #fecd00)
+    box-shadow  rgba(255, 255, 255, 0.69) 0px -1px 0px inset, rgba(0,0,0, 0.26) 0px 2px 3px
+ 
+   
+  button.subscribe[disabled]
+    position relative
+    height  46px
+    max-width  600px
+    padding  0 10px
+    
+    font-size  15px
+    font-weight  700
+    color  #555 !important
+    text-shadow  rgba(255,255,255, .5694) 0 1px 0
+    text-align  center
+    
+    opacity  .75
+    border  1px solid #767674
+    background  #e7a500
+    
+    -moz-border-radius  10px
+    -webkit-border-radius  10px
+    border-radius  10px
+    
+    -webkit-user-select  none
+    -moz-user-select  -moz-none
+    outline  none
+    
+    background-image -webkit-gradient(linear, 0% 0%, 0% 100%, from(#DBD9D2), to(#999)) !important
+    background  -moz-linear-gradient(top, #DBD9D2, #999999) !important
+    
+    -webkit-background-clip  padding-box
+
+    -webkit-box-shadow  rgba(255, 255, 255, 0.69) 0px 1px 0px inset, rgba(0,0,0, 0.26) 0px 2px 3px
+
+    box-shadow  rgba(255, 255, 255, 0.699219) 0px 1px 0px inset, rgba(0,0,0, 0.269219) 0px 2px 3px
+ 
+   
+  button.subscribe span
+    font-weight  500
+    font-size  13px
+ 
+   
+  button.subscribe:hover
+    color  #555
+ 
+
+
+// code == art

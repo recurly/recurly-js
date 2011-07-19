@@ -1,0 +1,16 @@
+html {
+  font-family: "helvetica neue", helvetica, arial;
+  margin: 0;
+  padding: 0;
+  background: #c0c1c3 url("../images/noise.png") no-repeat center top;
+}
+#recurly-subscribe {
+  width: 500px;
+  margin: 40px auto;
+  background: #fff;
+  margin: 20px auto;
+  padding: 0px;
+  border: 1px solid #999;
+  border-radius: 8px;
+  background: #fcfcfc url("../images/hydranoise.jpeg") repeat;
+}

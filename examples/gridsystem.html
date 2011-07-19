@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en"> 
+<head> 
+<title>RecurlyJS Grid System Example</title> 
+<link rel="stylesheet" href="gridsystem.css" type="text/css" /> 
+<link rel="stylesheet" href="../recurly.css" type="text/css" /> 
+
+<script src="lib/jquery-1.6.1.js"></script> 
+<script src="../recurly.js"></script>
+<script>
+  $(function() {
+    Recurly.config({
+      environment: 'sandbox'
+    , subdomain: 'recurlyjsdemo-test'
+    , currency: 'GBP'
+    , country: 'GB'
+    , VATPercent: 10
+    });
+
+    Recurly.buildSubscribeForm({
+      target: '#recurly-subscribe'
+    , plan: 'complex'
+    , addressRequirement: 'full'
+    , successURL: 'success.html?account_code={account_code}'
+    });
+
+    $('#test').click(function() {
+      $('.first_name input').val('emery').change();
+      $('.last_name input').val('denuccio').change();
+      $('.email input').val('emery+test@recurly.com').change();
+      $('.card_number input').val('4111-1111-1111-1111').change();
+      $('.cvv input').val('123').change();
+    });
+  });
+</script> 
+
+</head>
+  <body> 
+
+<div id="container">
+	<div id="header">
+		<h1>
+			Your Website
+		</h1>
+	</div>
+	<div id="navigation">
+		<ul>
+			<li><a href="#">Home</a></li>
+			<li><a href="#">About</a></li>
+			<li><a href="#">Services</a></li>
+			<li><a href="#">Contact us</a></li>
+		</ul>
+	</div>
+	<div id="content-container">
+		<div id="content">
+
+      <div id="recurly-subscribe">
+        <noscript>
+          <a href="http://mycompany.recurly.com/subscribe/gold">Click here to Pay</a>
+        </noscript>
+      </div>
+
+		</div>
+		<div id="sidebar">
+      <p>
+      This example demonstrates the use of recurly.js in a 960/12/20 grid system.
+      </p>
+      <p>
+      The subscribe form style is tuned to 480/12/20 which makes columns in multiple of 2 and 4 divide evenly into the columns of the 960 container. 
+      </p>
+      <p>
+      You can tweak the dimensions in recurly.styl to fit your content and design.
+      </p>
+		</div>
+		<div id="footer">
+      <button id="test">test</button>
+
+      <div id="demo480">480px</div>
+      <div id="demo960">960px</div>
+		</div>
+	</div>
+</div>
+
+  </body>
+</html>
