@@ -11,9 +11,8 @@
 <script>
   $(function() {
     Recurly.config({
-//    environment: 'sandbox'
-//  , subdomain: 'recurlyjsdemo-test'
-      baseURL: 'https://api-sandbox.dev.recurly.com/jsonp/recurlyjsdemo-test/'
+      environment: 'sandbox'
+    , subdomain: 'recurlyjsdemo-test'
     , currency: 'GBP'
     , country: 'GB'
     , VATPercent: 10
@@ -66,7 +65,7 @@
       This example demonstrates the use of recurly.js in a 960/12/20 grid system.
       </p>
       <p>
-      The subscribe form style is tuned to 480/12/20 which makes columns in multiple of 2 and 4 divide evenly into the columns of the 960 container. 
+      The subscribe form style is tuned to 480/12/20 (960/2 = 480) which makes columns in multiple of 2 divide evenly into the columns of the 960 parent. 
       </p>
       <p>
       You can tweak the dimensions in recurly.styl to fit your content and design.

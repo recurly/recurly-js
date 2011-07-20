@@ -324,7 +324,9 @@ hstack(cols)
       vertical-align middle
 
   .error
-    padding column_space
+    padding input_padding
+    line-height input_height
+    vertical-align middle
     color black
     text-shadow 0 1px 0 #fec
     background rgba(240,250,0,0.5)
@@ -332,23 +334,25 @@ hstack(cols)
     box-shadow 3px 5px 5px 0 rgba(0,0,0,0.1) 
     border-radius 5px
     font-size 13px
-    line-height 16px
-    vertical-align middle
  
 
   .server_errors
     color #fff
     text-shadow 0 1px 0 black
     margin column_space outer_margin
+    margin-bottom 0
 
-    &.none
-     display none 
+    .error
+      padding-left 26px
+      background rgba(240,250,0,0.5) url(images/error.png) no-repeat 5px (input_padding + 4px)
+
+    opacity 0
+    &.any
+      opacity 1.0
+      transition opacity 0.5s linear
 
   .field .error
     width columns(4) - (input_padding+1)*2
-    padding input_padding
-    line-height input_height
-
     position absolute
     top 0
     left 100%

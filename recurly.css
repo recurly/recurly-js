@@ -268,7 +268,9 @@
   vertical-align: middle;
 }
 .recurly_subscribe .error {
-  padding: 20px;
+  padding: 5px;
+  line-height: 22px;
+  vertical-align: middle;
   color: #000;
   text-shadow: 0 1px 0 #fec;
   background: rgba(240,250,0,0.5);
@@ -276,21 +278,25 @@
   box-shadow: 3px 5px 5px 0 rgba(0,0,0,0.1);
   border-radius: 5px;
   font-size: 13px;
-  line-height: 16px;
-  vertical-align: middle;
 }
 .recurly_subscribe .server_errors {
   color: #fff;
   text-shadow: 0 1px 0 #000;
   margin: 20px 20px;
+  margin-bottom: 0;
+  opacity: 0;
 }
-.recurly_subscribe .server_errors.none {
-  display: none;
+.recurly_subscribe .server_errors .error {
+  padding-left: 26px;
+  background: rgba(240,250,0,0.5) url("images/error.png") no-repeat 5px 9px;
+}
+.recurly_subscribe .server_errors.any {
+  opacity: 1;
+  -webkit-transition: opacity 0.5s linear;
+  -moz-transition: opacity 0.5s linear;
 }
 .recurly_subscribe .field .error {
   width: 128px;
-  padding: 5px;
-  line-height: 22px;
   position: absolute;
   top: 0;
   left: 100%;
