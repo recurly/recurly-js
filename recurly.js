@@ -1038,13 +1038,13 @@ function initBillingInfoForm($form, options) {
   $form.find('.card_number input').bind('change keyup', function() {
     var type = R.detectCardType( $(this).val() );
     if(type) {
-      $acceptedCards.find('li').each(function(){
+      $acceptedCards.find('.card').each(function(){
         $(this).toggleClass('match', $(this).hasClass(type));
         $(this).toggleClass('no_match', !$(this).hasClass(type));
       });
     }
     else {
-      $acceptedCards.find('li').removeClass('match no_match'); 
+      $acceptedCards.find('.card').removeClass('match no_match'); 
     }
   }); 
 
