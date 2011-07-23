@@ -58,7 +58,6 @@ Recurly.config({
     // Error messages
     , errors: {
         emptyField: 'Forget something?'
-      , missingFullAddress: 'Please enter your full address.'
       , invalidEmail: 'This doesn\'t look right.'
       , invalidCC: 'This doesn\'t look right.'
       , invalidCVV: 'This doesn\'t look right.'
