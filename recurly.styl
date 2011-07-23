@@ -61,7 +61,7 @@ hstack(cols)
   add-property(clear, none)
 
 // Subscription form
-.recurly_subscribe 
+.recurly 
   display block
   position relative
   // overflow hidden
@@ -306,6 +306,9 @@ hstack(cols)
       border-color #a55
       background #fee
       color #311
+
+    .coupon_code .error
+      left columns(8)
 
 
 
@@ -593,7 +596,7 @@ hstack(cols)
   &.submitting .footer
     background url(images/submitting.gif) no-repeat columns(5) 28px
 
-  button.subscribe
+  button.submit
     position relative
     height  46px
     max-width  600px
@@ -623,11 +626,11 @@ hstack(cols)
    
    
   
-  button.subscribe hover
+  button.submit hover
     color  #555
 
    
-  button.subscribe active
+  button.submit active
     top  2px
     
     color  #302106
@@ -642,7 +645,7 @@ hstack(cols)
     box-shadow  rgba(255, 255, 255, 0.69) 0px -1px 0px inset, rgba(0,0,0, 0.26) 0px 2px 3px
  
    
-  button.subscribe[disabled]
+  button.submit[disabled]
     position relative
     height  46px
     max-width  600px
@@ -676,12 +679,12 @@ hstack(cols)
     box-shadow  rgba(255, 255, 255, 0.699219) 0px 1px 0px inset, rgba(0,0,0, 0.269219) 0px 2px 3px
  
    
-  button.subscribe span
+  button.submit span
     font-weight  500
     font-size  13px
  
    
-  button.subscribe:hover
+  button.submit:hover
     color  #555
  
 

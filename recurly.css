@@ -1,39 +1,39 @@
-.recurly_subscribe {
+.recurly {
   display: block;
   position: relative;
   width: 500px;
 }
-.recurly_subscribe .cost,
-.recurly_subscribe .discount {
+.recurly .cost,
+.recurly .discount {
   text-align: right;
 }
-.recurly_subscribe .subscription {
+.recurly .subscription {
   border-radius: 9px 9px 0 0;
   text-shadow: 0 1px 0 #fff;
   padding-top: 20px;
   overflow: hidden;
 }
-.recurly_subscribe .plan {
+.recurly .plan {
   color: #333;
   overflow: hidden;
   position: relative;
 }
-.recurly_subscribe .plan .name {
+.recurly .plan .name {
   float: left;
   font-size: 32px;
   min-width: 200px;
   margin-right: 40px;
   margin-left: 20px;
 }
-.recurly_subscribe .plan .quantity.field {
+.recurly .plan .quantity.field {
   clear: none;
   width: 60px;
   margin: 4px 0;
 }
-.recurly_subscribe .plan .quantity.field input {
+.recurly .plan .quantity.field input {
   width: 48px;
 }
-.recurly_subscribe .plan .quantity.field:before {
+.recurly .plan .quantity.field:before {
   content: "\d7";
   height: 48px;
   line-height: 30px;
@@ -46,19 +46,19 @@
   z-index: 1337;
   color: #666;
 }
-.recurly_subscribe .plan .recurring_cost {
+.recurly .plan .recurring_cost {
   float: right;
   margin-right: 20px;
   text-align: right;
 }
-.recurly_subscribe .plan .recurring_cost .cost {
+.recurly .plan .recurring_cost .cost {
   font-size: 28px;
 }
-.recurly_subscribe .plan .recurring_cost .interval {
+.recurly .plan .recurring_cost .interval {
   font-size: 13px;
   height: 22px;
 }
-.recurly_subscribe .free_trial {
+.recurly .free_trial {
   clear: left;
   float: left;
   font-size: 13px;
@@ -69,47 +69,47 @@
   left: 20px;
   font-style: italic;
 }
-.recurly_subscribe .setup_fee {
+.recurly .setup_fee {
   clear: both;
   background: url("images/dash.png") repeat-x 1px top;
   padding: 20px 0;
 }
-.recurly_subscribe .setup_fee .title {
+.recurly .setup_fee .title {
   float: left;
   margin-left: 20px;
   font-weight: bold;
   font-size: 15px;
 }
-.recurly_subscribe .setup_fee .cost {
+.recurly .setup_fee .cost {
   float: right;
   margin-right: 20px;
 }
-.recurly_subscribe .vat {
+.recurly .vat {
   height: 24px;
   padding: 20px 20px;
   display: none;
   background: url("images/dash.png") repeat-x 1px top;
 }
-.recurly_subscribe .vat.applicable {
+.recurly .vat.applicable {
   display: block;
 }
-.recurly_subscribe .vat label {
+.recurly .vat label {
   font-size: 18px;
   font-weight: normal;
   float: left;
 }
-.recurly_subscribe .vat .cost {
+.recurly .vat .cost {
   float: right;
   font-size: 18px;
 }
-.recurly_subscribe ul.add_ons {
+.recurly ul.add_ons {
   clear: both;
   margin: 0;
 }
-.recurly_subscribe ul.add_ons.any {
+.recurly ul.add_ons.any {
   padding: 10px;
 }
-.recurly_subscribe ul.add_ons li {
+.recurly ul.add_ons li {
   background: -webkit-linear-gradient(top, #ecedee, #e5e6e7);
   background: -moz-linear-gradient(top, #ecedee, #e5e6e7);
   background: -o-linear-gradient(top, #ecedee, #e5e6e7);
@@ -134,16 +134,16 @@
   -o-user-select: none;
   user-select: none;
 }
-.recurly_subscribe ul.add_ons li:first-child {
+.recurly ul.add_ons li:first-child {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
-.recurly_subscribe ul.add_ons li:last-child {
+.recurly ul.add_ons li:last-child {
   border-bottom: 1px solid #ccc;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
-.recurly_subscribe ul.add_ons li .name {
+.recurly ul.add_ons li .name {
   font-size: inherit;
   font-weight: inherit;
   color: inherit;
@@ -153,16 +153,16 @@
   margin-right: 20px;
   font-style: italic;
 }
-.recurly_subscribe ul.add_ons li .quantity.field {
+.recurly ul.add_ons li .quantity.field {
   clear: none;
   margin: 4px 0;
   width: 60px;
   display: none;
 }
-.recurly_subscribe ul.add_ons li .quantity.field input {
+.recurly ul.add_ons li .quantity.field input {
   width: 48px;
 }
-.recurly_subscribe ul.add_ons li .quantity.field:before {
+.recurly ul.add_ons li .quantity.field:before {
   content: "\d7";
   height: 48px;
   line-height: 30px;
@@ -175,14 +175,14 @@
   z-index: 1337;
   color: #666;
 }
-.recurly_subscribe ul.add_ons li .cost {
+.recurly ul.add_ons li .cost {
   float: right;
   margin: 0px 10px 0px 55px;
   font-size: inherit;
   line-height: inherit;
   vertical-align: middle;
 }
-.recurly_subscribe ul.add_ons li:hover {
+.recurly ul.add_ons li:hover {
   background: -webkit-linear-gradient(top, #f0f0f0 0%, #dfdfdf 50%, #d5d5d5 50%, #e0e0e0 100%);
   background: -moz-linear-gradient(top, #f0f0f0 0%, #dfdfdf 50%, #d5d5d5 50%, #e0e0e0 100%);
   background: -o-linear-gradient(top, #f0f0f0 0%, #dfdfdf 50%, #d5d5d5 50%, #e0e0e0 100%);
@@ -191,8 +191,8 @@
   text-shadow: none;
   color: #111;
 }
-.recurly_subscribe ul.add_ons li:active,
-.recurly_subscribe ul.add_ons li.selected {
+.recurly ul.add_ons li:active,
+.recurly ul.add_ons li.selected {
   color: #111;
   background: -webkit-linear-gradient(top, #f0f0f0, #fff);
   background: -moz-linear-gradient(top, #f0f0f0, #fff);
@@ -202,17 +202,17 @@
   box-shadow: inset 0 1px 4px 0 rgba(0,0,0,0.075);
   text-shadow: none;
 }
-.recurly_subscribe ul.add_ons li.selected {
+.recurly ul.add_ons li.selected {
   background: #fff url("images/check.png") no-repeat 10px center;
   padding-left: 24px;
 }
-.recurly_subscribe ul.add_ons li.selected:hover {
+.recurly ul.add_ons li.selected:hover {
   background: #fcf5f0 url("images/uncheck.png") no-repeat 10px center;
 }
-.recurly_subscribe ul.add_ons li.selected .quantity {
+.recurly ul.add_ons li.selected .quantity {
   display: block;
 }
-.recurly_subscribe .coupon {
+.recurly .coupon {
   clear: both;
   height: 34px;
   color: #333;
@@ -220,7 +220,7 @@
   position: relative;
   background: rgba(0,0,40,0.02) url("images/dash.png") repeat-x 1px top;
 }
-.recurly_subscribe .coupon .check {
+.recurly .coupon .check {
   width: 26px;
   height: 26px;
   float: left;
@@ -234,26 +234,29 @@
   margin: 3px 0 1px 10px;
   box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.35), 0 1px 1px 0 rgba(0,0,0,0.1);
 }
-.recurly_subscribe .coupon .check:hover {
+.recurly .coupon .check:hover {
   box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.75), 0 1px 1px 0 rgba(0,0,0,0.1);
   background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #71cdfa 0%, #43bef9 50%, #00b1f6 50%, #71cefb 100%);
 }
-.recurly_subscribe .coupon .check:active {
+.recurly .coupon .check:active {
   background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #f0f0f0, #fff);
   box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.025);
   border: 1px solid #999;
 }
-.recurly_subscribe .coupon.checking .check {
+.recurly .coupon.checking .check {
   background: #f0f0f0 url("images/coupon_checking.gif") no-repeat center center;
   box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.025);
   border: 1px solid #999;
 }
-.recurly_subscribe .coupon.invalid .coupon_code {
+.recurly .coupon.invalid .coupon_code {
   border-color: #a55;
   background: #fee;
   color: #311;
 }
-.recurly_subscribe .coupon .description {
+.recurly .coupon .coupon_code .error {
+  left: 300px;
+}
+.recurly .coupon .description {
   float: left;
   margin-left: 20px;
   height: 34px;
@@ -261,13 +264,13 @@
   vertical-align: middle;
   font-size: 14.4px;
 }
-.recurly_subscribe .coupon .discount {
+.recurly .coupon .discount {
   float: right;
   height: 34px;
   line-height: 34px;
   vertical-align: middle;
 }
-.recurly_subscribe .error {
+.recurly .error {
   padding: 5px;
   line-height: 22px;
   vertical-align: middle;
@@ -279,31 +282,31 @@
   border-radius: 5px;
   font-size: 13px;
 }
-.recurly_subscribe .server_errors {
+.recurly .server_errors {
   color: #fff;
   text-shadow: 0 1px 0 #000;
   margin: 20px 20px;
   margin-bottom: 0;
   opacity: 0;
 }
-.recurly_subscribe .server_errors .error {
+.recurly .server_errors .error {
   padding-left: 26px;
   background: rgba(240,250,0,0.5) url("images/error.png") no-repeat 5px 9px;
 }
-.recurly_subscribe .server_errors.any {
+.recurly .server_errors.any {
   opacity: 1;
   -webkit-transition: opacity 0.5s linear;
   -moz-transition: opacity 0.5s linear;
 }
-.recurly_subscribe .field .error {
+.recurly .field .error {
   width: 128px;
   position: absolute;
   top: 0;
   left: 100%;
   margin-left: 20px;
 }
-.recurly_subscribe .contact_info,
-.recurly_subscribe .billing_info {
+.recurly .contact_info,
+.recurly .billing_info {
   margin: 0;
   display: block;
   position: relative;
@@ -311,13 +314,13 @@
   padding: 20px;
   overflow: hidden;
 }
-.recurly_subscribe .contact_info.billing_info,
-.recurly_subscribe .billing_info.billing_info {
+.recurly .contact_info.billing_info,
+.recurly .billing_info.billing_info {
   background: url("images/dash.png") repeat-x 1px top;
   padding-bottom: 0;
 }
-.recurly_subscribe .contact_info .title,
-.recurly_subscribe .billing_info .title {
+.recurly .contact_info .title,
+.recurly .billing_info .title {
   float: left;
   font-size: 16px;
   font-weight: bold;
@@ -325,11 +328,11 @@
   color: #404041;
   text-shadow: 0 1px 0 #fff;
 }
-.recurly_subscribe .contact_info .credit_card,
-.recurly_subscribe .billing_info .credit_card {
+.recurly .contact_info .credit_card,
+.recurly .billing_info .credit_card {
   clear: both;
 }
-.recurly_subscribe .field {
+.recurly .field {
   display: inline;
   float: left;
   clear: left;
@@ -340,10 +343,10 @@
   margin-bottom: 20px;
   position: relative;
 }
-.recurly_subscribe .field input {
+.recurly .field input {
   width: 288px;
 }
-.recurly_subscribe .field .placeholder {
+.recurly .field .placeholder {
   position: absolute;
   top: 0;
   left: 0;
@@ -365,119 +368,119 @@
   user-select: none;
   font-weight: 300;
 }
-.recurly_subscribe .field.focus .placeholder {
+.recurly .field.focus .placeholder {
   color: rgba(0,0,0,0.25);
 }
-.recurly_subscribe .field.coupon_code {
+.recurly .field.coupon_code {
   width: 140px;
 }
-.recurly_subscribe .field.coupon_code input {
+.recurly .field.coupon_code input {
   width: 128px;
 }
-.recurly_subscribe .field.first_name {
+.recurly .field.first_name {
   width: 140px;
 }
-.recurly_subscribe .field.first_name input {
+.recurly .field.first_name input {
   width: 128px;
 }
-.recurly_subscribe .field.first_name .error {
+.recurly .field.first_name .error {
   left: 300px;
 }
-.recurly_subscribe .field.last_name {
+.recurly .field.last_name {
   width: 140px;
   margin-left: 20px;
   margin-left: 20px;
   clear: none;
   clear: none;
 }
-.recurly_subscribe .field.last_name input {
+.recurly .field.last_name input {
   width: 128px;
 }
-.recurly_subscribe .field.card_number {
+.recurly .field.card_number {
   width: 220px;
 }
-.recurly_subscribe .field.card_number input {
+.recurly .field.card_number input {
   width: 208px;
 }
-.recurly_subscribe .field.card_number .error {
+.recurly .field.card_number .error {
   left: 300px;
 }
-.recurly_subscribe .field.cvv {
+.recurly .field.cvv {
   width: 60px;
   margin-left: 20px;
   margin-left: 20px;
   clear: none;
   clear: none;
 }
-.recurly_subscribe .field.cvv input {
+.recurly .field.cvv input {
   width: 48px;
 }
-.recurly_subscribe .field.expires {
+.recurly .field.expires {
   width: 300px;
 }
-.recurly_subscribe .field.expires input {
+.recurly .field.expires input {
   width: 288px;
 }
-.recurly_subscribe .field.expires label {
+.recurly .field.expires label {
   float: left;
   line-height: 24px;
   vertical-align: middle;
 }
-.recurly_subscribe .field.expires label:after {
+.recurly .field.expires label:after {
   content: ":";
 }
-.recurly_subscribe .field.expires .month {
+.recurly .field.expires .month {
   width: 100px;
 }
-.recurly_subscribe .field.expires .month input {
+.recurly .field.expires .month input {
   width: 88px;
 }
-* html .recurly_subscribe .field.expires .year {
+* html .recurly .field.expires .year {
   width: 60px;
 }
-* html .recurly_subscribe .field.expires .year input {
+* html .recurly .field.expires .year input {
   width: 48px;
 }
-.recurly_subscribe .field.expires .month,
-.recurly_subscribe .field.expires .year {
+.recurly .field.expires .month,
+.recurly .field.expires .year {
   float: right;
   margin-left: 10px;
 }
-.recurly_subscribe .field.state {
+.recurly .field.state {
   width: 180px;
 }
-.recurly_subscribe .field.state input {
+.recurly .field.state input {
   width: 168px;
 }
-.recurly_subscribe .field.state .error {
+.recurly .field.state .error {
   left: 300px;
 }
-.recurly_subscribe .field.zip {
+.recurly .field.zip {
   width: 100px;
   margin-left: 20px;
   margin-left: 20px;
   clear: none;
   clear: none;
 }
-.recurly_subscribe .field.zip input {
+.recurly .field.zip input {
   width: 88px;
 }
-.recurly_subscribe .field.vat_number {
+.recurly .field.vat_number {
   width: 140px;
   display: none;
 }
-.recurly_subscribe .field.vat_number input {
+.recurly .field.vat_number input {
   width: 128px;
 }
-.recurly_subscribe .field.vat_number.applicable {
+.recurly .field.vat_number.applicable {
   display: block;
 }
-.recurly_subscribe .only_zipstreet .zip.field,
-.recurly_subscribe .only_zip .zip.field {
+.recurly .only_zipstreet .zip.field,
+.recurly .only_zip .zip.field {
   margin-left: 0;
   clear: left;
 }
-.recurly_subscribe ul.accepted_cards {
+.recurly ul.accepted_cards {
   float: right;
   margin: 0;
   padding: 0;
@@ -485,7 +488,7 @@
   width: 160px;
   list-style-type: none;
 }
-.recurly_subscribe ul.accepted_cards li {
+.recurly ul.accepted_cards li {
   background-position: right 0px;
   background-repeat: no-repeat;
   text-indent: -3000px;
@@ -495,41 +498,41 @@
   padding: 0;
   float: left;
 }
-.recurly_subscribe ul.accepted_cards li.mastercard {
+.recurly ul.accepted_cards li.mastercard {
   background-image: url("images/credit_cards/mastercard.png");
 }
-.recurly_subscribe ul.accepted_cards li.american_express {
+.recurly ul.accepted_cards li.american_express {
   background-image: url("images/credit_cards/amex.png");
 }
-.recurly_subscribe ul.accepted_cards li.visa {
+.recurly ul.accepted_cards li.visa {
   background-image: url("images/credit_cards/visa.png");
 }
-.recurly_subscribe ul.accepted_cards li.discover {
+.recurly ul.accepted_cards li.discover {
   background-image: url("images/credit_cards/discover.png");
 }
-.recurly_subscribe ul.accepted_cards li.no_match {
+.recurly ul.accepted_cards li.no_match {
   opacity: 0.5;
 }
-.recurly_subscribe label {
+.recurly label {
   display: block;
   font-size: 13px;
   color: #333;
   font-weight: bold;
 }
-.recurly_subscribe input,
-.recurly_subscribe textarea,
-.recurly_subscribe select {
+.recurly input,
+.recurly textarea,
+.recurly select {
   vertical-align: middle;
   color: #000;
 }
-.recurly_subscribe input.invalid,
-.recurly_subscribe textarea.invalid,
-.recurly_subscribe select.invalid {
+.recurly input.invalid,
+.recurly textarea.invalid,
+.recurly select.invalid {
   border-color: #a55;
   background: #fee;
   color: #311;
 }
-.recurly_subscribe input {
+.recurly input {
   background: #fff;
   border: 1px solid #a0a0a5;
   box-shadow: inset 0 2px 3px rgba(0,0,0,0.1);
@@ -539,16 +542,16 @@
   padding: 5px;
   height: 22px;
 }
-.recurly_subscribe select {
+.recurly select {
   color: inherit;
   font-family: inherit;
   font-size: 13px;
   width: 100%;
 }
-.recurly_subscribe select > option {
+.recurly select > option {
   color: inherit;
 }
-.recurly_subscribe .due_now {
+.recurly .due_now {
   background: url("images/due_now.png") no-repeat top left;
   clear: both;
   color: #2a3a3c;
@@ -561,12 +564,12 @@
   left: -5px;
   text-shadow: 0 1px 0 rgba(255,255,255,0.5);
 }
-.recurly_subscribe .due_now .title {
+.recurly .due_now .title {
   float: left;
   font-size: 29px;
   position: relative;
 }
-.recurly_subscribe .due_now .cost {
+.recurly .due_now .cost {
   color: #fff;
   float: right;
   font-size: 33px;
@@ -576,15 +579,15 @@
   position: relative;
   text-shadow: 0px 1px 1px rgba(0,0,0,0.9);
 }
-.recurly_subscribe .footer {
+.recurly .footer {
   border-radius: 0px 0px 9px 9px;
   margin: 0px;
   padding: 20px;
 }
-.recurly_subscribe.submitting .footer {
+.recurly.submitting .footer {
   background: url("images/submitting.gif") no-repeat 180px 28px;
 }
-.recurly_subscribe button.subscribe {
+.recurly button.submit {
   position: relative;
   height: 46px;
   max-width: 600px;
@@ -606,10 +609,10 @@
   background: -moz-linear-gradient(top, #fecd00, #ce7b00);
   cursor: pointer;
 }
-.recurly_subscribe button.subscribe hover {
+.recurly button.submit hover {
   color: #555;
 }
-.recurly_subscribe button.subscribe active {
+.recurly button.submit active {
   top: 2px;
   color: #302106;
   text-shadow: rgba(255,255,255,0.5694) 0 -1px 0;
@@ -620,7 +623,7 @@
   background: -moz-linear-gradient(top, #ce7b00, #fecd00);
   box-shadow: rgba(255,255,255,0.69) 0px -1px 0px inset, rgba(0,0,0,0.26) 0px 2px 3px;
 }
-.recurly_subscribe button.subscribe[disabled] {
+.recurly button.submit[disabled] {
   position: relative;
   height: 46px;
   max-width: 600px;
@@ -645,10 +648,10 @@
   -webkit-box-shadow: rgba(255,255,255,0.69) 0px 1px 0px inset, rgba(0,0,0,0.26) 0px 2px 3px;
   box-shadow: rgba(255,255,255,0.699219) 0px 1px 0px inset, rgba(0,0,0,0.269219) 0px 2px 3px;
 }
-.recurly_subscribe button.subscribe span {
+.recurly button.submit span {
   font-weight: 500;
   font-size: 13px;
 }
-.recurly_subscribe button.subscribe:hover {
+.recurly button.submit:hover {
   color: #555;
 }

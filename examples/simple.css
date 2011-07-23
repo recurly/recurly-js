@@ -13,4 +13,5 @@ html {
   border: 1px solid #999;
   border-radius: 8px;
   background: #fcfcfc url("../images/hydranoise.jpeg") repeat;
+  box-shadow: 0px 1px 2px rgba(0,0,0,0.2), inset 0 1px 0 #fff;
 }
