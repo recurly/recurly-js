@@ -160,8 +160,8 @@ hstack(cols)
     &.applicable
       display block
 
-    label
-      font-size 18px
+    .title
+      font-size base_font_size
       font-weight normal
       float left
 
@@ -169,7 +169,7 @@ hstack(cols)
       float right
       font-size 18px
 
-  ul.add_ons
+  .add_ons
     clear both
     margin 0
     // background url(images/dash.png) repeat-x 1px top 
@@ -177,7 +177,7 @@ hstack(cols)
     &.any
       padding (outer_margin/2)
 
-    li
+    .add_on
       background linear-gradient(top, #ecedee, #e5e6e7)
       margin 0
       height 43px
@@ -444,8 +444,9 @@ hstack(cols)
     &.expires 
       field-width columns(8)
 
-      label
+      .title
         float left
+        font-size round(base_font_size*0.8)
         line-height 24px
         vertical-align middle 
 
@@ -484,15 +485,14 @@ hstack(cols)
     margin-left 0
     clear left
 
-  ul.accepted_cards 
+  .accepted_cards 
     float right
     margin 0
     padding 0
     margin-right columns(4) + column_space
     width 160px 
-    list-style-type none
 
-    li
+   .card 
       background-position right 0px
       background-repeat no-repeat
       text-indent -3000px
@@ -517,18 +517,9 @@ hstack(cols)
       &.no_match
         opacity 0.5 
 
-   // /fieldset
-  
-  label 
-    display block
-    font-size 13px
-    color #333
-    font-weight bold
-
-
+ 
   // General
   input,
-  textarea,
   select
     vertical-align middle
     color #000000
@@ -539,7 +530,6 @@ hstack(cols)
       color #311
 
   input 
-    // margin 0 0 5px 0
     background white
     border input_border solid #a0a0a5
     box-shadow inset 0 2px 3px rgba(0,0,0,0.1)    
@@ -624,69 +614,52 @@ hstack(cols)
 
     cursor pointer
    
-   
-  
-  button.submit hover
-    color  #555
+     
+    
+    &:hover
+      color  #555
 
+     
+    &:active
+      top  2px
+      
+      color  #302106
+      text-shadow  rgba(255,255,255, .5694) 0 -1px 0
+      
+      -webkit-user-select  none
+      -moz-user-select  -moz-none
+      outline  none
+          
+      background-image  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#CE7B00), to(#FECD00))
+      background  -moz-linear-gradient(top, #ce7b00, #fecd00)
+      box-shadow  rgba(255, 255, 255, 0.69) 0px -1px 0px inset, rgba(0,0,0, 0.26) 0px 2px 3px
    
-  button.submit active
-    top  2px
-    
-    color  #302106
-    text-shadow  rgba(255,255,255, .5694) 0 -1px 0
-    
-    -webkit-user-select  none
-    -moz-user-select  -moz-none
-    outline  none
-        
-    background-image  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#CE7B00), to(#FECD00))
-    background  -moz-linear-gradient(top, #ce7b00, #fecd00)
-    box-shadow  rgba(255, 255, 255, 0.69) 0px -1px 0px inset, rgba(0,0,0, 0.26) 0px 2px 3px
- 
-   
-  button.submit[disabled]
-    position relative
-    height  46px
-    max-width  600px
-    padding  0 10px
-    
-    font-size  15px
-    font-weight  700
-    color  #555 !important
-    text-shadow  rgba(255,255,255, .5694) 0 1px 0
-    text-align  center
-    
-    opacity  .75
-    border  1px solid #767674
-    background  #e7a500
-    
-    -moz-border-radius  10px
-    -webkit-border-radius  10px
-    border-radius  10px
-    
-    -webkit-user-select  none
-    -moz-user-select  -moz-none
-    outline  none
-    
-    background-image -webkit-gradient(linear, 0% 0%, 0% 100%, from(#DBD9D2), to(#999)) !important
-    background  -moz-linear-gradient(top, #DBD9D2, #999999) !important
-    
-    -webkit-background-clip  padding-box
-
-    -webkit-box-shadow  rgba(255, 255, 255, 0.69) 0px 1px 0px inset, rgba(0,0,0, 0.26) 0px 2px 3px
-
-    box-shadow  rgba(255, 255, 255, 0.699219) 0px 1px 0px inset, rgba(0,0,0, 0.269219) 0px 2px 3px
- 
-   
-  button.submit span
-    font-weight  500
-    font-size  13px
- 
-   
-  button.submit:hover
-    color  #555
- 
-
+     
+    &[disabled]
+      position relative
+      height  46px
+      max-width  600px
+      padding  0 10px
+      font-weight  700
+      color  #555
+      text-shadow  rgba(255,255,255, .5694) 0 1px 0
+      text-align  center
+      
+      opacity  .75
+      border  1px solid #767674
+      background  #e7a500
+      
+      -moz-border-radius  10px
+      -webkit-border-radius  10px
+      border-radius  10px
+      -webkit-user-select  none
+      -moz-user-select  -moz-none
+      outline  none
+      background-image -webkit-gradient(linear, 0% 0%, 0% 100%, from(#DBD9D2), to(#999))
+      background  -moz-linear-gradient(top, #DBD9D2, #999999)
+      -webkit-background-clip  padding-box
+      -webkit-box-shadow  rgba(255, 255, 255, 0.69) 0px 1px 0px inset, rgba(0,0,0, 0.26) 0px 2px 3px
+      box-shadow  rgba(255, 255, 255, 0.699219) 0px 1px 0px inset, rgba(0,0,0, 0.269219) 0px 2px 3px
+     
 
 // code == art
