@@ -1163,9 +1163,9 @@ R.buildSubscribeForm = function(options) {
           var addOn = plan.addOns[i];
 
           var $addOn = $('<div class="add_on add_on_'+ addOn.code + ' ' + (i % 2 ? 'even' : 'odd') +'">' +
-          '<label class="name">'+addOn.name+'</label>' +
+          '<div class="name">'+addOn.name+'</div>' +
           '<div class="field quantity">' +
-            '<label class="placeholder">Qty</label>' +
+            '<div class="placeholder">Qty</div>' +
             '<input type="text">' +
           '</div>' +
           '<div class="cost"/>' +
@@ -1184,6 +1184,17 @@ R.buildSubscribeForm = function(options) {
           var newQty = parseInt($(this).val(),10) || 1;
           subscription.findAddOnByCode(addOn.code).quantity = newQty;
           updateTotals();
+        });
+
+        $addOnsList.bind('selectstart', function(e) {
+          if(!$(e.target).is('.name') && !$(e.target).is('.cost')) {
+            e.preventDefault();
+          }
+        });
+
+        $addOnsList.bind('.add_ons .add_on', 'mousedown mouseup dblclick', function(e) {
+          e.preventDefault();
+          return false;
         });
 
         // Add-on click
@@ -1380,14 +1391,14 @@ R.buildSubscribeForm = function(options) {
 
       function complete() {
         $form.removeClass('submitting');
-        $form.find('button.subscribe').removeAttr('disabled').text('Subscribe');
+        $form.find('button.submit').removeAttr('disabled').text('Subscribe');
       }
 
       handleUserErrors(function() {
         syncUserInput();
 
         $form.addClass('submitting');
-        $form.find('button.subscribe').attr('disabled', true).text('Please Wait');
+        $form.find('button.submit').attr('disabled', true).text('Please Wait');
 
         subscription.save(
           function(response) {

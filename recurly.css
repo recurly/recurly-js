@@ -128,11 +128,6 @@
   color: #999;
   font-weight: 300;
   font-size: 16px;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -o-user-select: none;
-  user-select: none;
 }
 .recurly .add_ons .add_on:first-child {
   border-top-left-radius: 10px;
