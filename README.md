@@ -42,11 +42,30 @@ Recurly.buildSubscribeForm({
 ## Additional Options
 ```javascript
 Recurly.config({
- subdomain: 'mycompany', 
- environment: 'sandbox', // or 'production'
- currency: 'USD', // GBP | CAD | EUR, etc...
- VATPercentage: 10, // European Value Added Tax
- country: 'GB', // Seller country, needed for VAT to work 
+    subdomain: 'mycompany' 
+  , environment: 'sandbox' // or 'production'
+  , currency: 'USD' // GBP | CAD | EUR, etc...
+  , VATPercentage: 10 // European Value Added Tax
+  , country: 'GB' // Seller country, needed for VAT to work 
+  , locale: {
+      // Currency formatting rules
+      currency:  {
+        format: "%u%n" // Unit symbol and Number
+      , separator: "."
+      , delimiter: ","
+      , precision: 2
+    }
+    // Error messages
+    , errors: {
+        emptyField: 'Butt something?'
+      , missingFullAddress: 'Please enter your full address.'
+      , invalidEmail: 'This doesn\'t look right.'
+      , invalidCC: 'This doesn\'t look right.'
+      , invalidCVV: 'This doesn\'t look right.'
+      , invalidCoupon: 'Coupon not found' 
+      , cardDeclined: 'Sorry, your card was declined.' 
+    }
+  }
 });
 
 Recurly.buildSubscribeForm({

@@ -95,7 +95,7 @@ function pluralize(count, term) {
 }
 
 R.config = function(settings) { 
-  $.extend(R.settings, settings); 
+  $.extend(true, R.settings, settings); 
 
   if(!settings.baseURL) {
 
@@ -222,7 +222,6 @@ R.locale.errors = {
 , invalidCVV: 'This doesn\'t look right.'
 , invalidCoupon: 'Coupon not found' 
 , cardDeclined: 'Sorry, your card was declined.' 
-
 };
 
 R.locale.currencies = {};
@@ -1280,7 +1279,6 @@ R.buildSubscribeForm = function(options) {
         $coupon.removeClass('checking');
 
         subscription.coupon = coupon;
-        console.log(subscription.coupon);
         $coupon.removeClass('invalid').addClass('valid');
         $coupon.find('.description').text(coupon.description);
 
