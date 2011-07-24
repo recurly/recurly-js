@@ -1192,11 +1192,6 @@ R.buildSubscribeForm = function(options) {
           }
         });
 
-        $addOnsList.bind('.add_ons .add_on', 'mousedown mouseup dblclick', function(e) {
-          e.preventDefault();
-          return false;
-        });
-
         // Add-on click
         $addOnsList.delegate('.add_ons .add_on', 'click', function(e) {
           if($(e.target).closest('.quantity').length) return;
