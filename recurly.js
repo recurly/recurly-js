@@ -1187,7 +1187,7 @@ R.buildSubscribeForm = function(options) {
         });
 
         $addOnsList.bind('selectstart', function(e) {
-          if(!$(e.target).is('.name') && !$(e.target).is('.cost')) {
+          if($(e.target).is('.add_on')) {
             e.preventDefault();
           }
         });
