@@ -67,12 +67,13 @@ Recurly.config({
 });
 
 Recurly.buildSubscribeForm({
-  target: '#subscribe', // A jQuery selector for the container element to append the form to
-  plan: 'myplancode', // A plan you have created in recurly-app
-  afterSubscribe: function() {}, // Callback after subscription success
-  addressRequirement: 'full', // Address fields to display (full | zipstreet | zip | none) 
-  enableAddOns: true | false,
-  enableCoupons: true | false
+    target: '#subscribe' // A jQuery selector for the container element to append the form to
+  , plan: 'myplancode' // A plan you have created in recurly-app
+  , afterSubscribe: function() {} // Callback after subscription success
+  , addressRequirement: 'full' // Address fields to display (full | zipstreet | zip | none) 
+  , enableAddOns: true | false
+  , enableCoupons: true | false
+  , accountCode // Account code for the account created w/ subscription. Defaults to email address if not provided.
 });
 ```
 
