@@ -80,7 +80,7 @@ Recurly.buildSubscribeForm({
 ## Customizing the style
 A stock stylesheet is provided that is coded in [stylus](/LearnBoost/stylus), a wonderful language that compiles to CSS.
 
-Stylus is officially implemented in node.js, but you don't need to have a node app to use it. You can install node and <code>npn install stylus</code>, then use the <code>stylus</code> command-line to compile to CSS. There is also a Ruby on Rails port of stylus, [stylus_rails](/lucasmazza/stylus_rails).
+Stylus is officially implemented in node.js, but you don't need to have a node app to use it. You can install node and <code>npm install stylus</code>, then use the <code>stylus</code> command-line to compile to CSS. There is also a Ruby on Rails port of stylus, [stylus_rails](/lucasmazza/stylus_rails).
 
 Alternatively, you could modify the compiled css and ignore the stylus source. But this is heavily discouraged. It's much easier to get accustom to stylus, than to attempt to work with the compiled CSS which has lost all of the original structure that stylus provides. Give it a try, it's worth it.
 
