@@ -261,7 +261,7 @@
         account_code: 123
       , plan_code: 'abc'
       };
-      var expect = '/success?account=123&plan=abc&account=123&plan=abc&account=123'; 
+      var expect = '/success?account=123&plan=abc&account=123&account_code=123&plan_code=abc'; 
       var result = R.replaceVars(url, vars); 
       deepEqual(result, expect);
     });
@@ -383,6 +383,9 @@
       $('.card_number input').val('4111-1111-1111-1111').change();
       $('.cvv input').val('123').change();
 
+      $('.year select').val('2013').change();
+      $('.month select').val('3').change();
+
       $('.address1 input').val('yee').change();
       $('.address2 input').val('haw').change();
       $('.city input').val('doo').change();
@@ -410,8 +413,8 @@
           "billing_info": {
             "first_name": undefined,
             "last_name": undefined,
-            "month": 9,
-            "year": 2011,
+            "month": 3,
+            "year": 2013,
             "number": "4111-1111-1111-1111",
             "verification_value": "123",
             "address1": "yee",

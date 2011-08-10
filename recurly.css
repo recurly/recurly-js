@@ -202,7 +202,7 @@
   background: -o-linear-gradient(top, #f0f0f0, #fff);
   background: linear-gradient(top, #f0f0f0, #fff);
   width: auto;
-  box-shadow: inset 0 1px 4px 0 rgba(0,0,0,0.075);
+  box-shadow: inset 0 1px 4px 0 rgba(0,0,0,0.07);
   text-shadow: none;
 }
 .recurly .add_ons .add_on.selected {
@@ -234,7 +234,7 @@
   background: #70ccf8;
   border: 1px solid #0090c9;
   margin: 3px 0 1px 10px;
-  box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.35), 0 1px 1px 0 rgba(0,0,0,0.1);
+  box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.35), 0 1px 1px 0 rgba(0,0,0,0.10);
   background: #43bef9 url("images/coupon_check.png") no-repeat center center;
   background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
   background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
@@ -246,19 +246,19 @@
   background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
   background: url("images/coupon_check.png") no-repeat center center, -o-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
   background: url("images/coupon_check.png") no-repeat center center linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
-  box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.75), 0 1px 1px 0 rgba(0,0,0,0.1);
+  box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.75), 0 1px 1px 0 rgba(0,0,0,0.10);
 }
 .recurly .coupon .check:active {
   background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #f0f0f0, #fff);
   background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #f0f0f0, #fff);
   background: url("images/coupon_check.png") no-repeat center center, -o-linear-gradient(top, #f0f0f0, #fff);
   background: url("images/coupon_check.png") no-repeat center center linear-gradient(top, #f0f0f0, #fff);
-  box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.025);
+  box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.03);
   border: 1px solid #999;
 }
 .recurly .coupon.checking .check {
   background: #f0f0f0 url("images/coupon_checking.gif") no-repeat center center;
-  box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.025);
+  box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.03);
   border: 1px solid #999;
 }
 .recurly .coupon.invalid .coupon_code {
@@ -291,7 +291,7 @@
   text-shadow: 0 1px 0 #fec;
   background: #ffc;
   border: 1px solid #ba1;
-  box-shadow: 3px 5px 5px 0 rgba(0,0,0,0.1);
+  box-shadow: 3px 5px 5px 0 rgba(0,0,0,0.10);
   border-radius: 5px;
   font-size: 13px;
 }
@@ -303,7 +303,7 @@
 }
 .recurly .server_errors .error {
   padding-left: 26px;
-  background: rgba(240,250,0,0.5) url("images/error.png") no-repeat 5px 9px;
+  background: rgba(240,250,0,0.50) url("images/error.png") no-repeat 5px 9px;
 }
 .recurly .server_errors.any {
   opacity: 1;
@@ -542,7 +542,7 @@
 .recurly input {
   background: #fff;
   border: 1px solid #a0a0a5;
-  box-shadow: inset 0 2px 3px rgba(0,0,0,0.1);
+  box-shadow: inset 0 2px 3px rgba(0,0,0,0.10);
   display: block;
   font-family: inherit;
   font-size: 16px;
@@ -569,7 +569,7 @@
   width: 460px;
   position: relative;
   left: -5px;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.50);
 }
 .recurly .due_now .title {
   float: left;
@@ -584,7 +584,7 @@
   letter-spacing: 1px;
   margin: 0;
   position: relative;
-  text-shadow: 0px 1px 1px rgba(0,0,0,0.9);
+  text-shadow: 0px 1px 1px rgba(0,0,0,0.90);
 }
 .recurly .footer {
   border-radius: 0px 0px 9px 9px;
@@ -606,10 +606,10 @@
   background: #e7a500;
   border-radius: 10px;
   outline: none;
-  box-shadow: inset rgba(255,255,255,0.7) 0px 1px 0px, rgba(0,0,0,0.5) 0px 1px 3px;
+  box-shadow: inset rgba(255,255,255,0.70) 0px 1px 0px, rgba(0,0,0,0.50) 0px 1px 3px;
   background-image: -webkit-gradient(linear, 0% 20%, 0% 100%, from(#fecd00), to(#ce7b00));
   background: -moz-linear-gradient(top, #fecd00, #ce7b00);
-  text-shadow: rgba(255,255,255,0.5) 0 1px 0;
+  text-shadow: rgba(255,255,255,0.50) 0 1px 0;
   padding: 10px 20px;
 }
 .recurly button.submit:hover {
@@ -618,7 +618,7 @@
 .recurly button.submit:active {
   top: 2px;
   color: #302106;
-  text-shadow: rgba(255,255,255,0.5694) 0 -1px 0;
+  text-shadow: rgba(255,255,255,0.57) 0 -1px 0;
   outline: none;
   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ce7b00), to(#fecd00));
   background: -moz-linear-gradient(top, #ce7b00, #fecd00);
@@ -631,7 +631,7 @@
   padding: 0 10px;
   font-weight: 700;
   color: #555;
-  text-shadow: rgba(255,255,255,0.5694) 0 1px 0;
+  text-shadow: rgba(255,255,255,0.57) 0 1px 0;
   text-align: center;
   opacity: 0.75;
   border: 1px solid #767674;
@@ -646,5 +646,5 @@
   background: -moz-linear-gradient(top, #dbd9d2, #999);
   -webkit-background-clip: padding-box;
   -webkit-box-shadow: rgba(255,255,255,0.69) 0px 1px 0px inset, rgba(0,0,0,0.26) 0px 2px 3px;
-  box-shadow: rgba(255,255,255,0.699219) 0px 1px 0px inset, rgba(0,0,0,0.269219) 0px 2px 3px;
+  box-shadow: rgba(255,255,255,0.70) 0px 1px 0px inset, rgba(0,0,0,0.27) 0px 2px 3px;
 }

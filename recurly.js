@@ -427,6 +427,23 @@ R.flattenErrors = function(obj, attr) {
 };
 
 
+R.replaceVars = function(str, vars) {
+  var all = [];
+  for(var k in vars) {
+    if(vars.hasOwnProperty(k)) {
+      var v = vars[k];
+
+      str = str.replace(new RegExp('\\{'+k+'\\}', 'g'), v);
+      all.push(k + '=' + v);
+    }
+  }
+
+  str = str.replace(/\{\*\}/g, all.join('&'));
+
+  return str;
+};
+
+
 
 
 //////////////////////////////////////////////////
@@ -595,7 +612,7 @@ R.BillingInfo = {
     return {
       first_name: this.firstName
     , last_name: this.lastName
-    , month: this.expires.getMonth()
+    , month: this.expires.getMonth() + 1
     , year: this.expires.getFullYear()
     , number: this.number
     , verification_value: this.cvv
@@ -1162,7 +1179,7 @@ function pullBillingInfoFields($form, billingInfo) {
   billingInfo.cvv = getField($form, '.cvv', V(R.isNotEmpty), V(R.isValidCVV)); 
 
   var exp = new Date(0); 
-  exp.setMonth( getField($form, '.month') );
+  exp.setMonth( getField($form, '.month') - 1 );
   exp.setFullYear( getField($form, '.year') );
   billingInfo.expires = exp;
 
@@ -1175,22 +1192,6 @@ function pullBillingInfoFields($form, billingInfo) {
       V(function(v) {return v != '-';}, 'emptyField')); 
 }
 
-
-R.replaceVars = function(str, vars) {
-  var all = [];
-  for(var k in vars) {
-    if(vars.hasOwnProperty(k)) {
-      var v = vars[k];
-
-      str = str.replace(new RegExp('\\{'+k+'\\}', 'g'), v);
-      all.push(k + '=' + v);
-    }
-  }
-
-  str = str.replace(/\\{\\*\\}/g, all.join('&'));
-
-  return str;
-};
 
 R.buildUpdateBillingInfoForm = function(options) {
   var defaults = {
