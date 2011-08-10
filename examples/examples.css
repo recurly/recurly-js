@@ -73,7 +73,7 @@ a {
 }
 #recurly-subscribe,
 #recurly-update-billing-info,
-#recurly-one-time-transaction {
+#recurly-transaction {
   width: 500px;
   margin: 30px auto;
   padding: 0px;
