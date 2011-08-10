@@ -1,0 +1,84 @@
+html {
+  font-family: "helvetica neue", helvetica, arial;
+  margin: 0;
+  padding: 0;
+  background: #c0c1c3 url("../images/noise.png") no-repeat center top;
+}
+h1 {
+  width: 500px;
+  margin: 30px auto;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 1px 1px #111;
+}
+h2 {
+  width: 500px;
+  margin: -20px auto 0 auto;
+  text-align: center;
+  font-size: 18px;
+  text-shadow: 0 1px 0 #fff;
+}
+p {
+  margin: 20px;
+  text-shadow: 0 1px 0 #eee;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 26px;
+  text-align: justify;
+}
+code {
+  font-family: menlo, monaco, "Lucida Console", monospace;
+  padding: 2px 4px;
+  font-size: 13px;
+  background: rgba(55,100,150,0.3);
+  color: #fff;
+  letter-space: 1px;
+  text-shadow: 0 1px 0 #467;
+  border-radius: 4px;
+}
+a {
+  color: inherit;
+  font-weight: bold;
+}
+#index {
+  width: 480px;
+  margin: 0 auto;
+}
+#examples {
+  margin: 20px;
+  font-weight: inherit;
+}
+#examples a {
+  display: block;
+  overflow: hidden;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-radius: 18px;
+  color: #fff;
+  text-shadow: 0 1px 0 #000;
+  font-weight: inherit;
+  text-decoration: none;
+  position: relative;
+  background: rgba(0,10,0,0.4);
+  box-shadow: 0 2px 1px rgba(0,0,0,0.1);
+}
+#examples a:hover {
+  color: #fff;
+  background: rgba(0,0,0,0.85);
+}
+#examples a:hover:after {
+  content: "\25B6";
+  position: absolute;
+  right: 15px;
+}
+#recurly-subscribe,
+#recurly-update-billing-info,
+#recurly-transaction {
+  width: 500px;
+  margin: 30px auto;
+  padding: 0px;
+  border: 1px solid #999;
+  border-radius: 8px;
+  background: #fcfcfc url("../images/pulp.jpeg") repeat;
+  box-shadow: 0px 1px 2px rgba(0,0,0,0.2), inset 0 1px 0 #fff;
+}

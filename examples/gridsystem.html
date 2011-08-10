@@ -18,9 +18,9 @@
     , VATPercent: 10
     });
 
-    Recurly.buildSubscribeForm({
+    Recurly.buildSubscriptionForm({
       target: '#recurly-subscribe'
-    , plan: 'complexplan'
+    , planCode: 'complexplan'
     , addressRequirement: 'full'
     , successURL: 'confirmation.html?account_code={account_code}'
     });

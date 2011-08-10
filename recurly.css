@@ -5,6 +5,7 @@
 }
 .recurly .cost,
 .recurly .discount {
+  font-size: 16px;
   text-align: right;
 }
 .recurly .subscription {
@@ -17,13 +18,14 @@
   color: #333;
   overflow: hidden;
   position: relative;
+  zoom: 1;
 }
 .recurly .plan .name {
   float: left;
   font-size: 32px;
   min-width: 200px;
-  margin-right: 40px;
-  margin-left: 20px;
+  padding-left: 20px;
+  padding-right: 40px;
 }
 .recurly .plan .quantity.field {
   clear: none;
@@ -48,15 +50,15 @@
 }
 .recurly .plan .recurring_cost {
   float: right;
-  margin-right: 20px;
   text-align: right;
+  padding-right: 20px;
 }
 .recurly .plan .recurring_cost .cost {
-  font-size: 28px;
+  font-size: 32px;
 }
 .recurly .plan .recurring_cost .interval {
-  font-size: 13px;
-  height: 22px;
+  font-size: 12px;
+  padding-bottom: 20px;
 }
 .recurly .free_trial {
   clear: left;
@@ -72,17 +74,18 @@
 .recurly .setup_fee {
   clear: both;
   background: url("images/dash.png") repeat-x 1px top;
-  padding: 20px 0;
+  overflow: hidden;
+  padding-top: 20px;
 }
 .recurly .setup_fee .title {
   float: left;
-  margin-left: 20px;
+  padding-left: 20px;
   font-weight: bold;
-  font-size: 15px;
+  font-size: 16px;
 }
 .recurly .setup_fee .cost {
   float: right;
-  margin-right: 20px;
+  padding-right: 20px;
 }
 .recurly .vat {
   height: 24px;
@@ -104,12 +107,12 @@
 }
 .recurly .add_ons {
   clear: both;
-  margin: 0;
 }
 .recurly .add_ons.any {
-  padding: 10px;
+  margin: 20px 10px;
 }
 .recurly .add_ons .add_on {
+  background: #ecedee;
   background: -webkit-linear-gradient(top, #ecedee, #e5e6e7);
   background: -moz-linear-gradient(top, #ecedee, #e5e6e7);
   background: -o-linear-gradient(top, #ecedee, #e5e6e7);
@@ -117,8 +120,8 @@
   margin: 0;
   height: 43px;
   line-height: 42px;
-  width: 478px;
   vertical-align: middle;
+  position: relative;
   clear: both;
   overflow: hidden;
   border-top: 1px solid #ccc;
@@ -128,12 +131,14 @@
   color: #999;
   font-weight: 300;
   font-size: 16px;
+  zoom: 1;
+  cursor: default;
 }
-.recurly .add_ons .add_on:first-child {
+.recurly .add_ons .add_on.first {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
-.recurly .add_ons .add_on:last-child {
+.recurly .add_ons .add_on.last {
   border-bottom: 1px solid #ccc;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
@@ -141,16 +146,19 @@
 .recurly .add_ons .add_on .name {
   font-size: inherit;
   font-weight: inherit;
+  font-style: italic;
   color: inherit;
-  float: left;
   width: 200px;
   margin-left: 9px;
   margin-right: 20px;
-  font-style: italic;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 .recurly .add_ons .add_on .quantity.field {
-  clear: none;
-  margin: 4px 0;
+  position: absolute;
+  top: 4px;
+  left: 249px;
   width: 60px;
   display: none;
 }
@@ -171,11 +179,11 @@
   color: #666;
 }
 .recurly .add_ons .add_on .cost {
-  float: right;
-  margin: 0px 10px 0px 55px;
   font-size: inherit;
   line-height: inherit;
   vertical-align: middle;
+  position: absolute;
+  right: 10px;
 }
 .recurly .add_ons .add_on:hover {
   background: -webkit-linear-gradient(top, #f0f0f0 0%, #dfdfdf 50%, #d5d5d5 50%, #e0e0e0 100%);
@@ -199,6 +207,8 @@
 }
 .recurly .add_ons .add_on.selected {
   background: #fff url("images/check.png") no-repeat 10px center;
+}
+.recurly .add_ons .add_on.selected .name {
   padding-left: 24px;
 }
 .recurly .add_ons .add_on.selected:hover {
@@ -209,11 +219,12 @@
 }
 .recurly .coupon {
   clear: both;
+  overflow: hidden;
   height: 34px;
   color: #333;
   padding: 20px 20px;
   position: relative;
-  background: rgba(0,0,40,0.02) url("images/dash.png") repeat-x 1px top;
+  background: url("images/dash.png") repeat-x 1px top;
 }
 .recurly .coupon .check {
   width: 26px;
@@ -222,19 +233,26 @@
   border-radius: 15px 15px 15px 15px;
   background: #70ccf8;
   border: 1px solid #0090c9;
-  background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #61bDFA 0%, #35afF5 50%, #00a1e6 50%, #61bEFB 100%);
-  background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #61bDFA 0%, #35afF5 50%, #00a1e6 50%, #61bEFB 100%);
-  background: url("images/coupon_check.png") no-repeat center center, -o-linear-gradient(top, #61bDFA 0%, #35afF5 50%, #00a1e6 50%, #61bEFB 100%);
-  background: url("images/coupon_check.png") no-repeat center center linear-gradient(top, #61bDFA 0%, #35afF5 50%, #00a1e6 50%, #61bEFB 100%);
   margin: 3px 0 1px 10px;
   box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.35), 0 1px 1px 0 rgba(0,0,0,0.1);
+  background: #43bef9 url("images/coupon_check.png") no-repeat center center;
+  background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: url("images/coupon_check.png") no-repeat center center, -o-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: url("images/coupon_check.png") no-repeat center center linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
 }
 .recurly .coupon .check:hover {
+  background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: url("images/coupon_check.png") no-repeat center center, -o-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: url("images/coupon_check.png") no-repeat center center linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
   box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.75), 0 1px 1px 0 rgba(0,0,0,0.1);
-  background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #71cdfa 0%, #43bef9 50%, #00b1f6 50%, #71cefb 100%);
 }
 .recurly .coupon .check:active {
   background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #f0f0f0, #fff);
+  background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #f0f0f0, #fff);
+  background: url("images/coupon_check.png") no-repeat center center, -o-linear-gradient(top, #f0f0f0, #fff);
+  background: url("images/coupon_check.png") no-repeat center center linear-gradient(top, #f0f0f0, #fff);
   box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.025);
   border: 1px solid #999;
 }
@@ -271,7 +289,7 @@
   vertical-align: middle;
   color: #000;
   text-shadow: 0 1px 0 #fec;
-  background: rgba(240,250,0,0.5);
+  background: #ffc;
   border: 1px solid #ba1;
   box-shadow: 3px 5px 5px 0 rgba(0,0,0,0.1);
   border-radius: 5px;
@@ -280,8 +298,7 @@
 .recurly .server_errors {
   color: #fff;
   text-shadow: 0 1px 0 #000;
-  margin: 20px 20px;
-  margin-bottom: 0;
+  margin: 0 20px;
   opacity: 0;
 }
 .recurly .server_errors .error {
@@ -292,32 +309,25 @@
   opacity: 1;
   -webkit-transition: opacity 0.5s linear;
   -moz-transition: opacity 0.5s linear;
-}
-.recurly .field .error {
-  width: 128px;
-  position: absolute;
-  top: 0;
-  left: 100%;
-  margin-left: 20px;
+  margin: 20px 20px;
+  margin-bottom: 0;
 }
 .recurly .contact_info,
 .recurly .billing_info {
-  margin: 0;
-  display: block;
   position: relative;
-  border: none;
-  padding: 20px;
+  padding: 20px 20px;
   overflow: hidden;
+  zoom: 1;
 }
-.recurly .contact_info.billing_info,
-.recurly .billing_info.billing_info {
-  background: url("images/dash.png") repeat-x 1px top;
+.recurly .contact_info.contact_info,
+.recurly .billing_info.contact_info {
   padding-bottom: 0;
+  background: url("images/dash.png") repeat-x 1px bottom;
 }
 .recurly .contact_info .title,
 .recurly .billing_info .title {
-  float: left;
   font-size: 16px;
+  height: 20px;
   font-weight: bold;
   padding-bottom: 20px;
   color: #404041;
@@ -333,13 +343,20 @@
   clear: left;
   width: 300px;
   height: 34px;
-  padding: 0;
-  margin: 0;
   margin-bottom: 20px;
   position: relative;
 }
 .recurly .field input {
   width: 288px;
+}
+.recurly .field .error {
+  min-width: 128px;
+  white-space: nowrap;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 20px;
+  z-index: 1337;
 }
 .recurly .field .placeholder {
   position: absolute;
@@ -347,12 +364,12 @@
   left: 0;
   right: 0;
   bottom: 0;
-  padding-left: 7px;
+  padding-left: 9px;
   font-size: 16px;
   font-weight: normal;
   line-height: 34px;
   vertical-align: middle;
-  color: rgba(0,0,0,0.5);
+  color: #999;
   cursor: text;
   overflow: hidden;
   white-space: nowrap;
@@ -364,7 +381,10 @@
   font-weight: 300;
 }
 .recurly .field.focus .placeholder {
-  color: rgba(0,0,0,0.25);
+  color: #ccc;
+}
+.recurly .field.invalid .placeholder {
+  color: #a77;
 }
 .recurly .field.coupon_code {
   width: 140px;
@@ -373,6 +393,7 @@
   width: 128px;
 }
 .recurly .field.first_name {
+  clear: left;
   width: 140px;
 }
 .recurly .field.first_name input {
@@ -477,14 +498,13 @@
   clear: left;
 }
 .recurly .accepted_cards {
-  float: right;
-  margin: 0;
-  padding: 0;
-  margin-right: 160px;
+  position: absolute;
+  top: 20px;
+  right: 180px;
   width: 160px;
 }
 .recurly .card {
-  background-position: right 0px;
+  background-position: right top;
   background-repeat: no-repeat;
   text-indent: -3000px;
   width: 40px;
@@ -575,36 +595,30 @@
   background: url("images/submitting.gif") no-repeat 180px 28px;
 }
 .recurly button.submit {
-  position: relative;
   height: 46px;
   max-width: 600px;
-  width: 140px;
   font-size: 18px;
   font-weight: 700;
   color: #302106;
-  text-shadow: rgba(255,255,255,0.5694) 0 1px 0;
   text-align: center;
   margin-left: 0px;
   border: 1px solid #767674;
   background: #e7a500;
   border-radius: 10px;
-  -webkit-user-select: none;
-  -moz-user-select: -moz-none;
   outline: none;
   box-shadow: inset rgba(255,255,255,0.7) 0px 1px 0px, rgba(0,0,0,0.5) 0px 1px 3px;
   background-image: -webkit-gradient(linear, 0% 20%, 0% 100%, from(#fecd00), to(#ce7b00));
   background: -moz-linear-gradient(top, #fecd00, #ce7b00);
-  cursor: pointer;
+  text-shadow: rgba(255,255,255,0.5) 0 1px 0;
+  padding: 10px 20px;
 }
 .recurly button.submit:hover {
-  color: #555;
+  color: #451;
 }
 .recurly button.submit:active {
   top: 2px;
   color: #302106;
   text-shadow: rgba(255,255,255,0.5694) 0 -1px 0;
-  -webkit-user-select: none;
-  -moz-user-select: -moz-none;
   outline: none;
   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ce7b00), to(#fecd00));
   background: -moz-linear-gradient(top, #ce7b00, #fecd00);

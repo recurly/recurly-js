@@ -105,5 +105,3 @@ It currently depends on jQuery 1.5.2+. Not a problem if you already use it. A fu
 
 * Multi-currency
 * Localization (english only right now)
-* Account Management (update billing info, upgrade/downgrade, cancellation) 
-* One time transactions

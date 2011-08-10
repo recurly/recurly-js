@@ -1,0 +1,43 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>RecurlyJS One-time Transaction Example</title> 
+<!-- <link rel="stylesheet" href="../style/reset.css" type="text/css" />  -->
+<link rel="stylesheet" href="examples.css" type="text/css" /> 
+<link rel="stylesheet" href="../recurly.css" type="text/css" /> 
+<script src="lib/jquery-1.6.1.js"></script> 
+<script src="../recurly.js"></script> 
+<script>
+  Recurly.config({
+    environment: 'sandbox'
+  , subdomain: 'recurlyjsdemo-test'
+  , baseURL: 'http://api-sandbox.lvh.me:3000/jsonp/emeryco-test/'
+  , currency: 'USD'
+  , country: 'US'
+  , VATPercent: 10
+  });
+
+  Recurly.buildTransactionForm({
+    target: '#recurly-transaction'
+  , accountCode: 'testaccount'
+  , amountInCents: 5000
+  , successURL: 'confirmation.html?account_code={account_code}&signature={signature}'
+  , signature: 'f37ecbd8556f936161d3b9a76cf9291ed46a3000-1312409907'
+  // Signature must be generated server-side with sign_transaction()
+  // Without it the request will be rejected.
+  // 
+  // !!! IMPORTANT !!!
+  // You must use verify_transaction() with the GET variables passed to successURL
+  // http://docs.recurly.com/recurlyjs/signatures/
+  });
+</script>
+
+</head> 
+  <body> 
+    <h1>One-time Transaction</h1>
+    <h2>Dollar Amount: $50</h2>
+    <div id="recurly-transaction">
+    </div>
+  </body>
+</html>

@@ -5,6 +5,7 @@ outer_margin = 20px
 column_space = 20px
 column_width = grid_width / grid_columns - column_space
 base_font_size = round(grid_width * 0.033333)
+vertical_space = 20px
 
 input_border = 1px
 input_padding = 5px
@@ -33,17 +34,15 @@ linear-gradient(start, stops...)
 image-linear-gradient(image, start, stops...)
   prop = current-property[0]
   stops = unquote(join(', ', stops))
-
   add-property(prop, '%s, -webkit-linear-gradient(%s, %s)' % (image start stops) )
   add-property(prop, '%s, -moz-linear-gradient(%s, %s)' % (image start stops) )
   add-property(prop, '%s, -o-linear-gradient(%s, %s)' % (image start stops) )
   '%s linear-gradient(%s, %s)' % (image start stops)
 
-
 transition()
   -webkit-transition arguments
   -moz-transition arguments
-
+ 
 // For IE6/7 support we use this for all inputs,
 // in lieu of border-box sizing 100%
 field-width(v)
@@ -55,7 +54,6 @@ field-width(v)
 
 // Horizontally stack a field on the preceeding field
 hstack(cols)
-  // add-property(width, columns(cols))
   field-width columns(cols)
   add-property(margin-left, column_space)
   add-property(clear, none)
@@ -64,14 +62,11 @@ hstack(cols)
 .recurly 
   display block
   position relative
-  // overflow hidden
   width columns(grid_columns) + (outer_margin*2)
 
   .cost, .discount
+    font-size base_font_size
     text-align right
-
-  // .subscription.with_trial .cost
-  //  text-decoration line-through
 
   .subscription
     border-radius 9px 9px 0 0 
@@ -81,18 +76,16 @@ hstack(cols)
 
   .plan
     color #333
-    // padding 10px 0
     overflow hidden
     position relative
+    zoom 1 // IE6
 
     .name
       float left
-      // min-height 48px
-      font-size 32px
+      font-size base_font_size*2
       min-width columns(6) - column_space
-      margin-right (column_space*2)
-      margin-left outer_margin
-
+      padding-left outer_margin
+      padding-right (column_space*2)
 
     .quantity.field
       clear none
@@ -114,16 +107,15 @@ hstack(cols)
 
     .recurring_cost
       float right
-      // height 48px
-      margin-right outer_margin
       text-align right
+      padding-right outer_margin
 
       .cost
-        font-size 28px
+        font-size base_font_size*2
 
       .interval
-        font-size 13px
-        height 22px
+        font-size round(base_font_size*0.75)
+        padding-bottom vertical_space
 
   .free_trial
     clear left
@@ -140,16 +132,17 @@ hstack(cols)
   .setup_fee
     clear both
     background url(images/dash.png) repeat-x 1px top 
-    padding column_space 0
+    overflow hidden
+    padding-top vertical_space
 
     .title
       float left
-      margin-left outer_margin
+      padding-left outer_margin
       font-weight bold
-      font-size 15px
+      font-size base_font_size
     .cost
       float right
-      margin-right outer_margin
+      padding-right outer_margin
 
   .vat 
     height 24px
@@ -171,19 +164,18 @@ hstack(cols)
 
   .add_ons
     clear both
-    margin 0
-    // background url(images/dash.png) repeat-x 1px top 
 
     &.any
-      padding (outer_margin/2)
+      margin vertical_space (outer_margin/2)
 
     .add_on
+      background #ecedee
       background linear-gradient(top, #ecedee, #e5e6e7)
       margin 0
       height 43px
       line-height 42px
-      width columns(12) + (-2+outer_margin)
       vertical-align middle
+      position relative
       clear both
       overflow hidden
       border-top 1px solid #ccc
@@ -193,11 +185,14 @@ hstack(cols)
       color #999
       font-weight 300
       font-size 16px
+      zoom 1 // IE6
+      cursor default
 
-      &:first-child
+      &.first
         border-top-left-radius 10px
         border-top-right-radius 10px
-      &:last-child
+
+      &.last
         border-bottom 1px solid #ccc
         border-bottom-left-radius 10px
         border-bottom-right-radius 10px
@@ -205,17 +200,19 @@ hstack(cols)
       .name 
         font-size inherit
         font-weight inherit
+        font-style italic
         color inherit
-        float left
         width columns(6) - outer_margin 
         margin-left (outer_margin/2) - 1
         margin-right column_space
-
-        font-style italic
+        position absolute
+        left 0
+        top 0
 
       .quantity.field
-        clear none
-        margin 4px 0
+        position absolute
+        top 4px
+        left columns(6) + (outer_margin/2) + column_space - 1px
         field-width columns(2)
         display none
 
@@ -233,13 +230,11 @@ hstack(cols)
           color #666
 
       .cost
-        float right
-        margin 0px (outer_margin/2) 0px 55px
         font-size inherit
         line-height inherit
         vertical-align middle
-        // visibility hidden
-
+        position absolute
+        right (outer_margin/2)
 
       &:hover
         background linear-gradient(top, '#f0f0f0 0%', '#dfdfdf 50%', '#d5d5d5 50%', '#e0e0e0 100%')
@@ -257,7 +252,9 @@ hstack(cols)
 
       &.selected
         background #fff url(images/check.png) no-repeat (outer_margin/2) center
-        padding-left 24px
+
+        .name
+          padding-left 24px
 
         &:hover
           background #fcf5f0 url(images/uncheck.png) no-repeat (outer_margin/2) center
@@ -267,11 +264,12 @@ hstack(cols)
 
   .coupon
     clear both
+    overflow hidden
     height field_height
     color #333
     padding column_space outer_margin
     position relative
-    background rgba(0,0,40,0.02) url(images/dash.png) repeat-x 1px top 
+    background url(images/dash.png) repeat-x 1px top 
    
     .check
       width 26px
@@ -280,21 +278,19 @@ hstack(cols)
       border-radius 15px 15px 15px 15px
       background #70CCF8
       border 1px solid #0090C9
-      background image-linear-gradient(url(images/coupon_check.png) no-repeat center center, top, '#61bDFA 0%', '#35afF5 50%', '#00a1e6 50%', '#61bEFB 100%')
-
       margin 3px 0 1px 10px
-
       box-shadow inset 0 1px 0 0 rgba(255,255,255,.35), 0 1px 1px 0 rgba(0,0,0,0.1)
+      background #43BEF9 url(images/coupon_check.png) no-repeat center center
+      background image-linear-gradient(url(images/coupon_check.png) no-repeat center center, top, '#71CDFA 0%', '#43BEF9 50%', '#00B1F6 50%', '#71CEFB 100%')
 
       &:hover
+        background image-linear-gradient(url(images/coupon_check.png) no-repeat center center, top, '#71CDFA 0%', '#43BEF9 50%', '#00B1F6 50%', '#71CEFB 100%')
         box-shadow inset 0 1px 0 0 rgba(255,255,255,.75), 0 1px 1px 0 rgba(0,0,0,0.1)
-        background url(images/coupon_check.png) no-repeat center center, -webkit-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%)
 
       &:active
-        background url(images/coupon_check.png) no-repeat center center, -webkit-linear-gradient(top, #f0f0f0, #fff)
+        background image-linear-gradient(url(images/coupon_check.png) no-repeat center center, top, #f0f0f0, #fff)
         box-shadow inset 0 3px 3px 0 rgba(0,0,0,0.025)
         border 1px solid #999
-
 
     &.checking .check
       background #f0f0f0 url(images/coupon_checking.gif) no-repeat center center
@@ -331,7 +327,7 @@ hstack(cols)
     vertical-align middle
     color black
     text-shadow 0 1px 0 #fec
-    background rgba(240,250,0,0.5)
+    background #ffc
     border 1px solid #ba1
     box-shadow 3px 5px 5px 0 rgba(0,0,0,0.1) 
     border-radius 5px
@@ -341,8 +337,7 @@ hstack(cols)
   .server_errors
     color #fff
     text-shadow 0 1px 0 black
-    margin column_space outer_margin
-    margin-bottom 0
+    margin 0 outer_margin
 
     .error
       padding-left 26px
@@ -352,31 +347,23 @@ hstack(cols)
     &.any
       opacity 1.0
       transition opacity 0.5s linear
+      margin column_space outer_margin
+      margin-bottom 0
 
-  .field .error
-    width columns(4) - (input_padding+1)*2
-    position absolute
-    top 0
-    left 100%
-    margin-left column_space 
- 
   .contact_info
   .billing_info
-    margin 0
-    display block
     position relative
-    border none
-    // overflow hidden
-    padding outer_margin
+    padding vertical_space outer_margin
     overflow hidden
+    zoom 1 // IE6
 
-    &.billing_info
-      background url(images/dash.png) repeat-x 1px top
+    &.contact_info
       padding-bottom 0
+      background url(images/dash.png) repeat-x 1px bottom
 
     .title 
-      float left
       font-size base_font_size
+      height base_font_size + 4px
       font-weight bold
       padding-bottom 20px
       color #404041
@@ -391,11 +378,17 @@ hstack(cols)
     clear left
     field-width columns(8) // Default field is full width
     height field_height
-    // margin-left column_space
-    padding 0
-    margin 0
-    margin-bottom column_space
+    margin-bottom vertical_space
     position relative
+
+    .error
+      min-width columns(4) - (input_padding+1)*2
+      white-space nowrap
+      position absolute
+      top 0
+      left 100%
+      margin-left column_space
+      z-index 1337
 
     .placeholder
       position absolute
@@ -403,12 +396,12 @@ hstack(cols)
       left 0
       right 0
       bottom 0
-      padding-left input_padding + 2px
+      padding-left input_padding + 4px
       font-size base_font_size
       font-weight normal
       line-height field_height
       vertical-align middle
-      color rgba(0,0,0,0.5)
+      color #999
       cursor text
       overflow hidden
       white-space nowrap
@@ -416,13 +409,17 @@ hstack(cols)
       font-weight 300
 
     &.focus .placeholder
-      color rgba(0,0,0,0.25)
+      color #ccc
+
+    &.invalid .placeholder
+      color #a77
 
     // Special field sizes
     &.coupon_code
       field-width columns(4)
 
     &.first_name
+      clear left
       field-width columns(4)
 
       .error
@@ -485,14 +482,13 @@ hstack(cols)
     clear left
 
   .accepted_cards 
-    float right
-    margin 0
-    padding 0
-    margin-right columns(4) + column_space
+    position absolute
+    top vertical_space
+    right (grid_width - columns(8))
     width 160px 
 
    .card 
-      background-position right 0px
+      background-position right top
       background-repeat no-repeat
       text-indent -3000px
       width 40px
@@ -586,54 +582,35 @@ hstack(cols)
     background url(images/submitting.gif) no-repeat columns(5) 28px
 
   button.submit
-    position relative
-    height  46px
-    max-width  600px
-    width columns(4)
-    font-size  18px
-    font-weight  700
+    height 46px
+    max-width 600px
+    font-size 18px
+    font-weight 700
     color  #302106
-    text-shadow  rgba(255,255,255, .5694) 0 1px 0
-    text-align  center
+    text-align center
     margin-left 0px
-    
-    border  1px solid #767674
-    background  #e7a500
-    
-    border-radius  10px
-    
-    -webkit-user-select  none
-    -moz-user-select  -moz-none
-    outline  none
-
-    box-shadow  inset rgba(255, 255, 255, 0.7) 0px 1px 0px, rgba(0,0,0, 0.5) 0px 1px 3px
-    
-    background-image  -webkit-gradient(linear, 0% 20%, 0% 100%, from(#FECD00), to(#CE7B00))
-    background  -moz-linear-gradient(top, #fecd00, #ce7b00)
-
-    cursor pointer
-   
-     
+    border 1px solid #767674
+    background #e7a500
+    border-radius 10px
+    outline none
+    box-shadow inset rgba(255, 255, 255, 0.7) 0px 1px 0px, rgba(0,0,0, 0.5) 0px 1px 3px
+    background-image -webkit-gradient(linear, 0% 20%, 0% 100%, from(#FECD00), to(#CE7B00))
+    background -moz-linear-gradient(top, #fecd00, #ce7b00)
+    text-shadow rgba(255,255,255, .5) 0 1px 0
+    padding 10px 20px
     
     &:hover
-      color  #555
-
-     
+      color #451
+ 
     &:active
-      top  2px
-      
-      color  #302106
+      top 2px
+      color #302106
       text-shadow  rgba(255,255,255, .5694) 0 -1px 0
-      
-      -webkit-user-select  none
-      -moz-user-select  -moz-none
       outline  none
-          
       background-image  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#CE7B00), to(#FECD00))
       background  -moz-linear-gradient(top, #ce7b00, #fecd00)
-      box-shadow  rgba(255, 255, 255, 0.69) 0px -1px 0px inset, rgba(0,0,0, 0.26) 0px 2px 3px
-   
-     
+      box-shadow rgba(255, 255, 255, 0.69) 0px -1px 0px inset, rgba(0,0,0, 0.26) 0px 2px 3px
+ 
     &[disabled]
       position relative
       height  46px
@@ -660,5 +637,3 @@ hstack(cols)
       -webkit-box-shadow  rgba(255, 255, 255, 0.69) 0px 1px 0px inset, rgba(0,0,0, 0.26) 0px 2px 3px
       box-shadow  rgba(255, 255, 255, 0.699219) 0px 1px 0px inset, rgba(0,0,0, 0.269219) 0px 2px 3px
      
-
-// code == art

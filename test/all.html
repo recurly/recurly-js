@@ -1,0 +1,492 @@
+<!DOCTYPE html>  
+
+<html>
+<head>
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
+  <script type="text/javascript" src="../recurly.js"></script>
+
+  <script>
+  $(document).ready(function(){
+    var R = Recurly;
+
+    R.config({ 
+      environment: 'production'
+    , subdomain: 'flurp-test'
+    , currency: 'USD'
+    , country: 'GB'
+    , VATPercent: 10
+    });
+
+    // We get reasonable coverage by testing the opposition of a really simple plan,
+    // and a really complex one. Random permutations would create more redundancy than coverage, IMO.
+    var barebone = R.Plan.fromJSON({
+      name: 'Barebone' 
+    , plan_code: 'barebone'
+    , unit_amount_in_cents: 5000 // $50
+    , plan_interval_length: 1 
+    , plan_interval_unit: 'months' 
+    , display_quantity: false
+    , add_ons: []
+    });
+
+    var kitchenSink = R.Plan.fromJSON({
+      name: 'KitchenSink' 
+    , plan_code: 'kitchensink'
+    , unit_amount_in_cents: 5000 // $50
+    , plan_interval_length: 1 
+    , plan_interval_unit: 'months' 
+    , display_quantity: true
+    , add_ons: [{
+        add_on_code: 'extras'
+      , name: 'Extras'
+      , display_quantity: false
+      , default_unit_amount_in_cents: 200 // $2 add-on
+    }, {
+        add_on_code: 'somethingelse'
+      , name: 'SomethingElse'
+      , display_quantity: true
+      , default_unit_amount_in_cents: 500 // $5 add-on
+      }]
+    });
+
+    var coupon50percent = R.Coupon.fromJSON({
+      discount_percent: 50
+    });
+
+    var coupon5bucks = R.Coupon.fromJSON({
+      discount_in_cents: 500
+    });
+
+
+    module('config'); 
+
+    test('constructs proper endpoint urls', function() {
+      R.config({ 
+        environment: 'production'
+      , subdomain: 'flurp-test'
+      });
+      equals(R.settings.baseURL, 'https://api-production.recurly.com/jsonp/flurp-test/');
+      
+      R.config({ 
+        environment: 'sandbox'
+      , subdomain: 'flurp-test'
+      });
+      equals(R.settings.baseURL, 'https://api-sandbox.recurly.com/jsonp/flurp-test/');
+    });
+
+
+    module('Cost'); 
+
+    test('currency formatting', function() {
+      var cost = new R.Cost(2000); // 20 bucks
+      equals(cost.toString(), '$20.00');
+      var negative = new R.Cost(-2000); // -20 bucks
+      equals(negative.toString(), '-$20.00');
+    });
+
+    test('all arithmetic', function() {
+      var cost = new R.Cost(2000) // 20 bucks
+      ,   m = 2
+      ,   a = new R.Cost(500) // 5 bucks
+      ,   s = new R.Cost(100); // 1 bucks
+
+      var total = cost.mult(m).add(a).sub(s); // (20*2)+5-1 == 44
+
+      equals(cost.dollars(), 20); // verify immutability
+      equals(total.dollars(), 44); 
+      equals(cost.dollars(100).dollars(), 100); 
+    });
+
+    module('Coupon'); 
+
+    test('discounts percent', function() {
+      var cost = new R.Cost(2000);
+      var discounted = cost.discount(coupon50percent);
+      equals(discounted.dollars(), 10);
+    });
+
+    test('discounts fixed', function() {
+      var cost = new R.Cost(2000);
+      var discounted = cost.discount(coupon5bucks);
+      equals(discounted.dollars(), 15);
+    });
+
+
+    module('Subscription'); 
+
+    test('add/remove add-on', function() {
+      var subscription = kitchenSink.createSubscription()
+      , sa = subscription.redeemAddOn(kitchenSink.addOns[0]);
+      equals(subscription.addOns.length, 1);
+      subscription.removeAddOn(sa.code);
+      equals(subscription.addOns.length, 0);
+    });
+
+    test('toJSON', function() { 
+      var subscription = kitchenSink.createSubscription();
+      subscription.redeemAddOn(kitchenSink.addOns[0]);
+      var json = subscription.toJSON();
+      deepEqual(json, {
+        add_ons: [{
+          add_on_code: 'extras'
+        , quantity: 1
+        }]
+      , plan_code: 'kitchensink'
+      , quantity: 1
+      , coupon_code: undefined
+      });
+    });
+
+
+    module('Subscription.calculateTotals'); 
+
+    test('basic subscription', function() {
+      var subscription = kitchenSink.createSubscription();
+      var totals = subscription.calculateTotals();
+
+      equals(totals.stages.now.dollars(), 50);
+    });
+
+    test('plan quantity = 2', function() {
+      var subscription = kitchenSink.createSubscription();
+      subscription.plan.quantity = 2;
+
+      var totals = subscription.calculateTotals();
+
+      equals(totals.plan.dollars(), 100);
+      equals(totals.stages.now.dollars(), 100);
+    });
+
+    test('with add-ons', function() {
+      var subscription = kitchenSink.createSubscription();
+      subscription.plan.quantity = 2;
+      subscription.redeemAddOn(kitchenSink.addOns[0]);
+
+      var totals = subscription.calculateTotals();
+
+      equals(totals.allAddOns.dollars(), 2);
+      equals(totals.stages.now.dollars(), 102);
+    });
+
+    test('permutation: add-ons + coupon', function() {
+      var subscription = kitchenSink.createSubscription();
+      subscription.plan.quantity = 2;
+      subscription.redeemAddOn(kitchenSink.addOns[0]);
+      subscription.coupon = coupon50percent;
+
+      var totals = subscription.calculateTotals();
+
+      equals(totals.stages.now.dollars(), 51);
+    });
+
+    test('permutation: add-ons + vat', function() {
+      var subscription = kitchenSink.createSubscription();
+      subscription.plan.quantity = 2;
+      subscription.redeemAddOn(kitchenSink.addOns[0]);
+      var bi = subscription.billingInfo = R.BillingInfo.create();
+      bi.country = 'DE'; // Germany
+
+      var totals = subscription.calculateTotals();
+
+      equals(totals.stages.now.dollars(), 91.8); // 102 - 10% vat
+    });
+
+    test('permutation: add-ons + coupon + vat', function() {
+      var subscription = kitchenSink.createSubscription();
+      subscription.plan.quantity = 2;
+      subscription.redeemAddOn(kitchenSink.addOns[0]);
+      subscription.coupon = coupon50percent;
+      var bi = subscription.billingInfo = R.BillingInfo.create();
+      bi.country = 'DE'; // Germany
+
+      var totals = subscription.calculateTotals();
+
+      equals(totals.stages.now.dollars(), 45.9); // ( 102 - 10% (vat) ) / 2 (50% coupon)
+    });
+
+    module('Validators'); 
+
+    test('isValidEmail', function() {
+      ok( R.isValidEmail('someone@somewhere.com') );
+      equal(R.isValidEmail('obviouslynotanemail'), false);
+    });
+
+
+    test('isValidCC', function() {
+      ok( R.isValidCC('4111-1111-1111-1111') );
+      ok(! R.isValidCC('1234-1234-1234-1234') );
+    });
+
+    test('isValidCVV', function() {
+      ok( R.isValidCVV('123') );
+      ok( R.isValidCVV('1234') );
+      ok(! R.isValidCVV('12') );
+      ok(! R.isValidCVV('12.3') );
+      ok(! R.isValidCVV('abc') );
+    });
+
+    module('Util'); 
+
+    test('detectCardType', function() {
+      equals( R.detectCardType('4111-1111-1111-1111'), 'visa'); // w/ dashes
+      equals( R.detectCardType('4111111111111111'), 'visa');
+      equals( R.detectCardType('378282246310005'), 'american_express');
+      equals( R.detectCardType('38520000023237'), 'diners_club');
+      equals( R.detectCardType('6011111111111117'), 'discover');
+    });
+
+
+
+    test('isVATApplicable', function() {
+      R.config({country: 'GB', VATPercent: 10});
+      equals( R.isVATApplicable('DE'), true);
+      equals( R.isVATApplicable('GB'), false);
+      equals( R.isVATApplicable('USA'), false);
+    });
+
+    
+    test('flattenErrors', function() {
+      var test = {a: ['one'], b: {c:['two','three']}, d: 4, e: false}
+      var expect = ['one','two','three',4,false];
+      var result = R.flattenErrors(test); 
+      deepEqual(result, expect);
+    });
+
+ 
+    test('replaceVars', function() {
+      var url = '/success?account={account_code}&plan={plan_code}&account={account_code}&{*}'; 
+      var vars = {
+        account_code: 123
+      , plan_code: 'abc'
+      };
+      var expect = '/success?account=123&plan=abc&account=123&plan=abc&account=123'; 
+      var result = R.replaceVars(url, vars); 
+      deepEqual(result, expect);
+    });
+
+
+
+    module('buidSubscribeForm'); 
+
+    test('without editable quantity', function() {
+      var context = this;
+      Recurly.buildSubscriptionForm({
+        target: '#f'
+      , plan: kitchenSink
+      , filterSubscription: function(subs) {
+          context.subs = subs;
+        }
+      });
+
+    });
+
+ 
+    module('buildSubscriptionForm barebone', {
+      setup: function() {
+        var context = this;
+        Recurly.buildSubscriptionForm({
+          target: '#f'
+        , plan: barebone
+        , filterSubscription: function(subs) {
+            context.subs = subs;
+          }
+        });
+      }
+    , teardown: function() {
+        $('#f').empty();
+      }
+    });
+
+    test('no plan quantity field exists', function() {
+      equals($('#f .plan .quantity').length, 0);
+    });
+
+    test('no add ons', function() {
+      equals($('#f .add_ons .add_on').length, 0);
+    });
+
+    module('buildSubscriptionForm kitchen sink', {
+      setup: function() {
+        var context = this;
+        Recurly.buildSubscriptionForm({
+          target: '#f'
+        , plan: kitchenSink
+        , filterSubscription: function(subs) {
+            context.subs = subs;
+          }
+        , onError: function(error) {
+            context.onErrorCalled = error;
+          }
+        , afterSubscribe: function(invoice) {
+            context.afterSubscribeCalled = invoice;
+          }
+        });
+      }
+    , teardown: function() {
+        $('#f').empty();
+      }
+    });
+
+    test('plan cost is correct', function() {
+      equals($('#f .plan .cost').text(), '$50.00');
+    });
+
+    test('plan quantity field exist', function() {
+      equals($('#f .plan .quantity').length, 1);
+    });
+
+    test('add ons exist', function() {
+      equals($('#f .add_ons .add_on').length, 2);
+    });
+
+    test('add on without quantity doesn\'t have field', function() {
+      equals($('#f .add_on_extras .quantity').length, 0);
+    });
+
+    test('add on without quantity has field', function() {
+      equals($('#f .add_on_somethingelse .quantity').length, 1);
+    });
+
+    test('toggle add-ons', function() {
+      $('#f .add_on_extras').click();
+      ok($('#f .add_on_extras').hasClass('selected')); // selected class
+      equal($('#f .add_on_extras .cost').text(), '+ $2.00'); // add-on cost displayed
+      equal($('#f .due_now .cost').text(), '$52.00'); // add-on cost displayed
+      equal(this.subs.addOns.length, 1);
+      // Test the subscription calculateTotals values
+      var totals = this.subs.calculateTotals();
+      equal(totals.allAddOns.dollars(), 2);
+      equal(totals.stages.now.dollars(), 52);
+      // Untoggle, all should returns to normal
+      $('#f .add_on_extras').click();
+      ok(!$('#f .add_on_extras').hasClass('selected'));
+      equal(this.subs.addOns.length, 0);
+      var totals = this.subs.calculateTotals();
+      equal(totals.allAddOns.dollars(), 0);
+      equal(totals.stages.now.dollars(), 50);
+    });
+
+    test('validation failure displays first error and focuses', function() {
+      $('#f form').submit();
+      equal( $('#f .first_name .error').length, 1); 
+      equal( $('#f .last_name .error').length, 0); 
+      ok( $('#f .first_name input').is(':focus') );
+    });
+
+    function fillOutEverything() {
+      // Just try to fill out anything we can, works for all tests
+      $('.first_name input').val('joe').change();
+      $('.last_name input').val('user').change();
+      $('.email input').val('joeuser@example.com').change();
+      $('.card_number input').val('4111-1111-1111-1111').change();
+      $('.cvv input').val('123').change();
+
+      $('.address1 input').val('yee').change();
+      $('.address2 input').val('haw').change();
+      $('.city input').val('doo').change();
+      $('.zip input').val('12345').change();
+      $('.state input').val('texas').change();
+      $('.country select').val('US').change();
+    }
+
+    test('posts correct data', function() {
+      $.ajax = function(opt) {
+        
+        deepEqual(opt.data, {
+          "subscription": {
+            "plan_code": "kitchensink",
+            "quantity": 1,
+            "coupon_code": undefined,
+            "add_ons": []
+          },
+          "account": {
+            "first_name": "joe",
+            "last_name": "user",
+            "account_code": "joeuser@example.com",
+            "email": "joeuser@example.com"
+          },
+          "billing_info": {
+            "first_name": undefined,
+            "last_name": undefined,
+            "month": 9,
+            "year": 2011,
+            "number": "4111-1111-1111-1111",
+            "verification_value": "123",
+            "address1": "yee",
+            "address2": "haw",
+            "city": "doo",
+            "state": "texas",
+            "zip": "12345",
+            "country": "US"
+          }
+        });
+
+        opt.success({success: {invoice: {}}});
+        opt.complete();
+      };
+
+      fillOutEverything();
+      $('#f .submit').submit();
+
+      ok( this.afterSubscribeCalled );
+    });
+
+
+    test('handles post error response', function() {
+      $.ajax = function(opt) {
+        opt.success({errors: {base: 'server error'}});
+        opt.complete();
+      };
+
+      fillOutEverything();
+      $('#f .submit').submit();
+
+      ok( this.onErrorCalled == 'server error' );
+      ok( $('#f .server_errors .error').text() == 'server error' );
+    });
+
+    test('handles post success', function() {
+      $.ajax = function(opt) {
+        opt.success({success: {invoice: {}}});
+        opt.complete();
+      };
+
+      fillOutEverything();
+      $('#f .submit').submit();
+
+      ok( this.afterSubscribeCalled );
+    });
+
+
+    module('buildUpdateBillingInfoForm', {
+      setup: function() {
+        var context = this;
+        Recurly.buildUpdateBillingInfoForm({
+          target: '#f'
+        , accountCode: 'existingaccount'
+        , signature: 'thiscanbefakeforthetestsoyeah'
+        });
+      }
+    , teardown: function() {
+        $('#f').empty();
+      }
+    });
+
+
+  });
+  </script>
+  
+</head>
+<body>
+  <h1 id="qunit-header">recurly.js</h1>
+  <h2 id="qunit-banner"></h2>
+  <div id="qunit-testrunner-toolbar"></div>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests"></ol>
+
+    <div id="f"></div>
+
+</body>
+</html>

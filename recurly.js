@@ -1,98 +1,67 @@
+//   Recurly.js - v1.1.0 
+//
+//   Communicates with Recurly <https://recurly.com> via a JSONP API, 
+//   generates UI, handles user error, and passes control to the client
+//   to handle the successful events such as subscription creation.
+//
+//   Author: Emery Denuccio <emery@recurly.com>
+//
+//   (MIT License)
+//
+//   Copyright (C) 2011 by Recurly, Inc. 
+// 
+//   Permission is hereby granted, free of charge, to any person obtaining a copy
+//   of this software and associated documentation files (the "Software"), to deal
+//   in the Software without restriction, including without limitation the rights
+//   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//   copies of the Software, and to permit persons to whom the Software is
+//   furnished to do so, subject to the following conditions:
+// 
+//   The above copyright notice and this permission notice shall be included in
+//   all copies or substantial portions of the Software.
+// 
+//   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//   THE SOFTWARE.
+
+
+
 (function($){
 
 "use strict";
 
-// Object.create polyfill; true prototypal programming
-if (typeof Object.create !== 'function') {
- Object.create = function(o, props) {
+
+
+//////////////////////////////////////////////////
+// Compiled from js/recurly.core.js
+//////////////////////////////////////////////////
+
+// Non-intrusive Object.create
+function createObject(o) {
   function F() {}
-  F.prototype = o;
-
-  if (typeof(props) === "object") {
-   for (prop in props) {
-    if (props.hasOwnProperty((prop))) {
-     F[prop] = props[prop];
-    }
-   }
-  }
+  F.prototype = o || this;
   return new F();
- };
-}
-
-// Array.map
-if (!Array.prototype.map)
-{
-  Array.prototype.map = function(fun /*, thisp */)
-  {
-    "use strict";
-
-    if (this === void 0 || this === null)
-      throw new TypeError();
-
-    var t = Object(this);
-    var len = t.length >>> 0;
-    if (typeof fun !== "function")
-      throw new TypeError();
-
-    var res = new Array(len);
-    var thisp = arguments[1];
-    for (var i = 0; i < len; i++)
-    {
-      if (i in t)
-        res[i] = fun.call(thisp, t[i], i, t);
-    }
-
-    return res;
-  };
-}
-
-// Array.forEach
-if (!Array.prototype.forEach) {
-
-  Array.prototype.forEach = function( callbackfn, thisArg ) {
-
-    var T,
-      O = Object(this),
-      len = O.length >>> 0,
-      k = 0;
-
-    if ( !callbackfn || !callbackfn.call ) {
-      throw new TypeError();
-    }
-
-    if ( thisArg ) {
-      T = thisArg;
-    }
-
-    while( k < len ) {
-
-      var Pk = String( k ),
-        kPresent = O.hasOwnProperty( Pk ),
-        kValue;
-
-      if ( kPresent ) {
-        kValue = O[ Pk ];
-
-        callbackfn.call( T, kValue, k, O );
-      }
-
-      k++;
-    }
-  };
-}
-
+};
 
 var R = {}; 
-
 R.settings = {};
 
-function pluralize(count, term) {
-  if(count == 1) {
-    return term.substr(0,term.length-1);
+R.Error = {
+  toString: function() {
+    return 'RecurlyJS Error: ' + this.message;
   }
+};
 
-  return '' + count + ' ' + term;
-}
+R.raiseError = function(message) {
+  var e = createObject(R.Error);
+  e.message = message;
+  throw e;
+};
+
 
 R.config = function(settings) { 
   $.extend(true, R.settings, settings); 
@@ -108,10 +77,6 @@ R.config = function(settings) {
         R.settings.baseURL = 'https://api-production.recurly.com/jsonp/'; 
         break;
 
-      case 'development':
-        R.settings.baseURL = 'http://api-sandbox.recurly.com/jsonp/'; 
-        break;
-
       default:
         R.raiseError('environment not configured (sandbox or production)');
         break;
@@ -123,6 +88,14 @@ R.config = function(settings) {
 };
 
 
+function pluralize(count, term) {
+  if(count == 1) {
+    return term.substr(0,term.length-1);
+  }
+
+  return '' + count + ' ' + term;
+}
+
 // Immutable currency-amount object
 // This will eventually handle multi-currency
 // where it will store a list of costs per currency
@@ -130,8 +103,8 @@ R.config = function(settings) {
 // based on the current currency
 //
 
-(R.Cost = function(cents) { 
- this._cents = cents || 0; 
+(R.Cost = function(cents) {
+  this._cents = cents || 0; 
 }).prototype = {
   toString: function() {
     return R.formatCurrency(this.dollars());
@@ -146,7 +119,7 @@ R.config = function(settings) {
     if(val === undefined)
       return this._cents/100;
 
-    return new R.Cost(val/100);
+    return new R.Cost(val*100);
   }
 , mult: function(n) {
     return new R.Cost(this._cents * n);
@@ -212,6 +185,13 @@ R.RecurringCost.FREE = new R.RecurringCost(0,null);
 
 
 
+
+
+
+//////////////////////////////////////////////////
+// Compiled from js/recurly.locale.js
+//////////////////////////////////////////////////
+
 R.locale = {};
 
 R.locale.errors = {
@@ -234,7 +214,7 @@ R.locale.currency = {
 };
 
 function C(key, def) {
-  var c = R.locale.currencies[key] = Object.create(R.locale.currency);
+  var c = R.locale.currencies[key] = createObject(R.locale.currency);
   for(var p in def) {
     c[p] = def[p];
   }
@@ -308,6 +288,12 @@ C('ZAR', {
 
 R.settings.locale = R.locale;
 
+
+
+
+//////////////////////////////////////////////////
+// Compiled from js/recurly.util.js
+//////////////////////////////////////////////////
 
 
 
@@ -406,7 +392,46 @@ R.isVATApplicable = function(buyerCountry) {
   return inEU && (sellerCountry != buyerCountry);
 };
 
+R.flattenErrors = function(obj, attr) {
+  var arr = [];
 
+  var baseErrorKeys = ['base','account_id'];
+
+  var attr = attr || '';
+
+  if(  typeof obj == 'string'
+    || typeof obj == 'number'
+    || typeof obj == 'boolean') {
+    
+    if($.inArray(baseErrorKeys, attr)) {
+      return [obj];
+    }
+
+    return ['' + attr + ' ' + obj];
+  }
+
+  for(var k in obj) {
+    // console.log(k);
+    if(obj.hasOwnProperty(k)) {
+      // Inherit parent attribute names when property key
+      // is a numeric string; how we deal with arrays
+      attr = (parseInt(k).toString() == k) ? attr : k; 
+      var children = R.flattenErrors(obj[k], attr);
+      for(var i=0, l=children.length; i < l; ++i) {
+        arr.push(children[i]);
+      }
+    }
+  }
+
+  return arr;
+};
+
+
+
+
+//////////////////////////////////////////////////
+// Compiled from js/recurly.validators.js
+//////////////////////////////////////////////////
 
 
 (R.isValidCC = function(value) {
@@ -452,16 +477,16 @@ function wholeNumber(val) {
 
 
 
-//
-/////////// PLANS //////////
-//
-//
-//
 
+
+//////////////////////////////////////////////////
+// Compiled from js/recurly.plan.js
+//////////////////////////////////////////////////
 
 R.Plan = {
-  fromJSON: function(json) {
-    var p = Object.create(R.Plan);
+  create: createObject
+, fromJSON: function(json) {
+    var p = this.create();
 
     p.name = json.name;
     p.code = json.plan_code;
@@ -495,41 +520,32 @@ R.Plan = {
 
     return p;
   }
-};
-
-R.Error = {
-  toString: function() {
-    return 'RecurlyJS Error: ' + this.message;
+, get: function(plan_code, callback) {
+    $.ajax({
+      url: R.settings.baseURL+'plans/'+plan_code,
+      // data: params,
+      dataType: "jsonp",
+      jsonp: "callback",
+      timeout: 10000,
+      success: function(data) {
+        var plan = R.Plan.fromJSON(data);
+        callback(plan);
+      }
+    });
   }
-};
-
-R.raiseError = function(message) {
-  var e = Object.create(R.Error);
-  e.message = message;
-  throw e;
-};
-
-R.getPlan = function(plan_code, callback) {
-
-  // if(!R.settings.site) { throw 'Company subdomain not configured'; }
-
-
-  $.ajax({
-    url: R.settings.baseURL+'plans/'+plan_code,
-    // data: params,
-    dataType: "jsonp",
-    jsonp: "callback",
-    success: function(data) {
-      var plan = R.Plan.fromJSON(data);
-      callback(plan);
-    }
-  });
+, createSubscription: function() {
+    var s = createObject(R.Subscription);
+    s.plan = createObject(this);
+    s.plan.quantity = 1;
+    s.addOns = [];
+    return s;
+  }
 };
 
 
 R.AddOn = {
   fromJSON: function(json) {
-    var a = Object.create(R.AddOn);
+    var a = createObject(R.AddOn);
     a.name = json.name;   
     a.code = json.add_on_code;
     a.cost = new R.Cost(json.default_unit_amount_in_cents);
@@ -544,37 +560,18 @@ R.AddOn = {
     , default_unit_amount_in_cents: this.default_unit_amount_in_cents
     };
   }
-
-  // this.name = json.name;
-  // this.code = json.add_on_code;
 };
 
 
 
 
- 
-(R.Account = function(raw) {
-  if(raw === undefined) return;
-
-}).prototype = {
-  fromAddOn: function(a) {
-    this.code = a.code;
-    this.name = a.name;
-    this.cost = a.cost;
-    this.quantity = 1;
-  }
-};
-
-
-
-//
-/////////// SUBSCRIPTIONS //////////
-//
-//
-//
+//////////////////////////////////////////////////
+// Compiled from js/recurly.account.js
+//////////////////////////////////////////////////
 
 R.Account = {
-  toJSON: function() {    
+  create: createObject
+, toJSON: function() {    
     return {
       first_name: this.firstName
     , last_name: this.lastName
@@ -582,15 +579,23 @@ R.Account = {
     , email: this.email
     };
   }
-, validate: function() { 
-    validateNotEmpty.call(this, 'firstName');
-  }
 };
 
+
+
+
+
+//////////////////////////////////////////////////
+// Compiled from js/recurly.billing_info.js
+//////////////////////////////////////////////////
+
 R.BillingInfo = {
-  toJSON: function() {    
+  create: createObject
+, toJSON: function() {    
     return {
-      month: this.expires.getMonth()
+      first_name: this.firstName
+    , last_name: this.lastName
+    , month: this.expires.getMonth()
     , year: this.expires.getFullYear()
     , number: this.number
     , verification_value: this.cvv
@@ -602,33 +607,51 @@ R.BillingInfo = {
     , country: this.country
     };
   }
+, save: function(options) { 
+    var json = {
+      billing_info: this.toJSON() 
+    , signature: options.signature
+    };
+
+    $.ajax({
+      url: R.settings.baseURL+'accounts/'+options.accountCode+'/billing_info/update'
+    , data: json
+    , dataType: 'jsonp'
+    , jsonp: 'callback'
+    , timeout: 60000
+    , success: function(data) {
+        if(data.success && options.success) {
+          options.success(data.success);
+        }
+        else if(data.errors && options.error) {
+          options.error( R.flattenErrors(data.errors) );
+        }
+      }
+    , error: function() {
+        if(options.error) {
+          options.error(['Unknown error processing transaction. Please try again later.']);
+        }
+      }
+    , complete: options.complete || $.noop
+    });
+  }
 };
 
 
-R.makeAccount = function() {
-  return Object.create(R.Account);
-};
-
-R.makeBillingInfo = function() {
-  return Object.create(R.BillingInfo);
-};
 
 
 
-R.Plan.makeSubscription = function() {
-  var s = Object.create(R.Subscription);
-  s.plan = Object.create(this);
-  s.plan.quantity = 1;
-  return s;
-};
-
+//////////////////////////////////////////////////
+// Compiled from js/recurly.subscription.js
+//////////////////////////////////////////////////
 
 // Base Subscription prototype
 R.Subscription = {
-  plan: R.Plan,
-  addOns: [],
+  create: createObject
+, plan: R.Plan
+, addOns: []
 
-  calculateTotals: function() {
+, calculateTotals: function() {
     var totals = {
       stages: {}
     };
@@ -660,8 +683,6 @@ R.Subscription = {
       totals.stages.now = totals.stages.now.add(this.plan.setupFee);
     }
 
-
-
     // COUPON
     if(this.coupon) {
       var beforeDiscount = totals.stages.now;
@@ -676,19 +697,18 @@ R.Subscription = {
       totals.stages.now = totals.stages.now.sub(totals.vat);
     }
 
-
     return totals;
   }
 , redeemAddOn: function(addOn) {
-  var redemption = addOn.makeRedemption();
+  var redemption = addOn.createRedemption();
   this.addOns.push(redemption); 
   return redemption;
 }
 
 , removeAddOn: function(code) {
-  for(var l=this.addOns.length, i=0; i < l; ++i) {
-    if(this.addOns[i].code == code) {
-      this.addOns.splice(i,1);
+  for(var a=this.addOns, l=a.length, i=0; i < l; ++i) {
+    if(a[i].code == code) {
+      return a.splice(i,1);
     }
   }
 }
@@ -707,27 +727,62 @@ R.Subscription = {
       plan_code: this.plan.code
     , quantity: this.plan.quantity
     , coupon_code: this.coupon ? this.coupon.code : undefined
-    , add_ons: this.addOns.map(function(a) {
-        return {
-          add_on_code: a.code
-        , quantity: a.quantity
-        };
-      })
+    , add_ons: []
     };
+
+    for(var i=0, l=this.addOns.length, a=json.add_ons, b=this.addOns; i < l; ++i) {
+      a.push({
+        add_on_code: b[i].code
+      , quantity: b[i].quantity
+      });
+    }
 
     return json;
   }
+
+, save: function(options) {
+    var json = {
+      subscription: this.toJSON()
+    , account: this.account.toJSON()
+    , billing_info: this.billingInfo.toJSON()
+    };
+
+    $.ajax({
+      url: R.settings.baseURL+'subscribe',
+      data: json,
+      dataType: "jsonp",
+      jsonp: "callback",
+      timeout: 60000,
+      success: function(data) {
+        if(data.success && options.success) {
+          options.success(data.success);
+        }
+        else if(data.errors && options.error) {
+          var errorCode = data.errors.error_code;
+          delete data.errors.error_code;
+          options.error( R.flattenErrors(data.errors), errorCode );
+        }
+      },
+      error: function() {
+        if(options.error) {
+          options.error(['Unknown error processing transaction. Please try again later.']);
+        }
+      },
+      complete: options.complete
+    });
+
+  }
 };
 
-R.AddOn.makeRedemption = function(qty) {
-  var r = Object.create(this);
+R.AddOn.createRedemption = function(qty) {
+  var r = createObject(this);
   r.quantity = qty || 1;
   return r;
 };
 
 R.Coupon = {
   fromJSON: function(json) {
-    var c = Object.create(R.Coupon);
+    var c = createObject(R.Coupon);
 
     if(json.discount_in_cents)
       c.discountCost = new R.Cost(-json.discount_in_cents);
@@ -764,6 +819,7 @@ R.Subscription.getCoupon = function(couponCode, successCallback, errorCallback) 
     // data: params,
     dataType: "jsonp",
     jsonp: "callback",
+    timeout: 10000,
     success: function(data) {
       var coupon = R.Coupon.fromJSON(data);
       coupon.code = couponCode;
@@ -780,79 +836,68 @@ R.Subscription.getCoupon = function(couponCode, successCallback, errorCallback) 
   });
 };
 
-R.flattenErrors = function(obj, attr) {
-  var arr = [];
 
-  var baseErrorKeys = ['base','account_id'];
 
-  var attr = attr || '';
 
-  if(  typeof obj == 'string'
-    || typeof obj == 'number'
-    || typeof obj == 'boolean') {
-    
-    if($.inArray(baseErrorKeys, attr)) {
-      return [obj];
-    }
 
-    return ['' + attr + ' ' + obj];
+//////////////////////////////////////////////////
+// Compiled from js/recurly.transaction.js
+//////////////////////////////////////////////////
+
+
+R.Transaction = {
+  toJSON: function() {    
+    return {
+      currency: this.currency
+    , amount_in_cents: this.cost.cents()
+    };
   }
+, create: createObject
+, save: function(options) { 
+    var json = {
+      transaction: this.toJSON() 
+    , account: this.account ? this.account.toJSON() : undefined 
+    , billing_info: this.billingInfo.toJSON() 
+    , signature: options.signature
+    };
 
-
-  for(var k in obj) {
-    // console.log(k);
-    if(obj.hasOwnProperty(k)) {
-      // Inherit parent attribute names when property key
-      // is a numeric string; how we deal with arrays
-      attr = (parseInt(k).toString() == k) ? attr : k; 
-      var children = R.flattenErrors(obj[k], attr);
-      for(var i=0, l=children.length; i < l; ++i) {
-        arr.push(children[i]);
+    $.ajax({
+      url: R.settings.baseURL+'accounts/'+options.accountCode+'/transactions/create'
+    , data: json
+    , dataType: 'jsonp'
+    , jsonp: 'callback'
+    , timeout: 60000
+    , success: function(data) {
+        if(data.success && options.success) {
+          options.success(data.success);
+        }
+        else if(data.errors && options.error) {
+          options.error( R.flattenErrors(data.errors) );
+        }
       }
-    }
+    , error: function() {
+        if(options.error) {
+          options.error(['Unknown error processing transaction. Please try again later.']);
+        }
+      }
+    , complete: options.complete || $.noop
+    });
   }
-
-  return arr;
-}
-
-R.Subscription.save = function(successCallback,errorCallback) {
-  var json = {
-    subscription: this.toJSON()
-  , account: this.account.toJSON()
-  , billing_info: this.billingInfo.toJSON()
-  };
-
-  $.ajax({
-    url: R.settings.baseURL+'subscribe',
-    data: json,
-    dataType: "jsonp",
-    jsonp: "callback",
-    success: function(data) {
-      if(data.success) {
-        successCallback(data.success);
-      }
-      else if(data.errors) {
-        errorCallback( R.flattenErrors(data.errors) );
-      }
-    },
-    error: function() {
-      errorCallback(['Unknown error processing transaction. Please try again later.']);
-    }
-  });
-
 };
 
 
-//
-/////////// GENERATION //////////
-//
-//
 
+
+
+
+//////////////////////////////////////////////////
+// Compiled from js/recurly.ui.js
+//////////////////////////////////////////////////
 
 R.UserError = {};
 
 function raiseUserError(validation, elem) {
-  var e = Object.create(R.UserError);
+  var e = createObject(R.UserError);
   e.validation = validation;
   e.element = elem;
   throw e;
@@ -889,12 +934,13 @@ function handleUserErrors(block) {
   }
 }
 
-function getField($form, li, validation) {
+function getField($form, fieldSel, validation) {
   // Try text input
-  var $input = $form.find('.' + li + ' input');
+  var $input = $form.find(fieldSel + ' input');
+
   // Try as select
   if($input.length == 0) {
-    $input = $form.find('.' + li + ' select');
+    $input = $form.find(fieldSel + ' select');
   }
 
   // Treat nonexistence as removed deliberately
@@ -918,6 +964,30 @@ function V(v,k) {
     validator: v,
     errorKey: k || v.defaultErrorKey
   };
+}
+
+
+// == SERVER ERROR UI METHODS
+
+function clearServerErrors($form) {  
+  var $serverErrors = $form.find('.server_errors');
+  $serverErrors.removeClass('any').addClass('none');
+  $serverErrors.empty();
+}
+
+function displayServerErrors($form, errors) {
+  var $serverErrors = $form.find('.server_errors');
+  clearServerErrors($form);
+
+  var l = errors.length;
+  if(l) {
+    $serverErrors.removeClass('none').addClass('any');
+    for(var i=0; i < l; ++i) {
+      var $e = $('<div class="error">');
+      $e.text(errors[i]);
+      $serverErrors.append($e);
+    }
+  }
 }
 
 
@@ -966,6 +1036,32 @@ function initBillingInfoForm($form, options) {
     if($countryOpt.length) {
       $countryOpt.attr('selected', true).change();
     }
+  }
+
+  // == FIRSTNAME / LASTNAME REDUNDANCY
+  if(options.distinguishContactFromBillingInfo) { 
+    var $contactFirstName = $form.find('.contact_info .first_name input');
+    var $contactLastName = $form.find('.contact_info .last_name input');
+    var prevFirstName = $contactFirstName.val(); 
+    var prevLastName = $contactLastName.val(); 
+    $form.find('.contact_info .first_name input').change(function() {
+      var $billingFirstName = $form.find('.billing_info .first_name input'); 
+      if($billingFirstName.val() == prevFirstName) {
+        $billingFirstName.val( $(this).val() ).change();
+      }
+      prevFirstName = $contactFirstName.val();
+    });
+    $form.find('.contact_info .last_name input').change(function() {
+      var $billingLastName = $form.find('.billing_info .last_name input'); 
+      if($billingLastName.val() == prevLastName) {
+        $billingLastName.val( $(this).val() ).change();
+      }
+      prevLastName = $contactLastName.val();
+    });
+
+  }
+  else {
+    $form.find('.billing_info .first_name, .billing_info .last_name').remove();
   }
 
   var now = new Date();
@@ -1048,51 +1144,241 @@ function initBillingInfoForm($form, options) {
     }
   }); 
 
-
 }
 
-R.buildAccountUpdateForm = function(options) {
+
+function pullAccountFields($form, account, accountCode) {
+  account.firstName = getField($form, '.contact_info .first_name', V(R.isNotEmpty)); 
+  account.lastName = getField($form, '.contact_info .last_name', V(R.isNotEmpty)); 
+  account.email = getField($form, '.email', V(R.isNotEmpty), V(R.isValidEmail)); 
+  account.code = accountCode || account.email;
+}
+
+
+function pullBillingInfoFields($form, billingInfo) {
+  billingInfo.firstName = getField($form, '.billing_info .first_name', V(R.isNotEmpty)); 
+  billingInfo.lastName = getField($form, '.billing_info .last_name', V(R.isNotEmpty)); 
+  billingInfo.number = getField($form, '.card_number', V(R.isNotEmpty), V(R.isValidCC)); 
+  billingInfo.cvv = getField($form, '.cvv', V(R.isNotEmpty), V(R.isValidCVV)); 
+
+  var exp = new Date(0); 
+  exp.setMonth( getField($form, '.month') );
+  exp.setFullYear( getField($form, '.year') );
+  billingInfo.expires = exp;
+
+  billingInfo.address1 = getField($form, '.address1', V(R.isNotEmpty)); 
+  billingInfo.address2 = getField($form, '.address2', V(R.isNotEmpty)); 
+  billingInfo.city = getField($form, '.city', V(R.isNotEmpty)); 
+  billingInfo.state = getField($form, '.state', V(R.isNotEmpty)); 
+  billingInfo.zip = getField($form, '.zip', V(R.isNotEmpty)); 
+  billingInfo.country = getField($form, '.country',
+      V(function(v) {return v != '-';}, 'emptyField')); 
+}
+
+
+R.replaceVars = function(str, vars) {
+  var all = [];
+  for(var k in vars) {
+    if(vars.hasOwnProperty(k)) {
+      var v = vars[k];
+
+      str = str.replace(new RegExp('\\{'+k+'\\}', 'g'), v);
+      all.push(k + '=' + v);
+    }
+  }
+
+  str = str.replace(/\\{\\*\\}/g, all.join('&'));
+
+  return str;
+};
+
+R.buildUpdateBillingInfoForm = function(options) {
   var defaults = {
     addressRequirement: 'full'
   };
 
   options = $.extend({}, defaults, options);
 
-  var $container = $(options.target);
-  var $form = $(R.accountUpdateFormHTML);
+  options.distinguishContactFromBillingInfo = true;
+
+
+  if(!options.accountCode) R.raiseError('accountCode missing');
+  if(!options.signature) R.raiseError('signature missing');
+
+  var billingInfo = R.BillingInfo.create();
+
+  var $form = $(R.updateBillingInfoFormHTML);
   $form.find('.billing_info').html(R.billingInfoFieldsHTML);
 
 
   initCommonForm($form, options);
   initBillingInfoForm($form, options);
 
-  $container.html($form);
+
+  $form.submit(function(e) {
+    e.preventDefault(); 
+
+    clearServerErrors($form);
+
+    $form.find('.error').remove();
+    $form.find('.invalid').removeClass('invalid');
+
+    handleUserErrors(function() {
+      pullBillingInfoFields($form, billingInfo);
+
+      $form.addClass('submitting');
+      $form.find('button.submit').attr('disabled', true).text('Please Wait');
+
+      billingInfo.save({
+        signature: options.signature
+      , accountCode: options.accountCode
+      , success: function(response) {
+          if(options.afterUpdate)
+            options.afterUpdate(response);
+
+          if(options.successURL) {
+            var url = options.successURL;
+            url = R.replaceVars({
+              account_code: options.accountCode
+            });
+            window.location = url;
+          }
+        }
+      , error: function(errors) {
+          if(!options.onError || !options.onError(errors)) {
+            displayServerErrors($form, errors);
+          }
+        }
+      , complete: function() {
+          $form.removeClass('submitting');
+          $form.find('button.submit').removeAttr('disabled').text('Update');
+        }
+      });
+    });
+  });
+
+  $(function() {
+    var $container = $(options.target);
+    $container.html($form);
+  });
 };
 
-R.buildSubscribeForm = function(options) {
+
+R.buildTransactionForm = function(options) {
   var defaults = {
-    enableAddOns: true,
-    enableCoupons: true,
     addressRequirement: 'full'
   };
 
-  options = $.extend({}, defaults, options);
+  options = $.extend(createObject(R.settings), defaults, options);
 
-  var $container = $(options.target);
-  var $form = $(R.subscribeFormHTML);
+  options.distinguishContactFromBillingInfo = true;
+
+  if(!options.accountCode) R.raiseError('accountCode missing');
+  if(!options.signature) R.raiseError('signature missing');
+
+  var billingInfo = R.BillingInfo.create()
+  ,   transaction = R.Transaction.create();
+
+  transaction.billingInfo = billingInfo;
+  transaction.currency = options.currency;
+  transaction.cost = new R.Cost(options.amountInCents);
+
+  var $form = $(R.oneTimeTransactionFormHTML);
   $form.find('.billing_info').html(R.billingInfoFieldsHTML);
 
 
   initCommonForm($form, options);
+  initBillingInfoForm($form, options);
 
-  R.getPlan(options.plan, function(plan) {
-    var subscription = plan.makeSubscription(),
-        account = R.makeAccount(),
-        billingInfo = R.makeBillingInfo();
+  $form.submit(function(e) {
+    e.preventDefault(); 
+
+    clearServerErrors($form);
+
+    $form.find('.error').remove();
+    $form.find('.invalid').removeClass('invalid');
+
+    handleUserErrors(function() {
+      pullBillingInfoFields($form, billingInfo);
+
+      $form.addClass('submitting');
+      $form.find('button.submit').attr('disabled', true).text('Please Wait');
+
+      transaction.save({
+        signature: options.signature
+      , accountCode: options.accountCode
+      , success: function(response) {
+          if(options.afterPay)
+            options.afterPay(response);
+
+          if(options.successURL) {
+            var url = options.successURL;
+            url = url.replace(/\{account_code\}/g, options.accountCode);
+            url = url.replace(/\{signature\}/g, options.signature);
+            window.location = url;
+          }
+        }
+      , error: function(errors) {
+          if(!options.onError || !options.onError(errors)) {
+            displayServerErrors($form, errors);
+          }
+        }
+      , complete: function() {
+          $form.removeClass('submitting');
+          $form.find('button.submit').removeAttr('disabled').text('Pay');
+        }
+      });
+    });
+  });
+
+  $(function() {
+    var $container = $(options.target);
+    $container.html($form);
+  });
+};
+
+
+R.buildSubscriptionForm = function(options) {
+  var defaults = {
+    enableAddOns: true
+  , enableCoupons: true
+  , addressRequirement: 'full'
+  , distinguishContactFromBillingInfo: false
+  };
+
+  options = $.extend(createObject(R.settings), defaults, options);
+
+  var $form = $(R.subscribeFormHTML);
+  $form.find('.billing_info').html(R.billingInfoFieldsHTML);
+ 
+//   // Insert clearfix hacks just for IE6
+//   if($.browser.msie && $.browser.version == 6 && !options.disableClearFixHack) {
+//     $form.find('div').append('<div class="clearfix">');
+//   }
+
+
+  initCommonForm($form, options);
+
+  if(options.planCode)
+    R.Plan.get(options.planCode, gotPlan);
+  else if(options.plan)
+    gotPlan(options.plan);
+
+  function gotPlan(plan) {
+
+    if(options.filterPlan)
+      plan = options.filterPlan(plan) || plan; 
+
+
+    var subscription = plan.createSubscription(),
+        account = R.Account.create(),
+        billingInfo = R.BillingInfo.create();
 
     subscription.account = account;
     subscription.billingInfo = billingInfo;
 
+    if(options.filterSubscription)
+      subscription = options.filterSubscription(subscription) || subscription; 
 
     initBillingInfoForm($form, options, billingInfo);
 
@@ -1162,7 +1448,11 @@ R.buildSubscribeForm = function(options) {
         for(var i=0; i < l; ++i) {
           var addOn = plan.addOns[i];
 
-          var $addOn = $('<div class="add_on add_on_'+ addOn.code + ' ' + (i % 2 ? 'even' : 'odd') +'">' +
+          var classAttr = 'add_on add_on_'+ addOn.code + (i % 2 ? ' even' : ' odd');
+          if(i == 0) classAttr += ' first';
+          if(i == l-1) classAttr += ' last';
+
+          var $addOn = $('<div class="'+classAttr+'">' +
           '<div class="name">'+addOn.name+'</div>' +
           '<div class="field quantity">' +
             '<div class="placeholder">Qty</div>' +
@@ -1220,13 +1510,7 @@ R.buildSubscribeForm = function(options) {
     else {
       $addOnsList.remove();
     }
-
-    function makeChangeValidator(originalVal) {
-      return function(val) {
-        return !!originalVal != val;
-      }
-    }
-
+    
     // == COUPON REDEEMER
     var $coupon = $form.find('.coupon'); 
     var lastCode = null;
@@ -1322,81 +1606,25 @@ R.buildSubscribeForm = function(options) {
       updateTotals();
       showHideVAT();
     });
-
-
-
-    //
-    // Pulls user input into model objects
-    function syncUserInput() {
-      // The copying
-
-      account.firstName = getField($form, 'first_name', V(R.isNotEmpty)); 
-      account.lastName = getField($form, 'last_name', V(R.isNotEmpty)); 
-      account.email = getField($form, 'email', V(R.isNotEmpty), V(R.isValidEmail)); 
-      account.code = options.accountCode || account.email;
-
-      billingInfo.number = getField($form, 'card_number', V(R.isNotEmpty), V(R.isValidCC)); 
-      billingInfo.cvv = getField($form, 'cvv', V(R.isNotEmpty), V(R.isValidCVV)); 
-
-      var exp = new Date(0); 
-      exp.setMonth( getField($form, 'month') );
-      exp.setFullYear( getField($form, 'year') );
-      billingInfo.expires = exp;
-
-      billingInfo.address1 = getField($form, 'address1', V(R.isNotEmpty)); 
-      billingInfo.address2 = getField($form, 'address2', V(R.isNotEmpty)); 
-      billingInfo.city = getField($form, 'city', V(R.isNotEmpty)); 
-      billingInfo.state = getField($form, 'state', V(R.isNotEmpty)); 
-      billingInfo.zip = getField($form, 'zip', V(R.isNotEmpty)); 
-      billingInfo.country = getField($form, 'country',
-          V(function(v) {return v != '-';}, 'emptyField')); 
-    }
-
-
-
-
-    // == SERVER ERROR UI METHODS
-    var $serverErrors = $form.find('.server_errors');
-
-    function clearServerErrors() {  
-      $serverErrors.removeClass('any').addClass('none');
-      $serverErrors.empty();
-    }
-
-    function displayServerErrors(errors) {
-      clearServerErrors();
-      console.log(errors);
-
-      errors.forEach(function(e) {
-        $serverErrors.removeClass('none').addClass('any');
-        var $e = $('<div class="error">');
-        $e.text(e);
-        $serverErrors.append($e);
-      });
-    }
-
+ 
     // SUBMIT HANDLER
     $form.submit(function(e) {
       e.preventDefault(); 
 
-      clearServerErrors();
+      clearServerErrors($form);
 
       $form.find('.error').remove();
       $form.find('.invalid').removeClass('invalid');
 
-      function complete() {
-        $form.removeClass('submitting');
-        $form.find('button.submit').removeAttr('disabled').text('Subscribe');
-      }
-
       handleUserErrors(function() {
-        syncUserInput();
+        pullAccountFields($form, account, options.accountCode);
+        pullBillingInfoFields($form, billingInfo);
 
         $form.addClass('submitting');
         $form.find('button.submit').attr('disabled', true).text('Please Wait');
 
-        subscription.save(
-          function(response) {
+        subscription.save({
+          success: function(response) {
             if(options.afterSubscribe)
               options.afterSubscribe(response);
 
@@ -1405,40 +1633,74 @@ R.buildSubscribeForm = function(options) {
               url = url.replace(/\{account_code\}/g, subscription.account.code);
               window.location = url;
             }
-
-            complete();
-
           }
-        , function(errors) {
-            if(!options.onErrors || !options.onError(errors)) {
-              displayServerErrors(errors);
+        , error: function(errors) {
+            if(!options.onError || !options.onError(errors)) {
+              displayServerErrors($form, errors);
             }
-
-            complete();
+          }
+        , complete: function() {
+            $form.removeClass('submitting');
+            $form.find('button.submit').removeAttr('disabled').text('Subscribe');
+          }
         });
       });
 
     });
 
-
     // FINALLY - UPDATE INITIAL TOTALS AND INJECT INTO DOM
     updateTotals();
-    $container.html($form);
 
-    if(options.afterLoad) {
-      options.afterLoad();
+    if(options.beforeInject) {
+      options.beforeInject($form.get(0));
     }
-  });
+
+    $(function() {
+      var $container = $(options.target);
+      $container.html($form);
+
+      if(options.afterInject) {
+        options.afterInject($form.get(0));
+      }
+    });
+
+  }
 
 };
 
 
 
-R.subscribeFormHTML = '<form class="recurly subscribe"><div class="subscription"><div class="plan"><div class="name"></div><div class="field quantity"><div class="placeholder">Qty</div><input type="text"/></div><div class="recurring_cost"><div class="cost"></div><div class="interval"></div></div><div class="free_trial"></div><div class="setup_fee"><div class="title">Setup Fee</div><div class="cost"></div></div></div><div class="add_ons none"></div><div class="coupon"><div class="coupon_code field"><div class="placeholder">Coupon Code</div><input type="text" class="coupon_code"/></div><div class="check"></div><div class="description"></div><div class="discount"></div></div><div class="vat"><div class="title">VAT</div><div class="cost"></div></div></div><div class="due_now"><div class="title">Order Total</div><div class="cost"></div></div><div class="server_errors none"></div><div class="contact_info"><div class="title">Contact Info</div><div class="field first_name"><div class="placeholder">First Name </div><input type="text"/></div><div class="field last_name"><div class="placeholder">Last Name </div><input type="text"/></div><div class="field email"><div class="placeholder">Email </div><input type="text"/></div></div><div class="billing_info"></div><div class="footer"><button class="submit">Subscribe</button></div></form>';
 
-R.accountUpdateFormHTML = '<form class="recurly account_update"><div class="contact_info"><div class="title">Contact Info</div><div class="field first_name"><div class="placeholder">First Name </div><input type="text"/></div><div class="field last_name"><div class="placeholder">Last Name </div><input type="text"/></div><div class="field email"><div class="placeholder">Email </div><input type="text"/></div></div><div class="billing_info"></div><div class="footer"><button class="submit">Update</button></div></form>';
 
-R.billingInfoFieldsHTML = '<div class="title">Billing Info</div><div class="accepted_cards"><div class="card american_express">American Express</div><div class="card discover">Discover</div><div class="card mastercard">MasterCard </div><div class="card visa">Visa</div></div><div class="credit_card"><div class="field card_number"><div class="placeholder">Credit Card Number  </div><input type="text"/></div><div class="field cvv"><div class="placeholder">CVV </div><input type="text"/></div><div class="field expires"><div class="title">Expires </div><div class="month"><select><option value="1">01 - January</option><option value="2">02 - February</option><option value="3">03 - March</option><option value="4">04 - April</option><option value="5">05 - May</option><option value="6">06 - June</option><option value="7">07 - July</option><option value="8">08 - August</option><option value="9">09 - September</option><option value="10">10 - October</option><option value="11">11 - November</option><option value="12">12 - December</option><!-- = render :partial => \'months\' --></select></div><div class="year"><select></select></div></div></div><div class="address"><div class="field address1"><div class="placeholder">Address</div><input type="text"/></div><div class="field address2"><div class="placeholder">Apt/Suite</div><input type="text"/></div><div class="field city"><div class="placeholder">City</div><input type="text"/></div><div class="field state"><div class="placeholder">State</div><input type="text"/></div><div class="field zip"><div class="placeholder">Zip/Postal</div><input type="text"/></div><div class="field country"><!-- label Country --><select><option value="-">Select Country</option><option value="-">-------------- </option><option value="AF">Afghanistan</option><option value="AL">Albania</option><option value="DZ">Algeria</option><option value="AS">American Samoa</option><option value="AD">Andorra</option><option value="AO">Angola</option><option value="AI">Anguilla</option><option value="AQ">Antarctica</option><option value="AG">Antigua and Barbuda</option><option value="AR">Argentina</option><option value="AM">Armenia</option><option value="AW">Aruba</option><option value="AC">Ascension(Island</option><option value="AU">Australia</option><option value="AT">Austria</option><option value="AZ">Azerbaijan</option><option value="BS">Bahamas</option><option value="BH">Bahrain</option><option value="BD">Bangladesh</option><option value="BB">Barbados</option><option value="BY">Belarus</option><option value="BE">Belgium</option><option value="BZ">Belize</option><option value="BJ">Benin</option><option value="BM">Bermuda</option><option value="BT">Bhutan</option><option value="BO">Bolivia</option><option value="BA">Bosnia and Herzegovina</option><option value="BW">Botswana</option><option value="BV">Bouvet Island</option><option value="BR">Brazil</option><option value="BQ">British Antarctic Territory</option><option value="IO">British Indian Ocean Territory</option><option value="VG">British Virgin Islands</option><option value="BN">Brunei</option><option value="BG">Bulgaria</option><option value="BF">Burkina Faso</option><option value="BI">Burundi</option><option value="KH">Cambodia</option><option value="CM">Cameroon</option><option value="CA">Canada</option><option value="IC">Canary Islands</option><option value="CT">Canton and Enderbury Islands</option><option value="CV">Cape Verde</option><option value="KY">Cayman Islands</option><option value="CF">Central African Republic</option><option value="EA">Ceuta and Melilla</option><option value="TD">Chad</option><option value="CL">Chile</option><option value="CN">China</option><option value="CX">Christmas Island</option><option value="CP">Clipperton Island</option><option value="CC">Cocos [Keeling] Islands</option><option value="CO">Colombia</option><option value="KM">Comoros</option><option value="CD">Congo [DRC]</option><option value="CG">Congo [Republic]</option><option value="CK">Cook Islands</option><option value="CR">Costa Rica</option><option value="HR">Croatia</option><option value="CU">Cuba</option><option value="CY">Cyprus</option><option value="CZ">Czech Republic</option><option value="DK">Denmark</option><option value="DG">Diego Garcia</option><option value="DJ">Djibouti</option><option value="DM">Dominica</option><option value="DO">Dominican Republic</option><option value="NQ">Dronning Maud Land</option><option value="DD">East Germany</option><option value="TL">East Timor</option><option value="EC">Ecuador</option><option value="EG">Egypt</option><option value="SV">El Salvador</option><option value="GQ">Equatorial Guinea</option><option value="ER">Eritrea</option><option value="EE">Estonia</option><option value="ET">Ethiopia</option><option value="EU">European Union</option><option value="FK">Falkland Islands [Islas Malvinas]</option><option value="FO">Faroe Islands</option><option value="FJ">Fiji</option><option value="FI">Finland</option><option value="FR">France</option><option value="GF">French Guiana</option><option value="PF">French Polynesia</option><option value="TF">French Southern Territories</option><option value="FQ">French Southern and Antarctic Territories</option><option value="GA">Gabon</option><option value="GM">Gambia</option><option value="GE">Georgia</option><option value="DE">Germany</option><option value="GH">Ghana</option><option value="GI">Gibraltar</option><option value="GR">Greece</option><option value="GL">Greenland</option><option value="GD">Grenada</option><option value="GP">Guadeloupe</option><option value="GU">Guam</option><option value="GT">Guatemala</option><option value="GG">Guernsey</option><option value="GN">Guinea</option><option value="GW">Guinea-Bissau</option><option value="GY">Guyana</option><option value="HT">Haiti</option><option value="HM">Heard Island and McDonald Islands</option><option value="HN">Honduras</option><option value="HK">Hong Kong</option><option value="HU">Hungary</option><option value="IS">Iceland</option><option value="IN">India</option><option value="ID">Indonesia</option><option value="IR">Iran</option><option value="IQ">Iraq</option><option value="IE">Ireland</option><option value="IM">Isle of Man</option><option value="IL">Israel</option><option value="IT">Italy</option><option value="CI">Ivory Coast</option><option value="JM">Jamaica</option><option value="JP">Japan</option><option value="JE">Jersey</option><option value="JT">Johnston Island</option><option value="JO">Jordan</option><option value="KZ">Kazakhstan</option><option value="KE">Kenya</option><option value="KI">Kiribati</option><option value="KW">Kuwait</option><option value="KG">Kyrgyzstan</option><option value="LA">Laos</option><option value="LV">Latvia</option><option value="LB">Lebanon</option><option value="LS">Lesotho</option><option value="LR">Liberia</option><option value="LY">Libya</option><option value="LI">Liechtenstein</option><option value="LT">Lithuania</option><option value="LU">Luxembourg</option><option value="MO">Macau</option><option value="MK">Macedonia [FYROM]</option><option value="MG">Madagascar</option><option value="MW">Malawi</option><option value="MY">Malaysia</option><option value="MV">Maldives</option><option value="ML">Mali</option><option value="MT">Malta</option><option value="MH">Marshall Islands</option><option value="MQ">Martinique</option><option value="MR">Mauritania</option><option value="MU">Mauritius</option><option value="YT">Mayotte</option><option value="FX">Metropolitan France</option><option value="MX">Mexico</option><option value="FM">Micronesia</option><option value="MI">Midway Islands</option><option value="MD">Moldova</option><option value="MC">Monaco</option><option value="MN">Mongolia</option><option value="ME">Montenegro</option><option value="MS">Montserrat</option><option value="MA">Morocco</option><option value="MZ">Mozambique</option><option value="MM">Myanmar [Burma]</option><option value="NA">Namibia</option><option value="NR">Nauru</option><option value="NP">Nepal</option><option value="NL">Netherlands</option><option value="AN">Netherlands Antilles</option><option value="NT">Neutral Zone</option><option value="NC">New Caledonia</option><option value="NZ">New Zealand</option><option value="NI">Nicaragua</option><option value="NE">Niger</option><option value="NG">Nigeria</option><option value="NU">Niue</option><option value="NF">Norfolk Island</option><option value="KP">North Korea</option><option value="VD">North Vietnam</option><option value="MP">Northern Mariana Islands</option><option value="NO">Norway</option><option value="OM">Oman</option><option value="QO">Outlying Oceania</option><option value="PC">Pacific Islands Trust Territory</option><option value="PK">Pakistan</option><option value="PW">Palau</option><option value="PS">Palestinian Territories</option><option value="PA">Panama</option><option value="PZ">Panama Canal Zone</option><option value="PG">Papua New Guinea</option><option value="PY">Paraguay</option><option value="YD">People\'s Democratic Republic of Yemen</option><option value="PE">Peru</option><option value="PH">Philippines</option><option value="PN">Pitcairn Islands</option><option value="PL">Poland</option><option value="PT">Portugal</option><option value="PR">Puerto Rico</option><option value="QA">Qatar</option><option value="RO">Romania</option><option value="RU">Russia</option><option value="RW">Rwanda</option><option value="RE">R\u00e9union</option><option value="BL">Saint Barth\u00e9lemy</option><option value="SH">Saint Helena</option><option value="KN">Saint Kitts and Nevis</option><option value="LC">Saint Lucia</option><option value="MF">Saint Martin</option><option value="PM">Saint Pierre and Miquelon</option><option value="VC">Saint Vincent and the Grenadines</option><option value="WS">Samoa</option><option value="SM">San Marino</option><option value="SA">Saudi Arabia</option><option value="SN">Senegal</option><option value="RS">Serbia</option><option value="CS">Serbia and Montenegro</option><option value="SC">Seychelles</option><option value="SL">Sierra Leone</option><option value="SG">Singapore</option><option value="SK">Slovakia</option><option value="SI">Slovenia</option><option value="SB">Solomon Islands</option><option value="SO">Somalia</option><option value="ZA">South Africa</option><option value="GS">South Georgia and the South Sandwich Islands</option><option value="KR">South Korea</option><option value="ES">Spain</option><option value="LK">Sri Lanka</option><option value="SD">Sudan</option><option value="SR">Suriname</option><option value="SJ">Svalbard and Jan Mayen</option><option value="SZ">Swaziland</option><option value="SE">Sweden</option><option value="CH">Switzerland</option><option value="SY">Syria</option><option value="ST">S\u00e3o Tom\u00e9 and Pr\u00edncipe</option><option value="TW">Taiwan</option><option value="TJ">Tajikistan</option><option value="TZ">Tanzania</option><option value="TH">Thailand</option><option value="TG">Togo</option><option value="TK">Tokelau</option><option value="TO">Tonga</option><option value="TT">Trinidad and Tobago</option><option value="TA">Tristan da Cunha</option><option value="TN">Tunisia</option><option value="TR">Turkey</option><option value="TM">Turkmenistan</option><option value="TC">Turks and Caicos Islands</option><option value="TV">Tuvalu</option><option value="UM">U.S. Minor Outlying Islands</option><option value="PU">U.S. Miscellaneous Pacific Islands</option><option value="VI">U.S. Virgin Islands</option><option value="UG">Uganda</option><option value="UA">Ukraine</option><option value="SU">Union(of Soviet Socialist Republics</option><option value="AE">United Arab Emirates</option><option value="GB">United Kingdom</option><option value="US">United States</option><option value="UY">Uruguay</option><option value="UZ">Uzbekistan</option><option value="VU">Vanuatu</option><option value="VA">Vatican City</option><option value="VE">Venezuela</option><option value="VN">Vietnam</option><option value="WK">Wake Island</option><option value="WF">Wallis and Futuna</option><option value="EH">Western Sahara</option><option value="YE">Yemen</option><option value="ZM">Zambia</option><option value="ZW">Zimbabwe</option><option value="AX">\u00c5land Islands</option></select></div></div><div class="field vat_number"><div class="placeholder">VAT Number</div><input type="text"/></div>';
+//////////////////////////////////////////////////
+// Compiled from dom/billing_info_fields.jade
+//////////////////////////////////////////////////
+
+R.billingInfoFieldsHTML = '<div class="title">Billing Info</div><div class="accepted_cards"><div class="card american_express">American Express</div><div class="card discover">Discover</div><div class="card mastercard">MasterCard </div><div class="card visa">Visa</div></div><div class="credit_card"><div class="field first_name"><div class="placeholder">First Name </div><input type="text"/></div><div class="field last_name"><div class="placeholder">Last Name </div><input type="text"/></div><div class="card_cvv"><div class="field card_number"><div class="placeholder">Credit Card Number  </div><input type="text"/></div><div class="field cvv"><div class="placeholder">CVV </div><input type="text"/></div><!-- :number, :maxlength => 22, :class => \'required creditcard\', :placeholder => \'Credit Card Number\'--></div><div class="field expires"><div class="title">Expires </div><div class="month"><select><option value="1">01 - January</option><option value="2">02 - February</option><option value="3">03 - March</option><option value="4">04 - April</option><option value="5">05 - May</option><option value="6">06 - June</option><option value="7">07 - July</option><option value="8">08 - August</option><option value="9">09 - September</option><option value="10">10 - October</option><option value="11">11 - November</option><option value="12">12 - December</option><!-- = render :partial => \'months\' --></select></div><div class="year"><select></select></div></div></div><div class="address"><div class="field address1"><div class="placeholder">Address</div><input type="text"/></div><div class="field address2"><div class="placeholder">Apt/Suite</div><input type="text"/></div><div class="field city"><div class="placeholder">City</div><input type="text"/></div><div class="state_zip"><div class="field state"><div class="placeholder">State/Province</div><input type="text"/></div><div class="field zip"><div class="placeholder">Zip/Postal</div><input type="text"/></div></div><div class="field country"><!-- label Country --><select><option value="-">Select Country</option><option value="-">-------------- </option><option value="AF">Afghanistan</option><option value="AL">Albania</option><option value="DZ">Algeria</option><option value="AS">American Samoa</option><option value="AD">Andorra</option><option value="AO">Angola</option><option value="AI">Anguilla</option><option value="AQ">Antarctica</option><option value="AG">Antigua and Barbuda</option><option value="AR">Argentina</option><option value="AM">Armenia</option><option value="AW">Aruba</option><option value="AC">Ascension(Island</option><option value="AU">Australia</option><option value="AT">Austria</option><option value="AZ">Azerbaijan</option><option value="BS">Bahamas</option><option value="BH">Bahrain</option><option value="BD">Bangladesh</option><option value="BB">Barbados</option><option value="BY">Belarus</option><option value="BE">Belgium</option><option value="BZ">Belize</option><option value="BJ">Benin</option><option value="BM">Bermuda</option><option value="BT">Bhutan</option><option value="BO">Bolivia</option><option value="BA">Bosnia and Herzegovina</option><option value="BW">Botswana</option><option value="BV">Bouvet Island</option><option value="BR">Brazil</option><option value="BQ">British Antarctic Territory</option><option value="IO">British Indian Ocean Territory</option><option value="VG">British Virgin Islands</option><option value="BN">Brunei</option><option value="BG">Bulgaria</option><option value="BF">Burkina Faso</option><option value="BI">Burundi</option><option value="KH">Cambodia</option><option value="CM">Cameroon</option><option value="CA">Canada</option><option value="IC">Canary Islands</option><option value="CT">Canton and Enderbury Islands</option><option value="CV">Cape Verde</option><option value="KY">Cayman Islands</option><option value="CF">Central African Republic</option><option value="EA">Ceuta and Melilla</option><option value="TD">Chad</option><option value="CL">Chile</option><option value="CN">China</option><option value="CX">Christmas Island</option><option value="CP">Clipperton Island</option><option value="CC">Cocos [Keeling] Islands</option><option value="CO">Colombia</option><option value="KM">Comoros</option><option value="CD">Congo [DRC]</option><option value="CG">Congo [Republic]</option><option value="CK">Cook Islands</option><option value="CR">Costa Rica</option><option value="HR">Croatia</option><option value="CU">Cuba</option><option value="CY">Cyprus</option><option value="CZ">Czech Republic</option><option value="DK">Denmark</option><option value="DG">Diego Garcia</option><option value="DJ">Djibouti</option><option value="DM">Dominica</option><option value="DO">Dominican Republic</option><option value="NQ">Dronning Maud Land</option><option value="DD">East Germany</option><option value="TL">East Timor</option><option value="EC">Ecuador</option><option value="EG">Egypt</option><option value="SV">El Salvador</option><option value="GQ">Equatorial Guinea</option><option value="ER">Eritrea</option><option value="EE">Estonia</option><option value="ET">Ethiopia</option><option value="EU">European Union</option><option value="FK">Falkland Islands [Islas Malvinas]</option><option value="FO">Faroe Islands</option><option value="FJ">Fiji</option><option value="FI">Finland</option><option value="FR">France</option><option value="GF">French Guiana</option><option value="PF">French Polynesia</option><option value="TF">French Southern Territories</option><option value="FQ">French Southern and Antarctic Territories</option><option value="GA">Gabon</option><option value="GM">Gambia</option><option value="GE">Georgia</option><option value="DE">Germany</option><option value="GH">Ghana</option><option value="GI">Gibraltar</option><option value="GR">Greece</option><option value="GL">Greenland</option><option value="GD">Grenada</option><option value="GP">Guadeloupe</option><option value="GU">Guam</option><option value="GT">Guatemala</option><option value="GG">Guernsey</option><option value="GN">Guinea</option><option value="GW">Guinea-Bissau</option><option value="GY">Guyana</option><option value="HT">Haiti</option><option value="HM">Heard Island and McDonald Islands</option><option value="HN">Honduras</option><option value="HK">Hong Kong</option><option value="HU">Hungary</option><option value="IS">Iceland</option><option value="IN">India</option><option value="ID">Indonesia</option><option value="IR">Iran</option><option value="IQ">Iraq</option><option value="IE">Ireland</option><option value="IM">Isle of Man</option><option value="IL">Israel</option><option value="IT">Italy</option><option value="CI">Ivory Coast</option><option value="JM">Jamaica</option><option value="JP">Japan</option><option value="JE">Jersey</option><option value="JT">Johnston Island</option><option value="JO">Jordan</option><option value="KZ">Kazakhstan</option><option value="KE">Kenya</option><option value="KI">Kiribati</option><option value="KW">Kuwait</option><option value="KG">Kyrgyzstan</option><option value="LA">Laos</option><option value="LV">Latvia</option><option value="LB">Lebanon</option><option value="LS">Lesotho</option><option value="LR">Liberia</option><option value="LY">Libya</option><option value="LI">Liechtenstein</option><option value="LT">Lithuania</option><option value="LU">Luxembourg</option><option value="MO">Macau</option><option value="MK">Macedonia [FYROM]</option><option value="MG">Madagascar</option><option value="MW">Malawi</option><option value="MY">Malaysia</option><option value="MV">Maldives</option><option value="ML">Mali</option><option value="MT">Malta</option><option value="MH">Marshall Islands</option><option value="MQ">Martinique</option><option value="MR">Mauritania</option><option value="MU">Mauritius</option><option value="YT">Mayotte</option><option value="FX">Metropolitan France</option><option value="MX">Mexico</option><option value="FM">Micronesia</option><option value="MI">Midway Islands</option><option value="MD">Moldova</option><option value="MC">Monaco</option><option value="MN">Mongolia</option><option value="ME">Montenegro</option><option value="MS">Montserrat</option><option value="MA">Morocco</option><option value="MZ">Mozambique</option><option value="MM">Myanmar [Burma]</option><option value="NA">Namibia</option><option value="NR">Nauru</option><option value="NP">Nepal</option><option value="NL">Netherlands</option><option value="AN">Netherlands Antilles</option><option value="NT">Neutral Zone</option><option value="NC">New Caledonia</option><option value="NZ">New Zealand</option><option value="NI">Nicaragua</option><option value="NE">Niger</option><option value="NG">Nigeria</option><option value="NU">Niue</option><option value="NF">Norfolk Island</option><option value="KP">North Korea</option><option value="VD">North Vietnam</option><option value="MP">Northern Mariana Islands</option><option value="NO">Norway</option><option value="OM">Oman</option><option value="QO">Outlying Oceania</option><option value="PC">Pacific Islands Trust Territory</option><option value="PK">Pakistan</option><option value="PW">Palau</option><option value="PS">Palestinian Territories</option><option value="PA">Panama</option><option value="PZ">Panama Canal Zone</option><option value="PG">Papua New Guinea</option><option value="PY">Paraguay</option><option value="YD">People\'s Democratic Republic of Yemen</option><option value="PE">Peru</option><option value="PH">Philippines</option><option value="PN">Pitcairn Islands</option><option value="PL">Poland</option><option value="PT">Portugal</option><option value="PR">Puerto Rico</option><option value="QA">Qatar</option><option value="RO">Romania</option><option value="RU">Russia</option><option value="RW">Rwanda</option><option value="RE">R\u00e9union</option><option value="BL">Saint Barth\u00e9lemy</option><option value="SH">Saint Helena</option><option value="KN">Saint Kitts and Nevis</option><option value="LC">Saint Lucia</option><option value="MF">Saint Martin</option><option value="PM">Saint Pierre and Miquelon</option><option value="VC">Saint Vincent and the Grenadines</option><option value="WS">Samoa</option><option value="SM">San Marino</option><option value="SA">Saudi Arabia</option><option value="SN">Senegal</option><option value="RS">Serbia</option><option value="CS">Serbia and Montenegro</option><option value="SC">Seychelles</option><option value="SL">Sierra Leone</option><option value="SG">Singapore</option><option value="SK">Slovakia</option><option value="SI">Slovenia</option><option value="SB">Solomon Islands</option><option value="SO">Somalia</option><option value="ZA">South Africa</option><option value="GS">South Georgia and the South Sandwich Islands</option><option value="KR">South Korea</option><option value="ES">Spain</option><option value="LK">Sri Lanka</option><option value="SD">Sudan</option><option value="SR">Suriname</option><option value="SJ">Svalbard and Jan Mayen</option><option value="SZ">Swaziland</option><option value="SE">Sweden</option><option value="CH">Switzerland</option><option value="SY">Syria</option><option value="ST">S\u00e3o Tom\u00e9 and Pr\u00edncipe</option><option value="TW">Taiwan</option><option value="TJ">Tajikistan</option><option value="TZ">Tanzania</option><option value="TH">Thailand</option><option value="TG">Togo</option><option value="TK">Tokelau</option><option value="TO">Tonga</option><option value="TT">Trinidad and Tobago</option><option value="TA">Tristan da Cunha</option><option value="TN">Tunisia</option><option value="TR">Turkey</option><option value="TM">Turkmenistan</option><option value="TC">Turks and Caicos Islands</option><option value="TV">Tuvalu</option><option value="UM">U.S. Minor Outlying Islands</option><option value="PU">U.S. Miscellaneous Pacific Islands</option><option value="VI">U.S. Virgin Islands</option><option value="UG">Uganda</option><option value="UA">Ukraine</option><option value="SU">Union(of Soviet Socialist Republics</option><option value="AE">United Arab Emirates</option><option value="GB">United Kingdom</option><option value="US">United States</option><option value="UY">Uruguay</option><option value="UZ">Uzbekistan</option><option value="VU">Vanuatu</option><option value="VA">Vatican City</option><option value="VE">Venezuela</option><option value="VN">Vietnam</option><option value="WK">Wake Island</option><option value="WF">Wallis and Futuna</option><option value="EH">Western Sahara</option><option value="YE">Yemen</option><option value="ZM">Zambia</option><option value="ZW">Zimbabwe</option><option value="AX">\u00c5land Islands</option></select></div></div><div class="field vat_number"><div class="placeholder">VAT Number</div><input type="text"/></div>';
+
+
+
+//////////////////////////////////////////////////
+// Compiled from dom/subscribe_form.jade
+//////////////////////////////////////////////////
+
+R.subscribeFormHTML = '<form class="recurly subscribe"><div class="subscription"><div class="plan"><div class="name"></div><div class="field quantity"><div class="placeholder">Qty</div><input type="text"/></div><div class="recurring_cost"><div class="cost"></div><div class="interval"></div></div><div class="free_trial"></div><div class="setup_fee"><div class="title">Setup Fee</div><div class="cost"></div></div></div><div class="add_ons none"></div><div class="coupon"><div class="coupon_code field"><div class="placeholder">Coupon Code</div><input type="text" class="coupon_code"/></div><div class="check"></div><div class="description"></div><div class="discount"></div></div><div class="vat"><div class="title">VAT</div><div class="cost"></div></div></div><div class="due_now"><div class="title">Order Total</div><div class="cost"></div></div><div class="server_errors none"></div><div class="contact_info"><div class="title">Contact Info</div><div class="full_name"><div class="field first_name"><div class="placeholder">First Name </div><input type="text"/></div><div class="field last_name"><div class="placeholder">Last Name </div><input type="text"/></div></div><div class="field email"><div class="placeholder">Email </div><input type="text"/></div></div><div class="billing_info"></div><div class="footer"><button type="submit" class="submit">Subscribe</button></div></form>';
+
+
+
+//////////////////////////////////////////////////
+// Compiled from dom/update_billing_info_form.jade
+//////////////////////////////////////////////////
+
+R.updateBillingInfoFormHTML = '<form class="recurly update_billing_info"><div class="server_errors none"></div><div class="billing_info"></div><div class="footer"><button type="submit" class="submit">Update</button></div></form>';
+
+
+
+//////////////////////////////////////////////////
+// Compiled from dom/one_time_transaction_form.jade
+//////////////////////////////////////////////////
+
+R.oneTimeTransactionFormHTML = '<form class="recurly update_billing_info"><div class="server_errors none"></div><div class="billing_info"></div><div class="footer"><button type="submit" class="submit">Pay</button></div></form>';
 
 window.Recurly = R;
 
