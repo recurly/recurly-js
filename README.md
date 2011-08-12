@@ -32,9 +32,9 @@ Recurly.config({
  environment: 'sandbox' // or 'production'
 });
 
-Recurly.buildSubscribeForm({
+Recurly.buildSubscriptionForm({
   target: '#subscribe', // A jQuery selector for the container element to append the form to
-  plan: 'myplancode' // A plan you have created in recurly-app
+  planCode: 'myplancode' // A plan you have created in recurly-app
   successURL: '/success?account_code={account_code}' // Redirect on success URL
 });
 ```
@@ -66,9 +66,9 @@ Recurly.config({
   }
 });
 
-Recurly.buildSubscribeForm({
+Recurly.buildSubscriptionForm({
     target: '#subscribe' // A jQuery selector for the container element to append the form to
-  , plan: 'myplancode' // A plan you have created in recurly-app
+  , planCode: 'myplancode' // A plan you have created in recurly-app
   , afterSubscribe: function() {} // Callback after subscription success
   , addressRequirement: 'full' // Address fields to display (full | zipstreet | zip | none) 
   , enableAddOns: true | false
