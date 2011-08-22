@@ -195,13 +195,13 @@ R.RecurringCost.FREE = new R.RecurringCost(0,null);
 R.locale = {};
 
 R.locale.errors = {
-  emptyField: 'Forget something?'
+  emptyField: 'Required field'
 , missingFullAddress: 'Please enter your full address.'
-, invalidEmail: 'This doesn\'t look right.'
-, invalidCC: 'This doesn\'t look right.'
-, invalidCVV: 'This doesn\'t look right.'
-, invalidCoupon: 'Coupon not found' 
-, cardDeclined: 'Sorry, your card was declined.' 
+, invalidEmail: 'Invalid'
+, invalidCC: 'Invalid'
+, invalidCVV: 'Invalid'
+, invalidCoupon: 'Invalid' 
+, cardDeclined: 'Transaction declined' 
 };
 
 R.locale.currencies = {};
@@ -428,19 +428,38 @@ R.flattenErrors = function(obj, attr) {
 
 
 R.replaceVars = function(str, vars) {
-  var all = [];
   for(var k in vars) {
     if(vars.hasOwnProperty(k)) {
-      var v = vars[k];
-
+      var v = encodeURIComponent(vars[k]);
       str = str.replace(new RegExp('\\{'+k+'\\}', 'g'), v);
-      all.push(k + '=' + v);
     }
   }
 
-  str = str.replace(/\{\*\}/g, all.join('&'));
-
   return str;
+};
+
+R.post = function(url, params, urlEncoded) {
+    var form = $('<form />').hide();
+    form.attr('action', url)
+        .attr('method', 'POST')
+        .attr('enctype', urlEncoded ? 'application/x-www-form-urlencoded' : 'multipart/form-data');
+
+    function addParam(name, value, parent) {
+      var fullname = (parent.length > 0 ? (parent + '[' + name + ']') : name);
+      if(typeof value === 'object') {
+        for(var i in value) {
+          if(value.hasOwnProperty(i)) {
+            addParam(i, value[i], fullname);
+          }
+        }
+      }
+      else $('<input type="hidden" />').attr({name: fullname, value: value}).appendTo(form);
+    };
+
+    addParam('', params, '');
+
+    $('body').append(form);
+    form.submit();
 };
 
 
@@ -879,7 +898,7 @@ R.Transaction = {
     };
 
     $.ajax({
-      url: R.settings.baseURL+'accounts/'+options.accountCode+'/transactions/create'
+      url: R.settings.baseURL+'transactions/create'
     , data: json
     , dataType: 'jsonp'
     , jsonp: 'callback'
@@ -1168,7 +1187,7 @@ function pullAccountFields($form, account, accountCode) {
   account.firstName = getField($form, '.contact_info .first_name', V(R.isNotEmpty)); 
   account.lastName = getField($form, '.contact_info .last_name', V(R.isNotEmpty)); 
   account.email = getField($form, '.email', V(R.isNotEmpty), V(R.isValidEmail)); 
-  account.code = accountCode || account.email;
+  account.code = accountCode;
 }
 
 
@@ -1184,7 +1203,7 @@ function pullBillingInfoFields($form, billingInfo) {
   billingInfo.expires = exp;
 
   billingInfo.address1 = getField($form, '.address1', V(R.isNotEmpty)); 
-  billingInfo.address2 = getField($form, '.address2', V(R.isNotEmpty)); 
+  billingInfo.address2 = getField($form, '.address2'); 
   billingInfo.city = getField($form, '.city', V(R.isNotEmpty)); 
   billingInfo.state = getField($form, '.state', V(R.isNotEmpty)); 
   billingInfo.zip = getField($form, '.zip', V(R.isNotEmpty)); 
@@ -1193,7 +1212,7 @@ function pullBillingInfoFields($form, billingInfo) {
 }
 
 
-R.buildUpdateBillingInfoForm = function(options) {
+R.buildBillingInfoUpdateForm = function(options) {
   var defaults = {
     addressRequirement: 'full'
   };
@@ -1239,10 +1258,8 @@ R.buildUpdateBillingInfoForm = function(options) {
 
           if(options.successURL) {
             var url = options.successURL;
-            url = R.replaceVars({
-              account_code: options.accountCode
-            });
-            window.location = url;
+            // url = R.replaceVars(url, response);
+            R.post(url, response, true);
           }
         }
       , error: function(errors) {
@@ -1268,18 +1285,27 @@ R.buildUpdateBillingInfoForm = function(options) {
 R.buildTransactionForm = function(options) {
   var defaults = {
     addressRequirement: 'full'
+  , distinguishContactFromBillingInfo: true
+  , collectContactInfo: true
   };
 
   options = $.extend(createObject(R.settings), defaults, options);
+  
 
-  options.distinguishContactFromBillingInfo = true;
+  if(!options.collectContactInfo && !options.accountCode) {
+    R.raiseError('collectContactInfo is false, but no accountCode provided');
+  }
 
-  if(!options.accountCode) R.raiseError('accountCode missing');
+
+  // if(!options.accountCode) R.raiseError('accountCode missing');
   if(!options.signature) R.raiseError('signature missing');
 
   var billingInfo = R.BillingInfo.create()
+  ,   account = R.Account.create()
   ,   transaction = R.Transaction.create();
 
+
+  transaction.account = account;
   transaction.billingInfo = billingInfo;
   transaction.currency = options.currency;
   transaction.cost = new R.Cost(options.amountInCents);
@@ -1287,6 +1313,12 @@ R.buildTransactionForm = function(options) {
   var $form = $(R.oneTimeTransactionFormHTML);
   $form.find('.billing_info').html(R.billingInfoFieldsHTML);
 
+  if(options.collectContactInfo) {
+    $form.find('.contact_info').html(R.contactInfoFieldsHTML);
+  }
+  else {
+    $form.find('.contact_info').remove();
+  }
 
   initCommonForm($form, options);
   initBillingInfoForm($form, options);
@@ -1300,6 +1332,7 @@ R.buildTransactionForm = function(options) {
     $form.find('.invalid').removeClass('invalid');
 
     handleUserErrors(function() {
+      pullAccountFields($form, account, options.accountCode);
       pullBillingInfoFields($form, billingInfo);
 
       $form.addClass('submitting');
@@ -1314,9 +1347,8 @@ R.buildTransactionForm = function(options) {
 
           if(options.successURL) {
             var url = options.successURL;
-            url = url.replace(/\{account_code\}/g, options.accountCode);
-            url = url.replace(/\{signature\}/g, options.signature);
-            window.location = url;
+            // url = R.replaceVars(url, response);
+            R.post(url, response, true);
           }
         }
       , error: function(errors) {
@@ -1350,13 +1382,9 @@ R.buildSubscriptionForm = function(options) {
   options = $.extend(createObject(R.settings), defaults, options);
 
   var $form = $(R.subscribeFormHTML);
+  $form.find('.contact_info').html(R.contactInfoFieldsHTML);
   $form.find('.billing_info').html(R.billingInfoFieldsHTML);
  
-//   // Insert clearfix hacks just for IE6
-//   if($.browser.msie && $.browser.version == 6 && !options.disableClearFixHack) {
-//     $form.find('div').append('<div class="clearfix">');
-//   }
-
 
   initCommonForm($form, options);
 
@@ -1614,6 +1642,7 @@ R.buildSubscriptionForm = function(options) {
 
       clearServerErrors($form);
 
+      
       $form.find('.error').remove();
       $form.find('.invalid').removeClass('invalid');
 
@@ -1631,8 +1660,8 @@ R.buildSubscriptionForm = function(options) {
 
             if(options.successURL) {
               var url = options.successURL;
-              url = url.replace(/\{account_code\}/g, subscription.account.code);
-              window.location = url;
+              // url = R.replaceVars(url, response);
+              R.post(url, response, true);
             }
           }
         , error: function(errors) {
@@ -1674,6 +1703,14 @@ R.buildSubscriptionForm = function(options) {
 
 
 //////////////////////////////////////////////////
+// Compiled from dom/contact_info_fields.jade
+//////////////////////////////////////////////////
+
+R.contactInfoFieldsHTML = '<div class="title">Contact Info</div><div class="full_name"><div class="field first_name"><div class="placeholder">First Name </div><input type="text"/></div><div class="field last_name"><div class="placeholder">Last Name </div><input type="text"/></div></div><div class="field email"><div class="placeholder">Email </div><input type="text"/></div>';
+
+
+
+//////////////////////////////////////////////////
 // Compiled from dom/billing_info_fields.jade
 //////////////////////////////////////////////////
 
@@ -1685,7 +1722,7 @@ R.billingInfoFieldsHTML = '<div class="title">Billing Info</div><div class="acce
 // Compiled from dom/subscribe_form.jade
 //////////////////////////////////////////////////
 
-R.subscribeFormHTML = '<form class="recurly subscribe"><div class="subscription"><div class="plan"><div class="name"></div><div class="field quantity"><div class="placeholder">Qty</div><input type="text"/></div><div class="recurring_cost"><div class="cost"></div><div class="interval"></div></div><div class="free_trial"></div><div class="setup_fee"><div class="title">Setup Fee</div><div class="cost"></div></div></div><div class="add_ons none"></div><div class="coupon"><div class="coupon_code field"><div class="placeholder">Coupon Code</div><input type="text" class="coupon_code"/></div><div class="check"></div><div class="description"></div><div class="discount"></div></div><div class="vat"><div class="title">VAT</div><div class="cost"></div></div></div><div class="due_now"><div class="title">Order Total</div><div class="cost"></div></div><div class="server_errors none"></div><div class="contact_info"><div class="title">Contact Info</div><div class="full_name"><div class="field first_name"><div class="placeholder">First Name </div><input type="text"/></div><div class="field last_name"><div class="placeholder">Last Name </div><input type="text"/></div></div><div class="field email"><div class="placeholder">Email </div><input type="text"/></div></div><div class="billing_info"></div><div class="footer"><button type="submit" class="submit">Subscribe</button></div></form>';
+R.subscribeFormHTML = '<form class="recurly subscribe"><div class="subscription"><div class="plan"><div class="name"></div><div class="field quantity"><div class="placeholder">Qty</div><input type="text"/></div><div class="recurring_cost"><div class="cost"></div><div class="interval"></div></div><div class="free_trial"></div><div class="setup_fee"><div class="title">Setup Fee</div><div class="cost"></div></div></div><div class="add_ons none"></div><div class="coupon"><div class="coupon_code field"><div class="placeholder">Coupon Code</div><input type="text" class="coupon_code"/></div><div class="check"></div><div class="description"></div><div class="discount"></div></div><div class="vat"><div class="title">VAT</div><div class="cost"></div></div></div><div class="due_now"><div class="title">Order Total</div><div class="cost"></div></div><div class="server_errors none"></div><div class="contact_info"></div><div class="billing_info"></div><div class="footer"><button type="submit" class="submit">Subscribe</button></div></form>';
 
 
 
@@ -1701,7 +1738,7 @@ R.updateBillingInfoFormHTML = '<form class="recurly update_billing_info"><div cl
 // Compiled from dom/one_time_transaction_form.jade
 //////////////////////////////////////////////////
 
-R.oneTimeTransactionFormHTML = '<form class="recurly update_billing_info"><div class="server_errors none"></div><div class="billing_info"></div><div class="footer"><button type="submit" class="submit">Pay</button></div></form>';
+R.oneTimeTransactionFormHTML = '<form class="recurly update_billing_info"><div class="server_errors none"></div><div class="contact_info"></div><div class="billing_info"></div><div class="footer"><button type="submit" class="submit">Pay</button></div></form>';
 
 window.Recurly = R;
 

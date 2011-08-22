@@ -9,22 +9,20 @@
 <script src="lib/jquery-1.6.1.js"></script> 
 <script src="../recurly.js"></script> 
 <script>
-  $(function() {
-    Recurly.config({
-      environment: 'sandbox'
-    , subdomain: 'recurlyjsdemo-test'
-    , currency: 'GBP'
-    , country: 'GB'
-    , VATPercent: 10
-    });
+  Recurly.config({
+    environment: 'sandbox'
+  , subdomain: 'recurlyjsdemo-test'
+  , currency: 'GBP'
+  , country: 'GB'
+  , VATPercent: 10
+  });
 
-    Recurly.buildSubscriptionForm({
-      target: '#recurly-subscribe'
-    , planCode: 'simpleplan'
-    , addressRequirement: 'zipstreet'
-    , successURL: 'confirmation.html?account_code={account_code}'
-    , distinguishContactFromBillingInfo: true
-    });
+  Recurly.buildSubscriptionForm({
+    target: '#recurly-subscribe'
+  , planCode: 'simpleplan'
+  , addressRequirement: 'zipstreet'
+  , successURL: 'confirmation.html'
+  , distinguishContactFromBillingInfo: true
   });
 </script> 
 </head> 

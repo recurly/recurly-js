@@ -5,7 +5,7 @@
   <script src="http://code.jquery.com/jquery-latest.js"></script>
   <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
   <script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
-  <script type="text/javascript" src="../recurly.js"></script>
+  <script type="text/javascript" src="../recurly.min.js"></script>
 
   <script>
   $(document).ready(function(){
@@ -256,16 +256,16 @@
 
  
     test('replaceVars', function() {
-      var url = '/success?account={account_code}&plan={plan_code}&account={account_code}&{*}'; 
+      var url = '/success?account={account_code}&plan={plan_code}&account={account_code}'; 
       var vars = {
         account_code: 123
       , plan_code: 'abc'
+      , add_on_codes: ['abc']
       };
-      var expect = '/success?account=123&plan=abc&account=123&account_code=123&plan_code=abc'; 
+      var expect = '/success?account=123&plan=abc&account=123'; 
       var result = R.replaceVars(url, vars); 
       deepEqual(result, expect);
     });
-
 
 
     module('buidSubscribeForm'); 
@@ -407,7 +407,7 @@
           "account": {
             "first_name": "joe",
             "last_name": "user",
-            "account_code": "joeuser@example.com",
+            "account_code": undefined,
             "email": "joeuser@example.com"
           },
           "billing_info": {

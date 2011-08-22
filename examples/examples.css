@@ -26,6 +26,12 @@ p {
   line-height: 26px;
   text-align: justify;
 }
+pre {
+  margin: 20px;
+  padding: 20px;
+  background: #000;
+  color: #fff;
+}
 code {
   font-family: menlo, monaco, "Lucida Console", monospace;
   padding: 2px 4px;
@@ -40,7 +46,8 @@ a {
   color: inherit;
   font-weight: bold;
 }
-#index {
+#index,
+#result {
   width: 480px;
   margin: 0 auto;
 }

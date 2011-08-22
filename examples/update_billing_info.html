@@ -12,21 +12,22 @@
   Recurly.config({
     environment: 'sandbox'
   , subdomain: 'recurlyjsdemo-test'
-  /* , baseURL: 'http://api-sandbox.lvh.me:3000/jsonp/emeryco-test/' */
   , currency: 'GBP'
   , country: 'GB'
   , VATPercent: 10
   });
 
-  Recurly.buildUpdateBillingInfoForm({
+  Recurly.buildBillingInfoUpdateForm({
     target: '#recurly-update-billing-info'
   , accountCode: 'testaccount'
-  , successURL: 'confirmation.html?account_code={account_code}'
-  , signature: '04e2f13f2db4f7cfc87d915eee94870fc3e15caa-1312409866'
+  , successURL: 'confirmation.html'
+  , signature: '1970639b53c29e9ed3f0a5c7574751caa1b30553-0'
   // Signature must be generated server-side with a utility method provided in client libraries.
   // e.g. Recurly::billing_info_signature(accountcode)
   // It guarantees that you grant the end-user the right to update billing info for this account
   // Without it the request will be rejected.
+  //
+  // The example signature only works for recurlyjsdemo-test
   });
 </script>
 

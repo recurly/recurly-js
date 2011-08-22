@@ -1,30 +1,34 @@
 # Recurly.js 
 
-Recurly.js makes it easy to provide the user experience available on our hosted payment pages, on your site, with complete control over the look and feel, outside of PCI scope.
+Recurly.js is an open-source Javascript library for creating great looking credit card forms to securely create subscriptions, one-time transactions, and update billing information using Recurly. The library is designed to create fully customizable order forms while minimizing your PCI compliance scope.
 
-*Currently depends on jQuery version 1.5.2 or higher.*
+### Dynamic Total Calculation and Error Handling
 
-# Why you should use it
-Don't reinvent the wheel. The fundamentals of paying for subscriptions doesn't change across implementations, there's got to be one approach that gets it right for everyone. We aim to be that solution. The one thing that does change, however, is design: your website has its own look, and we want you to keep it. This is why we created Recurly.js to handle all of the hard work, leaving you with the sole task of styling to fit your design. And with the help of [stylus](/LearnBoost/stylus), that couldn't be easier.
+The library performs client-side validation of cardholder data, immediate pricing calculations for add-ons and Value Added Tax (VAT), and coupon validation. The library handles transaction failures gracefully. Should a transaction be declined, the library automatically highlights the appropriate fields and displays proper error messages for your customers.
+
+### PCI Compliance
+
+Recurly.js simplifies PCI compliance for Recurly merchants. After performing client-side validation on the cardholder data, the library securely submits the order details directly to Recurly. Because the sensitive cardholder data is never transmitted to your web servers, your PCI compliance scope is dramatically reduced. This allows you to host the credit card order forms on your website without the headaches of PCI compliance.
+
+### Fully Customizable CSS
+
+Recurly.js is designed to be fully customized to fit within your website. To help get you started, this library includes a sample stylesheet that resembles Recurly's hosted payment pages. We use [stylus](https://github.com/LearnBoost/stylus) to create the CSS.
+
+__Learn more:__ View the Recurly.js [intro video and examples](http://js.recurly.com) and [documentation](http://docs.recurly.com/recurlyjs/overview).
 
 
-# How it works
+# In the Project
 
-Recurly.js comes with:
+Recurly.js includes:
 
-1. A little script that:
-  * Builds the DOM of a well-structured subscription form
-  * Performs the same tricky client-side total calculations on our hosted pages. (quantities,addons,coupons,vat,etc..) 
-  * Does inline validation, and server-side validation.
-  * Talks to Recurly (through a JSONP API), pulling down plan criteria, and creating subscriptions. 
- 
-2. A stock stylesheet that is also very similar to our hosted payment pages. It is coded in stylus, and comes with the css compilations.
-  * Take this stylesheet and tweak it to your heart's content to match the look and feel of your design.
-
+* A Javscript library (_recurly.js_) for creating well-structured forms with validation and error handling
+* A stock stylesheet (_recurly.css_)
+* [stylus](https://github.com/LearnBoost/stylus) source for customizing the stylesheet (_recurly.styl_)
+* And examples for creating subscriptions, one time transactions, and updating billing information
 
 # Getting Started
 
-Accepting subscriptions is as simple as dropping in this js:
+Accepting subscriptions is as simple as dropping in this Javascript:
 
 ```javascript
 Recurly.config({
@@ -35,9 +39,11 @@ Recurly.config({
 Recurly.buildSubscriptionForm({
   target: '#subscribe', // A jQuery selector for the container element to append the form to
   planCode: 'myplancode' // A plan you have created in recurly-app
-  successURL: '/success?account_code={account_code}' // Redirect on success URL
+  successURL: '/success' // Redirect on success URL
 });
 ```
+
+View our [documentation](http://docs.recurly.com/recurlyjs/overview) for more details.
 
 ## Additional Options
 ```javascript
@@ -78,30 +84,28 @@ Recurly.buildSubscriptionForm({
 ```
 
 ## Customizing the style
+
 A stock stylesheet is provided that is coded in [stylus](/LearnBoost/stylus), a wonderful language that compiles to CSS.
 
 Stylus is officially implemented in node.js, but you don't need to have a node app to use it. You can install node and <code>npm install stylus</code>, then use the <code>stylus</code> command-line to compile to CSS. There is also a Ruby on Rails port of stylus, [stylus_rails](/lucasmazza/stylus_rails).
 
 Alternatively, you could modify the compiled css and ignore the stylus source. But this is heavily discouraged. It's much easier to get accustom to stylus, than to attempt to work with the compiled CSS which has lost all of the original structure that stylus provides. Give it a try, it's worth it.
 
-The first thing you'll want to do is take a look at the variables defined at the top. You'll notice that the default stylesheets is all centered around defined grid system dimensions, making customization a breeze.
+The default stylesheet is designed around the grid system. You will notice the default grid variables at the top of _recurly.styl_.
 
 # Responding to subscription creates
-Once the user subscribes through the recurly.js form on your site, you have to act accordingly with your respective business logic. (giving your users what it is they just paid for)
 
-The easiest way to do this is by simply passing a <code>successURL</code> option to buildSubscribeForm.
-When the user's credit card is processed successfully, recurly.js will redirect to successURL replacing <code>{account_code}</code> with the newly created account.
-
-All you have to do is have your server read the GET variable, pull down the account from Recurly with one of our client libraries, and act accordingly giving them what they paid for.
+Once the subscription is successfully started, Recurly.js will POST to `successURL`. The parameters are signed by Recurly for validation. Using the client library, you should validate the results and start the subscription. Alternatively, you may skip the validation and simply use the API to query the account's subscription status.
 
 Alternatively, you can pass in an option to buildSubscribeForm, <code>afterSubscribe</code>, to handle subscription creates.
 
-# Caveats 
-You will still need to use one of our existing server-side client libraries to pull down the account after it's been created, and act accordingly. But that's the easy part. The hard part in the past has been building out subscription UX and mediating errors.
+# Additional Requirements
 
-It currently depends on jQuery 1.5.2+. Not a problem if you already use it. A future version of the library may be framework agnostic.
+This library depends on jQuery 1.5.2+. A future version may be framework agnostic.
 
-# Soon To Come
+You will need a Recurly client library in order to sign the protected fields for one-time transaction and billing info updates. Today, our [PHP](https://github.com/recurly/recurly-client-php) and [Ruby](https://github.com/recurly/recurly-client-ruby) clients have support for creating Recurly.js signatures. A client library is also necessary for performing other actions, such as retrieving account information, upgrading or downgrading a subscription, etc.
 
-* Multi-currency
-* Localization (english only right now)
+# Coming Soon
+
+* Multi-currency (Supporting more than one currency per merchant)
+* Multi-lingual support (English only today)

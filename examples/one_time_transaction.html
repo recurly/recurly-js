@@ -12,23 +12,22 @@
   Recurly.config({
     environment: 'sandbox'
   , subdomain: 'recurlyjsdemo-test'
-  , baseURL: 'http://api-sandbox.lvh.me:3000/jsonp/emeryco-test/'
   , currency: 'USD'
   , country: 'US'
-  , VATPercent: 10
   });
 
   Recurly.buildTransactionForm({
     target: '#recurly-transaction'
-  , accountCode: 'testaccount'
   , amountInCents: 5000
-  , successURL: 'confirmation.html?account_code={account_code}&signature={signature}'
-  , signature: 'f37ecbd8556f936161d3b9a76cf9291ed46a3000-1312409907'
+  , successURL: 'confirmation.html?acc={account_code}'
+  , signature: '83634a130e340191abca714d7391da48ece7bfd2-0'
   // Signature must be generated server-side with sign_transaction()
   // Without it the request will be rejected.
+  //
+  // The example signature only works with recurlyjsdemo-test
   // 
   // !!! IMPORTANT !!!
-  // You must use verify_transaction() with the GET variables passed to successURL
+  // You must use verify_transaction() with the POST params passed to successURL
   // http://docs.recurly.com/recurlyjs/signatures/
   });
 </script>

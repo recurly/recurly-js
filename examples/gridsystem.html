@@ -9,29 +9,19 @@
 <script src="lib/jquery-1.6.1.js"></script> 
 <script src="../recurly.js"></script>
 <script>
-  $(function() {
-    Recurly.config({
-      environment: 'sandbox'
-    , subdomain: 'recurlyjsdemo-test'
-    , currency: 'GBP'
-    , country: 'GB'
-    , VATPercent: 10
-    });
+  Recurly.config({
+    environment: 'sandbox'
+  , subdomain: 'recurlyjsdemo-test'
+  , currency: 'USD'
+  , country: 'US'
+  , VATPercent: 10
+  });
 
-    Recurly.buildSubscriptionForm({
-      target: '#recurly-subscribe'
-    , planCode: 'complexplan'
-    , addressRequirement: 'full'
-    , successURL: 'confirmation.html?account_code={account_code}'
-    });
-
-    $('#test').click(function() {
-      $('.first_name input').val('joe').change();
-      $('.last_name input').val('user').change();
-      $('.email input').val('joeuser@example.com').change();
-      $('.card_number input').val('4111-1111-1111-1111').change();
-      $('.cvv input').val('123').change();
-    });
+  Recurly.buildSubscriptionForm({
+    target: '#recurly-subscribe'
+  , planCode: 'simpleplan'
+  , addressRequirement: 'full'
+  , successURL: 'confirmation.html?{*}'
   });
 </script> 
 
@@ -74,7 +64,6 @@
 
       <div id="demo480">480px</div>
       <div id="demo960">960px</div>
-      <button id="test">test</button>
 		</div>
 	</div>
 </div>
