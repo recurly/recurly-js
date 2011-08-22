@@ -12,15 +12,13 @@
   Recurly.config({
     environment: 'sandbox'
   , subdomain: 'recurlyjsdemo-test'
-  , currency: 'GBP'
-  , country: 'GB'
-  , VATPercent: 10
+  , currency: 'USD'
+  , country: 'US'
   });
 
   Recurly.buildSubscriptionForm({
     target: '#recurly-subscribe'
   , planCode: 'simpleplan'
-  , addressRequirement: 'zipstreet'
   , successURL: 'confirmation.html'
   , distinguishContactFromBillingInfo: true
   });
