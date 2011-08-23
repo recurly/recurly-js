@@ -5,7 +5,7 @@
   <script src="http://code.jquery.com/jquery-latest.js"></script>
   <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
   <script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
-  <script type="text/javascript" src="../recurly.min.js"></script>
+  <script type="text/javascript" src="../recurly.js"></script>
 
   <script>
   $(document).ready(function(){
@@ -239,11 +239,13 @@
 
 
 
-    test('isVATApplicable', function() {
+    test('isVATChargeApplicable', function() {
       R.config({country: 'GB', VATPercent: 10});
-      equals( R.isVATApplicable('DE'), true);
-      equals( R.isVATApplicable('GB'), false);
-      equals( R.isVATApplicable('USA'), false);
+      ok( R.isVATChargeApplicable('USA', false) == false);    // outside EU: doesn't pay
+      ok( R.isVATChargeApplicable('DE', true)    ==  false);  // in EU, different countries, with VAT number: doesn't pay 
+      ok( R.isVATChargeApplicable('DE', false)   ==  true);   // in EU, different countries, no VAT number: pay 
+      ok( R.isVATChargeApplicable('GB', true)    ==  true);   // in EU, same country, with VAT number: pay 
+      ok( R.isVATChargeApplicable('GB', false)   ==  true);   // in EU, same country, no VAT number: pay 
     });
 
     
@@ -353,19 +355,19 @@
       $('#f .add_on_extras').click();
       ok($('#f .add_on_extras').hasClass('selected')); // selected class
       equal($('#f .add_on_extras .cost').text(), '+ $2.00'); // add-on cost displayed
-      equal($('#f .due_now .cost').text(), '$52.00'); // add-on cost displayed
+      equal($('#f .due_now .cost').text(), '$46.80'); // add-on cost displayed (vat at 10% applied)
       equal(this.subs.addOns.length, 1);
       // Test the subscription calculateTotals values
       var totals = this.subs.calculateTotals();
       equal(totals.allAddOns.dollars(), 2);
-      equal(totals.stages.now.dollars(), 52);
+      equal(totals.stages.now.dollars(), 46.8);
       // Untoggle, all should returns to normal
       $('#f .add_on_extras').click();
       ok(!$('#f .add_on_extras').hasClass('selected'));
       equal(this.subs.addOns.length, 0);
       var totals = this.subs.calculateTotals();
       equal(totals.allAddOns.dollars(), 0);
-      equal(totals.stages.now.dollars(), 50);
+      equal(totals.stages.now.dollars(), 45);
     });
 
     test('validation failure displays first error and focuses', function() {

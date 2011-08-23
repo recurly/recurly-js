@@ -377,19 +377,41 @@ R.formatCurrency = function(num,denomination) {
   return str;
 };
 
-
 var euCountries = ["AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB"];
+R.isCountryInEU = function(country) {
+  return $.inArray(country, euCountries) !== -1;
+}
 
-R.isVATApplicable = function(buyerCountry) {
+R.isVATNumberApplicable = function(buyerCountry, sellerCountry) {
   if(!R.settings.VATPercent) return false;
 
   if(!R.settings.country) {
     R.raiseError('you must configure a country for VAT to work');
   }
 
+  if(!R.isCountryInEU(R.settings.country)) {
+    R.raiseError('you cannot charge VAT outside of the EU');
+  }
+
+  // Outside of EU don't even show the number
+  if(!R.isCountryInEU(buyerCountry)) {
+    return false;
+  }
+
+  return true;
+}
+
+R.isVATChargeApplicable = function(buyerCountry, vatNumber) {
+  // We made it so the VAT Number is collectable in any case
+  // where it could be charged, so this is logically sound:
+  if(!R.isVATNumberApplicable(buyerCountry)) return false;
+
   var sellerCountry = R.settings.country;
-  var inEU = $.inArray(buyerCountry, euCountries) !== -1;
-  return inEU && (sellerCountry != buyerCountry);
+
+  // 1) Outside EU never pays
+  // 2) Same country in EU always pays
+  // 3) Different countries in EU, pay only without vatNumber
+  return (sellerCountry == buyerCountry || !vatNumber);
 };
 
 R.flattenErrors = function(obj, attr) {
@@ -728,7 +750,7 @@ R.Subscription = {
     }
 
     // VAT
-    if(this.billingInfo && R.isVATApplicable(this.billingInfo.country) && !this.billingInfo.vatNumber) {
+    if(this.billingInfo && R.isVATChargeApplicable(this.billingInfo.country,this.billingInfo.vatNumber)) {
       totals.vat = totals.stages.now.mult( (R.settings.VATPercent/100) );
       totals.stages.now = totals.stages.now.sub(totals.vat);
     }
@@ -1611,25 +1633,28 @@ R.buildSubscriptionForm = function(options) {
     var $vatNumber = $form.find('.vat_number');
     var $vatNumberInput = $vatNumber.find('input');
 
-    $vat.find('label').text('VAT at ' + R.settings.VATPercent + '%');
+    $vat.find('.title').text('VAT at ' + R.settings.VATPercent + '%');
     function showHideVAT() { 
       var buyerCountry = $form.find('.country select').val();
-      var applicable = R.isVATApplicable(buyerCountry); 
+      var vatNumberApplicable = R.isVATNumberApplicable(buyerCountry);
+
+      // VAT Number is applicable to collection in any EU country
+      $vatNumber.toggleClass('applicable', vatNumberApplicable);
+      $vatNumber.toggleClass('inapplicable', !vatNumberApplicable);
+
       var vatNumber = $vatNumberInput.val();
 
-      $vatNumber.toggleClass('applicable', applicable);
-      $vatNumber.toggleClass('inapplicable', !applicable);
-
-      applicable = applicable && !vatNumber;
-      $vat.toggleClass('applicable', applicable);
-      $vat.toggleClass('inapplicable', !applicable);
+      // Only applicable to charge if isVATApplicable()
+      var chargeApplicable = R.isVATChargeApplicable(buyerCountry, vatNumber);
+      $vat.toggleClass('applicable', chargeApplicable);
+      $vat.toggleClass('inapplicable', !chargeApplicable);
     }
-    showHideVAT();
+    // showHideVAT();
     $form.find('.country select').change(function() {
       billingInfo.country = $(this).val();
       updateTotals();
       showHideVAT();
-    });
+    }).change();
     $vatNumberInput.bind('keyup change', function() {
       billingInfo.vatNumber = $(this).val();
       updateTotals();
