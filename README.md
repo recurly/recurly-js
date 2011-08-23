@@ -99,7 +99,7 @@ The default stylesheet is designed around the grid system. You will notice the d
 
 Once the subscription is successfully started, Recurly.js will POST to `successURL`. The parameters are signed by Recurly for validation. Using the client library, you should validate the results and start the subscription. Alternatively, you may skip the validation and simply use the API to query the account's subscription status.
 
-Alternatively, you can pass in an option to buildSubscribeForm, <code>afterSubscribe</code>, to handle subscription creates.
+Alternatively, you can pass in an option to buildSubscriptionForm, <code>afterSubscribe</code>, to handle subscription creates.
 
 # Additional Requirements
 
