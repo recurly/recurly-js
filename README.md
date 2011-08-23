@@ -2,6 +2,8 @@
 
 Recurly.js is an open-source Javascript library for creating great looking credit card forms to securely create subscriptions, one-time transactions, and update billing information using Recurly. The library is designed to create fully customizable order forms while minimizing your PCI compliance scope.
 
+This library depends on jQuery 1.5.2+. A future version may be framework agnostic.
+
 ### Dynamic Total Calculation and Error Handling
 
 The library performs client-side validation of cardholder data, immediate pricing calculations for add-ons and Value Added Tax (VAT), and coupon validation. The library handles transaction failures gracefully. Should a transaction be declined, the library automatically highlights the appropriate fields and displays proper error messages for your customers.
@@ -101,7 +103,6 @@ Alternatively, you can pass in an option to buildSubscribeForm, <code>afterSubsc
 
 # Additional Requirements
 
-This library depends on jQuery 1.5.2+. A future version may be framework agnostic.
 
 You will need a Recurly client library in order to sign the protected fields for one-time transaction and billing info updates. Today, our [PHP](https://github.com/recurly/recurly-client-php) and [Ruby](https://github.com/recurly/recurly-client-ruby) clients have support for creating Recurly.js signatures. A client library is also necessary for performing other actions, such as retrieving account information, upgrading or downgrading a subscription, etc.
 
