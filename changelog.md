@@ -1,5 +1,8 @@
 = Recurly.js CHANGELOG
 
+== Version 1.0.3 (August 24, 2011)
+- Added termsOfService acceptance check
+
 == Version 1.0.2 (August 24, 2011)
 - Add before/afterInject options to buildTransactionForm and buildBillingInfoUpdateForm
 

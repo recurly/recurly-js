@@ -202,6 +202,7 @@ R.locale.errors = {
 , invalidCVV: 'Invalid'
 , invalidCoupon: 'Invalid' 
 , cardDeclined: 'Transaction declined' 
+, acceptTOS: 'Please accept the Terms of Service.' 
 };
 
 R.locale.currencies = {};
@@ -492,19 +493,20 @@ R.post = function(url, params, urlEncoded) {
 //////////////////////////////////////////////////
 
 
-(R.isValidCC = function(value) {
+(R.isValidCC = function($input) {
+  var v = $input.val();
   // accept only digits and dashes
-  if (/[^0-9-]+/.test(value))
+  if (/[^0-9-]+/.test(v))
     return false;
 
   var nCheck = 0,
       nDigit = 0,
       bEven = false;
 
-  value = value.replace(/\D/g, "");
+  v = v.replace(/\D/g, "");
 
-  for (var n = value.length - 1; n >= 0; n--) {
-    var cDigit = value.charAt(n);
+  for (var n = v.length - 1; n >= 0; n--) {
+    var cDigit = v.charAt(n);
     var nDigit = parseInt(cDigit, 10);
     if (bEven) {
       if ((nDigit *= 2) > 9)
@@ -517,7 +519,8 @@ R.post = function(url, params, urlEncoded) {
   return (nCheck % 10) == 0;
 }).defaultErrorKey = 'invalidCC';
 
-(R.isValidEmail = function(v) {
+(R.isValidEmail = function($input) {
+  var v = $input.val();
   return /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i.test(v);
 }).defaultErrorKey = 'invalidEmail';
 
@@ -525,13 +528,19 @@ function wholeNumber(val) {
   return /^[0-9]+$/.test(val);
 }
 
-(R.isValidCVV = function(v) {
+(R.isValidCVV = function($input) {
+  var v = $input.val();
   return (v.length == 3 || v.length == 4) && wholeNumber(v);
 }).defaultErrorKey = 'invalidCVV';
 
-(R.isNotEmpty = function(v) {
+(R.isNotEmpty = function($input) {
+  var v = $input.val();
   return !!v;
 }).defaultErrorKey = 'emptyField';
+
+(R.isChecked = function($input) {
+  return $input.is(':checked');
+}).defaultErrorKey = 'acceptTOS';
 
 
 
@@ -975,13 +984,13 @@ function handleUserErrors(block) {
 
     var $e = $('<div class="error">');
     $e.text(message);
-    $e.insertAfter($input);
+    $e.appendTo($input.parent());
+    // $e.insertAfter($input);
 
     $input.addClass('invalid');
     $input.bind('change keyup', function() { 
-      var val = $input.val();
 
-      if(validator(val)) {
+      if(validator($input)) {
         $input.removeClass('invalid');
         $e.remove();
         $input.unbind();
@@ -1008,7 +1017,7 @@ function getField($form, fieldSel, validation) {
 
   for(var i=2,v; v=arguments[i]; ++i) {
 
-    if(!v.validator(val)) {
+    if(!v.validator($input)) {
       raiseUserError(v, $input);
     }
   }
@@ -1230,7 +1239,12 @@ function pullBillingInfoFields($form, billingInfo) {
   billingInfo.state = getField($form, '.state', V(R.isNotEmpty)); 
   billingInfo.zip = getField($form, '.zip', V(R.isNotEmpty)); 
   billingInfo.country = getField($form, '.country',
-      V(function(v) {return v != '-';}, 'emptyField')); 
+      V(function(v) {return v.val() != '-';}, 'emptyField')); 
+}
+
+
+function verifyTOSChecked($form) {
+  getField($form, '.accept_tos', V(R.isChecked)); 
 }
 
 
@@ -1331,6 +1345,7 @@ R.buildTransactionForm = function(options) {
   // if(!options.accountCode) R.raiseError('accountCode missing');
   if(!options.signature) R.raiseError('signature missing');
 
+
   var billingInfo = R.BillingInfo.create()
   ,   account = R.Account.create()
   ,   transaction = R.Transaction.create();
@@ -1351,6 +1366,14 @@ R.buildTransactionForm = function(options) {
     $form.find('.contact_info').remove();
   }
 
+  if(options.termsOfServiceURL) {
+    var $tos = $form.find('.accept_tos').html(R.termsOfServiceHTML);
+    $tos.find('a').attr('href', options.termsOfServiceURL);
+  }
+  else {
+    $form.find('.accept_tos').remove();
+  }
+
   initCommonForm($form, options);
   initBillingInfoForm($form, options);
 
@@ -1365,6 +1388,7 @@ R.buildTransactionForm = function(options) {
     handleUserErrors(function() {
       pullAccountFields($form, account, options.accountCode);
       pullBillingInfoFields($form, billingInfo);
+      verifyTOSChecked($form);
 
       $form.addClass('submitting');
       $form.find('button.submit').attr('disabled', true).text('Please Wait');
@@ -1424,6 +1448,15 @@ R.buildSubscriptionForm = function(options) {
   var $form = $(R.subscribeFormHTML);
   $form.find('.contact_info').html(R.contactInfoFieldsHTML);
   $form.find('.billing_info').html(R.billingInfoFieldsHTML);
+
+
+  if(options.termsOfServiceURL) {
+    var $tos = $form.find('.accept_tos').html(R.termsOfServiceHTML);
+    $tos.find('a').attr('href', options.termsOfServiceURL);
+  }
+  else {
+    $form.find('.accept_tos').remove();
+  }
  
 
   initCommonForm($form, options);
@@ -1692,6 +1725,7 @@ R.buildSubscriptionForm = function(options) {
       handleUserErrors(function() {
         pullAccountFields($form, account, options.accountCode);
         pullBillingInfoFields($form, billingInfo);
+        verifyTOSChecked($form);
 
         $form.addClass('submitting');
         $form.find('button.submit').attr('disabled', true).text('Please Wait');
@@ -1765,7 +1799,7 @@ R.billingInfoFieldsHTML = '<div class="title">Billing Info</div><div class="acce
 // Compiled from dom/subscribe_form.jade
 //////////////////////////////////////////////////
 
-R.subscribeFormHTML = '<form class="recurly subscribe"><div class="subscription"><div class="plan"><div class="name"></div><div class="field quantity"><div class="placeholder">Qty</div><input type="text"/></div><div class="recurring_cost"><div class="cost"></div><div class="interval"></div></div><div class="free_trial"></div><div class="setup_fee"><div class="title">Setup Fee</div><div class="cost"></div></div></div><div class="add_ons none"></div><div class="coupon"><div class="coupon_code field"><div class="placeholder">Coupon Code</div><input type="text" class="coupon_code"/></div><div class="check"></div><div class="description"></div><div class="discount"></div></div><div class="vat"><div class="title">VAT</div><div class="cost"></div></div></div><div class="due_now"><div class="title">Order Total</div><div class="cost"></div></div><div class="server_errors none"></div><div class="contact_info"></div><div class="billing_info"></div><div class="footer"><button type="submit" class="submit">Subscribe</button></div></form>';
+R.subscribeFormHTML = '<form class="recurly subscribe"><div class="subscription"><div class="plan"><div class="name"></div><div class="field quantity"><div class="placeholder">Qty</div><input type="text"/></div><div class="recurring_cost"><div class="cost"></div><div class="interval"></div></div><div class="free_trial"></div><div class="setup_fee"><div class="title">Setup Fee</div><div class="cost"></div></div></div><div class="add_ons none"></div><div class="coupon"><div class="coupon_code field"><div class="placeholder">Coupon Code</div><input type="text" class="coupon_code"/></div><div class="check"></div><div class="description"></div><div class="discount"></div></div><div class="vat"><div class="title">VAT</div><div class="cost"></div></div></div><div class="due_now"><div class="title">Order Total</div><div class="cost"></div></div><div class="server_errors none"></div><div class="contact_info"></div><div class="billing_info"></div><div class="accept_tos"></div><div class="footer"><button type="submit" class="submit">Subscribe</button></div></form>';
 
 
 
@@ -1781,7 +1815,15 @@ R.updateBillingInfoFormHTML = '<form class="recurly update_billing_info"><div cl
 // Compiled from dom/one_time_transaction_form.jade
 //////////////////////////////////////////////////
 
-R.oneTimeTransactionFormHTML = '<form class="recurly update_billing_info"><div class="server_errors none"></div><div class="contact_info"></div><div class="billing_info"></div><div class="footer"><button type="submit" class="submit">Pay</button></div></form>';
+R.oneTimeTransactionFormHTML = '<form class="recurly update_billing_info"><div class="server_errors none"></div><div class="contact_info"></div><div class="billing_info"></div><div class="accept_tos"></div><div class="footer"><button type="submit" class="submit">Pay</button></div></form>';
+
+
+
+//////////////////////////////////////////////////
+// Compiled from dom/terms_of_service.jade
+//////////////////////////////////////////////////
+
+R.termsOfServiceHTML = '<input id="tos_check" type="checkbox"/><label id="accept_tos" for="tos_check">I accept the <a target="_blank" class="tos_link">Terms of Service</a></label>';
 
 window.Recurly = R;
 

@@ -32,7 +32,7 @@
   width: 60px;
   margin: 4px 0;
 }
-.recurly .plan .quantity.field input {
+.recurly .plan .quantity.field input[type=text] {
   width: 48px;
 }
 .recurly .plan .quantity.field:before {
@@ -162,7 +162,7 @@
   width: 60px;
   display: none;
 }
-.recurly .add_ons .add_on .quantity.field input {
+.recurly .add_ons .add_on .quantity.field input[type=text] {
   width: 48px;
 }
 .recurly .add_ons .add_on .quantity.field:before {
@@ -313,19 +313,17 @@
   margin-bottom: 0;
 }
 .recurly .contact_info,
-.recurly .billing_info {
+.recurly .billing_info,
+.recurly .accept_tos {
   position: relative;
   padding: 20px 20px;
+  padding-bottom: 0;
   overflow: hidden;
   zoom: 1;
 }
-.recurly .contact_info.contact_info,
-.recurly .billing_info.contact_info {
-  padding-bottom: 0;
-  background: url("images/dash.png") repeat-x 1px bottom;
-}
 .recurly .contact_info .title,
-.recurly .billing_info .title {
+.recurly .billing_info .title,
+.recurly .accept_tos .title {
   font-size: 16px;
   height: 20px;
   font-weight: bold;
@@ -334,8 +332,31 @@
   text-shadow: 0 1px 0 #fff;
 }
 .recurly .contact_info .credit_card,
-.recurly .billing_info .credit_card {
+.recurly .billing_info .credit_card,
+.recurly .accept_tos .credit_card {
   clear: both;
+}
+.recurly .contact_info {
+  background: url("images/dash.png") repeat-x 1px bottom;
+}
+.recurly .accept_tos {
+  background: url("images/dash.png") repeat-x 1px top;
+  overflow: visible;
+}
+.recurly .accept_tos input[type=checkbox] {
+  display: inline;
+  line-height: 34px;
+  vertical-align: middle;
+}
+.recurly .accept_tos label {
+  margin: 0 0 0 5px;
+  display: inline;
+  line-height: 34px;
+  vertical-align: middle;
+}
+.recurly .accept_tos .field .error {
+  display: block;
+  position: static;
 }
 .recurly .field {
   display: inline;
@@ -346,7 +367,7 @@
   margin-bottom: 20px;
   position: relative;
 }
-.recurly .field input {
+.recurly .field input[type=text] {
   width: 288px;
 }
 .recurly .field .error {
@@ -389,14 +410,14 @@
 .recurly .field.coupon_code {
   width: 140px;
 }
-.recurly .field.coupon_code input {
+.recurly .field.coupon_code input[type=text] {
   width: 128px;
 }
 .recurly .field.first_name {
   clear: left;
   width: 140px;
 }
-.recurly .field.first_name input {
+.recurly .field.first_name input[type=text] {
   width: 128px;
 }
 .recurly .field.first_name .error {
@@ -409,13 +430,13 @@
   clear: none;
   clear: none;
 }
-.recurly .field.last_name input {
+.recurly .field.last_name input[type=text] {
   width: 128px;
 }
 .recurly .field.card_number {
   width: 220px;
 }
-.recurly .field.card_number input {
+.recurly .field.card_number input[type=text] {
   width: 208px;
 }
 .recurly .field.card_number .error {
@@ -428,13 +449,13 @@
   clear: none;
   clear: none;
 }
-.recurly .field.cvv input {
+.recurly .field.cvv input[type=text] {
   width: 48px;
 }
 .recurly .field.expires {
   width: 300px;
 }
-.recurly .field.expires input {
+.recurly .field.expires input[type=text] {
   width: 288px;
 }
 .recurly .field.expires .title {
@@ -449,13 +470,13 @@
 .recurly .field.expires .month {
   width: 100px;
 }
-.recurly .field.expires .month input {
+.recurly .field.expires .month input[type=text] {
   width: 88px;
 }
 * html .recurly .field.expires .year {
   width: 60px;
 }
-* html .recurly .field.expires .year input {
+* html .recurly .field.expires .year input[type=text] {
   width: 48px;
 }
 .recurly .field.expires .month,
@@ -466,7 +487,7 @@
 .recurly .field.state {
   width: 180px;
 }
-.recurly .field.state input {
+.recurly .field.state input[type=text] {
   width: 168px;
 }
 .recurly .field.state .error {
@@ -479,14 +500,14 @@
   clear: none;
   clear: none;
 }
-.recurly .field.zip input {
+.recurly .field.zip input[type=text] {
   width: 88px;
 }
 .recurly .field.vat_number {
   width: 140px;
   display: none;
 }
-.recurly .field.vat_number input {
+.recurly .field.vat_number input[type=text] {
   width: 128px;
 }
 .recurly .field.vat_number.applicable {
@@ -528,31 +549,33 @@
 .recurly .card.no_match {
   opacity: 0.5;
 }
-.recurly input,
+.recurly input[type=text],
 .recurly select {
   vertical-align: middle;
   color: #000;
 }
-.recurly input.invalid,
+.recurly input[type=text].invalid,
 .recurly select.invalid {
   border-color: #a55;
   background: #fee;
   color: #311;
 }
-.recurly input {
+.recurly input[type=text] {
+  display: block;
   background: #fff;
   border: 1px solid #a0a0a5;
   box-shadow: inset 0 2px 3px rgba(0,0,0,0.10);
-  display: block;
-  font-family: inherit;
   font-size: 16px;
+  font-family: inherit;
   padding: 5px;
   height: 22px;
+}
+.recurly input[type=checkbox] {
+  color: #f00;
 }
 .recurly select {
   color: inherit;
   font-family: inherit;
-  font-size: 13px;
   width: 100%;
 }
 .recurly select > option {

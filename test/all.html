@@ -208,23 +208,28 @@
 
     module('Validators'); 
 
+
+    function stubVal(v) {
+      return {val: function() {return v;}};
+    }
+
     test('isValidEmail', function() {
-      ok( R.isValidEmail('someone@somewhere.com') );
-      equal(R.isValidEmail('obviouslynotanemail'), false);
+      ok( R.isValidEmail(stubVal('someone@somewhere.com')) );
+      equal(R.isValidEmail(stubVal('obviouslynotanemail')), false);
     });
 
 
     test('isValidCC', function() {
-      ok( R.isValidCC('4111-1111-1111-1111') );
-      ok(! R.isValidCC('1234-1234-1234-1234') );
+      ok( R.isValidCC(stubVal('4111-1111-1111-1111')) );
+      ok(! R.isValidCC(stubVal('1234-1234-1234-1234')) );
     });
 
     test('isValidCVV', function() {
-      ok( R.isValidCVV('123') );
-      ok( R.isValidCVV('1234') );
-      ok(! R.isValidCVV('12') );
-      ok(! R.isValidCVV('12.3') );
-      ok(! R.isValidCVV('abc') );
+      ok( R.isValidCVV(stubVal('123')) );
+      ok( R.isValidCVV(stubVal('1234')) );
+      ok(! R.isValidCVV(stubVal('12')) );
+      ok(! R.isValidCVV(stubVal('12.3')) );
+      ok(! R.isValidCVV(stubVal('abc')) );
     });
 
     module('Util'); 

@@ -49,7 +49,7 @@ field-width(v)
   width v
 
   // Fit the input by subtracting padding and border from box
-  input
+  & input[type=text]
     width v - (input_border+input_padding)*2
 
 // Horizontally stack a field on the preceeding field
@@ -352,14 +352,12 @@ hstack(cols)
 
   .contact_info
   .billing_info
+  .accept_tos
     position relative
     padding vertical_space outer_margin
+    padding-bottom 0
     overflow hidden
     zoom 1 // IE6
-
-    &.contact_info
-      padding-bottom 0
-      background url(images/dash.png) repeat-x 1px bottom
 
     .title 
       font-size base_font_size
@@ -371,6 +369,28 @@ hstack(cols)
 
     .credit_card
       clear both
+
+  .contact_info
+    background url(images/dash.png) repeat-x 1px bottom
+
+  .accept_tos
+    background url(images/dash.png) repeat-x 1px top
+    overflow visible
+
+    input[type=checkbox]
+      display inline
+      line-height field_height
+      vertical-align middle
+
+    label
+      margin 0 0 0 5px
+      display inline
+      line-height field_height
+      vertical-align middle
+
+    .field .error
+      display block
+      position static
 
   .field
     display inline // IE margin bug hack
@@ -514,7 +534,7 @@ hstack(cols)
 
  
   // General
-  input,
+  input[type=text],
   select
     vertical-align middle
     color #000000
@@ -524,20 +544,22 @@ hstack(cols)
       background #fee
       color #311
 
-  input 
+  input[type=text]
+    display block
     background white
     border input_border solid #a0a0a5
     box-shadow inset 0 2px 3px rgba(0,0,0,0.1)    
-    display block
-    font-family inherit
     font-size base_font_size
+    font-family inherit
     padding input_padding
     height input_height
+
+  input[type=checkbox]
+    color red
 
   select 
     color inherit
     font-family inherit
-    font-size 13px
     width 100%
 
     > option 
