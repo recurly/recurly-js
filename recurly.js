@@ -1053,13 +1053,13 @@ function initCommonForm($form, options) {
 
   $form.delegate('.placeholder', 'click', function() {
     var $label = $(this);
-    var $li = $(this).parent();
+    var $li = $label.parent();
     $li.find('input').focus();
   });
 
   $form.delegate('input', 'change keyup', function() {
     var $input = $(this);
-    var $li = $(this).parent(); 
+    var $li = $label.parent(); 
 
     if($input.val().length > 0) {
       $li.find('.placeholder').hide();
@@ -1071,17 +1071,17 @@ function initCommonForm($form, options) {
 
 
   $form.delegate('input', 'focus', function() {
-    $(this).parent().addClass('focus');
+    $form.parent().addClass('focus');
   });
 
   $form.delegate('input', 'blur', function() {
-    $(this).parent().removeClass('focus');
+    $form.parent().removeClass('focus');
   });
 
   // Touch of perfection
   $form.delegate('input', 'keydown', function(e) {
     if(e.keyCode >= 48 && e.keyCode <= 90) {
-      $(this).parent().find('.placeholder').hide();
+      $form.parent().find('.placeholder').hide();
     }
   });
   
@@ -1308,6 +1308,11 @@ R.buildBillingInfoUpdateForm = function(options) {
     if(options.afterInject) {
       options.afterInject($form.get(0));
     }
+
+    // ensures that if any form fields have been populated
+    // via the inject, the placeholder text remains on top
+    // unless you give the input a little kick
+    $form.find('input').trigger('change');
   });
 
 };
@@ -1406,6 +1411,11 @@ R.buildTransactionForm = function(options) {
     if(options.afterInject) {
       options.afterInject($form.get(0));
     }
+
+    // ensures that if any form fields have been populated
+    // via the inject, the placeholder text remains on top
+    // unless you give the input a little kick
+    $form.find('input').trigger('change');
   });
 
 };
@@ -1735,6 +1745,11 @@ R.buildSubscriptionForm = function(options) {
       if(options.afterInject) {
         options.afterInject($form.get(0));
       }
+
+      // ensures that if any form fields have been populated
+      // via the inject, the placeholder text remains on top
+      // unless you give the input a little kick
+      $form.find('input').trigger('change');
     });
 
   }
