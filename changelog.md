@@ -1,5 +1,8 @@
 = Recurly.js CHANGELOG
 
+== Version 1.0.4 (August 24, 2011)
+- Add VAT instead of subtracting it
+
 == Version 1.0.3 (August 24, 2011)
 - Added termsOfService acceptance check
 
