@@ -1297,10 +1297,19 @@ R.buildBillingInfoUpdateForm = function(options) {
     });
   });
 
+  if(options.beforeInject) {
+    options.beforeInject($form.get(0));
+  }
+
   $(function() {
     var $container = $(options.target);
     $container.html($form);
+
+    if(options.afterInject) {
+      options.afterInject($form.get(0));
+    }
   });
+
 };
 
 
@@ -1386,10 +1395,19 @@ R.buildTransactionForm = function(options) {
     });
   });
 
+  if(options.beforeInject) {
+    options.beforeInject($form.get(0));
+  }
+
   $(function() {
     var $container = $(options.target);
     $container.html($form);
+
+    if(options.afterInject) {
+      options.afterInject($form.get(0));
+    }
   });
+
 };
 
 
