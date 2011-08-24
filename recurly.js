@@ -761,7 +761,7 @@ R.Subscription = {
     // VAT
     if(this.billingInfo && R.isVATChargeApplicable(this.billingInfo.country,this.billingInfo.vatNumber)) {
       totals.vat = totals.stages.now.mult( (R.settings.VATPercent/100) );
-      totals.stages.now = totals.stages.now.sub(totals.vat);
+      totals.stages.now = totals.stages.now.add(totals.vat);
     }
 
     return totals;

@@ -190,7 +190,7 @@
 
       var totals = subscription.calculateTotals();
 
-      equals(totals.stages.now.dollars(), 91.8); // 102 - 10% vat
+      equals(totals.stages.now.dollars(), 112.2); // 102 + 10% vat
     });
 
     test('permutation: add-ons + coupon + vat', function() {
@@ -203,7 +203,7 @@
 
       var totals = subscription.calculateTotals();
 
-      equals(totals.stages.now.dollars(), 45.9); // ( 102 - 10% (vat) ) / 2 (50% coupon)
+      equals(totals.stages.now.dollars(), 56.1); // ( 102 + 10% (vat) ) / 2 (50% coupon)
     });
 
     module('Validators'); 
@@ -360,19 +360,19 @@
       $('#f .add_on_extras').click();
       ok($('#f .add_on_extras').hasClass('selected')); // selected class
       equal($('#f .add_on_extras .cost').text(), '+ $2.00'); // add-on cost displayed
-      equal($('#f .due_now .cost').text(), '$46.80'); // add-on cost displayed (vat at 10% applied)
+      equal($('#f .due_now .cost').text(), '$57.20'); // add-on cost displayed (vat at 10% applied)
       equal(this.subs.addOns.length, 1);
       // Test the subscription calculateTotals values
       var totals = this.subs.calculateTotals();
       equal(totals.allAddOns.dollars(), 2);
-      equal(totals.stages.now.dollars(), 46.8);
+      equal(totals.stages.now.dollars(), 57.2);
       // Untoggle, all should returns to normal
       $('#f .add_on_extras').click();
       ok(!$('#f .add_on_extras').hasClass('selected'));
       equal(this.subs.addOns.length, 0);
       var totals = this.subs.calculateTotals();
       equal(totals.allAddOns.dollars(), 0);
-      equal(totals.stages.now.dollars(), 45);
+      equal(totals.stages.now.dollars(), 55);
     });
 
     test('validation failure displays first error and focuses', function() {
