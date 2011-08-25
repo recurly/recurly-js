@@ -53,7 +53,7 @@ Recurly.config({
     subdomain: 'mycompany' 
   , environment: 'sandbox' // or 'production'
   , currency: 'USD' // GBP | CAD | EUR, etc...
-  , VATPercentage: 10 // European Value Added Tax
+  , VATPercent: 10 // European Value Added Tax
   , country: 'GB' // Seller country, needed for VAT to work 
   , locale: {
       // Currency formatting rules
