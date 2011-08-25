@@ -1,4 +1,4 @@
-//   Recurly.js - v1.0.0 
+//   Recurly.js - v1.0.4 
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API, 
 //   generates UI, handles user error, and passes control to the client

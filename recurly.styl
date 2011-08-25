@@ -465,21 +465,18 @@ hstack(cols)
         font-size round(base_font_size*0.8)
         line-height 24px
         vertical-align middle 
-
-        &:after
-          content ':'
+        width columns(2) - 1px
 
       .month
+        float left
         field-width columns(3)
+        margin-left 0
 
       .year
-        * html & // IE6
-          field-width columns(2)
+        float left
+        margin-left 1px
+        field-width columns(2)
 
-      .month
-      .year 
-        float right
-        margin-left 10px
  
     &.state
       field-width columns(5) 

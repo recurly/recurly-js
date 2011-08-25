@@ -463,26 +463,23 @@
   font-size: 13px;
   line-height: 24px;
   vertical-align: middle;
-}
-.recurly .field.expires .title:after {
-  content: ":";
+  width: 59px;
 }
 .recurly .field.expires .month {
+  float: left;
   width: 100px;
+  margin-left: 0;
 }
 .recurly .field.expires .month input[type=text] {
   width: 88px;
 }
-* html .recurly .field.expires .year {
+.recurly .field.expires .year {
+  float: left;
+  margin-left: 1px;
   width: 60px;
 }
-* html .recurly .field.expires .year input[type=text] {
+.recurly .field.expires .year input[type=text] {
   width: 48px;
-}
-.recurly .field.expires .month,
-.recurly .field.expires .year {
-  float: right;
-  margin-left: 10px;
 }
 .recurly .field.state {
   width: 180px;
