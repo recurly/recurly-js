@@ -467,11 +467,11 @@
 }
 .recurly .field.expires .month {
   float: left;
-  width: 100px;
+  width: 120px;
   margin-left: 0;
 }
 .recurly .field.expires .month input[type=text] {
-  width: 88px;
+  width: 108px;
 }
 .recurly .field.expires .year {
   float: left;
