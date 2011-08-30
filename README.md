@@ -1,6 +1,6 @@
 # Recurly.js 
 
-Full Reference: http://docs.recurly.com/recurlyjs/reference/
+Full Reference: http://docs.recurly.com/recurlyjs/reference/ 
 
 Recurly.js is an open-source Javascript library for creating great looking credit card forms to securely create subscriptions, one-time transactions, and update billing information using Recurly. The library is designed to create fully customizable order forms while minimizing your PCI compliance scope.
 

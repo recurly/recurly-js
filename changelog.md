@@ -1,5 +1,10 @@
 = Recurly.js CHANGELOG
 
+== Version 1.1.1 (August 30, 2011)
+- Added resultNamespace option
+
+- Minor UI improvement in year/month expiration select.
+
 == Version 1.1.0 (August 29, 2011)
 - Added Company, and Phone fields
   with associated options collectCompany/collectPhone

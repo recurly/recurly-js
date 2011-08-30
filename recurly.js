@@ -461,28 +461,35 @@ R.replaceVars = function(str, vars) {
   return str;
 };
 
-R.post = function(url, params, urlEncoded) {
-    var form = $('<form />').hide();
-    form.attr('action', url)
-        .attr('method', 'POST')
-        .attr('enctype', urlEncoded ? 'application/x-www-form-urlencoded' : 'multipart/form-data');
+R.post = function(url, params, options) {
 
-    function addParam(name, value, parent) {
-      var fullname = (parent.length > 0 ? (parent + '[' + name + ']') : name);
-      if(typeof value === 'object') {
-        for(var i in value) {
-          if(value.hasOwnProperty(i)) {
-            addParam(i, value[i], fullname);
-          }
+  if(options.resultNamespace) {
+    var newParams = {};
+    newParams[options.resultNamespace] = params;
+    params = newParams;
+  }
+
+  var form = $('<form />').hide();
+  form.attr('action', url)
+      .attr('method', 'POST')
+      .attr('enctype', 'application/x-www-form-urlencoded');
+
+  function addParam(name, value, parent) {
+    var fullname = (parent.length > 0 ? (parent + '[' + name + ']') : name);
+    if(typeof value === 'object') {
+      for(var i in value) {
+        if(value.hasOwnProperty(i)) {
+          addParam(i, value[i], fullname);
         }
       }
-      else $('<input type="hidden" />').attr({name: fullname, value: value}).appendTo(form);
-    };
+    }
+    else $('<input type="hidden" />').attr({name: fullname, value: value}).appendTo(form);
+  };
 
-    addParam('', params, '');
+  addParam('', params, '');
 
-    $('body').append(form);
-    form.submit();
+  $('body').append(form);
+  form.submit();
 };
 
 
@@ -1212,6 +1219,8 @@ function initBillingInfoForm($form, options) {
     var $yearOpt = $('<option name="'+i+'">'+i+'</option>');
     $yearOpt.appendTo($yearSelect);
   }
+  $yearSelect.val(year+1);
+
 
   // == DISABLE INVALID MONTHS, SELECT CURRENT
   function updateMonths() {
@@ -1366,7 +1375,7 @@ R.buildBillingInfoUpdateForm = function(options) {
           if(options.successURL) {
             var url = options.successURL;
             // url = R.replaceVars(url, response);
-            R.post(url, response, true);
+            R.post(url, response, options);
           }
         }
       , error: function(errors) {
@@ -1502,7 +1511,7 @@ R.buildTransactionForm = function(options) {
           if(options.successURL) {
             var url = options.successURL;
             // url = R.replaceVars(url, response);
-            R.post(url, response, true);
+            R.post(url, response, options);
           }
         }
       , error: function(errors) {
@@ -1829,7 +1838,7 @@ R.buildSubscriptionForm = function(options) {
             if(options.successURL) {
               var url = options.successURL;
               // url = R.replaceVars(url, response);
-              R.post(url, response, true);
+              R.post(url, response, options);
             }
           }
         , error: function(errors) {
