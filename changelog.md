@@ -1,5 +1,8 @@
 = Recurly.js CHANGELOG
 
+== Version 1.1.2 (September 9, 2011)
+- Fix issue with expiration dates, stop trying to use the browser Date object.
+
 == Version 1.1.1 (August 30, 2011)
 - Added resultNamespace option
 

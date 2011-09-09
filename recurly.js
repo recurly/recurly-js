@@ -1,4 +1,4 @@
-//   Recurly.js - v1.0.4 
+//   Recurly.js - v1.1.2 
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API, 
 //   generates UI, handles user error, and passes control to the client
@@ -670,8 +670,8 @@ R.BillingInfo = {
     return {
       first_name: this.firstName
     , last_name: this.lastName
-    , month: this.expires.getMonth() + 1
-    , year: this.expires.getFullYear()
+    , month: this.month
+    , year: this.year
     , number: this.number
     , verification_value: this.cvv
     , address1: this.address1
@@ -1308,10 +1308,8 @@ function pullBillingInfoFields($form, billingInfo, options) {
   billingInfo.number = getField($form, '.card_number', V(R.isNotEmpty), V(R.isValidCC)); 
   billingInfo.cvv = getField($form, '.cvv', V(R.isNotEmpty), V(R.isValidCVV)); 
 
-  var exp = new Date(0); 
-  exp.setMonth( getField($form, '.month') - 1 );
-  exp.setFullYear( getField($form, '.year') );
-  billingInfo.expires = exp;
+  billingInfo.month = getField($form, '.month');
+  billingInfo.year = getField($form, '.year');
 
   billingInfo.phone = getField($form, '.phone'); 
   billingInfo.address1 = getField($form, '.address1', V(R.isNotEmpty)); 
