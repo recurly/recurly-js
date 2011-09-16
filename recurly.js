@@ -1086,8 +1086,8 @@ var preFillMap = {
   , companyName:    '.contact_info > .company_name > input'
   }
 , billingInfo: {
-    firstName:      '.billing_info > .full_name > .first_name > input'
-  , lastName:       '.billing_info > .full_name > .last_name > input'
+    firstName:      '.billing_info > .credit_card > .first_name > input'
+  , lastName:       '.billing_info > .credit_card > .last_name > input'
   , address1:       '.billing_info > .address > .address1 > input'
   , address2:       '.billing_info > .address > .address2 > input'
   , country:        '.billing_info > .address > .country > select'
