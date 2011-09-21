@@ -600,7 +600,7 @@ R.Plan = {
       // data: params,
       dataType: "jsonp",
       jsonp: "callback",
-      timeout: 10000,
+      timeout: 60000,
       success: function(data) {
         var plan = R.Plan.fromJSON(data);
         callback(plan);
