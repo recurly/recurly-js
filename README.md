@@ -37,7 +37,6 @@ Accepting subscriptions is as simple as dropping in this Javascript:
 ```javascript
 Recurly.config({
  subdomain: 'mycompany', 
- environment: 'sandbox' // or 'production'
 });
 
 Recurly.buildSubscriptionForm({
@@ -53,7 +52,6 @@ View our [documentation](http://docs.recurly.com/recurlyjs/overview) for more de
 ```javascript
 Recurly.config({
     subdomain: 'mycompany' 
-  , environment: 'sandbox' // or 'production'
   , currency: 'USD' // GBP | CAD | EUR, etc...
   , VATPercent: 10 // European Value Added Tax
   , country: 'GB' // Seller country, needed for VAT to work 
