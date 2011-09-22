@@ -10,8 +10,7 @@
 <script src="../recurly.js"></script> 
 <script>
   Recurly.config({
-    environment: 'sandbox'
-  , subdomain: 'recurlyjsdemo-test'
+    subdomain: 'recurlyjsdemo-test'
   , currency: 'USD'
   , country: 'US'
   });
@@ -21,7 +20,6 @@
   , amountInCents: 5000
   , successURL: 'confirmation.html'
   , signature: '83634a130e340191abca714d7391da48ece7bfd2-0'
-  , termsOfServiceURL: 'http://example.com/tos'
   // Signature must be generated server-side with sign_transaction()
   // Without it the request will be rejected.
   //

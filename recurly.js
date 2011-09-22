@@ -67,21 +67,7 @@ R.config = function(settings) {
   $.extend(true, R.settings, settings); 
 
   if(!settings.baseURL) {
-
-    switch(R.settings.environment) {
-      case 'sandbox':
-        R.settings.baseURL = 'https://api-sandbox.recurly.com/jsonp/'; 
-        break;
-
-      case 'production':
-        R.settings.baseURL = 'https://api-production.recurly.com/jsonp/'; 
-        break;
-
-      default:
-        R.raiseError('environment not configured (sandbox or production)');
-        break;
-    }
-
+    R.settings.baseURL = 'https://api.recurly.com/jsonp/'; 
     var subdomain = R.settings.subdomain || R.raiseError('company subdomain not configured');
     R.settings.baseURL += subdomain + '/';
   }
@@ -600,7 +586,7 @@ R.Plan = {
       // data: params,
       dataType: "jsonp",
       jsonp: "callback",
-      timeout: 60000,
+      timeout: 10000,
       success: function(data) {
         var plan = R.Plan.fromJSON(data);
         callback(plan);

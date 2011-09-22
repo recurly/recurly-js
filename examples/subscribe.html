@@ -10,8 +10,7 @@
 <script src="../recurly.js"></script> 
 <script>
   Recurly.config({
-    environment: 'sandbox'
-  , subdomain: 'recurlyjsdemo-test'
+    subdomain: 'recurlyjsdemo-test'
   , currency: 'USD'
   , country: 'US'
   });
@@ -21,7 +20,27 @@
   , planCode: 'simpleplan'
   , successURL: 'confirmation.html'
   , distinguishContactFromBillingInfo: true
+  , collectCompany: true
   , termsOfServiceURL: 'http://example.com/tos'
+  , preFill: {
+      contactInfo: {
+        firstName: 'Joe'
+      , lastName: 'User'
+      , email: 'test@example.net'
+      , phone: '555-555-5555'
+      , companyName: 'Acme'
+      }
+    , billingInfo: {
+        firstName: 'Joe'
+      , lastName: 'User'
+      , address1: '123 Somestreet'
+      , address2: '45'
+      , city: 'San Francisco'
+      , zip: '94107'
+      , state: 'CA'
+      , country: 'US'
+      }
+  }
   });
 </script> 
 </head> 

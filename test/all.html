@@ -64,16 +64,9 @@
 
     test('constructs proper endpoint urls', function() {
       R.config({ 
-        environment: 'production'
-      , subdomain: 'flurp-test'
+        subdomain: 'flurp-test'
       });
-      equals(R.settings.baseURL, 'https://api-production.recurly.com/jsonp/flurp-test/');
-      
-      R.config({ 
-        environment: 'sandbox'
-      , subdomain: 'flurp-test'
-      });
-      equals(R.settings.baseURL, 'https://api-sandbox.recurly.com/jsonp/flurp-test/');
+      equals(R.settings.baseURL, 'https://api.recurly.com/jsonp/flurp-test/');
     });
 
 
