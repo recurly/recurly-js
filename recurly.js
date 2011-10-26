@@ -232,7 +232,7 @@ C('CZK', {
 });
 
 C('DKK', {
-  symbol: '\u6b72'
+  symbol: '\u006b\u0072'
 });
 
 C('HUF', {
