@@ -1,5 +1,9 @@
 #Recurly.js CHANGELOG
 
+##Version 1.1.3 (October 31, 2011)
+
+- Made percent coupons discount only recurring amounts, not setup fee.
+
 ##Version 1.1.2 (September 9, 2011)
 
 - Fix issue with expiration dates, stop trying to use the browser Date object.
