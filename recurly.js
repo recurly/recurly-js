@@ -750,17 +750,17 @@ R.Subscription = {
       totals.stages.now = R.Cost.FREE; 
     }
 
-    // SETUP FEE
-    if(this.plan.setupFee) {
-      totals.stages.now = totals.stages.now.add(this.plan.setupFee);
-    }
-
     // COUPON
     if(this.coupon) {
       var beforeDiscount = totals.stages.now;
       var afterDiscount = totals.stages.now.discount(this.coupon);
       totals.coupon = afterDiscount.sub(beforeDiscount);
       totals.stages.now = afterDiscount;
+    }
+
+    // SETUP FEE
+    if(this.plan.setupFee) {
+      totals.stages.now = totals.stages.now.add(this.plan.setupFee);
     }
 
     // VAT
