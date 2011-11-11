@@ -449,11 +449,11 @@ R.replaceVars = function(str, vars) {
 
 R.post = function(url, params, options) {
 
-  if(options.resultNamespace) {
-    var newParams = {};
-    newParams[options.resultNamespace] = params;
-    params = newParams;
-  }
+  var resultNamespace = options.resultNamespace || 'recurly_result';
+
+  var newParams = {};
+  newParams[resultNamespace] = params;
+  params = newParams;
 
   var form = $('<form />').hide();
   form.attr('action', url)
