@@ -1,4 +1,4 @@
-//   Recurly.js - v1.1.4 
+//   Recurly.js - v1.1.5 
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API, 
 //   generates UI, handles user error, and passes control to the client
@@ -1211,11 +1211,14 @@ function initBillingInfoForm($form, options) {
   // == DISABLE INVALID MONTHS, SELECT CURRENT
   function updateMonths() {
     if($yearSelect.val() == year) {
-      $monthSelect.find('option[value="'+month+'"]')
-      var foundSelected = false;
+      var foundSelected = $monthSelect.find('option[selected]').val();
+
       $monthSelect.find('option').each(function(){
-        if($(this).val() <= month) {
+        if($(this).val() <= month * 1) {
           $(this).attr('disabled', true);
+		  		if($(this).val() === foundSelected){
+						foundSelected = false;
+				  }
         }
         else {
           $(this).removeAttr('disabled');
