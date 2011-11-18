@@ -1211,20 +1211,23 @@ function initBillingInfoForm($form, options) {
   // == DISABLE INVALID MONTHS, SELECT CURRENT
   function updateMonths() {
     if($yearSelect.val() == year) {
-      var foundSelected = $monthSelect.find('option[selected]').val();
+      var foundSelected = false; // If we've set a selection yet
+
+      if($monthSelect.val() > month) {
+        // We know the current selection is already valid
+        foundSelected = true;
+      }
 
       $monthSelect.find('option').each(function(){
-        if($(this).val() <= month * 1) {
+        if($(this).val() <= month) {
           $(this).attr('disabled', true);
-		  		if($(this).val() === foundSelected){
-						foundSelected = false;
-				  }
         }
         else {
           $(this).removeAttr('disabled');
+
           if(!foundSelected) {
-            foundSelected = true;
             $(this).attr('selected', true);
+            foundSelected = true;
           }
         }
       });
