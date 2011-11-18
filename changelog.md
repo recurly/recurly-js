@@ -1,5 +1,13 @@
 #Recurly.js CHANGELOG
 
+##Version 1.1.5 (November 17, 2011)
+
+- Minor UI cornercase with the expiration date selector.
+
+##Version 1.1.4 (November 10, 2011)
+
+- Made resultNamespace default to 'recurly_result'.
+
 ##Version 1.1.3 (October 31, 2011)
 
 - Made percent coupons discount only recurring amounts, not setup fee.
