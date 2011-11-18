@@ -1,5 +1,12 @@
 #Recurly.js CHANGELOG
 
+##Version 1.1.6 (November 17, 2011)
+
+- Allow any characters to separate credit card parts.
+  It forced only digits and dashes before, but
+  now it allows anything and strips out the non-digits
+  before LUHN validation.
+
 ##Version 1.1.5 (November 17, 2011)
 
 - Minor UI cornercase with the expiration date selector.

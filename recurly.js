@@ -1,4 +1,4 @@
-//   Recurly.js - v1.1.5 
+//   Recurly.js - v1.1.6 
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API, 
 //   generates UI, handles user error, and passes control to the client
@@ -488,15 +488,14 @@ R.post = function(url, params, options) {
 
 (R.isValidCC = function($input) {
   var v = $input.val();
-  // accept only digits and dashes
-  if (/[^0-9-]+/.test(v))
-    return false;
+
+  // Strip out all non digits 
+  v = v.replace(/\D/g, "");
 
   var nCheck = 0,
       nDigit = 0,
       bEven = false;
 
-  v = v.replace(/\D/g, "");
 
   for (var n = v.length - 1; n >= 0; n--) {
     var cDigit = v.charAt(n);
@@ -965,6 +964,7 @@ R.Transaction = {
 //////////////////////////////////////////////////
 // Compiled from js/recurly.ui.js
 //////////////////////////////////////////////////
+
 
 R.UserError = {};
 

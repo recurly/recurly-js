@@ -230,6 +230,7 @@
 
     test('isValidCC', function() {
       ok( R.isValidCC(stubVal('4111-1111-1111-1111')) );
+      ok( R.isValidCC(stubVal('4111#1111.1111 1111')) );
       ok(! R.isValidCC(stubVal('1234-1234-1234-1234')) );
     });
 
