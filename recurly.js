@@ -1838,7 +1838,7 @@ R.buildSubscriptionForm = function(options) {
             }
           }
         , complete: function() {
-            if(options.successURL) return;
+            if(options.successURL || options.afterSubscribe) return;
             $form.removeClass('submitting');
             $form.find('button.submit').removeAttr('disabled').text(options.submitButtonText || 'Subscribe');
           }
