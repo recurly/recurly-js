@@ -666,6 +666,7 @@ R.BillingInfo = {
     , zip: this.zip
     , country: this.country
     , phone: this.phone
+    , vat_number: this.vatNumber
     };
   }
 , save: function(options) { 
