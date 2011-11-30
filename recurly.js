@@ -1833,13 +1833,15 @@ R.buildSubscriptionForm = function(options) {
             }
           }
         , error: function(errors) {
+            $form.find('button.submit').removeAttr('disabled').text(options.submitButtonText || 'Subscribe');
             if(!options.onError || !options.onError(errors)) {
               displayServerErrors($form, errors);
             }
           }
         , complete: function() {
+            if(options.successURL || options.afterSubscribe) return;
             $form.removeClass('submitting');
-            $form.find('button.submit').removeAttr('disabled').text('Subscribe');
+            $form.find('button.submit').removeAttr('disabled').text(options.submitButtonText || 'Subscribe');
           }
         });
       });
