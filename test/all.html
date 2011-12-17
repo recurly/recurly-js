@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script src="../lib/jquery-1.7.1.js"></script>
   <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
   <script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
   <script type="text/javascript" src="../build/recurly.js"></script>
@@ -17,6 +17,7 @@
     , currency: 'USD'
     , country: 'GB'
     , VATPercent: 10
+    , enableGeoIP: false
     });
 
     // We get reasonable coverage by testing the opposition of a really simple plan,
@@ -438,7 +439,7 @@
             "address1": "yee",
             "address2": "haw",
             "city": "doo",
-            "state": "texas",
+            "state": "TX",
             "zip": "12345",
             "country": "US",
             "phone": undefined,

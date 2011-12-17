@@ -218,11 +218,108 @@ function initContactInfoForm($form, options) {
 
 function initBillingInfoForm($form, options) {
 
-  // == DEFAULT BUYER TO SELLER COUNTRY
-  if(R.settings.country) {
-    var $countryOpt = $form.find('.country option[value='+R.settings.country+']');
-    if($countryOpt.length) {
-      $countryOpt.attr('selected', true).change();
+  // == SWAPPING OF STATE INPUT WITH SELECT
+  var $countrySelect = $form.find('.country select');
+  var $state = $form.find('.state');
+  var $stateInput = $state.find('input');
+  var $manualStateInput = $state.children();
+  var $savedStateSelect = {};
+  var knownStates = R.states;
+  var prevCountry = $countrySelect.val();
+
+  function matchKnownStateWithInput(country, stateStr) {
+    var ref = knownStates[country];
+    // Normalize stateStr
+    stateStr = stateStr.toUpperCase().trim();
+ 
+    // Is a state code
+    if(ref.hasOwnProperty(stateStr)) {
+      return stateStr;
+    }
+
+    // Search through state names to find the code 
+    for(var k in ref) {
+      if(ref.hasOwnProperty(k)) {
+        var v = ref[k];
+        if(stateStr == v.toUpperCase()) {
+          return k;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  function swapStateSelectOrInput(country, state) {
+    var inSelectMode = $state.hasClass('select_mode');
+    if(country == 'US' || country == 'CA') {
+      if(!inSelectMode || prevCountry != country) {
+        var manualVal = $state.find('input').val();
+
+        if(manualVal != undefined  && manualVal != '') {
+          state = matchKnownStateWithInput(country, manualVal);
+
+          if(!state) return false;
+        }
+
+        // Change to select mode
+        $state.addClass('select_mode');
+        // Detatch manual-input children from field
+        $state.children().detach();
+        // Instantiate HTML DOM only now, and cache it
+        $savedStateSelect[country] = $savedStateSelect[country] || jsonToSelect(knownStates[country]);
+        // Insert select into field
+        $state.append($savedStateSelect[country]);
+        // Set known state, if provided
+        if(state) $state.find('select').val(state);
+      }
+ 
+    }
+    else if(inSelectMode) {
+      // Restore original manual state input field
+      $state.empty().append($manualStateInput).removeClass('select_mode');
+    }
+  }
+
+  $stateInput.bind('change keyup', function() {
+    swapStateSelectOrInput(prevCountry);
+  });
+
+  $countrySelect.change(function() {
+    var country = $(this).val();
+    swapStateSelectOrInput(country);
+    prevCountry = country;
+  });
+
+  // == GEOIP
+  function niceSet($jq, v) {
+    var cur = $jq.val();
+    if(!v || v == '') return false;
+    if(cur && cur != '' && cur != '-') return false;
+
+    return $jq.val(v);
+  }
+ 
+  if(options.enableGeoIP) {
+    $.ajax({
+      url: R.settings.baseURL+'location',
+      dataType: "jsonp",
+      jsonp: "callback",
+      success: function(data) {
+        if(data.country) {
+          niceSet($countrySelect, data.country);
+          swapStateSelectOrInput(data.country, data.state);
+        }
+      }
+    });
+  }
+  else {
+    // == DEFAULT BUYER TO SELLER COUNTRY
+    if(R.settings.country) {
+      var $countryOpt = $form.find('.country option[value='+R.settings.country+']');
+      if($countryOpt.length) {
+        $countryOpt.attr('selected', true).change();
+      }
     }
   }
 
@@ -298,9 +395,25 @@ function initBillingInfoForm($form, options) {
   else if(options.addressRequirement == 'full') {
     $form.find('.address').addClass('full');
   }
+  // == BUILD ACCEPTED CARDS DOM
+  var $acceptedCards = $form.find('.accepted_cards');
+
+  if(options.acceptedCards) {
+    var a = options.acceptedCards
+      , l = a.length;
+
+    for(var i=0; i < l; ++i) {
+      var cardId = a[i];
+      var $card = $('<div class="card '+cardId+'">');
+      var card = R.knownCards[cardId];
+      if(card && card.name) {
+        $card.text(card.name);
+      }
+      $acceptedCards.append($card);
+    }
+  }
 
   // == SHOW/HIDE CARD TYPES
-  var $acceptedCards = $form.find('.accepted_cards');
   $form.find('.card_number input').bind('change keyup', function() {
     var type = R.detectCardType( $(this).val() );
     if(type) {
@@ -313,7 +426,6 @@ function initBillingInfoForm($form, options) {
       $acceptedCards.find('.card').removeClass('match no_match'); 
     }
   }); 
-
 }
 
 

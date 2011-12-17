@@ -6,7 +6,11 @@ function createObject(o) {
 };
 
 var R = {}; 
-R.settings = {};
+R.settings = {
+  enableGeoIP: false 
+, acceptedCards: ['american_express', 'discover', 'mastercard', 'visa']
+};
+
 R.dom = {};
 
 R.Error = {

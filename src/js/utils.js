@@ -1,34 +1,78 @@
-
+R.knownCards = {
+  'visa': {
+    prefixes: [4]
+  , name: 'Visa'
+  }
+, 'mastercard': {
+    prefixes: [51, 52, 53, 54, 55]
+  , name: 'MasterCard'
+  }
+, 'american_express': {
+    prefixes: [34, 37]
+  , name: 'American Express'
+  }
+, 'discover': {
+    prefixes: [6011, 62, 64, 65]
+  , name: 'Discover'
+  }
+, 'diners_club': {
+    prefixes: [305, 36, 38]
+  , name: 'Diners Club'
+  }
+, 'carte_blanche': {
+    prefixes: [300, 301, 302, 303, 304, 305]
+  }
+, 'jcb': {
+    prefixes: [35]
+  , name: 'JCB'
+  }
+, 'enroute': {
+    prefixes: [2014, 2149]
+  , name: 'EnRoute'
+  }
+, 'solo': {
+    prefixes: [6334, 6767]
+  , name: 'Solo'
+  }
+, 'switch': {
+    prefixes: [4903, 4905, 4911, 4936, 564182, 633110, 6333, 6759]
+  , name: 'Switch'
+  }
+, 'maestro': {
+    prefixes: [5018, 5020, 5038, 6304, 6759, 6761]
+  , name: 'Maestro'
+  }
+, 'visa_electron': {
+    prefixes: [417500, 4917, 4913, 4508, 4844]
+  , name: 'Visa Electron'
+  } // visa electron
+, 'laser': {
+    prefixes: [6304, 6706, 6771, 6709]
+  , name: 'Laser'
+  }
+};
 
 // Credit card type functions
-R.detectCardType = function(cardnumber) {
+R.detectCardType = function(cardNumber) {
+  cardNumber = cardNumber.replace(/\D/g, '');
+  var cards = R.knownCards;
 
-  cardnumber = cardnumber.replace(/\D/g, '');
-
-  var cards = [
-    { name: 'visa', prefixes: [4] },
-    { name: 'mastercard', prefixes: [51, 52, 53, 54, 55] },
-    { name: 'american_express', prefixes: [34, 37] },
-    { name: 'discover', prefixes: [6011, 62, 64, 65] },
-    { name: 'diners_club', prefixes: [305, 36, 38] },
-    { name: 'carte_blanche', prefixes: [300, 301, 302, 303, 304, 305] },
-    { name: 'jcb', prefixes: [35] },
-    { name: 'enroute', prefixes: [2014, 2149] },
-    { name: 'solo', prefixes: [6334, 6767] },
-    { name: 'switch', prefixes: [4903, 4905, 4911, 4936, 564182, 633110, 6333, 6759] },
-    { name: 'maestro', prefixes: [5018, 5020, 5038, 6304, 6759, 6761] },
-    { name: 'visa', prefixes: [417500, 4917, 4913, 4508, 4844] }, // visa electron
-    { name: 'laser', prefixes: [6304, 6706, 6771, 6709] }
-  ];
-
-  for (var c = 0; c < cards.length; c++) {
-    for (var p = 0; p < cards[c].prefixes.length; p++) {
-      if (new RegExp('^' + cards[c].prefixes[p].toString()).test(cardnumber))
-        return cards[c].name;
+  for(var ci in cards) {
+    if(cards.hasOwnProperty(ci)) {
+      var c = cards[ci];
+      for(var pi=0,pl=c.prefixes.length; pi < pl; ++pi) {
+        if(c.prefixes.hasOwnProperty(pi)) {
+          var p = c.prefixes[pi];
+          if (new RegExp('^' + p.toString()).test(cardNumber))
+            return ci;
+        }
+      }
     }
   }
-
+  
+  return false;
 };
+
 
 // Formats currency amount in the current denomination or one provided
 // based on R.locale.currencies rules
@@ -193,3 +237,17 @@ R.post = function(url, params, options) {
   $('body').append(form);
   form.submit();
 };
+
+function jsonToSelect(obj) { 
+  var $select = $('<select>');
+
+  for(var k in obj) {
+    if(obj.hasOwnProperty(k)) {
+      var v = obj[k];
+      $select.append('<option value='+k+'>'+v+'</option>');
+    }
+  }
+
+  return $select;
+}
+
