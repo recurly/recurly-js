@@ -62,6 +62,7 @@ function getField($form, fieldSel, validation) {
   return val;
 }
 
+
 // Make a 'validation' from validator / errorKey
 function V(v,k) {
   return {
@@ -453,8 +454,7 @@ function pullBillingInfoFields($form, billingInfo, options) {
   billingInfo.city = getField($form, '.city', V(R.isNotEmpty)); 
   billingInfo.state = getField($form, '.state', V(R.isNotEmpty)); 
   billingInfo.zip = getField($form, '.zip', V(R.isNotEmpty)); 
-  billingInfo.country = getField($form, '.country',
-      V(function(v) {return v.val() != '-';}, 'emptyField')); 
+  billingInfo.country = getField($form, '.country', V(R.isNotEmpty)); 
 }
 
 

@@ -40,6 +40,9 @@ function wholeNumber(val) {
 
 (R.isNotEmpty = function($input) {
   var v = $input.val();
+  if($input.is('select')) {
+    if(v == '-' || v == '--') return false;
+  }
   return !!v;
 }).defaultErrorKey = 'emptyField';
 
