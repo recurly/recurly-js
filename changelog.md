@@ -1,5 +1,9 @@
 #Recurly.js CHANGELOG
 
+##Version 1.1.7 (December 17, 2011)
+
+- Big project refactor, with very minor changes to the resulting build. 
+
 ##Version 1.1.6 (November 17, 2011)
 
 - Allow any characters to separate credit card parts.
