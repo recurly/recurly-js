@@ -1,5 +1,12 @@
 #Recurly.js CHANGELOG
 
+##Version 1.1.8 (December 17, 2011)
+
+- Nice UI for switching state input to a select for US and Canada.
+- GeoIP country detection that makes the aforementioned UI so nice.
+- Accepted cards was too fixed, made them very generic with an 'acceptedCards' option
+- Updated jQuery version used by tests and examples.
+
 ##Version 1.1.7 (December 17, 2011)
 
 - Big project refactor, with very minor changes to the resulting build. 

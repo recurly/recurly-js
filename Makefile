@@ -13,6 +13,7 @@ JS_SOURCES = $(addprefix src/js/, \
   subscription.js \
   transaction.js \
   ui.js\
+  states.js\
 )
 
 DOM_SOURCES = $(addprefix src/dom/, \
