@@ -6,6 +6,5 @@
     , "jade": "0.17.x"
     , "wrench": "1.x.x"
     , "async": "0.1.x"
-    , "node-minify": "0.3.x"
   }
 }
