@@ -14,23 +14,7 @@ The library performs client-side validation of cardholder data, immediate pricin
 
 Recurly.js simplifies PCI compliance for Recurly merchants. After performing client-side validation on the cardholder data, the library securely submits the order details directly to Recurly. Because the sensitive cardholder data is never transmitted to your web servers, your PCI compliance scope is dramatically reduced. This allows you to host the credit card order forms on your website without the headaches of PCI compliance.
 
-### Fully Customizable CSS
-
-Recurly.js is designed to be fully customized to fit within your website. To help get you started, this library includes a sample stylesheet that resembles Recurly's hosted payment pages. We use [stylus](https://github.com/LearnBoost/stylus) to create the CSS.
-
-__Learn more:__ View the Recurly.js [intro video and examples](http://js.recurly.com) and [documentation](http://docs.recurly.com/recurlyjs/overview).
-
-
-# In the Project
-
-Recurly.js includes:
-
-* A Javscript library (_recurly.js_) for creating well-structured forms with validation and error handling
-* A stock stylesheet (_recurly.css_)
-* [stylus](https://github.com/LearnBoost/stylus) source for customizing the stylesheet (_recurly.styl_)
-* And examples for creating subscriptions, one time transactions, and updating billing information
-
-# Getting Started
+## Getting Started
 
 Accepting subscriptions is as simple as dropping in this Javascript:
 
@@ -47,6 +31,21 @@ Recurly.buildSubscriptionForm({
 ```
 
 View our [documentation](http://docs.recurly.com/recurlyjs/overview) for more details.
+
+
+## Customizing CSS
+
+A theme is just a recurly.css file and images in the themes/ directory. Today, there is only one theme, "default", but new themes are coming. We use [stylus](https://github.com/LearnBoost/stylus), but you don't have to.
+
+There are two approaches to customizing:
+
+* Use a stock theme, and separate stylesheet to override individual styles.
+  This approach makes updating easier later if you only want to tweak a few things.
+
+* Fork the repository and modify an existing theme, or create a new theme.
+  Note: The stylus source for the "default" theme has many options as variables at the top of the file.
+
+
 
 ## Additional Options
 ```javascript
@@ -85,16 +84,6 @@ Recurly.buildSubscriptionForm({
 });
 ```
 
-## Customizing the style
-
-A stock stylesheet is provided that is coded in [stylus](/LearnBoost/stylus), a wonderful language that compiles to CSS.
-
-Stylus is officially implemented in node.js, but you don't need to have a node app to use it. You can install node and <code>npm install stylus</code>, then use the <code>stylus</code> command-line to compile to CSS. There is also a Ruby gem for stylus, [ruby-stylus](https://github.com/lucasmazza/ruby-stylus).
-
-Alternatively, you could modify the compiled css and ignore the stylus source. But this is heavily discouraged. It's much easier to get accustom to stylus, than to attempt to work with the compiled CSS which has lost all of the original structure that stylus provides. Give it a try, it's worth it.
-
-The default stylesheet is designed around the grid system. You will notice the default grid variables at the top of _recurly.styl_.
-
 # Responding to subscription creates
 
 Once the subscription is successfully started, Recurly.js will POST to `successURL`. The parameters are signed by Recurly for validation. Using the client library, you should validate the results and start the subscription. Alternatively, you may skip the validation and simply use the API to query the account's subscription status.
@@ -103,8 +92,19 @@ Alternatively, you can pass in an option to buildSubscriptionForm, <code>afterSu
 
 # Additional Requirements
 
-
 You will need a Recurly client library in order to sign the protected fields for one-time transaction and billing info updates. Today, our [PHP](https://github.com/recurly/recurly-client-php) and [Ruby](https://github.com/recurly/recurly-client-ruby) clients have support for creating Recurly.js signatures. A client library is also necessary for performing other actions, such as retrieving account information, upgrading or downgrading a subscription, etc.
+
+
+# Building / Contributing
+The build/ directory has the compiled library. You might want to build it yourself if you are contributing or have an unusual usecase that isn't appropriate for the official library.
+
+* Install [node](http://nodejs.org/) and [npm](http://npmjs.org/)
+* Run 'make'
+
+To create a new theme, just add a directory to 'themes' containing a recurly.css.
+You can use any meta-language that compiles down to css and include that as well,
+but the compiled .css should be under version control.
+Put any images under 'images' and use relative paths in the css.
 
 # Coming Soon
 

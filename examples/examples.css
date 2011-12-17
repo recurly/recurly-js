@@ -2,7 +2,7 @@ html {
   font-family: "helvetica neue", helvetica, arial;
   margin: 0;
   padding: 0;
-  background: #c0c1c3 url("../images/noise.png") no-repeat center top;
+  background: #c0c1c3 url("images/noise.png") no-repeat center top;
 }
 h1 {
   width: 500px;
@@ -44,7 +44,6 @@ code {
 }
 a {
   color: inherit;
-  font-weight: bold;
 }
 #index,
 #result {
@@ -86,6 +85,6 @@ a {
   padding: 0px;
   border: 1px solid #999;
   border-radius: 8px;
-  background: #fcfcfc url("../images/pulp.jpeg") repeat;
+  background: #fcfcfc url("images/pulp.jpeg") repeat;
   box-shadow: 0px 1px 2px rgba(0,0,0,0.20), inset 0 1px 0 #fff;
 }

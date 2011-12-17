@@ -52,7 +52,7 @@ body {
 {
 	float: left;
 	width: 980px;
-	background: #f0f0f0 url(../images/grid_demo.png) repeat 20px 0;
+	background: #f0f0f0 url(images/grid_demo.png) repeat 20px 0;
 }
 
 #content

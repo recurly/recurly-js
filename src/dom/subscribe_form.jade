@@ -1,0 +1,47 @@
+form.recurly.subscribe
+  .subscription
+    .plan 
+      .name 
+      .field.quantity
+        .placeholder Qty
+        input(type="text")
+
+      .recurring_cost
+        .cost
+        .interval
+
+      .free_trial
+
+      .setup_fee
+        .title Setup Fee
+        .cost
+
+
+    .add_ons.none 
+
+    .coupon
+      .coupon_code.field
+        .placeholder Coupon Code
+        input.coupon_code(type="text")
+      .check
+      .description
+      .discount
+
+    .vat
+      .title VAT
+      .cost
+
+  .due_now
+    .title Order Total
+    .cost 
+
+  .server_errors.none
+
+  .contact_info
+
+  .billing_info
+
+  .accept_tos
+ 
+  .footer
+    button.submit(type='submit') Subscribe
