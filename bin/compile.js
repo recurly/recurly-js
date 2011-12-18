@@ -6,10 +6,8 @@
 // assignment, like this: R.dom['jadefilename'] = 'compiledhtml';
 
 var fs = require('fs')
-  , path = require('path')
   , jade = require('jade')
-  , async = require('async')
-  , dirname = path.dirname;
+  , async = require('async');
 
 var argParts = process.argv.slice(2).map(function(file) {
   if(file.match(/.*\.jade$/))
