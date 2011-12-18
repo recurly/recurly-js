@@ -1,6 +1,6 @@
 #Recurly.js CHANGELOG
 
-##Version 1.1.8 (December 17, 2011)
+##Version 1.2.0 (December 17, 2011)
 
 - Nice UI for switching state input to a select for US and Canada.
 - GeoIP country detection that makes the aforementioned UI so nice.
