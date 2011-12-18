@@ -101,6 +101,8 @@ The build/ directory has the compiled library. You might want to build it yourse
 * Install [node](http://nodejs.org/) and [npm](http://npmjs.org/)
 * Run 'make'
 
+Never edit build/recurly.js. The sources under src/ compile to build/recurly.js.
+
 To create a new theme, just add a directory to 'themes' containing a recurly.css.
 You can use any meta-language that compiles down to css and include that as well,
 but the compiled .css should be under version control.
