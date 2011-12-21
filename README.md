@@ -33,7 +33,7 @@ Recurly.config({
 Recurly.buildSubscriptionForm({
   target: '#subscribe', // A jQuery selector for the container element to append the form to
   planCode: 'myplancode' // A plan you have created in recurly-app
-  successURL: '/success' // Redirect on success URL
+  successURL: '/success' // The newly created subscription will be POST'ed here
 });
 ```
 
