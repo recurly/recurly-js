@@ -95,7 +95,7 @@ Recurly.buildSubscriptionForm({
 
 Once the subscription is successfully started, Recurly.js will POST to `successURL`. The parameters are signed by Recurly for validation. Using the client library, you should validate the results and start the subscription. Alternatively, you may skip the validation and simply use the API to query the account's subscription status.
 
-Alternatively, you can pass in an option to buildSubscriptionForm, <code>afterSubscribe</code>, to handle subscription creates.
+If you don't want a POST, you can pass in an option to buildSubscriptionForm, <code>afterSubscribe</code>, to handle subscription creates.
 
 ## Building / Contributing
 The build/ directory has the compiled library. You might want to build it yourself if you are contributing or have an unusual usecase that isn't appropriate for the official library.
