@@ -42,7 +42,8 @@ build/recurly.min.js: build/recurly.js
 clean:
 	rm -rf build
 
-npm:
+node_modules: package.json
 	npm install
+	touch node_modules
 
 .PHONY: clean npm
