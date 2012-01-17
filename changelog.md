@@ -5,6 +5,7 @@
 - buildSubscriptionForm() now requires a signature (breaks backwards compatibility)
 - Ability to arbitrarily sign any parameter
 - 'preFill' options are moved down to the base options as general predefined object models with multiple intents.
+- Validation now supports three possible UI permutations with config() options 'oneErrorPerField' and 'oneErrorPerForm'
 
 ##Version 1.2.0 (December 17, 2011)
 
