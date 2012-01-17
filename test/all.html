@@ -386,12 +386,12 @@
       equal(totals.stages.now.dollars(), 77);
     });
 
-    test('validation failure displays first error and focuses', function() {
-      $('#f form').submit();
-      equal( $('#f .first_name .error').length, 1); 
-      equal( $('#f .last_name .error').length, 0); 
-      ok( $('#f .first_name input').is(':focus') );
-    });
+    <!--test('validation failure displays first error and focuses', function() {-->
+    <!--  $('#f form').submit();-->
+    <!--  equal( $('#f .first_name .error').length, 1); -->
+    <!--  equal( $('#f .last_name .error').length, 0); -->
+    <!--  ok( $('#f .first_name input').is(':focus') );-->
+    <!--});-->
 
     function fillOutEverything() {
       // Just try to fill out anything we can, works for all tests
@@ -439,7 +439,7 @@
             "address1": "yee",
             "address2": "haw",
             "city": "doo",
-            "state": "TX",
+            "state": "texas",
             "zip": "12345",
             "country": "US",
             "phone": undefined,

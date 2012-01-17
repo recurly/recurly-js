@@ -1,5 +1,11 @@
 #Recurly.js CHANGELOG
 
+##Version 2.0.0 (January 17, 2011)
+
+- buildSubscriptionForm() now requires a signature (breaks backwards compatibility)
+- Ability to arbitrarily sign any parameter
+- 'preFill' options are moved down to the base options as general predefined object models with multiple intents.
+
 ##Version 1.2.0 (December 17, 2011)
 
 - Nice UI for switching state input to a select for US and Canada.

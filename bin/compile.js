@@ -19,14 +19,18 @@ var argParts = process.argv.slice(2).map(function(file) {
 async.series([headerPart].concat(argParts).concat([footerPart]));
 
 function headerPart(done) {
-  fs.readFile('src/js/header.js', function(err, data){
-    process.stdout.write(
-      data
-    + '\n(function($) {'
-    + '\n"use strict";'
-    );
-    done();
-  });
+
+  var version = fs.readFileSync('version');
+  var header = fs.readFileSync('src/js/header.js') + '';
+  header = header.replace(/\{VERSION\}/,version);
+
+  process.stdout.write(
+    header
+  + '\n(function($) {'
+  + '\n"use strict";'
+  );
+
+  done();
 };
 
 function footerPart(done) {
@@ -52,6 +56,7 @@ function jadePart(jadefile) {
     var jadestr = fs.readFileSync(jadefile); 
 
     jade.render(jadestr, {filename: jadefile}, function(err,html) {
+      html = html.replace(/\n/g,'');
       var jsstr = leader(jadefile);
       jsstr += 'R.dom[\''+key+'\'] = \'' + html.replace(/\'/g,'\\\'') + '\';'
       process.stdout.write(jsstr);

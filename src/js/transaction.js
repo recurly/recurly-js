@@ -4,6 +4,8 @@ R.Transaction = {
     return {
       currency: this.currency
     , amount_in_cents: this.cost.cents()
+    , description: this.description
+    , accounting_code: this.accountingCode
     };
   }
 , create: createObject
@@ -15,7 +17,7 @@ R.Transaction = {
     , signature: options.signature
     };
 
-    $.ajax({
+    R.ajax({
       url: R.settings.baseURL+'transactions/create'
     , data: json
     , dataType: 'jsonp'

@@ -34,7 +34,7 @@ R.BillingInfo = {
       };
     }
 
-    $.ajax({
+    R.ajax({
       url: R.settings.baseURL+'accounts/'+options.accountCode+'/billing_info/update'
     , data: json
     , dataType: 'jsonp'

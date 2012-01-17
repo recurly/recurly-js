@@ -1,5 +1,6 @@
 SHELL = /bin/sh
 COMPILER = ./bin/compile.js
+STYLUS = ./node_modules/stylus/bin/stylus
 YUI_COMPRESSOR = java -jar ./bin/yuicompressor-2.4.6.jar
 
 JS_SOURCES = $(addprefix src/js/, \
@@ -25,12 +26,10 @@ DOM_SOURCES = $(addprefix src/dom/, \
 	terms_of_service.jade \
 )
 
-all: npm build build/recurly.min.js
+all: node_modules build build/recurly.min.js
 
 build:
 	mkdir -p build
-	# cp -rf src/examples build/examples
-	# cp -rf src/images build/images
 
 build/recurly.js: $(JS_SOURCES) $(DOM_SOURCES)
 	$(COMPILER) $^ > $@
@@ -39,6 +38,9 @@ build/recurly.min.js: build/recurly.js
 	rm -f build/recurly.min.js
 	$(YUI_COMPRESSOR) build/recurly.js -o build/recurly.min.js
 
+themes/default/recurly.css: themes/default/recurly.styl
+	$(STYLUS) $^
+
 clean:
 	rm -rf build
 
@@ -46,4 +48,4 @@ node_modules: package.json
 	npm install
 	touch node_modules
 
-.PHONY: clean npm
+.PHONY: clean

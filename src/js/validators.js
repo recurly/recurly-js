@@ -5,6 +5,8 @@
   // Strip out all non digits 
   v = v.replace(/\D/g, "");
 
+  if(v == "") return false;
+
   var nCheck = 0,
       nDigit = 0,
       bEven = false;

@@ -22,25 +22,26 @@
   , distinguishContactFromBillingInfo: true
   , collectCompany: true
   , termsOfServiceURL: 'http://example.com/tos'
-  , preFill: {
-      contactInfo: {
-        firstName: 'Joe'
-      , lastName: 'User'
-      , email: 'test@example.net'
-      , phone: '555-555-5555'
-      , companyName: 'Acme'
-      }
-    , billingInfo: {
-        firstName: 'Joe'
-      , lastName: 'User'
-      , address1: '123 Somestreet'
-      , address2: '45'
-      , city: 'San Francisco'
-      , zip: '94107'
-      , state: 'CA'
-      , country: 'US'
-      }
-  }
+  , account: {
+      firstName: 'Joe'
+    , lastName: 'User'
+    , email: 'test@example.net'
+    , phone: '555-555-5555'
+    , companyName: 'Acme'
+    }
+  , billingInfo: {
+      firstName: 'Joe'
+    , lastName: 'User'
+    , address1: '123 somestreet'
+    , address2: '45'
+    , city: 'San Francisco'
+    , zip: '94107'
+    , state: 'CA'
+    , country: 'US'
+    , cardNumber: '4111-1111-1111-1111'
+    , CVV: '123'
+    }
+  , signature: 'a7317c8980d50e5fcb8824595110d5c3f9fdc654-0'
   });
 </script> 
 </head> 

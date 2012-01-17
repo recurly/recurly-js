@@ -13,21 +13,38 @@
     subdomain: 'recurlyjsdemo-test'
   , currency: 'USD'
   , country: 'US'
+  /* , baseURL: 'http://api.lvh.me:3000/jsonp/emeryco/' */
+
+  , baseURL: 'http://api.dev.recurly.com/jsonp/emery-test/'
   });
 
   Recurly.buildTransactionForm({
     target: '#recurly-transaction'
   , amountInCents: 5000
   , successURL: 'confirmation.html'
-  , signature: '83634a130e340191abca714d7391da48ece7bfd2-0'
-  // Signature must be generated server-side with sign_transaction()
-  // Without it the request will be rejected.
-  //
-  // The example signature only works with recurlyjsdemo-test
-  // 
-  // !!! IMPORTANT !!!
-  // You must use verify_transaction() with the POST params passed to successURL
-  // http://docs.recurly.com/recurlyjs/signatures/
+  , description: 'hello'
+  , accountCode: 123
+  , signature: '9c466fc7d09c773fa0d284cb275e0808c19518b5-1325286991+account.first_name+transaction.description'
+
+  , account: {
+      firstName: 'Joe'
+    , lastName: 'User'
+    , email: 'test@example.net'
+    , phone: '555-555-5555'
+    , companyName: 'Acme'
+    }
+  , billingInfo: {
+      firstName: 'Joe'
+    , lastName: 'User'
+    , address1: '123 somestreet'
+    , address2: '45'
+    , city: 'San Francisco'
+    , zip: '94107'
+    , state: 'CA'
+    , country: 'US'
+    , cardNumber: '4111-1111-1111-1111'
+    , CVV: '123'
+    }
   });
 </script>
 

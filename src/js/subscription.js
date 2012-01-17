@@ -98,9 +98,10 @@ R.Subscription = {
       subscription: this.toJSON()
     , account: this.account.toJSON()
     , billing_info: this.billingInfo.toJSON()
+    , signature: options.signature
     };
 
-    $.ajax({
+    R.ajax({
       url: R.settings.baseURL+'subscribe',
       data: json,
       dataType: "jsonp",
@@ -167,7 +168,7 @@ R.Subscription.getCoupon = function(couponCode, successCallback, errorCallback) 
 
   if(!R.settings.baseURL) { R.raiseError('Company subdomain not configured'); }
 
-  return $.ajax({
+  return R.ajax({
     url: R.settings.baseURL+'plans/'+this.plan.code+'/coupons/'+couponCode,
     // data: params,
     dataType: "jsonp",

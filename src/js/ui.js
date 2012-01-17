@@ -7,13 +7,10 @@ function raiseUserError(validation, elem) {
   throw e;
 }
 
-function handleUserErrors(block) {
-  try {
-    block();
-  }
-  catch(e) {
-    if(!e.validation)
-      throw e;
+function invalidMode(e) { 
+
+  // for(var i=0,l=errors.length; i < l; ++i) {
+    // var e = errors[i];
 
     var $input = e.element;
     var message = R.locale.errors[e.validation.errorKey];
@@ -34,11 +31,44 @@ function handleUserErrors(block) {
       }
     });
 
-    $input.focus();
+    // $input.focus();
+  // }
+
+}
+
+function validationGroup(pull,success) {
+  var anyErrors = false;
+  var puller = {
+    field: function($form, fieldSel, validations) {
+      validations = Array.prototype.slice.call(arguments, 2);
+      return pullField($form, fieldSel, validations, function onError(error) {
+        if(!anyErrors) error.element.focus();
+        invalidMode(error);
+        anyErrors = true;
+
+        if(R.settings.oneErrorPerForm)
+          throw {stopPulling:true};
+      });
+    }
+  };
+
+
+  try {
+    pull(puller);
+  }
+  catch(e) {
+    if(!e.stopPulling) {
+      throw e;
+    }
+  }
+
+  if(!anyErrors) {
+    success();
   }
 }
 
-function getField($form, fieldSel, validation) {
+
+function pullField($form, fieldSel, validations, onError) {
   // Try text input
   var $input = $form.find(fieldSel + ' input');
 
@@ -52,10 +82,17 @@ function getField($form, fieldSel, validation) {
 
   var val = $input.val();
 
-  for(var i=2,v; v=arguments[i]; ++i) {
+  for(var i=0,l=validations.length; i < l; ++i) {
+    var v = validations[i];
 
     if(!v.validator($input)) {
-      raiseUserError(v, $input);
+      onError({ 
+        element: $input
+      , validation: v
+      })
+
+      if(R.settings.oneErrorPerField)
+        break;
     }
   }
 
@@ -97,7 +134,7 @@ function displayServerErrors($form, errors) {
 
 
 var preFillMap = {
-  contactInfo: {
+  account: {
     firstName:      '.contact_info > .full_name > .first_name > input'
   , lastName:       '.contact_info > .full_name > .last_name > input'
   , email:          '.contact_info > .email > input'
@@ -114,29 +151,45 @@ var preFillMap = {
   , state:          '.billing_info > .address > .state_zip > .state > input'
   , zip:            '.billing_info > .address > .state_zip > .zip > input'
   , vatNumber:      '.billing_info > .vat_number > input'
+
+  , cardNumber:      '.billing_info  .card_number > input'
+  , CVV:      '.billing_info  .cvv > input'
   }
 };
 
-function preFillValues($form, preFill, mapObject) {
+function preFillValues($form, options, mapObject) {
 
-  if(!preFill) return;
+  (function recurse(preFill,mapObject,keypath) {
 
-  for(var k in preFill) {
-    if(preFill.hasOwnProperty(k) && mapObject.hasOwnProperty(k)) {
+    if(!preFill) return;
 
-      var v = preFill[k];
-      var selectorOrNested = mapObject[k];
+    for(var k in preFill) {
+      if(preFill.hasOwnProperty(k) && mapObject.hasOwnProperty(k)) {
 
-      // jquery selector
-      if(typeof selectorOrNested == 'string') {
-        $form.find(selectorOrNested).val(v).change();
-      }
-      // nested mapping
-      else if(typeof selectorOrNested == 'object') {
-        preFillValues($form, v, selectorOrNested);
+        var v = preFill[k];
+        var selectorOrNested = mapObject[k];
+        var lcuk = cc2lcu(k);
+        var keypath2 = keypath ? (keypath+'.'+lcuk) : lcuk;
+
+
+        // jquery selector
+        if(typeof selectorOrNested == 'string') {
+
+          var $input = $form.find(selectorOrNested);
+          $input.val(v).change();
+          
+          // Disable if optionally signed param
+          if(options.signature.match('\\+'+keypath2+'[+$]')) {
+            $input.attr('disabled',true).addClass('signed');
+          }
+        }
+        // nested mapping
+        else if(typeof selectorOrNested == 'object') {
+          recurse(v, selectorOrNested, keypath2);
+        }
       }
     }
-  }
+  })(options,mapObject);
 }
 
 
@@ -184,7 +237,9 @@ function initCommonForm($form, options) {
     }
   });
   
-  preFillValues($form, options.preFill, preFillMap);
+  // console.log( parseSignature(options.signature) );
+
+  preFillValues($form, options, preFillMap);
 }
 
 function initContactInfoForm($form, options) {
@@ -430,40 +485,40 @@ function initBillingInfoForm($form, options) {
 }
 
 
-function pullAccountFields($form, account, options) {
-  account.firstName = getField($form, '.contact_info .first_name', V(R.isNotEmpty)); 
-  account.lastName = getField($form, '.contact_info .last_name', V(R.isNotEmpty)); 
-  account.companyName = getField($form, '.contact_info .company_name'); 
-  account.email = getField($form, '.email', V(R.isNotEmpty), V(R.isValidEmail)); 
+function pullAccountFields($form, account, options, pull) {
+  account.firstName = pull.field($form, '.contact_info .first_name', V(R.isNotEmpty)); 
+  account.lastName = pull.field($form, '.contact_info .last_name', V(R.isNotEmpty)); 
+  account.companyName = pull.field($form, '.contact_info .company_name'); 
+  account.email = pull.field($form, '.email', V(R.isNotEmpty), V(R.isValidEmail)); 
   account.code = options.accountCode;
 }
 
 
-function pullBillingInfoFields($form, billingInfo, options) {
-  billingInfo.firstName = getField($form, '.billing_info .first_name', V(R.isNotEmpty)); 
-  billingInfo.lastName = getField($form, '.billing_info .last_name', V(R.isNotEmpty)); 
-  billingInfo.number = getField($form, '.card_number', V(R.isNotEmpty), V(R.isValidCC)); 
-  billingInfo.cvv = getField($form, '.cvv', V(R.isNotEmpty), V(R.isValidCVV)); 
+function pullBillingInfoFields($form, billingInfo, options, pull) {
+  billingInfo.firstName = pull.field($form, '.billing_info .first_name', V(R.isNotEmpty)); 
+  billingInfo.lastName = pull.field($form, '.billing_info .last_name', V(R.isNotEmpty)); 
+  billingInfo.number = pull.field($form, '.card_number', V(R.isNotEmpty), V(R.isValidCC)); 
+  billingInfo.cvv = pull.field($form, '.cvv', V(R.isNotEmpty), V(R.isValidCVV)); 
 
-  billingInfo.month = getField($form, '.month');
-  billingInfo.year = getField($form, '.year');
+  billingInfo.month = pull.field($form, '.month');
+  billingInfo.year = pull.field($form, '.year');
 
-  billingInfo.phone = getField($form, '.phone'); 
-  billingInfo.address1 = getField($form, '.address1', V(R.isNotEmpty)); 
-  billingInfo.address2 = getField($form, '.address2'); 
-  billingInfo.city = getField($form, '.city', V(R.isNotEmpty)); 
-  billingInfo.state = getField($form, '.state', V(R.isNotEmpty)); 
-  billingInfo.zip = getField($form, '.zip', V(R.isNotEmpty)); 
-  billingInfo.country = getField($form, '.country', V(R.isNotEmpty)); 
+  billingInfo.phone = pull.field($form, '.phone'); 
+  billingInfo.address1 = pull.field($form, '.address1', V(R.isNotEmpty)); 
+  billingInfo.address2 = pull.field($form, '.address2'); 
+  billingInfo.city = pull.field($form, '.city', V(R.isNotEmpty)); 
+  billingInfo.state = pull.field($form, '.state', V(R.isNotEmpty)); 
+  billingInfo.zip = pull.field($form, '.zip', V(R.isNotEmpty)); 
+  billingInfo.country = pull.field($form, '.country', V(R.isNotEmpty)); 
 }
 
 
-function verifyTOSChecked($form) {
-  getField($form, '.accept_tos', V(R.isChecked)); 
+function verifyTOSChecked($form, pull) {
+  pull.field($form, '.accept_tos', V(R.isChecked)); 
 }
 
 
-R.buildBillingInfoUpdateForm = function(options) {
+R.buildBillingInfoUpdateForm = R.buildBillingInfoForm = function(options) {
   var defaults = {
     addressRequirement: 'full'
   , distinguishContactFromBillingInfo: true 
@@ -492,9 +547,10 @@ R.buildBillingInfoUpdateForm = function(options) {
     $form.find('.error').remove();
     $form.find('.invalid').removeClass('invalid');
 
-    handleUserErrors(function() {
-      pullBillingInfoFields($form, billingInfo, options);
-
+    validationGroup(function(puller) {
+      pullBillingInfoFields($form, billingInfo, options, puller);
+    }
+    , function() {
       $form.addClass('submitting');
       $form.find('button.submit').attr('disabled', true).text('Please Wait');
 
@@ -601,6 +657,8 @@ R.buildTransactionForm = function(options) {
   transaction.account = account;
   transaction.billingInfo = billingInfo;
   transaction.currency = options.currency;
+  transaction.description = options.description;
+  transaction.accountingCode = options.accountingCode;
   transaction.cost = new R.Cost(options.amountInCents);
 
   var $form = $(R.dom.one_time_transaction_form);
@@ -627,11 +685,12 @@ R.buildTransactionForm = function(options) {
     $form.find('.error').remove();
     $form.find('.invalid').removeClass('invalid');
 
-    handleUserErrors(function() {
-      pullAccountFields($form, account, options);
-      pullBillingInfoFields($form, billingInfo, options);
-      verifyTOSChecked($form);
-
+    validationGroup(function(puller) {
+      pullAccountFields($form, account, options, puller);
+      pullBillingInfoFields($form, billingInfo, options, puller);
+      verifyTOSChecked($form, puller);
+    }
+    , function() {
       $form.addClass('submitting');
       $form.find('button.submit').attr('disabled', true).text('Please Wait');
 
@@ -686,6 +745,8 @@ R.buildSubscriptionForm = function(options) {
   };
 
   options = $.extend(createObject(R.settings), defaults, options);
+
+  if(!options.signature) R.raiseError('signature missing');
 
   var $form = $(R.dom.subscribe_form);
   $form.find('.contact_info').html(R.dom.contact_info_fields);
@@ -956,25 +1017,28 @@ R.buildSubscriptionForm = function(options) {
       $form.find('.error').remove();
       $form.find('.invalid').removeClass('invalid');
 
-      handleUserErrors(function() {
-        pullAccountFields($form, account, options);
-        pullBillingInfoFields($form, billingInfo, options);
-        verifyTOSChecked($form);
+      validationGroup(function(puller) {
+        pullAccountFields($form, account, options, puller);
+        pullBillingInfoFields($form, billingInfo, options, puller);
+        verifyTOSChecked($form, puller);
+      }, function() {
 
         $form.addClass('submitting');
         $form.find('button.submit').attr('disabled', true).text('Please Wait');
 
         subscription.save({
-          success: function(response) {
-            if(options.afterSubscribe)
-              options.afterSubscribe(response);
 
-            if(options.successURL) {
-              var url = options.successURL;
-              // url = R.replaceVars(url, response);
-              R.post(url, response, options);
+        signature: options.signature
+        ,   success: function(response) {
+              if(options.afterSubscribe)
+                options.afterSubscribe(response);
+
+              if(options.successURL) {
+                var url = options.successURL;
+                // url = R.replaceVars(url, response);
+                R.post(url, response, options);
+              }
             }
-          }
         , error: function(errors) {
             if(!options.onError || !options.onError(errors)) {
               displayServerErrors($form, errors);

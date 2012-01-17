@@ -567,6 +567,9 @@
   padding: 5px;
   height: 22px;
 }
+.recurly input[type=text][disabled] {
+  background: #eee;
+}
 .recurly input[type=checkbox] {
   color: #f00;
 }
