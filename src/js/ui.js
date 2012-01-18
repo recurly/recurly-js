@@ -22,12 +22,12 @@ function invalidMode(e) {
     // $e.insertAfter($input);
 
     $input.addClass('invalid');
-    $input.bind('change keyup', function() { 
+    $input.bind('change keyup', function handler() { 
 
       if(validator($input)) {
         $input.removeClass('invalid');
         $e.remove();
-        $input.unbind();
+        $input.unbind(handler);
       }
     });
 
@@ -89,7 +89,7 @@ function pullField($form, fieldSel, validations, onError) {
       onError({ 
         element: $input
       , validation: v
-      })
+      });
 
       if(R.settings.oneErrorPerField)
         break;
@@ -1018,6 +1018,7 @@ R.buildSubscriptionForm = function(options) {
       $form.find('.invalid').removeClass('invalid');
 
       validationGroup(function(puller) {
+        subscription.plan.quantity = puller.field($form, '.plan .quantity', V(R.isValidQuantity)); 
         pullAccountFields($form, account, options, puller);
         pullBillingInfoFields($form, billingInfo, options, puller);
         verifyTOSChecked($form, puller);

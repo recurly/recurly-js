@@ -52,3 +52,7 @@ function wholeNumber(val) {
   return $input.is(':checked');
 }).defaultErrorKey = 'acceptTOS';
 
+(R.isValidQuantity = function($input) {
+  return /^[0-9]*$/.test($input.val());
+}).defaultErrorKey = 'invalidQuantity';
+

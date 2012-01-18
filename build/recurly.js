@@ -197,6 +197,7 @@ R.locale.errors = {
 , invalidCoupon: 'Invalid' 
 , cardDeclined: 'Transaction declined' 
 , acceptTOS: 'Please accept the Terms of Service.' 
+, invalidQuantity: 'Invalid quantity' 
 };
 
 R.locale.currencies = {};
@@ -641,6 +642,10 @@ function wholeNumber(val) {
 (R.isChecked = function($input) {
   return $input.is(':checked');
 }).defaultErrorKey = 'acceptTOS';
+
+(R.isValidQuantity = function($input) {
+  return /^[0-9]*$/.test($input.val());
+}).defaultErrorKey = 'invalidQuantity';
 
 
 
@@ -1089,12 +1094,12 @@ function invalidMode(e) {
     // $e.insertAfter($input);
 
     $input.addClass('invalid');
-    $input.bind('change keyup', function() { 
+    $input.bind('change keyup', function handler() { 
 
       if(validator($input)) {
         $input.removeClass('invalid');
         $e.remove();
-        $input.unbind();
+        $input.unbind(handler);
       }
     });
 
@@ -1156,7 +1161,7 @@ function pullField($form, fieldSel, validations, onError) {
       onError({ 
         element: $input
       , validation: v
-      })
+      });
 
       if(R.settings.oneErrorPerField)
         break;
@@ -2085,6 +2090,7 @@ R.buildSubscriptionForm = function(options) {
       $form.find('.invalid').removeClass('invalid');
 
       validationGroup(function(puller) {
+        subscription.plan.quantity = puller.field($form, '.plan .quantity', V(R.isValidQuantity)); 
         pullAccountFields($form, account, options, puller);
         pullBillingInfoFields($form, billingInfo, options, puller);
         verifyTOSChecked($form, puller);
@@ -2270,11 +2276,5 @@ R.dom['one_time_transaction_form'] = '<form class="recurly update_billing_info">
 //////////////////////////////////////////////////
 
 R.dom['terms_of_service'] = '<input id="tos_check" type="checkbox"/><label id="accept_tos" for="tos_check">I accept the <a target="_blank" class="tos_link">Terms of Service</a><span class="and"> and </span><a target="_blank" class="pp_link">Privacy Policy</a></label>';
-
-//////////////////////////////////////////////////
-// Compiled from src/dom/error_dialog.jade
-//////////////////////////////////////////////////
-
-R.dom['error_dialog'] = '<style type="text/css">#recurly_error_dialog {  position: fixed;  z-index: 9999;  top: 50%;  left: 50%;  width: 480px;  height: 320px;  margin: -160px 0 0 -240px;  background: #ff0;  color: #000;  padding: 20px;  border: 5px dashed #f00;}</style><div id="recurly_error_dialog"><div id="recurly_error_headline">Recurly.js Error</div><div id="recurly_error_message">It looks like you added \'account.first_name\' to the signature,but did not specify the cooresponding value in buildSubscribeForm. </div><div id="recurly_error_enduser"><div id="recurly_error_enduser_headline">Just using this website?</div><div id="recurly_error_enduser_message"><Sorry>, but it looks like payments are broken.</Sorry><Please>tell the developers about this error so they can fix it.</Please></div></div></div>';
 window.Recurly = R;
 })(jQuery);
