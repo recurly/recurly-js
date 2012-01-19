@@ -37,13 +37,6 @@
 // Compiled from src/js/core.js
 //////////////////////////////////////////////////
 
-
-
-var element1 = document.createElement("script");
-element1.src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js";
-element1.type="text/javascript";
-document.getElementsByTagName("head")[0].appendChild(element1);
-
 // Non-intrusive Object.create
 function createObject(o) {
   function F() {}
