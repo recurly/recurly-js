@@ -12,6 +12,8 @@ R.settings = {
 , oneErrorPerField: true
 };
 
+R.version = '{VERSION}';
+
 R.dom = {};
 
 R.Error = {

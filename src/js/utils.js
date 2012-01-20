@@ -282,7 +282,7 @@ function cc2lcu(obj) {
 
 
 R.ajax = function(options) {
-  options.data = $.extend({js_version: 2.0}, options.data);
+  options.data = $.extend({js_version: R.version}, options.data);
   return $.ajax(options);
 };
 

@@ -16,13 +16,19 @@ var argParts = process.argv.slice(2).map(function(file) {
     return jsPart(file);
 });
 
-async.series([headerPart].concat(argParts).concat([footerPart]));
+var VERSION = '0';
+
+async.series([prepare].concat(headerPart).concat(argParts).concat(footerPart));
+
+function prepare(done) {
+  VERSION = fs.readFileSync('version');
+  done();
+}
 
 function headerPart(done) {
 
-  var version = fs.readFileSync('version');
   var header = fs.readFileSync('src/js/header.js') + '';
-  header = header.replace(/\{VERSION\}/,version);
+  header = header.replace(/\{VERSION\}/,VERSION);
 
   process.stdout.write(
     header
@@ -44,6 +50,7 @@ function footerPart(done) {
 function jsPart(jsfile) {
   return function(done) {
     fs.readFile(jsfile, function(err, data){
+      data = ('' + data).replace(/\{VERSION\}/,VERSION);
       process.stdout.write(leader(jsfile) + data);
       done();
     });

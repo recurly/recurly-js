@@ -1,5 +1,4 @@
 //   Recurly.js - v2.0.0
-
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API, 
 //   generates UI, handles user error, and passes control to the client
@@ -50,6 +49,8 @@ R.settings = {
 , acceptedCards: ['american_express', 'discover', 'mastercard', 'visa']
 , oneErrorPerField: true
 };
+
+R.version = '2.0.0';
 
 R.dom = {};
 
@@ -566,7 +567,7 @@ function cc2lcu(obj) {
 
 
 R.ajax = function(options) {
-  options.data = $.extend({js_version: 2.0}, options.data);
+  options.data = $.extend({js_version: R.version}, options.data);
   return $.ajax(options);
 };
 
