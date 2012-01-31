@@ -1,5 +1,9 @@
 #Recurly.js CHANGELOG
 
+##Version 2.0.1 (January 31, 2011)
+
+- Minor bug fixes
+
 ##Version 2.0.0 (January 17, 2011)
 
 - buildSubscriptionForm() now requires a signature (breaks backwards compatibility)

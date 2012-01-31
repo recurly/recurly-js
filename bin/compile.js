@@ -21,7 +21,7 @@ var VERSION = '0';
 async.series([prepare].concat(headerPart).concat(argParts).concat(footerPart));
 
 function prepare(done) {
-  VERSION = fs.readFileSync('version');
+  VERSION = fs.readFileSync('version').toString().trim();
   done();
 }
 

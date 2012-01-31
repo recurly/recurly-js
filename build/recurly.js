@@ -1,4 +1,4 @@
-//   Recurly.js - v2.0.0
+//   Recurly.js - v2.0.1
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API, 
 //   generates UI, handles user error, and passes control to the client
@@ -50,7 +50,7 @@ R.settings = {
 , oneErrorPerField: true
 };
 
-R.version = '2.0.0';
+R.version = '2.0.1';
 
 R.dom = {};
 
