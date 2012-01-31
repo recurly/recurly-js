@@ -1088,15 +1088,14 @@ function invalidMode(e) {
     // $e.insertAfter($input);
 
     $input.addClass('invalid');
-    $input.bind('change keyup', function handler() { 
+    $input.bind('change keyup', function handler(e) { 
 
       if(validator($input)) {
         $input.removeClass('invalid');
         $e.remove();
-        $input.unbind(handler);
+        $input.unbind(e);
       }
     });
-
     // $input.focus();
   // }
 
