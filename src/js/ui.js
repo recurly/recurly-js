@@ -151,8 +151,11 @@ var preFillMap = {
   , zip:            '.billing_info > .address > .state_zip > .zip > input'
   , vatNumber:      '.billing_info > .vat_number > input'
 
-  , cardNumber:      '.billing_info  .card_number > input'
+  , cardNumber:     '.billing_info  .card_number > input'
   , CVV:      '.billing_info  .cvv > input'
+  }
+, subscription: {
+    couponCode:     '.subscription > .coupon > .coupon_code > input'
   }
 };
 

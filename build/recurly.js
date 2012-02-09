@@ -1,4 +1,4 @@
-//   Recurly.js - v2.0.1
+//   Recurly.js - v2.0.2
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API, 
 //   generates UI, handles user error, and passes control to the client
@@ -50,7 +50,7 @@ R.settings = {
 , oneErrorPerField: true
 };
 
-R.version = '2.0.1';
+R.version = '2.0.2';
 
 R.dom = {};
 
@@ -1217,8 +1217,11 @@ var preFillMap = {
   , zip:            '.billing_info > .address > .state_zip > .zip > input'
   , vatNumber:      '.billing_info > .vat_number > input'
 
-  , cardNumber:      '.billing_info  .card_number > input'
+  , cardNumber:     '.billing_info  .card_number > input'
   , CVV:      '.billing_info  .cvv > input'
+  }
+, subscription: {
+    couponCode:     '.subscription > .coupon > .coupon_code > input'
   }
 };
 
