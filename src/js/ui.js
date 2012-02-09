@@ -288,8 +288,8 @@ function initBillingInfoForm($form, options) {
   function matchKnownStateWithInput(country, stateStr) {
     var ref = knownStates[country];
     // Normalize stateStr
-    stateStr = stateStr.toUpperCase().trim();
- 
+    stateStr = $.trim(stateStr.toUpperCase());
+
     // Is a state code
     if(ref.hasOwnProperty(stateStr)) {
       return stateStr;

@@ -1,4 +1,4 @@
-//   Recurly.js - v2.0.2
+//   Recurly.js - v2.0.3
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API, 
 //   generates UI, handles user error, and passes control to the client
@@ -50,7 +50,7 @@ R.settings = {
 , oneErrorPerField: true
 };
 
-R.version = '2.0.2';
+R.version = '2.0.3';
 
 R.dom = {};
 
@@ -1354,8 +1354,8 @@ function initBillingInfoForm($form, options) {
   function matchKnownStateWithInput(country, stateStr) {
     var ref = knownStates[country];
     // Normalize stateStr
-    stateStr = stateStr.toUpperCase().trim();
- 
+    stateStr = $.trim(stateStr.toUpperCase());
+
     // Is a state code
     if(ref.hasOwnProperty(stateStr)) {
       return stateStr;
