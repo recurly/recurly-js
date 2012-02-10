@@ -79,6 +79,7 @@ R.Subscription = {
     var json = {
       plan_code: this.plan.code
     , quantity: this.plan.quantity
+    , currency: this.plan.currency
     , coupon_code: this.coupon ? this.coupon.code : undefined
     , add_ons: []
     };

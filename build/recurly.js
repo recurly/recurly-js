@@ -654,6 +654,7 @@ R.Plan = {
 
     p.name = json.name;
     p.code = json.plan_code;
+    p.currency = json.currency;
     p.cost = new R.Cost(json.unit_amount_in_cents);
 
     p.displayQuantity = json.display_quantity;
@@ -684,9 +685,9 @@ R.Plan = {
 
     return p;
   }
-, get: function(plan_code, callback) {
+, get: function(plan_code, currency, callback) {
     $.ajax({
-      url: R.settings.baseURL+'plans/'+plan_code,
+      url: R.settings.baseURL+'plans/'+plan_code+"?currency="+currency,
       // data: params,
       dataType: "jsonp",
       jsonp: "callback",
@@ -897,6 +898,7 @@ R.Subscription = {
     var json = {
       plan_code: this.plan.code
     , quantity: this.plan.quantity
+    , currency: this.plan.currency
     , coupon_code: this.coupon ? this.coupon.code : undefined
     , add_ons: []
     };
@@ -1827,7 +1829,7 @@ R.buildSubscriptionForm = function(options) {
   initTOSCheck($form, options);
 
   if(options.planCode)
-    R.Plan.get(options.planCode, gotPlan);
+    R.Plan.get(options.planCode, R.settings.currency, gotPlan);
   else if(options.plan)
     gotPlan(options.plan);
 

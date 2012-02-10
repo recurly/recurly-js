@@ -5,6 +5,7 @@ R.Plan = {
 
     p.name = json.name;
     p.code = json.plan_code;
+    p.currency = json.currency;
     p.cost = new R.Cost(json.unit_amount_in_cents);
 
     p.displayQuantity = json.display_quantity;
@@ -35,9 +36,9 @@ R.Plan = {
 
     return p;
   }
-, get: function(plan_code, callback) {
+, get: function(plan_code, currency, callback) {
     $.ajax({
-      url: R.settings.baseURL+'plans/'+plan_code,
+      url: R.settings.baseURL+'plans/'+plan_code+"?currency="+currency,
       // data: params,
       dataType: "jsonp",
       jsonp: "callback",
