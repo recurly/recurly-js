@@ -3,10 +3,9 @@
 <head> 
 <title>RecurlyJS Grid System Example</title> 
 <link rel="stylesheet" href="gridsystem.css" type="text/css" /> 
-<link rel="stylesheet" href="../recurly.css" type="text/css" /> 
-
-<script src="lib/jquery-1.6.1.js"></script> 
-<script src="../recurly.js"></script>
+<link rel="stylesheet" href="../themes/default/recurly.css" type="text/css" /> 
+<script src="../lib/jquery-1.7.1.js"></script> 
+<script src="../build/recurly.js"></script>
 <script>
   Recurly.config({
     subdomain: 'recurlyjsdemo-test'
@@ -18,7 +17,9 @@
   Recurly.buildSubscriptionForm({
     target: '#recurly-subscribe'
   , planCode: 'complexplan'
+  , accountCode: 'test'
   , successURL: 'confirmation.html'
+  , signature: 'c5996d424684456ffb82704f08a6d00dd5cedd73-0'
   });
 </script> 
 

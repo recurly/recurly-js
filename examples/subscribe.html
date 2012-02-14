@@ -5,9 +5,9 @@
 <title>RecurlyJS Subscribe Example</title> 
 <!-- <link rel="stylesheet" href="../style/reset.css" type="text/css" />  -->
 <link rel="stylesheet" href="examples.css" type="text/css" /> 
-<link rel="stylesheet" href="../recurly.css" type="text/css" /> 
-<script src="lib/jquery-1.6.1.js"></script> 
-<script src="../recurly.js"></script> 
+<link rel="stylesheet" href="../themes/default/recurly.css" type="text/css" /> 
+<script src="../lib/jquery-1.7.1.js"></script> 
+<script src="../build/recurly.js"></script> 
 <script>
   Recurly.config({
     subdomain: 'recurlyjsdemo-test'
@@ -18,29 +18,31 @@
   Recurly.buildSubscriptionForm({
     target: '#recurly-subscribe'
   , planCode: 'simpleplan'
+  , accountCode: 'test'
   , successURL: 'confirmation.html'
   , distinguishContactFromBillingInfo: true
   , collectCompany: true
   , termsOfServiceURL: 'http://example.com/tos'
-  , preFill: {
-      contactInfo: {
-        firstName: 'Joe'
-      , lastName: 'User'
-      , email: 'test@example.net'
-      , phone: '555-555-5555'
-      , companyName: 'Acme'
-      }
-    , billingInfo: {
-        firstName: 'Joe'
-      , lastName: 'User'
-      , address1: '123 Somestreet'
-      , address2: '45'
-      , city: 'San Francisco'
-      , zip: '94107'
-      , state: 'CA'
-      , country: 'US'
-      }
-  }
+  , account: {
+      firstName: 'Joe'
+    , lastName: 'User'
+    , email: 'test@example.net'
+    , phone: '555-555-5555'
+    , companyName: 'Acme'
+    }
+  , billingInfo: {
+      firstName: 'Joe'
+    , lastName: 'User'
+    , address1: '123 somestreet'
+    , address2: '45'
+    , city: 'San Francisco'
+    , zip: '94107'
+    , state: 'CA'
+    , country: 'US'
+    , cardNumber: '4111-1111-1111-1111'
+    , CVV: '123'
+    }
+  , signature: 'bc3027a216e3fa51382c3cbdbb24bf7eb7b4bc69-0'
   });
 </script> 
 </head> 

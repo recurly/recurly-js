@@ -761,7 +761,7 @@ R.buildSubscriptionForm = function(options) {
   initTOSCheck($form, options);
 
   if(options.planCode)
-    R.Plan.get(options.planCode, R.settings.currency, gotPlan);
+    R.Plan.get(options.planCode, options.currency, gotPlan);
   else if(options.plan)
     gotPlan(options.plan);
 

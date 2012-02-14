@@ -1,4 +1,4 @@
-//   Recurly.js - v2.0.3
+//   Recurly.js - v2.0.4
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API, 
 //   generates UI, handles user error, and passes control to the client
@@ -50,7 +50,7 @@ R.settings = {
 , oneErrorPerField: true
 };
 
-R.version = '2.0.3';
+R.version = '2.0.4';
 
 R.dom = {};
 
@@ -1829,7 +1829,7 @@ R.buildSubscriptionForm = function(options) {
   initTOSCheck($form, options);
 
   if(options.planCode)
-    R.Plan.get(options.planCode, R.settings.currency, gotPlan);
+    R.Plan.get(options.planCode, options.currency, gotPlan);
   else if(options.plan)
     gotPlan(options.plan);
 
