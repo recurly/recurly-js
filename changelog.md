@@ -1,26 +1,41 @@
 #Recurly.js CHANGELOG
 
-##Version 2.0.1 (January 31, 2011)
+##Version 2.0.4 (February 9, 2012)
 
-- Minor bug fixes
+- Fix: Now fetches and sends currency code of a plan during new subscriptions.
 
-##Version 2.0.0 (January 17, 2011)
+##Version 2.0.3 (February 9, 2012)
+
+- Fixed IE8 bug related to String.trim() support.
+
+##Version 2.0.2 (February 8, 2012)
+
+- Added support for pre-populating coupon code via subscription.couponCode option.
+
+##Version 2.0.1 (January 31, 2012)
+
+- No longer embedding jQuery
+- Added validation that checks that quantity is numeric
+- Added new locale.errors error, 'invalidQuantity'
+- Bugfix: Proper bind/unbind behavior w.r.t. input validation
+
+##Version 2.0.0 (January 17, 2012)
 
 - buildSubscriptionForm() now requires a signature (breaks backwards compatibility)
-- Ability to arbitrarily sign any parameter
+- Replaced 'preFill' option with 'account' and 'billingInfo'options.
 - 'preFill' options are moved down to the base options as general predefined object models with multiple intents.
-- Validation now supports three possible UI permutations with config() options 'oneErrorPerField' and 'oneErrorPerForm'
+- Added 'oneErrorPerField' and 'oneErrorPerForm' options for validation.
 
 ##Version 1.2.0 (December 17, 2011)
 
 - Nice UI for switching state input to a select for US and Canada.
 - GeoIP country detection that makes the aforementioned UI so nice.
-- Accepted cards was too fixed, made them very generic with an 'acceptedCards' option
+- Added 'acceptedCards' option to form building functions.
 - Updated jQuery version used by tests and examples.
 
 ##Version 1.1.7 (December 17, 2011)
 
-- Big project refactor, with very minor changes to the resulting build. 
+- Big project refactor, with very minor changes to the resulting build.
 
 ##Version 1.1.6 (November 17, 2011)
 
