@@ -1,5 +1,9 @@
 #Recurly.js CHANGELOG
 
+##Version 2.0.5 (March 1, 2012)
+
+- Fixed issue where an empty plan quantity would cause totals to display as 0.
+
 ##Version 2.0.4 (February 9, 2012)
 
 - Fix: Now fetches and sends currency code of a plan during new subscriptions.

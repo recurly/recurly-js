@@ -507,6 +507,13 @@ function pullBillingInfoFields($form, billingInfo, options, pull) {
 }
 
 
+function pullPlanQuantity($form, plan, options, pull) {
+  var qty = pull.field($form, '.plan .quantity', V(R.isValidQuantity));
+  // An empty quantity field indicates 1
+  plan.quantity = qty || 1;
+}
+
+
 function verifyTOSChecked($form, pull) {
   pull.field($form, '.accept_tos', V(R.isChecked)); 
 }
@@ -1008,7 +1015,7 @@ R.buildSubscriptionForm = function(options) {
       $form.find('.invalid').removeClass('invalid');
 
       validationGroup(function(puller) {
-        subscription.plan.quantity = puller.field($form, '.plan .quantity', V(R.isValidQuantity)); 
+        pullPlanQuantity($form, subscription.plan, options, puller);
         pullAccountFields($form, account, options, puller);
         pullBillingInfoFields($form, billingInfo, options, puller);
         verifyTOSChecked($form, puller);
