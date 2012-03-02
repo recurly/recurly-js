@@ -195,18 +195,6 @@ R.flattenErrors = function(obj, attr) {
   return arr;
 };
 
-
-R.replaceVars = function(str, vars) {
-  for(var k in vars) {
-    if(vars.hasOwnProperty(k)) {
-      var v = encodeURIComponent(vars[k]);
-      str = str.replace(new RegExp('\\{'+k+'\\}', 'g'), v);
-    }
-  }
-
-  return str;
-};
-
 R.post = function(url, params, options) {
 
   var resultNamespace = options.resultNamespace || 'recurly_result';

@@ -8,31 +8,23 @@ function raiseUserError(validation, elem) {
 }
 
 function invalidMode(e) { 
+  var $input = e.element;
+  var message = R.locale.errors[e.validation.errorKey];
+  var validator = e.validation.validator;
 
-  // for(var i=0,l=errors.length; i < l; ++i) {
-    // var e = errors[i];
+  var $e = $('<div class="error">');
+  $e.text(message);
+  $e.appendTo($input.parent());
 
-    var $input = e.element;
-    var message = R.locale.errors[e.validation.errorKey];
-    var validator = e.validation.validator;
+  $input.addClass('invalid');
+  $input.bind('change keyup', function handler(e) { 
 
-    var $e = $('<div class="error">');
-    $e.text(message);
-    $e.appendTo($input.parent());
-    // $e.insertAfter($input);
-
-    $input.addClass('invalid');
-    $input.bind('change keyup', function handler(e) { 
-
-      if(validator($input)) {
-        $input.removeClass('invalid');
-        $e.remove();
-        $input.unbind(e);
-      }
-    });
-    // $input.focus();
-  // }
-
+    if(validator($input)) {
+      $input.removeClass('invalid');
+      $e.remove();
+      $input.unbind(e);
+    }
+  });
 }
 
 function validationGroup(pull,success) {
@@ -566,7 +558,6 @@ R.buildBillingInfoUpdateForm = R.buildBillingInfoForm = function(options) {
 
           if(options.successURL) {
             var url = options.successURL;
-            // url = R.replaceVars(url, response);
             R.post(url, response, options);
           }
         }
@@ -705,7 +696,6 @@ R.buildTransactionForm = function(options) {
 
           if(options.successURL) {
             var url = options.successURL;
-            // url = R.replaceVars(url, response);
             R.post(url, response, options);
           }
         }
@@ -1038,7 +1028,6 @@ R.buildSubscriptionForm = function(options) {
 
               if(options.successURL) {
                 var url = options.successURL;
-                // url = R.replaceVars(url, response);
                 R.post(url, response, options);
               }
             }
