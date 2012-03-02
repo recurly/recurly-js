@@ -278,5 +278,3 @@ R.ajax = function(options) {
 function errorDialog(message) {
   $('body').append(R.dom.error_dialog);
 }
-
-// R.extractEnforcedKey

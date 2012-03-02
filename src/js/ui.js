@@ -637,8 +637,6 @@ R.buildTransactionForm = function(options) {
     R.raiseError('collectContactInfo is false, but no accountCode provided');
   }
 
-
-  // if(!options.accountCode) R.raiseError('accountCode missing');
   if(!options.signature) R.raiseError('signature missing');
 
 

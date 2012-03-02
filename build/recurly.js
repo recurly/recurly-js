@@ -564,8 +564,6 @@ function errorDialog(message) {
   $('body').append(R.dom.error_dialog);
 }
 
-// R.extractEnforcedKey
-
 
 //////////////////////////////////////////////////
 // Compiled from src/js/validators.js
@@ -1693,8 +1691,6 @@ R.buildTransactionForm = function(options) {
     R.raiseError('collectContactInfo is false, but no accountCode provided');
   }
 
-
-  // if(!options.accountCode) R.raiseError('accountCode missing');
   if(!options.signature) R.raiseError('signature missing');
 
 
