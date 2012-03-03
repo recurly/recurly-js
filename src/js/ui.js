@@ -519,7 +519,7 @@ function verifyTOSChecked($form, pull) {
 }
 
 
-R.buildBillingInfoUpdateForm = R.buildBillingInfoForm = function(options) {
+R.buildBillingInfoUpdateForm = function(options) {
   var defaults = {
     addressRequirement: 'full'
   , distinguishContactFromBillingInfo: true 
@@ -565,7 +565,7 @@ R.buildBillingInfoUpdateForm = R.buildBillingInfoForm = function(options) {
 
           if(options.successURL) {
             var url = options.successURL;
-            R.post(url, response, options);
+            R.postResult(url, response, options);
           }
         }
       , error: function(errors) {
@@ -701,7 +701,7 @@ R.buildTransactionForm = function(options) {
 
           if(options.successURL) {
             var url = options.successURL;
-            R.post(url, response, options);
+            R.postResult(url, response, options);
           }
         }
       , error: function(errors) {
@@ -1033,7 +1033,7 @@ R.buildSubscriptionForm = function(options) {
 
               if(options.successURL) {
                 var url = options.successURL;
-                R.post(url, response, options);
+                R.postResult(url, response, options);
               }
             }
         , error: function(errors) {
