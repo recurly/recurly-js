@@ -480,32 +480,17 @@ R.flattenErrors = function(obj, attr) {
   return arr;
 };
 
-R.post = function(url, params, options) {
+// POST the results from Recurly to the merchant's webserver
+R.postResult = function(url, originalResponse, options) {
 
-  var resultNamespace = options.resultNamespace || 'recurly_result';
-
-  var newParams = {};
-  newParams[resultNamespace] = params;
-  params = newParams;
+  token = originalResponse.token || 'INVALIDTOKEN'
 
   var form = $('<form />').hide();
   form.attr('action', url)
       .attr('method', 'POST')
       .attr('enctype', 'application/x-www-form-urlencoded');
 
-  function addParam(name, value, parent) {
-    var fullname = (parent.length > 0 ? (parent + '[' + name + ']') : name);
-    if(typeof value === 'object') {
-      for(var i in value) {
-        if(value.hasOwnProperty(i)) {
-          addParam(i, value[i], fullname);
-        }
-      }
-    }
-    else $('<input type="hidden" />').attr({name: fullname, value: value}).appendTo(form);
-  };
-
-  addParam('', params, '');
+  $('<input type="hidden" />').attr({name: 'recurly_token', value: token}).appendTo(form);
 
   $('body').append(form);
   form.submit();
@@ -1573,7 +1558,7 @@ function verifyTOSChecked($form, pull) {
 }
 
 
-R.buildBillingInfoUpdateForm = R.buildBillingInfoForm = function(options) {
+R.buildBillingInfoUpdateForm = function(options) {
   var defaults = {
     addressRequirement: 'full'
   , distinguishContactFromBillingInfo: true 
@@ -1619,7 +1604,7 @@ R.buildBillingInfoUpdateForm = R.buildBillingInfoForm = function(options) {
 
           if(options.successURL) {
             var url = options.successURL;
-            R.post(url, response, options);
+            R.postResult(url, response, options);
           }
         }
       , error: function(errors) {
@@ -1755,7 +1740,7 @@ R.buildTransactionForm = function(options) {
 
           if(options.successURL) {
             var url = options.successURL;
-            R.post(url, response, options);
+            R.postResult(url, response, options);
           }
         }
       , error: function(errors) {
@@ -2087,7 +2072,7 @@ R.buildSubscriptionForm = function(options) {
 
               if(options.successURL) {
                 var url = options.successURL;
-                R.post(url, response, options);
+                R.postResult(url, response, options);
               }
             }
         , error: function(errors) {
