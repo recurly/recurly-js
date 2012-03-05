@@ -3,7 +3,6 @@
 <head> 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>RecurlyJS Subscribe Example</title> 
-<!-- <link rel="stylesheet" href="../style/reset.css" type="text/css" />  -->
 <link rel="stylesheet" href="examples.css" type="text/css" /> 
 <link rel="stylesheet" href="../themes/default/recurly.css" type="text/css" /> 
 <script src="../lib/jquery-1.7.1.js"></script> 
@@ -17,9 +16,11 @@
 
   Recurly.buildSubscriptionForm({
     target: '#recurly-subscribe'
+  // Signature must be generated server-side with a utility method provided in client libraries.
+  , signature: 'bc3027a216e3fa51382c3cbdbb24bf7eb7b4bc69-0'
+  , successURL: 'confirmation.html'
   , planCode: 'simpleplan'
   , accountCode: 'test'
-  , successURL: 'confirmation.html'
   , distinguishContactFromBillingInfo: true
   , collectCompany: true
   , termsOfServiceURL: 'http://example.com/tos'
@@ -42,13 +43,12 @@
     , cardNumber: '4111-1111-1111-1111'
     , CVV: '123'
     }
-  , signature: 'bc3027a216e3fa51382c3cbdbb24bf7eb7b4bc69-0'
   });
 </script> 
 </head> 
   <body> 
     <h1>Subscribe to Plan</h1>
-    <h2>Plan Code: simpleplan (exists)</h2>
+    <h2>Plan Code: simpleplan</h2>
     <div id="recurly-subscribe">
     </div>
   </body>

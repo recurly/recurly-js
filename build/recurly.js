@@ -1,4 +1,4 @@
-//   Recurly.js - v2.0.5
+//   Recurly.js - v2.0.6
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API, 
 //   generates UI, handles user error, and passes control to the client
@@ -50,7 +50,7 @@ R.settings = {
 , oneErrorPerField: true
 };
 
-R.version = '2.0.5';
+R.version = '2.0.6';
 
 R.dom = {};
 
@@ -993,8 +993,6 @@ R.Transaction = {
     return {
       currency: this.currency
     , amount_in_cents: this.cost.cents()
-    , description: this.description
-    , accounting_code: this.accountingCode
     };
   }
 , create: createObject
@@ -1694,8 +1692,6 @@ R.buildTransactionForm = function(options) {
   transaction.account = account;
   transaction.billingInfo = billingInfo;
   transaction.currency = options.currency;
-  transaction.description = options.description;
-  transaction.accountingCode = options.accountingCode;
   transaction.cost = new R.Cost(options.amountInCents);
 
   var $form = $(R.dom.one_time_transaction_form);
