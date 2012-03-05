@@ -3,7 +3,6 @@
 <head> 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>RecurlyJS Update Billing Info Example</title> 
-<!-- <link rel="stylesheet" href="../style/reset.css" type="text/css" />  -->
 <link rel="stylesheet" href="examples.css" type="text/css" /> 
 <link rel="stylesheet" href="../themes/default/recurly.css" type="text/css" /> 
 <script src="../lib/jquery-1.7.1.js"></script> 
@@ -19,23 +18,18 @@
 
   Recurly.buildBillingInfoUpdateForm({
     target: '#recurly-update-billing-info'
+  // Signature must be generated server-side with a utility method provided in client libraries.
+  , signature: '6b2d4700d38cf90d121268c400a6874e38dea8fc-0'
+  , successURL: 'confirmation.html'
   , accountCode: 'testaccount'
   , distinguishContactFromBillingInfo: false 
-  , successURL: 'confirmation.html'
-  , signature: '6b2d4700d38cf90d121268c400a6874e38dea8fc-0'
-  // Signature must be generated server-side with a utility method provided in client libraries.
-  // e.g. Recurly::billing_info_signature(accountcode)
-  // It guarantees that you grant the end-user the right to update billing info for this account
-  // Without it the request will be rejected.
-  //
-  // The example signature only works for recurlyjsdemo-test
   });
 </script>
 
 </head> 
   <body> 
     <h1>Update Billing Info</h1>
-    <h2>Account Code: testaccount (exists)</h2>
+    <h2>Account Code: testaccount</h2>
     <div id="recurly-update-billing-info">
     </div>
   </body>

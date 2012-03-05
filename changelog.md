@@ -1,5 +1,10 @@
 #Recurly.js CHANGELOG
 
+##Version 2.0.6 (March 5, 2012)
+
+ - Removed non-functional parameters from one time transactions.
+ - Updated example HTML files.
+
 ##Version 2.0.5 (March 1, 2012)
 
 - Fixed issue where an empty plan quantity would cause totals to display as 0.

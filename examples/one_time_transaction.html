@@ -3,7 +3,6 @@
 <head> 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>RecurlyJS One-time Transaction Example</title> 
-<!-- <link rel="stylesheet" href="../style/reset.css" type="text/css" />  -->
 <link rel="stylesheet" href="examples.css" type="text/css" /> 
 <link rel="stylesheet" href="../themes/default/recurly.css" type="text/css" /> 
 <script src="../lib/jquery-1.7.1.js"></script> 
@@ -13,19 +12,15 @@
     subdomain: 'recurlyjsdemo-test'
   , currency: 'USD'
   , country: 'US'
-  /* , baseURL: 'http://api.lvh.me:3000/jsonp/emeryco/' */
-
-  , baseURL: 'http://api.dev.recurly.com/jsonp/emery-test/'
   });
 
   Recurly.buildTransactionForm({
     target: '#recurly-transaction'
-  , amountInCents: 5000
+  // Signature must be generated server-side with a utility method provided in client libraries.
+  , signature: '9c466fc7d09c773fa0d284cb275e0808c19518b5-1325286991'
   , successURL: 'confirmation.html'
-  , description: 'hello'
+  , amountInCents: 5000
   , accountCode: 123
-  , signature: '9c466fc7d09c773fa0d284cb275e0808c19518b5-1325286991+account.first_name+transaction.description'
-
   , account: {
       firstName: 'Joe'
     , lastName: 'User'

@@ -655,8 +655,6 @@ R.buildTransactionForm = function(options) {
   transaction.account = account;
   transaction.billingInfo = billingInfo;
   transaction.currency = options.currency;
-  transaction.description = options.description;
-  transaction.accountingCode = options.accountingCode;
   transaction.cost = new R.Cost(options.amountInCents);
 
   var $form = $(R.dom.one_time_transaction_form);
