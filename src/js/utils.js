@@ -198,7 +198,7 @@ R.flattenErrors = function(obj, attr) {
 // POST the results from Recurly to the merchant's webserver
 R.postResult = function(url, originalResponse, options) {
 
-  token = originalResponse.token || 'INVALIDTOKEN'
+  var token = originalResponse.token || 'INVALIDTOKEN'
 
   var form = $('<form />').hide();
   form.attr('action', url)
