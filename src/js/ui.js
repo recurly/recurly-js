@@ -171,11 +171,6 @@ function preFillValues($form, options, mapObject) {
 
           var $input = $form.find(selectorOrNested);
           $input.val(v).change();
-          
-          // Disable if optionally signed param
-          if(options.signature.match('\\+'+keypath2+'[+$]')) {
-            $input.attr('disabled',true).addClass('signed');
-          }
         }
         // nested mapping
         else if(typeof selectorOrNested == 'object') {
@@ -224,15 +219,12 @@ function initCommonForm($form, options) {
     $(this).parent().removeClass('focus');
   });
 
-  // Touch of perfection
   $form.delegate('input', 'keydown', function(e) {
     if(e.keyCode >= 48 && e.keyCode <= 90) {
       $(this).parent().find('.placeholder').hide();
     }
   });
   
-  // console.log( parseSignature(options.signature) );
-
   preFillValues($form, options, preFillMap);
 }
 

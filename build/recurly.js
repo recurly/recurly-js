@@ -989,17 +989,11 @@ R.Subscription.getCoupon = function(couponCode, successCallback, errorCallback) 
 
 
 R.Transaction = {
-  toJSON: function() {    
-    return {
-      currency: this.currency
-    , amount_in_cents: this.cost.cents()
-    };
-  }
-, create: createObject
+ // Note - No toJSON function for this object, all parameters must be signed.
+ create: createObject
 , save: function(options) { 
     var json = {
-      transaction: this.toJSON() 
-    , account: this.account ? this.account.toJSON() : undefined 
+      account: this.account ? this.account.toJSON() : undefined 
     , billing_info: this.billingInfo.toJSON() 
     , signature: options.signature
     };
@@ -1208,11 +1202,6 @@ function preFillValues($form, options, mapObject) {
 
           var $input = $form.find(selectorOrNested);
           $input.val(v).change();
-          
-          // Disable if optionally signed param
-          if(options.signature.match('\\+'+keypath2+'[+$]')) {
-            $input.attr('disabled',true).addClass('signed');
-          }
         }
         // nested mapping
         else if(typeof selectorOrNested == 'object') {
@@ -1261,15 +1250,12 @@ function initCommonForm($form, options) {
     $(this).parent().removeClass('focus');
   });
 
-  // Touch of perfection
   $form.delegate('input', 'keydown', function(e) {
     if(e.keyCode >= 48 && e.keyCode <= 90) {
       $(this).parent().find('.placeholder').hide();
     }
   });
   
-  // console.log( parseSignature(options.signature) );
-
   preFillValues($form, options, preFillMap);
 }
 

@@ -1,16 +1,10 @@
 
 R.Transaction = {
-  toJSON: function() {    
-    return {
-      currency: this.currency
-    , amount_in_cents: this.cost.cents()
-    };
-  }
-, create: createObject
+ // Note - No toJSON function for this object, all parameters must be signed.
+ create: createObject
 , save: function(options) { 
     var json = {
-      transaction: this.toJSON() 
-    , account: this.account ? this.account.toJSON() : undefined 
+      account: this.account ? this.account.toJSON() : undefined 
     , billing_info: this.billingInfo.toJSON() 
     , signature: options.signature
     };
