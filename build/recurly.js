@@ -480,10 +480,15 @@ R.flattenErrors = function(obj, attr) {
   return arr;
 };
 
+// Very small function, but defining for D.R.Y.ness
+R.getToken = function(response) {
+  var token = response.token || 'INVALIDTOKEN';
+  return token;
+}
+
 // POST the results from Recurly to the merchant's webserver
 R.postResult = function(url, originalResponse, options) {
-
-  var token = originalResponse.token || 'INVALIDTOKEN'
+  var token = getToken(originalResponse);
 
   var form = $('<form />').hide();
   form.attr('action', url)
@@ -1583,8 +1588,9 @@ R.buildBillingInfoUpdateForm = function(options) {
       , distinguishContactFromBillingInfo: options.distinguishContactFromBillingInfo
       , accountCode: options.accountCode
       , success: function(response) {
-          if(options.afterUpdate)
-            options.afterUpdate(response);
+          if(options.successHandler) {
+            options.successHandler(R.getToken(response));
+          }
 
           if(options.successURL) {
             var url = options.successURL;
@@ -1717,8 +1723,9 @@ R.buildTransactionForm = function(options) {
         signature: options.signature
       , accountCode: options.accountCode
       , success: function(response) {
-          if(options.afterPay)
-            options.afterPay(response);
+          if(options.successHandler) {
+            options.successHandler(R.getToken(response));
+          }
 
           if(options.successURL) {
             var url = options.successURL;
@@ -2049,9 +2056,9 @@ R.buildSubscriptionForm = function(options) {
 
         signature: options.signature
         ,   success: function(response) {
-              if(options.afterSubscribe)
-                options.afterSubscribe(response);
-
+              if(options.successHandler) {
+                options.successHandler(R.getToken(response));
+              }
               if(options.successURL) {
                 var url = options.successURL;
                 R.postResult(url, response, options);
