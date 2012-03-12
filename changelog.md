@@ -1,5 +1,10 @@
 #Recurly.js CHANGELOG
 
+##Version 2.1.0 (March 12, 2012)
+
+ - Result token is now POSTed to your successURL or JS callback handler
+ - Updated to work with latest signature generation format (requires Client library upgrade)
+
 ##Version 2.0.6 (March 5, 2012)
 
  - Removed non-functional parameters from one time transactions.
