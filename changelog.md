@@ -1,5 +1,9 @@
 #Recurly.js CHANGELOG
 
+##Version 2.1.1 (March 13, 2012)
+
+ - Fixed issue with postResult that would have caused results not to be POSTed
+
 ##Version 2.1.0 (March 12, 2012)
 
  - Result token is now POSTed to your successURL or JS callback handler
