@@ -203,7 +203,7 @@ R.getToken = function(response) {
 
 // POST the results from Recurly to the merchant's webserver
 R.postResult = function(url, originalResponse, options) {
-  var token = getToken(originalResponse);
+  var token = R.getToken(originalResponse);
 
   var form = $('<form />').hide();
   form.attr('action', url)
