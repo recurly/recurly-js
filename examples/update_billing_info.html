@@ -5,24 +5,25 @@
 <title>RecurlyJS Update Billing Info Example</title> 
 <link rel="stylesheet" href="examples.css" type="text/css" /> 
 <link rel="stylesheet" href="../themes/default/recurly.css" type="text/css" /> 
-<script src="../lib/jquery-1.7.1.js"></script> 
-<script src="../build/recurly.js"></script> 
+<script src="../lib/jquery-1.7.1.js"></script>
+<script src="../build/recurly.js"></script>
  
 <script>
   Recurly.config({
-    subdomain: 'recurlyjsdemo-test'
-  , currency: 'GBP'
-  , country: 'GB'
-  , VATPercent: 10
+    subdomain: 'recurlyjsdemo-test',
+    currency: 'GBP',
+    country: 'GB',
+    VATPercent: 10
   });
 
   Recurly.buildBillingInfoUpdateForm({
-    target: '#recurly-update-billing-info'
-  // Signature must be generated server-side with a utility method provided in client libraries.
-  , signature: '6b2d4700d38cf90d121268c400a6874e38dea8fc-0'
-  , successURL: 'confirmation.html'
-  , accountCode: 'testaccount'
-  , distinguishContactFromBillingInfo: false 
+    target: '#recurly-update-billing-info',
+    // Signature must be generated server-side with a utility method provided
+    // in client libraries.
+    signature: 'needs-server-support-code',
+    successURL: 'confirmation.html',
+    accountCode: 'testaccount',
+    distinguishContactFromBillingInfo: false 
   });
 </script>
 

@@ -6,39 +6,39 @@
 <link rel="stylesheet" href="examples.css" type="text/css" /> 
 <link rel="stylesheet" href="../themes/default/recurly.css" type="text/css" /> 
 <script src="../lib/jquery-1.7.1.js"></script> 
-<script src="../build/recurly.js"></script> 
+<script src="../build/recurly.js"></script>
+
 <script>
   Recurly.config({
-    subdomain: 'recurlyjsdemo-test'
-  , currency: 'USD'
-  , country: 'US'
+    subdomain: 'recurlyjsdemo-test',
+    currency: 'USD',
+    country: 'US'
   });
 
   Recurly.buildTransactionForm({
-    target: '#recurly-transaction'
-  // Signature must be generated server-side with a utility method provided in client libraries.
-  , signature: '9c466fc7d09c773fa0d284cb275e0808c19518b5-1325286991'
-  , successURL: 'confirmation.html'
-  , amountInCents: 5000
-  , accountCode: 123
-  , account: {
-      firstName: 'Joe'
-    , lastName: 'User'
-    , email: 'test@example.net'
-    , phone: '555-555-5555'
-    , companyName: 'Acme'
-    }
-  , billingInfo: {
-      firstName: 'Joe'
-    , lastName: 'User'
-    , address1: '123 somestreet'
-    , address2: '45'
-    , city: 'San Francisco'
-    , zip: '94107'
-    , state: 'CA'
-    , country: 'US'
-    , cardNumber: '4111-1111-1111-1111'
-    , CVV: '123'
+    target: '#recurly-transaction',
+    // Signature must be generated server-side with a utility method provided
+    // in client libraries.
+    signature: 'needs-server-support-code',
+    successURL: 'confirmation.html',
+    account: {
+      firstName: 'Joe',
+      lastName: 'User',
+      email: 'test@example.net',
+      phone: '555-555-5555',
+      companyName: 'Acme'
+    },
+    billingInfo: {
+      firstName: 'Joe',
+      lastName: 'User',
+      address1: '123 somestreet',
+      address2: '45',
+      city: 'San Francisco',
+      zip: '94107',
+      state: 'CA',
+      country: 'US',
+      cardNumber: '4111-1111-1111-1111',
+      CVV: '123'
     }
   });
 </script>
