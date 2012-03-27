@@ -1,5 +1,9 @@
 #Recurly.js CHANGELOG
 
+##Version 2.1.2 (March 26, 2012)
+
+- Include currency when validating a coupon
+
 ##Version 2.1.1 (March 13, 2012)
 
  - Fixed issue with postResult that would have caused results not to be POSTed

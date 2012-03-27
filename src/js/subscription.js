@@ -169,8 +169,10 @@ R.Subscription.getCoupon = function(couponCode, successCallback, errorCallback) 
 
   if(!R.settings.baseURL) { R.raiseError('Company subdomain not configured'); }
 
+  var couponCurrencyQuery = (R.settings.currency !== undefined ? '?currency='+R.settings.currency : '');
+
   return R.ajax({
-    url: R.settings.baseURL+'plans/'+this.plan.code+'/coupons/'+couponCode,
+    url: R.settings.baseURL+'plans/'+this.plan.code+'/coupons/'+couponCode+couponCurrencyQuery,
     // data: params,
     dataType: "jsonp",
     jsonp: "callback",

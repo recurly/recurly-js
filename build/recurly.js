@@ -1,4 +1,4 @@
-//   Recurly.js - v2.1.1
+//   Recurly.js - v2.1.2
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API, 
 //   generates UI, handles user error, and passes control to the client
@@ -50,7 +50,7 @@ R.settings = {
 , oneErrorPerField: true
 };
 
-R.version = '2.1.1';
+R.version = '2.1.2';
 
 R.dom = {};
 
@@ -964,8 +964,10 @@ R.Subscription.getCoupon = function(couponCode, successCallback, errorCallback) 
 
   if(!R.settings.baseURL) { R.raiseError('Company subdomain not configured'); }
 
+  var couponCurrencyQuery = (R.settings.currency !== undefined ? '?currency='+R.settings.currency : '');
+
   return R.ajax({
-    url: R.settings.baseURL+'plans/'+this.plan.code+'/coupons/'+couponCode,
+    url: R.settings.baseURL+'plans/'+this.plan.code+'/coupons/'+couponCode+couponCurrencyQuery,
     // data: params,
     dataType: "jsonp",
     jsonp: "callback",
