@@ -30,22 +30,10 @@ R.knownCards = {
     prefixes: [2014, 2149]
   , name: 'EnRoute'
   }
-, 'solo': {
-    prefixes: [6334, 6767]
-  , name: 'Solo'
-  }
-, 'switch': {
-    prefixes: [4903, 4905, 4911, 4936, 564182, 633110, 6333, 6759]
-  , name: 'Switch'
-  }
 , 'maestro': {
     prefixes: [5018, 5020, 5038, 6304, 6759, 6761]
   , name: 'Maestro'
   }
-, 'visa_electron': {
-    prefixes: [417500, 4917, 4913, 4508, 4844]
-  , name: 'Visa Electron'
-  } // visa electron
 , 'laser': {
     prefixes: [6304, 6706, 6771, 6709]
   , name: 'Laser'
@@ -69,7 +57,7 @@ R.detectCardType = function(cardNumber) {
       }
     }
   }
-  
+
   return false;
 };
 
@@ -98,7 +86,7 @@ R.formatCurrency = function(num,denomination) {
   // Replace default period with format separator
   if(langspec.separator != '.') {
     str = str.replace(/\./g, langspec.separator);
-  } 
+  }
 
   function insertDelimiters(str) {
     var sRegExp = new RegExp('(-?[0-9]+)([0-9]{3})');
@@ -109,7 +97,7 @@ R.formatCurrency = function(num,denomination) {
   }
 
   // Apply thousands delimiter
-  str = insertDelimiters(str); 
+  str = insertDelimiters(str);
 
   // Format unit/number order
   var format = langspec.format;
@@ -171,7 +159,7 @@ R.flattenErrors = function(obj, attr) {
   if(  typeof obj == 'string'
     || typeof obj == 'number'
     || typeof obj == 'boolean') {
-    
+
     if($.inArray(baseErrorKeys, attr)) {
       return [obj];
     }
@@ -184,7 +172,7 @@ R.flattenErrors = function(obj, attr) {
     if(obj.hasOwnProperty(k)) {
       // Inherit parent attribute names when property key
       // is a numeric string; how we deal with arrays
-      attr = (parseInt(k).toString() == k) ? attr : k; 
+      attr = (parseInt(k).toString() == k) ? attr : k;
       var children = R.flattenErrors(obj[k], attr);
       for(var i=0, l=children.length; i < l; ++i) {
         arr.push(children[i]);
@@ -216,7 +204,7 @@ R.postResult = function(url, originalResponse, options) {
   form.submit();
 };
 
-function jsonToSelect(obj) { 
+function jsonToSelect(obj) {
   var $select = $('<select>');
 
   for(var k in obj) {
@@ -244,7 +232,7 @@ R.enforce = function(obj) {
 function cc2lcu(obj) {
   obj = obj || this;
 
-  if(typeof obj == 'string') { 
+  if(typeof obj == 'string') {
     return obj.replace(/([a-z])([A-Z])/g, function (a, l, u) {
         return l+'_'+u;
     }).toLowerCase();
@@ -252,7 +240,7 @@ function cc2lcu(obj) {
   else {
     for(var k in obj) {
       if(obj.hasOwnProperty(k)) {
-        
+
       }
     }
   }
