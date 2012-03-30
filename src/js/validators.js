@@ -47,6 +47,14 @@ function wholeNumber(val) {
   }
   return !!v;
 }).defaultErrorKey = 'emptyField';
+// State is required if its a dropdown, it is not required if it is an input box
+(R.isNotEmptyState = function($input) {
+  var v = $input.val();
+  if($input.is('select')) {
+    if(v == '-' || v == '--') return false;
+  }
+  return true;
+}).defaultErrorKey = 'emptyField';
 
 (R.isChecked = function($input) {
   return $input.is(':checked');

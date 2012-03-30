@@ -596,6 +596,14 @@ function wholeNumber(val) {
   }
   return !!v;
 }).defaultErrorKey = 'emptyField';
+// State is required if its a dropdown, it is not required if it is an input box
+(R.isNotEmptyState = function($input) {
+  var v = $input.val();
+  if($input.is('select')) {
+    if(v == '-' || v == '--') return false;
+  }
+  return true;
+}).defaultErrorKey = 'emptyField';
 
 (R.isChecked = function($input) {
   return $input.is(':checked');
@@ -1515,13 +1523,13 @@ function pullBillingInfoFields($form, billingInfo, options, pull) {
   billingInfo.month = pull.field($form, '.month');
   billingInfo.year = pull.field($form, '.year');
 
-  billingInfo.phone = pull.field($form, '.phone'); 
-  billingInfo.address1 = pull.field($form, '.address1', V(R.isNotEmpty)); 
-  billingInfo.address2 = pull.field($form, '.address2'); 
-  billingInfo.city = pull.field($form, '.city', V(R.isNotEmpty)); 
-  billingInfo.state = pull.field($form, '.state', V(R.isNotEmpty)); 
-  billingInfo.zip = pull.field($form, '.zip', V(R.isNotEmpty)); 
-  billingInfo.country = pull.field($form, '.country', V(R.isNotEmpty)); 
+  billingInfo.phone = pull.field($form, '.phone');
+  billingInfo.address1 = pull.field($form, '.address1', V(R.isNotEmpty));
+  billingInfo.address2 = pull.field($form, '.address2');
+  billingInfo.city = pull.field($form, '.city', V(R.isNotEmpty));
+  billingInfo.state = pull.field($form, '.state', V(R.isNotEmptyState));
+  billingInfo.zip = pull.field($form, '.zip', V(R.isNotEmpty));
+  billingInfo.country = pull.field($form, '.country', V(R.isNotEmpty));
 }
 
 

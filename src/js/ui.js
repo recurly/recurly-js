@@ -489,13 +489,13 @@ function pullBillingInfoFields($form, billingInfo, options, pull) {
   billingInfo.month = pull.field($form, '.month');
   billingInfo.year = pull.field($form, '.year');
 
-  billingInfo.phone = pull.field($form, '.phone'); 
-  billingInfo.address1 = pull.field($form, '.address1', V(R.isNotEmpty)); 
-  billingInfo.address2 = pull.field($form, '.address2'); 
-  billingInfo.city = pull.field($form, '.city', V(R.isNotEmpty)); 
-  billingInfo.state = pull.field($form, '.state', V(R.isNotEmpty)); 
-  billingInfo.zip = pull.field($form, '.zip', V(R.isNotEmpty)); 
-  billingInfo.country = pull.field($form, '.country', V(R.isNotEmpty)); 
+  billingInfo.phone = pull.field($form, '.phone');
+  billingInfo.address1 = pull.field($form, '.address1', V(R.isNotEmpty));
+  billingInfo.address2 = pull.field($form, '.address2');
+  billingInfo.city = pull.field($form, '.city', V(R.isNotEmpty));
+  billingInfo.state = pull.field($form, '.state', V(R.isNotEmptyState));
+  billingInfo.zip = pull.field($form, '.zip', V(R.isNotEmpty));
+  billingInfo.country = pull.field($form, '.country', V(R.isNotEmpty));
 }
 
 
