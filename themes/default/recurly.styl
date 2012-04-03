@@ -355,7 +355,6 @@ hstack(cols)
   .accept_tos
     position relative
     padding vertical_space outer_margin
-    padding-bottom 0
     overflow hidden
     zoom 1 // IE6
 
@@ -400,6 +399,9 @@ hstack(cols)
     height field_height
     margin-bottom vertical_space
     position relative
+
+    &.company_name
+      margin-bottom 0 //IE not accounting for margins, so using other methods
 
     .error
       min-width columns(4) - (input_padding+1)*2
@@ -659,4 +661,25 @@ hstack(cols)
       -webkit-background-clip  padding-box
       -webkit-box-shadow  rgba(255, 255, 255, 0.69) 0px 1px 0px inset, rgba(0,0,0, 0.26) 0px 2px 3px
       box-shadow  rgba(255, 255, 255, 0.699219) 0px 1px 0px inset, rgba(0,0,0, 0.269219) 0px 2px 3px
-     
+.iefail
+  background #666
+  padding 10px
+  position absolute
+  top -1%
+  left -1%
+  height 102%
+  width 102%
+  z-index 9999
+  .chromeframe
+    background #fff
+    border 1px solid #ccc
+    padding 10px
+    
+    p
+      text-align center
+      &.blast
+        font-size 1.3em
+        font-weight bold
+      a
+        color #4183C4
+        text-transform capitalize

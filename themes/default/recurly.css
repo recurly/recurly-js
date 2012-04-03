@@ -317,7 +317,6 @@
 .recurly .accept_tos {
   position: relative;
   padding: 20px 20px;
-  padding-bottom: 0;
   overflow: hidden;
   zoom: 1;
 }
@@ -369,6 +368,9 @@
 }
 .recurly .field input[type=text] {
   width: 288px;
+}
+.recurly .field.company_name {
+  margin-bottom: 0;
 }
 .recurly .field .error {
   min-width: 128px;
@@ -670,4 +672,30 @@
   -webkit-background-clip: padding-box;
   -webkit-box-shadow: rgba(255,255,255,0.69) 0px 1px 0px inset, rgba(0,0,0,0.26) 0px 2px 3px;
   box-shadow: rgba(255,255,255,0.70) 0px 1px 0px inset, rgba(0,0,0,0.27) 0px 2px 3px;
+}
+.iefail {
+  background: #666;
+  padding: 10px;
+  position: absolute;
+  top: -1%;
+  left: -1%;
+  height: 102%;
+  width: 102%;
+  z-index: 9999;
+}
+.iefail .chromeframe {
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+.iefail .chromeframe p {
+  text-align: center;
+}
+.iefail .chromeframe p.blast {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+.iefail .chromeframe p a {
+  color: #4183c4;
+  text-transform: capitalize;
 }
