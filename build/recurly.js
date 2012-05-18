@@ -647,6 +647,14 @@ R.Plan = {
       p.setupFee = new R.Cost(json.setup_fee_in_cents);
     }
 
+    if (json.vat_percentage) {
+      R.settings.VATPercent = parseFloat(json.vat_percentage);
+    }
+
+    if (json.merchant_country) {
+      R.settings.country = json.merchant_country;
+    }
+
     p.addOns = [];
     if(json.add_ons) {
       for(var l=json.add_ons.length, i=0; i < l; ++i) {
@@ -678,7 +686,6 @@ R.Plan = {
     return s;
   }
 };
-
 
 R.AddOn = {
   fromJSON: function(json) {
@@ -817,9 +824,9 @@ R.Subscription = {
 
     totals.stages.now = totals.plan.add(totals.allAddOns);
 
-    // FREE TRIAL
+    // FREE TRIAL 
     if(this.plan.trial) {
-      totals.stages.now = R.Cost.FREE;
+      totals.stages.now = R.Cost.FREE; 
     }
 
     // COUPON
@@ -845,7 +852,7 @@ R.Subscription = {
   }
 , redeemAddOn: function(addOn) {
   var redemption = addOn.createRedemption();
-  this.addOns.push(redemption);
+  this.addOns.push(redemption); 
   return redemption;
 }
 
@@ -944,10 +951,10 @@ R.Coupon = {
   }
 };
 
-R.Cost.prototype.discount = function(coupon){
+R.Cost.prototype.discount = function(coupon){ 
   if(coupon.discountCost)
     return this.add(coupon.discountCost);
-
+  
   var ret = this.sub( this.mult(coupon.discountRatio) );
   if(ret.cents() < 0) {
     return R.Cost.FREE;
@@ -1776,15 +1783,18 @@ R.buildSubscriptionForm = function(options) {
   $form.find('.billing_info').html(R.dom.billing_info_fields);
 
 
+  if(options.planCode)
+    R.Plan.get(options.planCode, options.currency, gotPlan);
+  else if(options.plan) {
+    // this should never be called
+    // the api does not have it, nor does anywhere else in the program refer to it
+    gotPlan(options.plan);    
+  }
+
   initCommonForm($form, options);
   initContactInfoForm($form, options);
   initBillingInfoForm($form, options);
   initTOSCheck($form, options);
-
-  if(options.planCode)
-    R.Plan.get(options.planCode, options.currency, gotPlan);
-  else if(options.plan)
-    gotPlan(options.plan);
 
   function gotPlan(plan) {
 
@@ -2207,7 +2217,7 @@ R.dom['billing_info_fields'] = '<div class="title">Billing Info</div><div class=
 // Compiled from src/dom/subscribe_form.jade
 //////////////////////////////////////////////////
 
-R.dom['subscribe_form'] = '<form class="recurly subscribe"><div class="subscription"><div class="plan"><div class="name"></div><div class="field quantity"><div class="placeholder">Qty</div><input type="text"/></div><div class="recurring_cost"><div class="cost"></div><div class="interval"></div></div><div class="free_trial"></div><div class="setup_fee"><div class="title">Setup Fee</div><div class="cost"></div></div></div><div class="add_ons none"></div><div class="coupon"><div class="coupon_code field"><div class="placeholder">Coupon Code</div><input type="text" class="coupon_code"/></div><div class="check"></div><div class="description"></div><div class="discount"></div></div><div class="vat"><div class="title">VAT</div><div class="cost"></div></div></div><div class="due_now"><div class="title">Order Total</div><div class="cost"></div></div><div class="server_errors none"></div><div class="contact_info"></div><div class="billing_info"></div><div class="accept_tos"></div><div class="footer"><button type="submit" class="submit">Subscribe</button></div></form>';
+R.dom['subscribe_form'] = '<form class="recurly subscribe"><!--[if lt IE 7]><div class="iefail"><div class="chromeframe"><p class="blast">Your browser is not supported by Recurly.js.</p><p><a href="http://browsehappy.com/">Upgrade to a different browser</a></p><p>or</p><p><a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a></p><p>to use this site.</p></div></div><![endif]--><div class="subscription"><div class="plan"><div class="name"></div><div class="field quantity"><div class="placeholder">Qty</div><input type="text"/></div><div class="recurring_cost"><div class="cost"></div><div class="interval"></div></div><div class="free_trial"></div><div class="setup_fee"><div class="title">Setup Fee</div><div class="cost"></div></div></div><div class="add_ons none"></div><div class="coupon"><div class="coupon_code field"><div class="placeholder">Coupon Code</div><input type="text" class="coupon_code"/></div><div class="check"></div><div class="description"></div><div class="discount"></div></div><div class="vat"><div class="title">VAT</div><div class="cost"></div></div></div><div class="due_now"><div class="title">Order Total</div><div class="cost"></div></div><div class="server_errors none"></div><div class="contact_info"></div><div class="billing_info"></div><div class="accept_tos"></div><div class="footer"><button type="submit" class="submit">Subscribe</button></div></form>';
 
 //////////////////////////////////////////////////
 // Compiled from src/dom/update_billing_info_form.jade

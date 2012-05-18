@@ -742,15 +742,18 @@ R.buildSubscriptionForm = function(options) {
   $form.find('.billing_info').html(R.dom.billing_info_fields);
 
 
+  if(options.planCode)
+    R.Plan.get(options.planCode, options.currency, gotPlan);
+  else if(options.plan) {
+    // this should never be called
+    // the api does not have it, nor does anywhere else in the program refer to it
+    gotPlan(options.plan);    
+  }
+
   initCommonForm($form, options);
   initContactInfoForm($form, options);
   initBillingInfoForm($form, options);
   initTOSCheck($form, options);
-
-  if(options.planCode)
-    R.Plan.get(options.planCode, options.currency, gotPlan);
-  else if(options.plan)
-    gotPlan(options.plan);
 
   function gotPlan(plan) {
 

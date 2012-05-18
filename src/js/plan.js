@@ -26,6 +26,14 @@ R.Plan = {
       p.setupFee = new R.Cost(json.setup_fee_in_cents);
     }
 
+    if (json.vat_percentage) {
+      R.settings.VATPercent = parseFloat(json.vat_percentage);
+    }
+
+    if (json.merchant_country) {
+      R.settings.country = json.merchant_country;
+    }
+
     p.addOns = [];
     if(json.add_ons) {
       for(var l=json.add_ons.length, i=0; i < l; ++i) {
@@ -57,7 +65,6 @@ R.Plan = {
     return s;
   }
 };
-
 
 R.AddOn = {
   fromJSON: function(json) {
