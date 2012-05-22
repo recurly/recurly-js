@@ -1,5 +1,10 @@
 #Recurly.js CHANGELOG
 
+##Version 2.1.3 (May 22, 2012)
+
+- Automatically set VAT variables for subscription forms using information from Recurly.
+- Fixed IE7 bug with the text field and added conditional IE6 logic
+
 ##Version 2.1.2 (March 26, 2012)
 
 - Include currency when validating a coupon

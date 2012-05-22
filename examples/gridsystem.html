@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html lang="en"> 
-<head> 
-<title>RecurlyJS Grid System Example</title> 
-<link rel="stylesheet" href="gridsystem.css" type="text/css" /> 
-<link rel="stylesheet" href="../themes/default/recurly.css" type="text/css" /> 
-<script src="../lib/jquery-1.7.1.js"></script> 
+<html lang="en">
+<head>
+<title>RecurlyJS Grid System Example</title>
+<link rel="stylesheet" href="gridsystem.css" type="text/css" />
+<link rel="stylesheet" href="../themes/default/recurly.css" type="text/css" />
+<script src="../lib/jquery-1.7.1.js"></script>
 <script src="../build/recurly.js"></script>
 <script>
   Recurly.config({
     subdomain: 'recurlyjsdemo-test'
   , currency: 'GBP'
-  , country: 'GB'
-  , VATPercent: 10
   });
 
   Recurly.buildSubscriptionForm({
@@ -21,10 +19,10 @@
   , successURL: 'confirmation.html'
   , signature: 'c5996d424684456ffb82704f08a6d00dd5cedd73-0'
   });
-</script> 
+</script>
 
 </head>
-  <body> 
+  <body>
 
 <div id="container">
 	<div id="header">
@@ -52,7 +50,7 @@
       This example demonstrates the use of recurly.js in a 960/12/20 grid system.
       </p>
       <p>
-      The subscribe form style is tuned to 480/12/20 (960/2 = 480) which makes columns in multiple of 2 divide evenly into the columns of the 960 parent. 
+      The subscribe form style is tuned to 480/12/20 (960/2 = 480) which makes columns in multiple of 2 divide evenly into the columns of the 960 parent.
       </p>
       <p>
       You can tweak the dimensions in recurly.styl to fit your content and design.

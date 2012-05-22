@@ -1,18 +1,17 @@
-<!DOCTYPE html> 
-<html lang="en"> 
-<head> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>RecurlyJS Subscribe Example</title> 
-<link rel="stylesheet" href="examples.css" type="text/css" /> 
-<link rel="stylesheet" href="../themes/default/recurly.css" type="text/css" /> 
+<title>RecurlyJS Subscribe Example</title>
+<link rel="stylesheet" href="examples.css" type="text/css" />
+<link rel="stylesheet" href="../themes/default/recurly.css" type="text/css" />
 <script src="../lib/jquery-1.7.1.js"></script>
 <script src="../build/recurly.js"></script>
 
 <script>
   Recurly.config({
     subdomain: 'recurlyjsdemo-test',
-    currency: 'USD',
-    country: 'US'
+    currency: 'USD'
   });
 
   Recurly.buildSubscriptionForm({
@@ -45,9 +44,9 @@
       CVV: '123'
     }
   });
-</script> 
-</head> 
-  <body> 
+</script>
+</head>
+  <body>
     <h1>Subscribe to Plan</h1>
     <h2>Plan Code: simpleplan</h2>
     <div id="recurly-subscribe">
