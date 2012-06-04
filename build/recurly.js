@@ -445,10 +445,14 @@ R.flattenErrors = function(obj, attr) {
     || typeof obj == 'number'
     || typeof obj == 'boolean') {
 
+    /*
+     * erroneous code
+     * might want to use if ($.inArray(attr, baseErrorKeys) !== -1) {return [obj];}
+     * if ever needed in the future
     if($.inArray(baseErrorKeys, attr)) {
       return [obj];
     }
-
+    */
     return ['' + attr + ' ' + obj];
   }
 
