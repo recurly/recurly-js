@@ -1,7 +1,7 @@
-var sys = require('sys');
+var util = require('util');
 var Recurly = require('./lib/recurly');
 var callback = function(result){
-  console.log(sys.inspect(result));
+  console.log(util.inspect(result));
 };
 
 recurly = new Recurly(require('./config'));
