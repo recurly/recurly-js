@@ -1417,7 +1417,7 @@ function initBillingInfoForm($form, options) {
 
   // == GENERATE YEAR SELECT OPTIONS
   for(var i=year; i <= year+10; ++i) {
-    var $yearOpt = $('<option name="'+i+'">'+i+'</option>');
+    var $yearOpt = $('<option value="'+i+'">'+i+'</option>');
     $yearOpt.appendTo($yearSelect);
   }
   $yearSelect.val(year+1);
@@ -1608,6 +1608,8 @@ R.buildBillingInfoUpdateForm = function(options) {
       , error: function(errors) {
           if(!options.onError || !options.onError(errors)) {
             displayServerErrors($form, errors);
+          } else {
+              options.onError(errors);
           }
         }
       , complete: function() {
@@ -1743,6 +1745,8 @@ R.buildTransactionForm = function(options) {
       , error: function(errors) {
           if(!options.onError || !options.onError(errors)) {
             displayServerErrors($form, errors);
+          } else {
+              options.onError(errors);
           }
         }
       , complete: function() {
@@ -2078,6 +2082,8 @@ R.buildSubscriptionForm = function(options) {
         , error: function(errors) {
             if(!options.onError || !options.onError(errors)) {
               displayServerErrors($form, errors);
+            } else {
+                options.onError(errors);
             }
           }
         , complete: function() {
