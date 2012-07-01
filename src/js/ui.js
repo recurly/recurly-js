@@ -564,6 +564,8 @@ R.buildBillingInfoUpdateForm = function(options) {
       , error: function(errors) {
           if(!options.onError || !options.onError(errors)) {
             displayServerErrors($form, errors);
+          } else {
+              options.onError(errors);
           }
         }
       , complete: function() {
@@ -699,6 +701,8 @@ R.buildTransactionForm = function(options) {
       , error: function(errors) {
           if(!options.onError || !options.onError(errors)) {
             displayServerErrors($form, errors);
+          } else {
+              options.onError(errors);
           }
         }
       , complete: function() {
@@ -1034,6 +1038,8 @@ R.buildSubscriptionForm = function(options) {
         , error: function(errors) {
             if(!options.onError || !options.onError(errors)) {
               displayServerErrors($form, errors);
+            } else {
+                options.onError(errors);
             }
           }
         , complete: function() {
