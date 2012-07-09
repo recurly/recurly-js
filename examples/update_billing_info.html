@@ -17,13 +17,17 @@
   });
 
   Recurly.buildBillingInfoUpdateForm({
-    target: '#recurly-update-billing-info',
-    // Signature must be generated server-side with a utility method provided
-    // in client libraries.
-    signature: 'needs-server-support-code',
-    successURL: 'confirmation.html',
-    accountCode: 'testaccount',
-    distinguishContactFromBillingInfo: false 
+    target: '#recurly-update-billing-info' 
+  , accountCode: "wtf"
+  , distinguishContactFromBillingInfo: true 
+  , successURL: 'confirmpurchase.aspx' 
+  , signature: "abcde"
+  , billingInfo: { 
+      firstName: 'Alex' 
+    , lastName: 'Smith' 
+    , cardNumber: '4111-1111-1111-1111' 
+    , CVV: '321' 
+    } 
   });
 </script>
 
