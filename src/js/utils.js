@@ -154,7 +154,7 @@ R.flattenErrors = function(obj, attr) {
 
   var baseErrorKeys = ['base','account_id'];
 
-  var attr = attr || '';
+  attr = attr || '';
 
   if(  typeof obj == 'string'
     || typeof obj == 'number'
