@@ -152,15 +152,13 @@ R.isVATChargeApplicable = function(buyerCountry, vatNumber) {
 R.flattenErrors = function(obj, attr) {
   var arr = [];
 
-  var baseErrorKeys = ['base','account_id'];
-
   var attr = attr || '';
 
   if(  typeof obj == 'string'
     || typeof obj == 'number'
     || typeof obj == 'boolean') {
 
-    if ($.inArray(attr, baseErrorKeys) !== -1) {
+    if (attr == 'base') {
       return [obj];
     }
 
