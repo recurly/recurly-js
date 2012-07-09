@@ -152,7 +152,7 @@ R.isVATChargeApplicable = function(buyerCountry, vatNumber) {
 R.flattenErrors = function(obj, attr) {
   var arr = [];
 
-  var baseErrorKeys = ['base','account_id'];
+  var keysToHide = ['base'];
 
   var attr = attr || '';
 
@@ -160,12 +160,9 @@ R.flattenErrors = function(obj, attr) {
     || typeof obj == 'number'
     || typeof obj == 'boolean') {
 
-    /*
-     * erroneous code, commented out here in case similar logic is needed later
-    if($.inArray(baseErrorKeys, attr)) {
+    if ($.inArray(attr, keysToHide) !== -1) {
       return [obj];
     }
-     */
 
     return ['' + attr + ' ' + obj];
   }
