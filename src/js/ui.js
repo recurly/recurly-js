@@ -339,7 +339,20 @@ function initBillingInfoForm($form, options) {
     if(!v || v == '') return false;
     if(cur && cur != '' && cur != '-') return false;
 
-    return $jq.val(v);
+    // workaround
+    // 
+    // this workaround is specifically for GEOIP, where data may arrive later than
+    // DOM listener (it uses DOM values for VAT logic). By triggering a change event,
+    // it manually triggers the DOM listener responsible for applying VAT
+    //
+    // the right way to fix this is to first get all data, then calculate virtual attributes
+    // and finally do DOM
+    // but that requires a lot of time and work refactoring, and probably needs a MVVM style design
+    //
+    // the downside is the user may briefly see a non-VAT price before a change
+    // but given how rare this problem is occuring, and the briefness of this visual problem
+    // it shouldn't be an issue
+    return $jq.val(v).change();
   }
  
   if(options.enableGeoIP) {
