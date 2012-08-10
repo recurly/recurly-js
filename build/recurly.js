@@ -716,7 +716,7 @@ R.Account = {
       first_name: this.firstName
     , last_name: this.lastName
     , company_name: this.companyName
-    , account_code: this.code
+    , account_code: this.code || this.account_code
     , email: this.email
     };
   }
@@ -1812,6 +1812,15 @@ R.buildSubscriptionForm = function(options) {
     var subscription = plan.createSubscription(),
         account = R.Account.create(),
         billingInfo = R.BillingInfo.create();
+
+    // if account option is specified, copy over option data
+    if (options.account) {
+      for (var attr in options.account) {
+        if (options.account.hasOwnProperty(attr)) {
+          account[attr] = options.account[attr];
+        }
+      }
+    }
 
     subscription.account = account;
     subscription.billingInfo = billingInfo;
