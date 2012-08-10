@@ -774,15 +774,6 @@ R.buildSubscriptionForm = function(options) {
         account = R.Account.create(),
         billingInfo = R.BillingInfo.create();
 
-    // if account option is specified, copy over option data
-    if (options.account) {
-      for (var attr in options.account) {
-        if (options.account.hasOwnProperty(attr)) {
-          account[attr] = options.account[attr];
-        }
-      }
-    }
-
     subscription.account = account;
     subscription.billingInfo = billingInfo;
 
