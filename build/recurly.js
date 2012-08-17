@@ -2089,10 +2089,11 @@ R.buildSubscriptionForm = function(options) {
             if(!options.onError || !options.onError(errors)) {
               displayServerErrors($form, errors);
             }
-          }
-        , complete: function() {
             $form.removeClass('submitting');
             $form.find('button.submit').removeAttr('disabled').html(options.submitButtonHTML.initial);
+          }
+        , complete: function() {
+           
           }
         });
       });
