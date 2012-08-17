@@ -731,6 +731,10 @@ R.buildSubscriptionForm = function(options) {
   , enableCoupons: true
   , addressRequirement: 'full'
   , distinguishContactFromBillingInfo: false
+  , submitButtonHTML: {
+  		initial: "Subscribe",
+  		waiting: "Please Wait"
+  	}
   };
 
   options = $.extend(createObject(R.settings), defaults, options);
@@ -794,7 +798,6 @@ R.buildSubscriptionForm = function(options) {
     else {
       $form.find('.plan .free_trial').remove();
     }
- 
 
     // == UPDATE ALL UI TOTALS via subscription.calculateTotals() results
     function updateTotals() {
@@ -1000,6 +1003,8 @@ R.buildSubscriptionForm = function(options) {
     });
  
     // SUBMIT HANDLER
+    $form.find('button.submit').html(options.submitButtonHTML.initial);
+    
     $form.submit(function(e) {
       e.preventDefault(); 
 
@@ -1017,7 +1022,7 @@ R.buildSubscriptionForm = function(options) {
       }, function() {
 
         $form.addClass('submitting');
-        $form.find('button.submit').attr('disabled', true).text('Please Wait');
+        $form.find('button.submit').attr('disabled', true).html(options.submitButtonHTML.waiting);
 
         subscription.save({
 
@@ -1038,7 +1043,7 @@ R.buildSubscriptionForm = function(options) {
           }
         , complete: function() {
             $form.removeClass('submitting');
-            $form.find('button.submit').removeAttr('disabled').text('Subscribe');
+            $form.find('button.submit').removeAttr('disabled').html(options.submitButtonHTML.initial);
           }
         });
       });
