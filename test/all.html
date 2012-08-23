@@ -68,7 +68,7 @@
       R.config({ 
         subdomain: 'flurp-test'
       });
-      equals(R.settings.baseURL, 'https://api.recurly.com/jsonp/flurp-test/');
+      equal(R.settings.baseURL, 'https://api.recurly.com/jsonp/flurp-test/');
     });
 
 
@@ -76,9 +76,9 @@
 
     test('currency formatting', function() {
       var cost = new R.Cost(2000); // 20 bucks
-      equals(cost.toString(), '$20.00');
+      equal(cost.toString(), '$20.00');
       var negative = new R.Cost(-2000); // -20 bucks
-      equals(negative.toString(), '-$20.00');
+      equal(negative.toString(), '-$20.00');
     });
 
     test('all arithmetic', function() {
@@ -89,9 +89,9 @@
 
       var total = cost.mult(m).add(a).sub(s); // (20*2)+5-1 == 44
 
-      equals(cost.dollars(), 20); // verify immutability
-      equals(total.dollars(), 44); 
-      equals(cost.dollars(100).dollars(), 100); 
+      equal(cost.dollars(), 20); // verify immutability
+      equal(total.dollars(), 44); 
+      equal(cost.dollars(100).dollars(), 100); 
     });
 
     module('Coupon'); 
@@ -99,13 +99,13 @@
     test('discounts percent', function() {
       var cost = new R.Cost(2000);
       var discounted = cost.discount(coupon50percent);
-      equals(discounted.dollars(), 10);
+      equal(discounted.dollars(), 10);
     });
 
     test('discounts fixed', function() {
       var cost = new R.Cost(2000);
       var discounted = cost.discount(coupon5bucks);
-      equals(discounted.dollars(), 15);
+      equal(discounted.dollars(), 15);
     });
 
 
@@ -114,9 +114,9 @@
     test('add/remove add-on', function() {
       var subscription = kitchenSink.createSubscription()
       , sa = subscription.redeemAddOn(kitchenSink.addOns[0]);
-      equals(subscription.addOns.length, 1);
+      equal(subscription.addOns.length, 1);
       subscription.removeAddOn(sa.code);
-      equals(subscription.addOns.length, 0);
+      equal(subscription.addOns.length, 0);
     });
 
     test('toJSON', function() { 
@@ -131,6 +131,7 @@
       , plan_code: 'kitchensink'
       , quantity: 1
       , coupon_code: undefined
+      , currency: undefined
       });
     });
 
@@ -141,7 +142,7 @@
       var subscription = kitchenSink.createSubscription();
       var totals = subscription.calculateTotals();
 
-      equals(totals.stages.now.dollars(), 70);
+      equal(totals.stages.now.dollars(), 70);
     });
 
     test('plan quantity = 2', function() {
@@ -150,8 +151,8 @@
 
       var totals = subscription.calculateTotals();
 
-      equals(totals.plan.dollars(), 100);
-      equals(totals.stages.now.dollars(), 120);
+      equal(totals.plan.dollars(), 100);
+      equal(totals.stages.now.dollars(), 120);
     });
 
     test('with add-ons', function() {
@@ -161,8 +162,8 @@
 
       var totals = subscription.calculateTotals();
 
-      equals(totals.allAddOns.dollars(), 2);
-      equals(totals.stages.now.dollars(), 122);
+      equal(totals.allAddOns.dollars(), 2);
+      equal(totals.stages.now.dollars(), 122);
     });
 
     test('permutation: add-ons + coupon', function() {
@@ -177,7 +178,7 @@
       // discount: 102/2 = $51
       // so total should be: $122 - $51 = $71
 
-      equals(totals.stages.now.dollars(), 71); 
+      equal(totals.stages.now.dollars(), 71); 
     });
 
     test('permutation: add-ons + vat', function() {
@@ -189,7 +190,7 @@
 
       var totals = subscription.calculateTotals();
 
-      equals(totals.stages.now.dollars(), 134.2); // 102 + 10% vat
+      equal(totals.stages.now.dollars(), 134.2); // 102 + 10% vat
     });
 
     test('permutation: add-ons + coupon + vat', function() {
@@ -202,7 +203,7 @@
 
       var totals = subscription.calculateTotals();
 
-      equals(totals.stages.now.dollars(), 78.1); // ( 102 + 10% (vat) ) / 2 (50% coupon)
+      equal(totals.stages.now.dollars(), 78.1); // ( 102 + 10% (vat) ) / 2 (50% coupon)
     });
 
     test('permutation: add-ons + fixed-coupon', function() {
@@ -214,7 +215,7 @@
 
       var totals = subscription.calculateTotals();
 
-      equals(totals.stages.now.dollars(), 117); // 122 - 5
+      equal(totals.stages.now.dollars(), 117); // 122 - 5
     });
     module('Validators'); 
 
@@ -246,11 +247,11 @@
     module('Util'); 
 
     test('detectCardType', function() {
-      equals( R.detectCardType('4111-1111-1111-1111'), 'visa'); // w/ dashes
-      equals( R.detectCardType('4111111111111111'), 'visa');
-      equals( R.detectCardType('378282246310005'), 'american_express');
-      equals( R.detectCardType('38520000023237'), 'diners_club');
-      equals( R.detectCardType('6011111111111117'), 'discover');
+      equal( R.detectCardType('4111-1111-1111-1111'), 'visa'); // w/ dashes
+      equal( R.detectCardType('4111111111111111'), 'visa');
+      equal( R.detectCardType('378282246310005'), 'american_express');
+      equal( R.detectCardType('38520000023237'), 'diners_club');
+      equal( R.detectCardType('6011111111111117'), 'discover');
     });
 
 
@@ -266,41 +267,12 @@
 
     
     test('flattenErrors', function() {
-      var test = {a: ['one'], b: {c:['two','three']}, d: 4, e: false}
-      var expect = ['one','two','three',4,false];
+      var test = {a: ['one'], b: {c:['two','three']}}
+      var expect = ['a one','c two','c three'];
       var result = R.flattenErrors(test); 
       deepEqual(result, expect);
     });
 
- 
-    test('replaceVars', function() {
-      var url = '/success?account={account_code}&plan={plan_code}&account={account_code}'; 
-      var vars = {
-        account_code: 123
-      , plan_code: 'abc'
-      , add_on_codes: ['abc']
-      };
-      var expect = '/success?account=123&plan=abc&account=123'; 
-      var result = R.replaceVars(url, vars); 
-      deepEqual(result, expect);
-    });
-
-
-    module('buidSubscribeForm'); 
-
-    test('without editable quantity', function() {
-      var context = this;
-      Recurly.buildSubscriptionForm({
-        target: '#f'
-      , plan: kitchenSink
-      , filterSubscription: function(subs) {
-          context.subs = subs;
-        }
-      });
-
-    });
-
- 
     module('buildSubscriptionForm barebone', {
       setup: function() {
         var context = this;
@@ -310,6 +282,7 @@
         , filterSubscription: function(subs) {
             context.subs = subs;
           }
+        , signature: 'thiscanbefakeforthetestsoyeah'
         });
       }
     , teardown: function() {
@@ -318,11 +291,11 @@
     });
 
     test('no plan quantity field exists', function() {
-      equals($('#f .plan .quantity').length, 0);
+      equal($('#f .plan .quantity').length, 0);
     });
 
     test('no add ons', function() {
-      equals($('#f .add_ons .add_on').length, 0);
+      equal($('#f .add_ons .add_on').length, 0);
     });
 
     module('buildSubscriptionForm kitchen sink', {
@@ -337,9 +310,10 @@
         , onError: function(error) {
             context.onErrorCalled = error;
           }
-        , afterSubscribe: function(invoice) {
-            context.afterSubscribeCalled = invoice;
+        , successHandler: function(invoice) {
+            context.handleSuccessCalled = invoice;
           }
+        , signature: 'thiscanbefakeforthetestsoyeah'
         });
       }
     , teardown: function() {
@@ -348,23 +322,23 @@
     });
 
     test('plan recurring cost is correct', function() {
-      equals($('#f .plan .recurring_cost .cost').text(), '$50.00');
+      equal($('#f .plan .recurring_cost .cost').text(), '$50.00');
     });
 
     test('plan quantity field exist', function() {
-      equals($('#f .plan .quantity').length, 1);
+      equal($('#f .plan .quantity').length, 1);
     });
 
     test('add ons exist', function() {
-      equals($('#f .add_ons .add_on').length, 2);
+      equal($('#f .add_ons .add_on').length, 2);
     });
 
     test('add on without quantity doesn\'t have field', function() {
-      equals($('#f .add_on_extras .quantity').length, 0);
+      equal($('#f .add_on_extras .quantity').length, 0);
     });
 
     test('add on without quantity has field', function() {
-      equals($('#f .add_on_somethingelse .quantity').length, 1);
+      equal($('#f .add_on_somethingelse .quantity').length, 1);
     });
 
     test('toggle add-ons', function() {
@@ -420,6 +394,7 @@
             "plan_code": "kitchensink",
             "quantity": 1,
             "coupon_code": undefined,
+            "currency": undefined,
             "add_ons": []
           },
           "account": {
@@ -439,12 +414,14 @@
             "address1": "yee",
             "address2": "haw",
             "city": "doo",
-            "state": "texas",
+            "state": "TX",
             "zip": "12345",
             "country": "US",
             "phone": undefined,
             "vat_number": undefined
-          }
+          },
+          "js_version": "2.1.3",
+          "signature": "thiscanbefakeforthetestsoyeah"
         });
 
         opt.success({success: {invoice: {}}});
@@ -452,9 +429,7 @@
       };
 
       fillOutEverything();
-      $('#f .submit').submit();
-
-      ok( this.afterSubscribeCalled );
+      $('#f form').submit();
     });
 
 
@@ -480,7 +455,7 @@
       fillOutEverything();
       $('#f .submit').submit();
 
-      ok( this.afterSubscribeCalled );
+      ok( this.handleSuccessCalled );
     });
 
 
