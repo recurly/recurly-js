@@ -27,7 +27,7 @@ function prepare(done) {
 
 function headerPart(done) {
 
-  var header = fs.readFileSync('src/js/header.js') + '';
+  var header = fs.readFileSync('src/client/header.js') + '';
   header = header.replace(/\{VERSION\}/,VERSION);
 
   process.stdout.write(

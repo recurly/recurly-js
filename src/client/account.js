@@ -1,4 +1,4 @@
-R.Account = {
+var Account = {
   create: createObject
 , toJSON: function() {    
     return {
@@ -11,3 +11,4 @@ R.Account = {
   }
 };
 
+R.Account = Account;

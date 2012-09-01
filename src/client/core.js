@@ -1,8 +1,9 @@
 // Non-intrusive Object.create
-function createObject(o) {
+function createObject(o,sub) {
   function F() {}
   F.prototype = o || this;
-  return new F();
+  var f = new F();
+  return $.extend(f, sub); 
 };
 
 var R = {}; 

@@ -1,9 +1,8 @@
 // Base Subscription prototype
-R.Subscription = {
+var Subscription = {
   create: createObject
 , plan: R.Plan
 , addOns: []
-
 , calculateTotals: function() {
     var totals = {
       stages: {}
@@ -45,7 +44,7 @@ R.Subscription = {
     }
 
     // VAT
-    if(this.billingInfo && R.isVATChargeApplicable(this.billingInfo.country,this.billingInfo.vatNumber)) {
+    if(this.billingInfo && VAT.isChargeApplicable(this.billingInfo.country,this.billingInfo.vatNumber)) {
       totals.vat = totals.stages.now.mult( (R.settings.VATPercent/100) );
       totals.stages.now = totals.stages.now.add(totals.vat);
     }
@@ -129,30 +128,6 @@ R.Subscription = {
   }
 };
 
-R.AddOn.createRedemption = function(qty) {
-  var r = createObject(this);
-  r.quantity = qty || 1;
-  return r;
-};
-
-R.Coupon = {
-  fromJSON: function(json) {
-    var c = createObject(R.Coupon);
-
-    if(json.discount_in_cents)
-      c.discountCost = new R.Cost(-json.discount_in_cents);
-    else if(json.discount_percent)
-      c.discountRatio = json.discount_percent/100;
-
-    c.description = json.description;
-
-    return c;
-  }
-
-, toJSON: function() {
-  }
-};
-
 R.Cost.prototype.discount = function(coupon){ 
   if(coupon.discountCost)
     return this.add(coupon.discountCost);
@@ -165,7 +140,7 @@ R.Cost.prototype.discount = function(coupon){
   return ret;
 };
 
-R.Subscription.getCoupon = function(couponCode, successCallback, errorCallback) {
+Subscription.getCoupon = function(couponCode, successCallback, errorCallback) {
 
   if(!R.settings.baseURL) { R.raiseError('Company subdomain not configured'); }
 
@@ -193,3 +168,4 @@ R.Subscription.getCoupon = function(couponCode, successCallback, errorCallback) 
   });
 };
 
+R.Subscription = Subscription;

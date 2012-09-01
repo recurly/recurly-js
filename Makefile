@@ -3,21 +3,35 @@ COMPILER = ./bin/compile.js
 STYLUS = ./node_modules/stylus/bin/stylus
 YUI_COMPRESSOR = java -jar ./bin/yuicompressor-2.4.6.jar
 
-JS_SOURCES = $(addprefix src/js/, \
+CLIENT_SOURCES = $(addprefix src/client/, \
   core.js \
   locale.js \
   utils.js \
-  validators.js \
   plan.js \
   account.js \
   billing_info.js \
   subscription.js \
   transaction.js \
-  ui.js\
-  states.js\
+	addon.js \
+	coupon.js \
+	vat.js \
 )
 
-DOM_SOURCES = $(addprefix src/dom/, \
+UI_SOURCES = $(addprefix src/ui/, \
+  ui.js \
+	ui.account.js \
+  ui.transaction.js \
+	ui.billing_info.js \
+	ui.subscription.js \
+	ui.addon.js \
+	ui.coupon.js \
+	ui.vat.js \
+  validation.js \
+  validators.js \
+  states.js \
+)
+
+DOM_SOURCES = $(addprefix src/ui/dom/, \
 	contact_info_fields.jade \
 	billing_info_fields.jade \
 	subscribe_form.jade \
@@ -31,7 +45,7 @@ all: node_modules build build/recurly.min.js
 build:
 	mkdir -p build
 
-build/recurly.js: $(JS_SOURCES) $(DOM_SOURCES)
+build/recurly.js: $(CLIENT_SOURCES) $(UI_SOURCES) $(DOM_SOURCES)
 	$(COMPILER) $^ > $@
 
 build/recurly.min.js: build/recurly.js

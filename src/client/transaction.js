@@ -1,13 +1,19 @@
-
-R.Transaction = {
- // Note - No toJSON function for this object, all parameters must be signed.
- create: createObject
-, save: function(options) { 
-    var json = {
-      account: this.account ? this.account.toJSON() : undefined 
+var Transaction = {
+  create: function(argument) {
+    var transaction = createObject(this);
+    transaction.billingInfo = BillingInfo.create();
+    transaction.account = Account.create();
+    return transaction;
+  }
+, toJSON: function() {
+    return {
+      account: this.account && this.account.toJSON()
     , billing_info: this.billingInfo.toJSON() 
-    , signature: options.signature
     };
+  }
+, save: function(options) { 
+    var json = this.toJSON();
+    json.signature = options.signature;
 
     R.ajax({
       url: R.settings.baseURL+'transactions/create'
@@ -33,4 +39,4 @@ R.Transaction = {
   }
 };
 
-
+R.Transaction = Transaction;

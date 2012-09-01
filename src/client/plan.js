@@ -1,4 +1,4 @@
-R.Plan = {
+var Plan = {
   create: createObject
 , fromJSON: function(json) {
     var p = this.create();
@@ -62,25 +62,12 @@ R.Plan = {
     s.plan = createObject(this);
     s.plan.quantity = 1;
     s.addOns = [];
+
+    s.account = Account.create();
+    s.billingInfo = BillingInfo.create();
+
     return s;
   }
 };
 
-R.AddOn = {
-  fromJSON: function(json) {
-    var a = createObject(R.AddOn);
-    a.name = json.name;   
-    a.code = json.add_on_code;
-    a.cost = new R.Cost(json.default_unit_amount_in_cents);
-    a.displayQuantity = json.display_quantity;
-    return a;
-  }
-
-, toJSON: function() {
-    return {
-      name: this.name
-    , add_on_code: this.code
-    , default_unit_amount_in_cents: this.default_unit_amount_in_cents
-    };
-  }
-};
+R.Plan = Plan;
