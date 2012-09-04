@@ -188,7 +188,7 @@ R.locale.errors = {
 , invalidEmail: 'Invalid'
 , invalidCC: 'Invalid'
 , invalidCVV: 'Invalid'
-, invalidCoupon: 'Invalid' 
+, invalidCoupon: 'Invalid'
 , cardDeclined: 'Transaction declined' 
 , acceptTOS: 'Please accept the Terms of Service.' 
 , invalidQuantity: 'Invalid quantity' 
@@ -1986,7 +1986,7 @@ R.buildSubscriptionForm = function(options) {
 
         $coupon.removeClass('checking');
         $coupon.removeClass('valid').addClass('invalid');
-        $coupon.find('.description').text('Not Found');
+        $coupon.find('.description').text(R.locale.errors.invalidCoupon);
 
         updateTotals();
       });
