@@ -947,7 +947,7 @@ R.buildSubscriptionForm = function(options) {
 
         $coupon.removeClass('checking');
         $coupon.removeClass('valid').addClass('invalid');
-        $coupon.find('.description').text('Not Found');
+        $coupon.find('.description').text(R.locale.errors.invalidCoupon);
 
         updateTotals();
       });
