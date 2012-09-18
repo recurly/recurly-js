@@ -1,3 +1,9 @@
+var Validator = function() {
+};
+
+Validator.prototype.isNotEmpty = function() {
+  this.check();
+};
 
 (R.isValidCC = function($input) {
   var v = $input.val();
@@ -61,6 +67,7 @@ function wholeNumber(val) {
 }).defaultErrorKey = 'acceptTOS';
 
 (R.isValidQuantity = function($input) {
-  return /^[0-9]*$/.test($input.val());
+  var v = $input.val();
+  return wholeNumber(v) || v == '';
 }).defaultErrorKey = 'invalidQuantity';
 

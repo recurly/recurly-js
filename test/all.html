@@ -166,7 +166,7 @@
       equal(totals.stages.now.dollars(), 122);
     });
 
-    test('permutation: add-ons + coupon', function() {
+    test('permutation: add-ons + % coupon', function() {
       var subscription = kitchenSink.createSubscription();
       subscription.plan.quantity = 2;
       subscription.redeemAddOn(kitchenSink.addOns[0]);
@@ -180,6 +180,22 @@
 
       equal(totals.stages.now.dollars(), 71); 
     });
+
+    test('permutation: add-ons + fixed coupon', function() {
+      var subscription = kitchenSink.createSubscription();
+      subscription.plan.quantity = 2;
+      subscription.redeemAddOn(kitchenSink.addOns[0]);
+      subscription.coupon = coupon5bucks;
+
+      var totals = subscription.calculateTotals();
+
+      // (setup + add-on + plan) = $122
+      // discount: $5
+      // so total should be: $122 - $5 = $117 
+
+      equal(totals.stages.now.dollars(), 117); 
+    });
+
 
     test('permutation: add-ons + vat', function() {
       var subscription = kitchenSink.createSubscription();
@@ -229,7 +245,6 @@
       equal(R.isValidEmail(stubVal('obviouslynotanemail')), false);
     });
 
-
     test('isValidCC', function() {
       ok( R.isValidCC(stubVal('4111-1111-1111-1111')) );
       ok( R.isValidCC(stubVal('4111#1111.1111 1111')) );
@@ -243,6 +258,15 @@
       ok(! R.isValidCVV(stubVal('12.3')) );
       ok(! R.isValidCVV(stubVal('abc')) );
     });
+
+    test('isValidQuantity', function() {
+      ok( R.isValidQuantity(stubVal('')) );
+      ok( R.isValidQuantity(stubVal('1')) );
+      ok(! R.isValidQuantity(stubVal('-1')) );
+      ok(! R.isValidQuantity(stubVal('abc')) );
+    });
+
+
 
     module('Util'); 
 
@@ -258,11 +282,11 @@
 
     test('isVATChargeApplicable', function() {
       R.config({country: 'GB', VATPercent: 10});
-      ok( R.isVATChargeApplicable('USA', false) == false);    // outside EU: doesn't pay
-      ok( R.isVATChargeApplicable('DE', true)    ==  false);  // in EU, different countries, with VAT number: doesn't pay 
-      ok( R.isVATChargeApplicable('DE', false)   ==  true);   // in EU, different countries, no VAT number: pay 
-      ok( R.isVATChargeApplicable('GB', true)    ==  true);   // in EU, same country, with VAT number: pay 
-      ok( R.isVATChargeApplicable('GB', false)   ==  true);   // in EU, same country, no VAT number: pay 
+      ok( R.VAT.isChargeApplicable('USA', false) == false);    // outside EU: doesn't pay
+      ok( R.VAT.isChargeApplicable('DE', true)    ==  false);  // in EU, different countries, with VAT number: doesn't pay 
+      ok( R.VAT.isChargeApplicable('DE', false)   ==  true);   // in EU, different countries, no VAT number: pay 
+      ok( R.VAT.isChargeApplicable('GB', true)    ==  true);   // in EU, same country, with VAT number: pay 
+      ok( R.VAT.isChargeApplicable('GB', false)   ==  true);   // in EU, same country, no VAT number: pay 
     });
 
     
@@ -337,7 +361,7 @@
       equal($('#f .add_on_extras .quantity').length, 0);
     });
 
-    test('add on without quantity has field', function() {
+    test('add on with quantity has field', function() {
       equal($('#f .add_on_somethingelse .quantity').length, 1);
     });
 

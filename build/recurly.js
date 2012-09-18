@@ -33,14 +33,15 @@
 "use strict";
 
 //////////////////////////////////////////////////
-// Compiled from src/js/core.js
+// Compiled from src/client/core.js
 //////////////////////////////////////////////////
 
 // Non-intrusive Object.create
-function createObject(o) {
+function createObject(o,sub) {
   function F() {}
   F.prototype = o || this;
-  return new F();
+  var f = new F();
+  return $.extend(f, sub); 
 };
 
 var R = {}; 
@@ -177,7 +178,7 @@ R.RecurringCost.FREE = new R.RecurringCost(0,null);
 
 
 //////////////////////////////////////////////////
-// Compiled from src/js/locale.js
+// Compiled from src/client/locale.js
 //////////////////////////////////////////////////
 
 R.locale = {};
@@ -280,7 +281,7 @@ R.settings.locale = R.locale;
 
 
 //////////////////////////////////////////////////
-// Compiled from src/js/utils.js
+// Compiled from src/client/utils.js
 //////////////////////////////////////////////////
 
 R.knownCards = {
@@ -397,43 +398,6 @@ R.formatCurrency = function(num,denomination) {
   return str;
 };
 
-var euCountries = ["AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB"];
-R.isCountryInEU = function(country) {
-  return $.inArray(country, euCountries) !== -1;
-}
-
-R.isVATNumberApplicable = function(buyerCountry, sellerCountry) {
-  if(!R.settings.VATPercent) return false;
-
-  if(!R.settings.country) {
-    R.raiseError('you must configure a country for VAT to work');
-  }
-
-  if(!R.isCountryInEU(R.settings.country)) {
-    R.raiseError('you cannot charge VAT outside of the EU');
-  }
-
-  // Outside of EU don't even show the number
-  if(!R.isCountryInEU(buyerCountry)) {
-    return false;
-  }
-
-  return true;
-}
-
-R.isVATChargeApplicable = function(buyerCountry, vatNumber) {
-  // We made it so the VAT Number is collectable in any case
-  // where it could be charged, so this is logically sound:
-  if(!R.isVATNumberApplicable(buyerCountry)) return false;
-
-  var sellerCountry = R.settings.country;
-
-  // 1) Outside EU never pays
-  // 2) Same country in EU always pays
-  // 3) Different countries in EU, pay only without vatNumber
-  return (sellerCountry == buyerCountry || !vatNumber);
-};
-
 R.flattenErrors = function(obj, attr) {
   var arr = [];
 
@@ -542,82 +506,10 @@ function errorDialog(message) {
 
 
 //////////////////////////////////////////////////
-// Compiled from src/js/validators.js
+// Compiled from src/client/plan.js
 //////////////////////////////////////////////////
 
-
-(R.isValidCC = function($input) {
-  var v = $input.val();
-
-  // Strip out all non digits 
-  v = v.replace(/\D/g, "");
-
-  if(v == "") return false;
-
-  var nCheck = 0,
-      nDigit = 0,
-      bEven = false;
-
-
-  for (var n = v.length - 1; n >= 0; n--) {
-    var cDigit = v.charAt(n);
-    var nDigit = parseInt(cDigit, 10);
-    if (bEven) {
-      if ((nDigit *= 2) > 9)
-        nDigit -= 9;
-    }
-    nCheck += nDigit;
-    bEven = !bEven;
-  }
-
-  return (nCheck % 10) == 0;
-}).defaultErrorKey = 'invalidCC';
-
-(R.isValidEmail = function($input) {
-  var v = $input.val();
-  return /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i.test(v);
-}).defaultErrorKey = 'invalidEmail';
-
-function wholeNumber(val) {
-  return /^[0-9]+$/.test(val);
-}
-
-(R.isValidCVV = function($input) {
-  var v = $input.val();
-  return (v.length == 3 || v.length == 4) && wholeNumber(v);
-}).defaultErrorKey = 'invalidCVV';
-
-(R.isNotEmpty = function($input) {
-  var v = $input.val();
-  if($input.is('select')) {
-    if(v == '-' || v == '--') return false;
-  }
-  return !!v;
-}).defaultErrorKey = 'emptyField';
-// State is required if its a dropdown, it is not required if it is an input box
-(R.isNotEmptyState = function($input) {
-  var v = $input.val();
-  if($input.is('select')) {
-    if(v == '-' || v == '--') return false;
-  }
-  return true;
-}).defaultErrorKey = 'emptyField';
-
-(R.isChecked = function($input) {
-  return $input.is(':checked');
-}).defaultErrorKey = 'acceptTOS';
-
-(R.isValidQuantity = function($input) {
-  return /^[0-9]*$/.test($input.val());
-}).defaultErrorKey = 'invalidQuantity';
-
-
-
-//////////////////////////////////////////////////
-// Compiled from src/js/plan.js
-//////////////////////////////////////////////////
-
-R.Plan = {
+var Plan = {
   create: createObject
 , fromJSON: function(json) {
     var p = this.create();
@@ -681,35 +573,22 @@ R.Plan = {
     s.plan = createObject(this);
     s.plan.quantity = 1;
     s.addOns = [];
+
+    s.account = Account.create();
+    s.billingInfo = BillingInfo.create();
+
     return s;
   }
 };
 
-R.AddOn = {
-  fromJSON: function(json) {
-    var a = createObject(R.AddOn);
-    a.name = json.name;   
-    a.code = json.add_on_code;
-    a.cost = new R.Cost(json.default_unit_amount_in_cents);
-    a.displayQuantity = json.display_quantity;
-    return a;
-  }
-
-, toJSON: function() {
-    return {
-      name: this.name
-    , add_on_code: this.code
-    , default_unit_amount_in_cents: this.default_unit_amount_in_cents
-    };
-  }
-};
+R.Plan = Plan;
 
 
 //////////////////////////////////////////////////
-// Compiled from src/js/account.js
+// Compiled from src/client/account.js
 //////////////////////////////////////////////////
 
-R.Account = {
+var Account = {
   create: createObject
 , toJSON: function() {    
     return {
@@ -722,13 +601,14 @@ R.Account = {
   }
 };
 
+R.Account = Account;
 
 
 //////////////////////////////////////////////////
-// Compiled from src/js/billing_info.js
+// Compiled from src/client/billing_info.js
 //////////////////////////////////////////////////
 
-R.BillingInfo = {
+var BillingInfo = {
   create: createObject
 , toJSON: function() {    
     return {
@@ -788,18 +668,18 @@ R.BillingInfo = {
   }
 };
 
+R.BillingInfo = BillingInfo;
 
 
 //////////////////////////////////////////////////
-// Compiled from src/js/subscription.js
+// Compiled from src/client/subscription.js
 //////////////////////////////////////////////////
 
 // Base Subscription prototype
-R.Subscription = {
+var Subscription = {
   create: createObject
 , plan: R.Plan
 , addOns: []
-
 , calculateTotals: function() {
     var totals = {
       stages: {}
@@ -841,7 +721,7 @@ R.Subscription = {
     }
 
     // VAT
-    if(this.billingInfo && R.isVATChargeApplicable(this.billingInfo.country,this.billingInfo.vatNumber)) {
+    if(this.billingInfo && VAT.isChargeApplicable(this.billingInfo.country,this.billingInfo.vatNumber)) {
       totals.vat = totals.stages.now.mult( (R.settings.VATPercent/100) );
       totals.stages.now = totals.stages.now.add(totals.vat);
     }
@@ -925,30 +805,6 @@ R.Subscription = {
   }
 };
 
-R.AddOn.createRedemption = function(qty) {
-  var r = createObject(this);
-  r.quantity = qty || 1;
-  return r;
-};
-
-R.Coupon = {
-  fromJSON: function(json) {
-    var c = createObject(R.Coupon);
-
-    if(json.discount_in_cents)
-      c.discountCost = new R.Cost(-json.discount_in_cents);
-    else if(json.discount_percent)
-      c.discountRatio = json.discount_percent/100;
-
-    c.description = json.description;
-
-    return c;
-  }
-
-, toJSON: function() {
-  }
-};
-
 R.Cost.prototype.discount = function(coupon){ 
   if(coupon.discountCost)
     return this.add(coupon.discountCost);
@@ -961,7 +817,7 @@ R.Cost.prototype.discount = function(coupon){
   return ret;
 };
 
-R.Subscription.getCoupon = function(couponCode, successCallback, errorCallback) {
+Subscription.getCoupon = function(couponCode, successCallback, errorCallback) {
 
   if(!R.settings.baseURL) { R.raiseError('Company subdomain not configured'); }
 
@@ -989,22 +845,29 @@ R.Subscription.getCoupon = function(couponCode, successCallback, errorCallback) 
   });
 };
 
+R.Subscription = Subscription;
 
 
 //////////////////////////////////////////////////
-// Compiled from src/js/transaction.js
+// Compiled from src/client/transaction.js
 //////////////////////////////////////////////////
 
-
-R.Transaction = {
- // Note - No toJSON function for this object, all parameters must be signed.
- create: createObject
-, save: function(options) { 
-    var json = {
-      account: this.account ? this.account.toJSON() : undefined 
+var Transaction = {
+  create: function(argument) {
+    var transaction = createObject(this);
+    transaction.billingInfo = BillingInfo.create();
+    transaction.account = Account.create();
+    return transaction;
+  }
+, toJSON: function() {
+    return {
+      account: this.account && this.account.toJSON()
     , billing_info: this.billingInfo.toJSON() 
-    , signature: options.signature
     };
+  }
+, save: function(options) { 
+    var json = this.toJSON();
+    json.signature = options.signature;
 
     R.ajax({
       url: R.settings.baseURL+'transactions/create'
@@ -1030,138 +893,116 @@ R.Transaction = {
   }
 };
 
-
+R.Transaction = Transaction;
 
 
 //////////////////////////////////////////////////
-// Compiled from src/js/ui.js
+// Compiled from src/client/addon.js
 //////////////////////////////////////////////////
 
-R.UserError = {};
+var AddOn = {
+  create: createObject
+, fromJSON: function(json) {
+    var a = createObject(R.AddOn);
+    a.name = json.name;   
+    a.code = json.add_on_code;
+    a.cost = new R.Cost(json.default_unit_amount_in_cents);
+    a.displayQuantity = json.display_quantity;
+    return a;
+  }
+, toJSON: function() {
+    return {
+      name: this.name
+    , add_on_code: this.code
+    , default_unit_amount_in_cents: this.default_unit_amount_in_cents
+    };
+  }
+, createRedemption: function(qty) {
+    var r = createObject(this);
+    r.quantity = qty || 1;
+    return r;
+  }
+};
 
-function raiseUserError(validation, elem) {
-  var e = createObject(R.UserError);
-  e.validation = validation;
-  e.element = elem;
-  throw e;
-}
+R.AddOn = AddOn;
 
-function invalidMode(e) { 
-  var $input = e.element;
-  var message = R.locale.errors[e.validation.errorKey];
-  var validator = e.validation.validator;
 
-  var $e = $('<div class="error">');
-  $e.text(message);
-  $e.appendTo($input.parent());
+//////////////////////////////////////////////////
+// Compiled from src/client/coupon.js
+//////////////////////////////////////////////////
 
-  $input.addClass('invalid');
-  $input.bind('change keyup', function handler(e) { 
+var Coupon = {
+  create: createObject
+, fromJSON: function(json) {
+    var c = Coupon.create();
 
-    if(validator($input)) {
-      $input.removeClass('invalid');
-      $e.remove();
-      $input.unbind(e);
+    if(json.discount_in_cents)
+      c.discountCost = new R.Cost(-json.discount_in_cents);
+    else if(json.discount_percent)
+      c.discountRatio = json.discount_percent/100;
+
+    c.description = json.description;
+
+    return c;
+  }
+
+, toJSON: function() {
+  }
+};
+
+R.Coupon = Coupon;
+
+
+//////////////////////////////////////////////////
+// Compiled from src/client/vat.js
+//////////////////////////////////////////////////
+
+var euCountries = ["AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB"];
+
+var VAT = {
+  isCountryInEU: function(country) {
+    return $.inArray(country, euCountries) !== -1;
+  }
+
+, isNumberApplicable: function(buyerCountry, sellerCountry) {
+    if(!R.settings.VATPercent) return false;
+
+    if(!R.settings.country) {
+      R.raiseError('you must configure a country for VAT to work');
     }
-  });
-}
 
-function validationGroup(pull,success) {
-  var anyErrors = false;
-  var puller = {
-    field: function($form, fieldSel, validations) {
-      validations = Array.prototype.slice.call(arguments, 2);
-      return pullField($form, fieldSel, validations, function onError(error) {
-        if(!anyErrors) error.element.focus();
-        invalidMode(error);
-        anyErrors = true;
-
-        if(R.settings.oneErrorPerForm)
-          throw {stopPulling:true};
-      });
+    if(!VAT.isCountryInEU(R.settings.country)) {
+      R.raiseError('you cannot charge VAT outside of the EU');
     }
-  };
 
-
-  try {
-    pull(puller);
-  }
-  catch(e) {
-    if(!e.stopPulling) {
-      throw e;
+    // Outside of EU don't even show the number
+    if(!VAT.isCountryInEU(buyerCountry)) {
+      return false;
     }
+
+    return true;
   }
 
-  if(!anyErrors) {
-    success();
+, isChargeApplicable: function(buyerCountry, vatNumber) {
+    // We made it so the VAT Number is collectable in any case
+    // where it could be charged, so this is logically sound:
+    if(!VAT.isNumberApplicable(buyerCountry)) return false;
+
+    var sellerCountry = R.settings.country;
+
+    // 1) Outside EU never pays
+    // 2) Same country in EU always pays
+    // 3) Different countries in EU, pay only without vatNumber
+    return (sellerCountry == buyerCountry || !vatNumber);
   }
-}
+};
+
+R.VAT = VAT;
 
 
-function pullField($form, fieldSel, validations, onError) {
-  // Try text input
-  var $input = $form.find(fieldSel + ' input');
-
-  // Try as select
-  if($input.length == 0) {
-    $input = $form.find(fieldSel + ' select');
-  }
-
-  // Treat nonexistence as removed deliberately
-  if($input.length == 0) return undefined;
-
-  var val = $input.val();
-
-  for(var i=0,l=validations.length; i < l; ++i) {
-    var v = validations[i];
-
-    if(!v.validator($input)) {
-      onError({ 
-        element: $input
-      , validation: v
-      });
-
-      if(R.settings.oneErrorPerField)
-        break;
-    }
-  }
-
-  return val;
-}
-
-
-// Make a 'validation' from validator / errorKey
-function V(v,k) {
-  return {
-    validator: v,
-    errorKey: k || v.defaultErrorKey
-  };
-}
-
-
-// == SERVER ERROR UI METHODS
-
-function clearServerErrors($form) {  
-  var $serverErrors = $form.find('.server_errors');
-  $serverErrors.removeClass('any').addClass('none');
-  $serverErrors.empty();
-}
-
-function displayServerErrors($form, errors) {
-  var $serverErrors = $form.find('.server_errors');
-  clearServerErrors($form);
-
-  var l = errors.length;
-  if(l) {
-    $serverErrors.removeClass('none').addClass('any');
-    for(var i=0; i < l; ++i) {
-      var $e = $('<div class="error">');
-      $e.text(errors[i]);
-      $serverErrors.append($e);
-    }
-  }
-}
-
+//////////////////////////////////////////////////
+// Compiled from src/ui/ui.js
+//////////////////////////////////////////////////
 
 var preFillMap = {
   account: {
@@ -1183,7 +1024,7 @@ var preFillMap = {
   , vatNumber:      '.billing_info > .vat_number > input'
 
   , cardNumber:     '.billing_info  .card_number > input'
-  , CVV:      '.billing_info  .cvv > input'
+  , CVV:            '.billing_info  .cvv > input'
   }
 , subscription: {
     couponCode:     '.subscription > .coupon > .coupon_code > input'
@@ -1265,10 +1106,183 @@ function initCommonForm($form, options) {
   });
   
   preFillValues($form, options, preFillMap);
+
+  initTOSCheck($form, options);
 }
 
-function initContactInfoForm($form, options) {
+function initTOSCheck($form, options) {
 
+  if(options.termsOfServiceURL || options.privacyPolicyURL) {
+    var $tos = $form.find('.accept_tos').html(R.dom.terms_of_service);
+
+    // If only one, remove 'and' 
+    if(!(options.termsOfServiceURL && options.privacyPolicyURL)) {
+      $tos.find('span.and').remove();
+    }
+
+    // set href or remove tos_link
+    if(options.termsOfServiceURL) {
+      $tos.find('a.tos_link').attr('href', options.termsOfServiceURL);
+    }
+    else {
+      $tos.find('a.tos_link').remove();
+    }
+
+    // set href or remove pp_link
+    if(options.privacyPolicyURL) {
+      $tos.find('a.pp_link').attr('href', options.privacyPolicyURL);
+    }
+    else {
+      $tos.find('a.pp_link').remove();
+    }
+
+  }
+  else {
+    $form.find('.accept_tos').remove();
+  }
+}
+
+function verifyTOSChecked(pull) {
+  pull.field('.accept_tos', V(R.isChecked)); 
+}
+
+// Generic form procedure used by all the build*Form methods.
+//
+// Takes any so-called "model" object which has the methods:
+//
+// defaultFormOptions: Overridable default options.
+//                     We use this to make a master options who's
+//                     prototype chain looks like
+//                     userOptions -> defaultFormOptions -> R.Settings 
+//                                                       (global options)
+//
+//
+// checkFormOptions:   Checks the options and raise an exception
+//                     if something doesn't make sense.
+//
+// buildForm:          Makes a new form dom element, injects the
+//                     dependent partials in from R.dom, returns
+//                     the boilerplate form detached from document.
+//
+// initForm:           Implements all the forms behaviors
+//                     via progressive enhancement.
+//
+function genericFormProc(model, options) {
+
+  var defaults = model.defaultFormOptions || {};
+  console.log(model);
+  options = $.extend(true, createObject(R.settings), defaults, options);
+
+  model.checkFormOptions(options);
+
+  var $form = model.buildForm(options, afterFormBuilt);
+  initCommonForm($form, options);
+  model.initForm($form, options);
+
+  $form.submit(function(e) {
+    e.preventDefault();
+    clearServerErrors($form);
+    var $submitBtn = $form.find('button.submit');
+    var origBtnText = $submitBtn.text();
+
+    validationGroup($form, function(pull) {
+      model.readForm(pull, options);
+      verifyTOSChecked(pull);
+    },
+    function() {
+      model.save(createObject(options, {
+        success: function(response) {
+          if(options.successHandler) {
+            options.successHandler(R.getToken(response));
+          }
+        }
+      , error: function(errors) {
+          if(!options.onError || !options.onError(errors)) {
+            displayServerErrors($form, errors);
+          }
+        }
+      , complete: function() {
+          $form.removeClass('submitting');
+          $submitBtn.removeAttr('disabled').text(origBtnText);
+        }
+      }));
+    });
+  });
+
+  // If not async (no callback argument), do injection
+  if(model.initForm.length == 2) {
+    afterFormBuilt();
+  }
+
+  function afterFormBuilt() {
+    if(options.beforeInject) {
+      options.beforeInject($form.get(0));
+    }
+
+    $(function() {
+      var $container = $(options.target);
+      $container.html($form);
+
+      if(options.afterInject) {
+        options.afterInject($form.get(0));
+      }
+    });
+  }
+
+};
+
+R.buildBillingInfoForm = function(options) {
+  var billingInfo = R.BillingInfo.create();
+  genericFormProc(billingInfo, options);
+};
+// Deprecated. Keep for backwards compatibility.
+R.buildBillingInfoUpdateForm = R.buildBillingInfoForm;
+
+R.buildTransactionForm = function(options) { 
+  var transaction = Transaction.create();
+  transaction.currency = options.currency;
+  transaction.cost = new R.Cost(options.amountInCents);
+  genericFormProc(transaction, options);
+};
+
+R.buildSubscriptionForm = function(options) {
+
+  // WTF: should not require a currency
+ 
+  // Lazy load plan
+  if(options.planCode)
+    R.Plan.get(options.planCode, options.currency || 'USD', gotPlan);
+  else if(options.plan) {
+    // For passing a pre-made plan directly  in
+    // Should we remove this? Also mostly for testing.
+    gotPlan(options.plan); 
+  }
+
+  function gotPlan(plan) {
+    // Just for unit testing because we test against the build.
+    // This will be removed once we start testing against modules.
+    if(options.filterPlan)
+      plan = options.filterPlan(plan) || plan; 
+
+    var subscription = plan.createSubscription();
+    subscription.currency = options.currency;
+
+    // Same as above, just for tests. Will be removed.
+    if(options.filterSubscription) {
+      subscription = options.filterSubscription(subscription) || subscription; 
+    }
+
+    genericFormProc(subscription, options);
+  }
+}
+
+
+
+//////////////////////////////////////////////////
+// Compiled from src/ui/ui.account.js
+//////////////////////////////////////////////////
+
+R.Account.initForm = function($form, options) {
   // == FIRSTNAME / LASTNAME REDUNDANCY
   if(options.distinguishContactFromBillingInfo) { 
     var $contactFirstName = $form.find('.contact_info .first_name input');
@@ -1294,11 +1308,87 @@ function initContactInfoForm($form, options) {
   else {
     $form.find('.billing_info .first_name, .billing_info .last_name').remove();
   }
+};
 
+R.Account.readForm = function(pull, options) {
+  this.firstName = pull.field('.contact_info .first_name', V(R.isNotEmpty)); 
+  this.lastName = pull.field('.contact_info .last_name', V(R.isNotEmpty)); 
+  this.companyName = pull.field('.contact_info .company_name'); 
+  this.email = pull.field('.email', V(R.isNotEmpty), V(R.isValidEmail)); 
+
+  this.code = options.accountCode || 
+    (options.account && (options.account.code || options.account.accountCode));
+};
+
+
+//////////////////////////////////////////////////
+// Compiled from src/ui/ui.transaction.js
+//////////////////////////////////////////////////
+
+Transaction.defaultFormOptions = {
+  addressRequirement: 'full'
+, distinguishContactFromBillingInfo: true
+, collectContactInfo: true
+};
+
+Transaction.checkFormOptions = function(options) {
+  if(!options.collectContactInfo && !options.accountCode) {
+    R.raiseError('collectContactInfo is false, but no accountCode provided');
+  }
+
+  if(!options.signature) R.raiseError('signature missing');
 }
 
-function initBillingInfoForm($form, options) {
+Transaction.buildForm = function(options) {
+  var $form = $(R.dom.one_time_transaction_form);
+  $form.find('.billing_info').html(R.dom.billing_info_fields);
+  if(options.collectContactInfo) {
+    $form.find('.contact_info').html(R.dom.contact_info_fields);
+  }
+  else {
+    $form.find('.contact_info').remove();
+  }
+  return $form;
+}
 
+Transaction.initForm = function($form, options) {
+  var transaction = this;
+
+  // Behaviors
+  transaction.account.initForm($form, options);
+  transaction.billingInfo.initForm($form, options);
+
+  return $form;
+};
+
+Transaction.readForm = function(read, options) {
+  this.account.readForm(read, options);
+  this.billingInfo.readForm(read, options);
+};
+
+
+
+//////////////////////////////////////////////////
+// Compiled from src/ui/ui.billing_info.js
+//////////////////////////////////////////////////
+
+BillingInfo.defaultFormOptions = {
+  addressRequirement: 'full'
+, distinguishContactFromBillingInfo: true 
+};
+
+BillingInfo.checkFormOptions = function(options) {
+  if(!options.accountCode) R.raiseError('accountCode missing');
+  if(!options.signature) R.raiseError('signature missing');
+};
+
+BillingInfo.buildForm = function($form, options) {
+  var $form = $(R.dom.update_billing_info_form);
+  $form.find('.billing_info').html(R.dom.billing_info_fields);
+  return $form;
+};
+
+BillingInfo.initForm = function($form, options) {
   // == SWAPPING OF STATE INPUT WITH SELECT
   var $countrySelect = $form.find('.country select');
   var $state = $form.find('.state');
@@ -1378,15 +1468,6 @@ function initBillingInfoForm($form, options) {
     if(!v || v == '') return false;
     if(cur && cur != '' && cur != '-') return false;
 
-    // workaround
-    // 
-    // this workaround is specifically for GEOIP, where data may arrive later than
-    // DOM listener (it uses DOM values for VAT logic). By triggering a change event,
-    // it manually triggers the DOM listener responsible for applying VAT
-    //
-    // the right way to fix this is to first get all data, then calculate virtual attributes
-    // and finally do DOM
-    // but that requires a lot of time and work refactoring, and probably needs a MVVM style design
     return $jq.val(v).change();
   }
  
@@ -1425,7 +1506,6 @@ function initBillingInfoForm($form, options) {
     $yearOpt.appendTo($yearSelect);
   }
   $yearSelect.val(year+1);
-
 
   // == DISABLE INVALID MONTHS, SELECT CURRENT
   function updateMonths() {
@@ -1516,608 +1596,545 @@ function initBillingInfoForm($form, options) {
       $acceptedCards.find('.card').removeClass('match no_match'); 
     }
   }); 
-}
-
-
-function pullAccountFields($form, account, options, pull) {
-  account.firstName = pull.field($form, '.contact_info .first_name', V(R.isNotEmpty)); 
-  account.lastName = pull.field($form, '.contact_info .last_name', V(R.isNotEmpty)); 
-  account.companyName = pull.field($form, '.contact_info .company_name'); 
-  account.email = pull.field($form, '.email', V(R.isNotEmpty), V(R.isValidEmail)); 
-  account.code = options.accountCode || 
-    (options.account && (options.account.code || options.account.accountCode));
-}
-
-
-function pullBillingInfoFields($form, billingInfo, options, pull) {
-  billingInfo.firstName = pull.field($form, '.billing_info .first_name', V(R.isNotEmpty)); 
-  billingInfo.lastName = pull.field($form, '.billing_info .last_name', V(R.isNotEmpty)); 
-  billingInfo.number = pull.field($form, '.card_number', V(R.isNotEmpty), V(R.isValidCC)); 
-  billingInfo.cvv = pull.field($form, '.cvv', V(R.isNotEmpty), V(R.isValidCVV)); 
-
-  billingInfo.month = pull.field($form, '.month');
-  billingInfo.year = pull.field($form, '.year');
-
-  billingInfo.phone = pull.field($form, '.phone');
-  billingInfo.address1 = pull.field($form, '.address1', V(R.isNotEmpty));
-  billingInfo.address2 = pull.field($form, '.address2');
-  billingInfo.city = pull.field($form, '.city', V(R.isNotEmpty));
-  billingInfo.state = pull.field($form, '.state', V(R.isNotEmptyState));
-  billingInfo.zip = pull.field($form, '.zip', V(R.isNotEmpty));
-  billingInfo.country = pull.field($form, '.country', V(R.isNotEmpty));
-}
-
-
-function pullPlanQuantity($form, plan, options, pull) {
-  var qty = pull.field($form, '.plan .quantity', V(R.isValidQuantity));
-  // An empty quantity field indicates 1
-  plan.quantity = qty || 1;
-}
-
-
-function verifyTOSChecked($form, pull) {
-  pull.field($form, '.accept_tos', V(R.isChecked)); 
-}
-
-
-R.buildBillingInfoUpdateForm = function(options) {
-  var defaults = {
-    addressRequirement: 'full'
-  , distinguishContactFromBillingInfo: true 
-  };
-
-  options = $.extend(createObject(R.settings), defaults, options);
-
-  if(!options.accountCode) R.raiseError('accountCode missing');
-  if(!options.signature) R.raiseError('signature missing');
-
-  var billingInfo = R.BillingInfo.create();
-
-  var $form = $(R.dom.update_billing_info_form);
-  $form.find('.billing_info').html(R.dom.billing_info_fields);
-
-
-  initCommonForm($form, options);
-  initBillingInfoForm($form, options);
-
-
-  $form.submit(function(e) {
-    e.preventDefault(); 
-
-    clearServerErrors($form);
-
-    $form.find('.error').remove();
-    $form.find('.invalid').removeClass('invalid');
-
-    validationGroup(function(puller) {
-      pullBillingInfoFields($form, billingInfo, options, puller);
-    }
-    , function() {
-      $form.addClass('submitting');
-      $form.find('button.submit').attr('disabled', true).text('Please Wait');
-
-      billingInfo.save({
-        signature: options.signature
-      , distinguishContactFromBillingInfo: options.distinguishContactFromBillingInfo
-      , accountCode: options.accountCode
-      , success: function(response) {
-          if(options.successHandler) {
-            options.successHandler(R.getToken(response));
-          }
-
-          if(options.successURL) {
-            var url = options.successURL;
-            R.postResult(url, response, options);
-          }
-        }
-      , error: function(errors) {
-          if(!options.onError || !options.onError(errors)) {
-            displayServerErrors($form, errors);
-          }
-        }
-      , complete: function() {
-          $form.removeClass('submitting');
-          $form.find('button.submit').removeAttr('disabled').text('Update');
-        }
-      });
-    });
-  });
-
-  if(options.beforeInject) {
-    options.beforeInject($form.get(0));
-  }
-
-  $(function() {
-    var $container = $(options.target);
-    $container.html($form);
-
-    if(options.afterInject) {
-      options.afterInject($form.get(0));
-    }
-  });
 
 };
 
-
-function initTOSCheck($form, options) {
-
-  if(options.termsOfServiceURL || options.privacyPolicyURL) {
-    var $tos = $form.find('.accept_tos').html(R.dom.terms_of_service);
-
-    // If only one, remove 'and' 
-    if(!(options.termsOfServiceURL && options.privacyPolicyURL)) {
-      $tos.find('span.and').remove();
-    }
-
-    // set href or remove tos_link
-    if(options.termsOfServiceURL) {
-      $tos.find('a.tos_link').attr('href', options.termsOfServiceURL);
-    }
-    else {
-      $tos.find('a.tos_link').remove();
-    }
-
-    // set href or remove pp_link
-    if(options.privacyPolicyURL) {
-      $tos.find('a.pp_link').attr('href', options.privacyPolicyURL);
-    }
-    else {
-      $tos.find('a.pp_link').remove();
-    }
-
-  }
-  else {
-    $form.find('.accept_tos').remove();
-  }
-  
-}
-
-R.buildTransactionForm = function(options) {
-  var defaults = {
-    addressRequirement: 'full'
-  , distinguishContactFromBillingInfo: true
-  , collectContactInfo: true
-  };
-
-  options = $.extend(createObject(R.settings), defaults, options);
-
-
-  if(!options.collectContactInfo && !options.accountCode) {
-    R.raiseError('collectContactInfo is false, but no accountCode provided');
-  }
-
-  if(!options.signature) R.raiseError('signature missing');
-
-
-  var billingInfo = R.BillingInfo.create()
-  ,   account = R.Account.create()
-  ,   transaction = R.Transaction.create();
-
-
-  transaction.account = account;
-  transaction.billingInfo = billingInfo;
-  transaction.currency = options.currency;
-  transaction.cost = new R.Cost(options.amountInCents);
-
-  var $form = $(R.dom.one_time_transaction_form);
-  $form.find('.billing_info').html(R.dom.billing_info_fields);
-
-  if(options.collectContactInfo) {
-    $form.find('.contact_info').html(R.dom.contact_info_fields);
-  }
-  else {
-    $form.find('.contact_info').remove();
-  }
-
-
-  initCommonForm($form, options);
-  initContactInfoForm($form, options);
-  initBillingInfoForm($form, options);
-  initTOSCheck($form, options);
-
-  $form.submit(function(e) {
-    e.preventDefault(); 
-
-    clearServerErrors($form);
-
-    $form.find('.error').remove();
-    $form.find('.invalid').removeClass('invalid');
-
-    validationGroup(function(puller) {
-      pullAccountFields($form, account, options, puller);
-      pullBillingInfoFields($form, billingInfo, options, puller);
-      verifyTOSChecked($form, puller);
-    }
-    , function() {
-      $form.addClass('submitting');
-      $form.find('button.submit').attr('disabled', true).text('Please Wait');
-
-      transaction.save({
-        signature: options.signature
-      , accountCode: options.accountCode
-      , success: function(response) {
-          if(options.successHandler) {
-            options.successHandler(R.getToken(response));
-          }
-
-          if(options.successURL) {
-            var url = options.successURL;
-            R.postResult(url, response, options);
-          }
-        }
-      , error: function(errors) {
-          if(!options.onError || !options.onError(errors)) {
-            displayServerErrors($form, errors);
-          }
-        }
-      , complete: function() {
-          $form.removeClass('submitting');
-          $form.find('button.submit').removeAttr('disabled').text('Pay');
-        }
-      });
-    });
-  });
-
-  if(options.beforeInject) {
-    options.beforeInject($form.get(0));
-  }
-
-  $(function() {
-    var $container = $(options.target);
-    $container.html($form);
-
-    if(options.afterInject) {
-      options.afterInject($form.get(0));
-    }
-  });
-
-};
-
-
-R.buildSubscriptionForm = function(options) {
-  var defaults = {
-    enableAddOns: true
-  , enableCoupons: true
-  , addressRequirement: 'full'
-  , distinguishContactFromBillingInfo: false
-  };
-
-  options = $.extend(createObject(R.settings), defaults, options);
-
-  if(!options.signature) R.raiseError('signature missing');
-
-  var $form = $(R.dom.subscribe_form);
-  $form.find('.contact_info').html(R.dom.contact_info_fields);
-  $form.find('.billing_info').html(R.dom.billing_info_fields);
-
-
-  if(options.planCode)
-    R.Plan.get(options.planCode, options.currency, gotPlan);
-  else if(options.plan) {
-    // this should never be called
-    // the api does not have it, nor does anywhere else in the program refer to it
-    gotPlan(options.plan);    
-  }
-
-  initCommonForm($form, options);
-  initContactInfoForm($form, options);
-  initBillingInfoForm($form, options);
-  initTOSCheck($form, options);
-
-  function gotPlan(plan) {
-
-    if(options.filterPlan)
-      plan = options.filterPlan(plan) || plan; 
-
-
-    var subscription = plan.createSubscription(),
-        account = R.Account.create(),
-        billingInfo = R.BillingInfo.create();
-
-    subscription.account = account;
-    subscription.billingInfo = billingInfo;
-
-    if(options.filterSubscription)
-      subscription = options.filterSubscription(subscription) || subscription; 
-
-    // == EDITABLE PLAN QUANTITY
-    if(!plan.displayQuantity) {
-      $form.find('.plan .quantity').remove();
-    }
-
-    // == SETUP FEE
-    if(plan.setupFee) {
-      $form.find('.subscription').addClass('with_setup_fee');
-      $form.find('.plan .setup_fee .cost').text('' + plan.setupFee);
-    }
-    else {
-      $form.find('.plan .setup_fee').remove();
-    }
-    
-    // == FREE TRIAL
-    if(plan.trial) {
-      $form.find('.subscription').addClass('with_trial');
-
-      $form.find('.plan .free_trial').text('First ' + plan.trial + ' free');
-    }
-    else {
-      $form.find('.plan .free_trial').remove();
-    }
- 
-
-    // == UPDATE ALL UI TOTALS via subscription.calculateTotals() results
-    function updateTotals() {
-      var totals = subscription.calculateTotals();
-
-      $form.find('.plan .recurring_cost .cost').text('' + totals.plan);
-      $form.find('.due_now .cost').text('' + totals.stages.now);
-      $form.find('.coupon .discount').text('' + (totals.coupon || ''));
-      $form.find('.vat .cost').text('' + (totals.vat || ''));
-
-      $form.find('.add_ons .add_on').each(function() {
-        var addOn = $(this).data('add_on');
-        if($(this).hasClass('selected')) {
-          var cost = totals.addOns[addOn.code];
-          $(this).find('.cost').text('+ '+cost);
-        }
-        else {
-          $(this).find('.cost').text('+ '+addOn.cost);
-        }
-      });
-    }
-
-    $form.find('.plan .quantity input').bind('change keyup', function() {
-      subscription.plan.quantity = parseInt($(this).val(), 10) || 1;
-      updateTotals();
-    });
-
-    // == SUBSCRIPTION PLAN GENERAL
-    $form.find('.plan .name').text(plan.name);
-    $form.find('.plan .recurring_cost .cost').text(''+plan.cost);
-    $form.find('.plan .recurring_cost .interval').text('every '+plan.interval);
-
-
-    // == GENERATE ADD-ONS
-    var $addOnsList = $form.find('.add_ons');
-    if(options.enableAddOns) {
-      var l = plan.addOns.length;
-      if(l) {
-        $addOnsList.removeClass('none').addClass('any');
-        for(var i=0; i < l; ++i) {
-          var addOn = plan.addOns[i];
-
-          var classAttr = 'add_on add_on_'+ addOn.code + (i % 2 ? ' even' : ' odd');
-          if(i == 0) classAttr += ' first';
-          if(i == l-1) classAttr += ' last';
-
-          var $addOn = $('<div class="'+classAttr+'">' +
-          '<div class="name">'+addOn.name+'</div>' +
-          '<div class="field quantity">' +
-            '<div class="placeholder">Qty</div>' +
-            '<input type="text">' +
-          '</div>' +
-          '<div class="cost"/>' +
-          '</div>');
-          if(!addOn.displayQuantity) {
-            $addOn.find('.quantity').remove();
-          }
-          $addOn.data('add_on', addOn);
-          $addOn.appendTo($addOnsList);
-        }
-
-        // Quantity Change
-        $addOnsList.delegate('.add_ons .quantity input', 'change keyup', function(e) { 
-          var $addOn = $(this).closest('.add_on');
-          var addOn = $addOn.data('add_on');
-          var newQty = parseInt($(this).val(),10) || 1;
-          subscription.findAddOnByCode(addOn.code).quantity = newQty;
-          updateTotals();
-        });
-
-        $addOnsList.bind('selectstart', function(e) {
-          if($(e.target).is('.add_on')) {
-            e.preventDefault();
-          }
-        });
-
-        // Add-on click
-        $addOnsList.delegate('.add_ons .add_on', 'click', function(e) {
-          if($(e.target).closest('.quantity').length) return;
-
-          var selected = !$(this).hasClass('selected');
-          $(this).toggleClass('selected', selected);
-
-          var addOn = $(this).data('add_on');
-
-          if(selected) {
-            // add
-            var sa = subscription.redeemAddOn(addOn);
-            var $qty = $(this).find('.quantity input');
-            sa.quantity = parseInt($qty.val(),10) || 1;
-            $qty.focus();
-          }
-          else {
-            // remove
-            subscription.removeAddOn(addOn.code);
-          }
-
-          updateTotals();
-        });
-      }
-    }
-    else {
-      $addOnsList.remove();
-    }
-    
-    // == COUPON REDEEMER
-    var $coupon = $form.find('.coupon'); 
-    var lastCode = null;
-
-    function updateCoupon() {
-
-      var code = $coupon.find('input').val();
-      if(code == lastCode) {
-        return;
-      }
-
-      lastCode = code;
-
-      if(!code) {
-        $coupon.removeClass('invalid').removeClass('valid');
-        $coupon.find('.description').text('');
-        subscription.coupon = undefined;
-        updateTotals();
-        return;
-      }
-
-      $coupon.addClass('checking');
-      subscription.getCoupon(code, function(coupon) {
-
-        $coupon.removeClass('checking');
-
-        subscription.coupon = coupon;
-        $coupon.removeClass('invalid').addClass('valid');
-        $coupon.find('.description').text(coupon.description);
-
-        updateTotals();
-      }, function() {
-
-        subscription.coupon = undefined;
-
-        $coupon.removeClass('checking');
-        $coupon.removeClass('valid').addClass('invalid');
-        $coupon.find('.description').text(R.locale.errors.invalidCoupon);
-
-        updateTotals();
-      });
-    }
-
-    if(options.enableCoupons) {
-      $coupon.find('input').bind('keyup change', function(e) {
-      });
-
-      $coupon.find('input').keypress(function(e) {
-        if(e.charCode == 13) {
-          e.preventDefault();
-          updateCoupon();
-        }
-      });
-
-
-      $coupon.find('.check').click(function() {
-        updateCoupon();
-      });
-
-      $coupon.find('input').blur(function() { $coupon.find('.check').click(); });
-    }
-    else {
-      $coupon.remove();
-    }
-
-
-    // == VAT
-    var $vat = $form.find('.vat'); 
-    var $vatNumber = $form.find('.vat_number');
-    var $vatNumberInput = $vatNumber.find('input');
-
-    $vat.find('.title').text('VAT at ' + R.settings.VATPercent + '%');
-    function showHideVAT() { 
-      var buyerCountry = $form.find('.country select').val();
-      var vatNumberApplicable = R.isVATNumberApplicable(buyerCountry);
-
-      // VAT Number is applicable to collection in any EU country
-      $vatNumber.toggleClass('applicable', vatNumberApplicable);
-      $vatNumber.toggleClass('inapplicable', !vatNumberApplicable);
-
-      var vatNumber = $vatNumberInput.val();
-
-      // Only applicable to charge if isVATApplicable()
-      var chargeApplicable = R.isVATChargeApplicable(buyerCountry, vatNumber);
-      $vat.toggleClass('applicable', chargeApplicable);
-      $vat.toggleClass('inapplicable', !chargeApplicable);
-    }
-    // showHideVAT();
-    $form.find('.country select').change(function() {
-      billingInfo.country = $(this).val();
-      updateTotals();
-      showHideVAT();
-    }).change();
-    $vatNumberInput.bind('keyup change', function() {
-      billingInfo.vatNumber = $(this).val();
-      updateTotals();
-      showHideVAT();
-    });
- 
-    // SUBMIT HANDLER
-    $form.submit(function(e) {
-      e.preventDefault(); 
-
-      clearServerErrors($form);
-
-      
-      $form.find('.error').remove();
-      $form.find('.invalid').removeClass('invalid');
-
-      validationGroup(function(puller) {
-        pullPlanQuantity($form, subscription.plan, options, puller);
-        pullAccountFields($form, account, options, puller);
-        pullBillingInfoFields($form, billingInfo, options, puller);
-        verifyTOSChecked($form, puller);
-      }, function() {
-
-        $form.addClass('submitting');
-        $form.find('button.submit').attr('disabled', true).text('Please Wait');
-
-        subscription.save({
-
-        signature: options.signature
-        ,   success: function(response) {
-              if(options.successHandler) {
-                options.successHandler(R.getToken(response));
-              }
-              if(options.successURL) {
-                var url = options.successURL;
-                R.postResult(url, response, options);
-              }
-            }
-        , error: function(errors) {
-            if(!options.onError || !options.onError(errors)) {
-              displayServerErrors($form, errors);
-            }
-          }
-        , complete: function() {
-            $form.removeClass('submitting');
-            $form.find('button.submit').removeAttr('disabled').text('Subscribe');
-          }
-        });
-      });
-
-    });
-
-    // FINALLY - UPDATE INITIAL TOTALS AND INJECT INTO DOM
-    updateTotals();
-
-    if(options.beforeInject) {
-      options.beforeInject($form.get(0));
-    }
-
-    $(function() {
-      var $container = $(options.target);
-      $container.html($form);
-
-      if(options.afterInject) {
-        options.afterInject($form.get(0));
-      }
-    });
-
-  }
-
+BillingInfo.readForm = function(pull) {
+  this.firstName = pull.field('.billing_info .first_name', V(R.isNotEmpty)); 
+  this.lastName = pull.field('.billing_info .last_name', V(R.isNotEmpty)); 
+  this.number = pull.field('.card_number', V(R.isNotEmpty), V(R.isValidCC)); 
+  this.cvv = pull.field('.cvv', V(R.isNotEmpty), V(R.isValidCVV)); 
+
+  this.month = pull.field('.month');
+  this.year = pull.field('.year');
+
+  this.phone = pull.field('.phone');
+  this.address1 = pull.field('.address1', V(R.isNotEmpty));
+  this.address2 = pull.field('.address2');
+  this.city = pull.field('.city', V(R.isNotEmpty));
+  this.state = pull.field('.state', V(R.isNotEmptyState));
+  this.zip = pull.field('.zip', V(R.isNotEmpty));
+  this.country = pull.field('.country', V(R.isNotEmpty));
 };
 
 
 
 //////////////////////////////////////////////////
-// Compiled from src/js/states.js
+// Compiled from src/ui/ui.subscription.js
+//////////////////////////////////////////////////
+
+Subscription.defaultFormOptions = {
+  enableAddOns: true
+, enableCoupons: true
+, addressRequirement: 'full'
+, distinguishContactFromBillingInfo: false
+};
+
+Subscription.checkFormOptions = function(options) {
+  if(!options.signature) R.raiseError('signature missing');
+};
+
+Subscription.buildForm = function(options) {
+  var $form = this.$form = $(R.dom.subscribe_form);
+  $form.find('.contact_info').html(R.dom.contact_info_fields);
+  $form.find('.billing_info').html(R.dom.billing_info_fields);
+  return $form;
+};
+
+Subscription.initForm = function($form, options) {
+  // Behaviors
+  this.account.initForm($form, options);
+  this.billingInfo.initForm($form, options);
+  this.initFormAddOns($form, options);
+  this.initFormVAT($form, options);
+  this.initFormCoupon($form, options);
+
+  var subscription = this,
+      plan = this.plan;
+
+  // == EDITABLE PLAN QUANTITY
+  if(!plan.displayQuantity) {
+    $form.find('.plan .quantity').remove();
+  }
+  else {
+    $form.find('.plan .quantity input').bind('change keyup', function() {
+      subscription.plan.quantity = parseInt($(this).val(), 10) || 1;
+      subscription.updateTotals();
+    });
+  }
+
+  // == SETUP FEE
+  if(plan.setupFee) {
+    $form.find('.subscription').addClass('with_setup_fee');
+    $form.find('.plan .setup_fee .cost').text('' + plan.setupFee);
+  }
+  else {
+    $form.find('.plan .setup_fee').remove();
+  }
+  
+  // == FREE TRIAL
+  if(plan.trial) {
+    $form.find('.subscription').addClass('with_trial');
+
+    $form.find('.plan .free_trial').text('First ' + plan.trial + ' free');
+  }
+  else {
+    $form.find('.plan .free_trial').remove();
+  }
+
+  // == SUBSCRIPTION PLAN GENERAL
+  $form.find('.plan .name').text(plan.name);
+  $form.find('.plan .recurring_cost .cost').text(''+plan.cost);
+  $form.find('.plan .recurring_cost .interval').text('every '+plan.interval);
+
+  subscription.updateTotals();
+
+  return $form;
+};
+
+Subscription.readForm = function(pull, options) {
+  var qty = pull.field('.plan .quantity', V(R.isValidQuantity));
+  this.plan.quantity = parseInt(qty, 10) || 1;
+  this.account.readForm(pull, options);
+  this.billingInfo.readForm(pull, options);
+};
+
+
+// == UPDATE ALL UI TOTALS via subscription.calculateTotals() results
+Subscription.updateTotals = function() {
+  var subscription = this,
+      $form = subscription.$form;
+
+  var totals = subscription.calculateTotals();
+
+  $form.find('.plan .recurring_cost .cost').text('' + totals.plan);
+  $form.find('.due_now .cost').text('' + totals.stages.now);
+  $form.find('.coupon .discount').text('' + (totals.coupon || ''));
+  $form.find('.vat .cost').text('' + (totals.vat || ''));
+
+  $form.find('.add_ons .add_on').each(function() {
+    var addOn = $(this).data('add_on');
+    if($(this).hasClass('selected')) {
+      var cost = totals.addOns[addOn.code];
+      $(this).find('.cost').text('+ '+cost);
+    }
+    else {
+      $(this).find('.cost').text('+ '+addOn.cost);
+    }
+  });
+};
+
+
+//////////////////////////////////////////////////
+// Compiled from src/ui/ui.addon.js
+//////////////////////////////////////////////////
+
+Subscription.initFormAddOns = function($form, options) {
+  var subscription = this,
+      plan = this.plan;
+
+  // == GENERATE ADD-ONS
+  var $addOnsList = $form.find('.add_ons');
+  if(options.enableAddOns) {
+    var l = plan.addOns.length;
+    if(l) {
+      $addOnsList.removeClass('none').addClass('any');
+      for(var i=0; i < l; ++i) {
+        var addOn = plan.addOns[i];
+
+        var classAttr = 'add_on add_on_'+ addOn.code + (i % 2 ? ' even' : ' odd');
+        if(i == 0) classAttr += ' first';
+        if(i == l-1) classAttr += ' last';
+
+        var $addOn = $('<div class="'+classAttr+'">' +
+        '<div class="name">'+addOn.name+'</div>' +
+        '<div class="field quantity">' +
+          '<div class="placeholder">Qty</div>' +
+          '<input type="text">' +
+        '</div>' +
+        '<div class="cost"/>' +
+        '</div>');
+        if(!addOn.displayQuantity) {
+          $addOn.find('.quantity').remove();
+        }
+        $addOn.data('add_on', addOn);
+        $addOn.appendTo($addOnsList);
+      }
+
+      // Quantity Change
+      $addOnsList.delegate('.add_ons .quantity input', 'change keyup', function(e) { 
+        var $addOn = $(this).closest('.add_on');
+        var addOn = $addOn.data('add_on');
+        var newQty = parseInt($(this).val(),10) || 1;
+        subscription.findAddOnByCode(addOn.code).quantity = newQty;
+        subscription.updateTotals();
+      });
+
+      $addOnsList.bind('selectstart', function(e) {
+        if($(e.target).is('.add_on')) {
+          e.preventDefault();
+        }
+      });
+
+      // Add-on click
+      $addOnsList.delegate('.add_ons .add_on', 'click', function(e) {
+        if($(e.target).closest('.quantity').length) return;
+
+        var selected = !$(this).hasClass('selected');
+        $(this).toggleClass('selected', selected);
+
+        var addOn = $(this).data('add_on');
+
+        if(selected) {
+          // add
+          var sa = subscription.redeemAddOn(addOn);
+          var $qty = $(this).find('.quantity input');
+          sa.quantity = parseInt($qty.val(),10) || 1;
+          $qty.focus();
+        }
+        else {
+          // remove
+          subscription.removeAddOn(addOn.code);
+        }
+
+        subscription.updateTotals();
+      });
+    }
+  }
+  else {
+    $addOnsList.remove();
+  }
+};
+
+
+//////////////////////////////////////////////////
+// Compiled from src/ui/ui.coupon.js
+//////////////////////////////////////////////////
+
+Subscription.initFormCoupon = function($form, options) {
+  var subscription = this;
+
+  // == COUPON REDEEMER
+  var $coupon = $form.find('.coupon'); 
+  var lastCode = null;
+
+  function updateCoupon() {
+
+    var code = $coupon.find('input').val();
+    if(code == lastCode) {
+      return;
+    }
+
+    lastCode = code;
+
+    if(!code) {
+      $coupon.removeClass('invalid').removeClass('valid');
+      $coupon.find('.description').text(R.locale.errors.invalidCoupon);
+      subscription.coupon = undefined;
+      subscription.updateTotals();
+      return;
+    }
+
+    $coupon.addClass('checking');
+    subscription.getCoupon(code, function(coupon) {
+
+      $coupon.removeClass('checking');
+
+      subscription.coupon = coupon;
+      $coupon.removeClass('invalid').addClass('valid');
+      $coupon.find('.description').text(coupon.description);
+
+      subscription.updateTotals();
+    }, function() {
+
+      subscription.coupon = undefined;
+
+      $coupon.removeClass('checking');
+      $coupon.removeClass('valid').addClass('invalid');
+      $coupon.find('.description').text('Not Found');
+
+      subscription.updateTotals();
+    });
+  }
+
+  if(options.enableCoupons) {
+    $coupon.find('input').bind('keyup change', function(e) {
+    });
+
+    $coupon.find('input').keypress(function(e) {
+      if(e.charCode == 13) {
+        e.preventDefault();
+        updateCoupon();
+      }
+    });
+
+    $coupon.find('.check').click(function() {
+      updateCoupon();
+    });
+
+    $coupon.find('input').blur(function() { $coupon.find('.check').click(); });
+  }
+  else {
+    $coupon.remove();
+  }
+};
+
+
+//////////////////////////////////////////////////
+// Compiled from src/ui/ui.vat.js
+//////////////////////////////////////////////////
+
+Subscription.initFormVAT = function($form,options) {
+  var subscription = this,
+      billingInfo = this.billingInfo;
+
+  // == VAT
+  var $vat = $form.find('.vat'); 
+  var $vatNumber = $form.find('.vat_number');
+  var $vatNumberInput = $vatNumber.find('input');
+
+  $vat.find('.title').text('VAT at ' + R.settings.VATPercent + '%');
+  function showHideVAT() { 
+    var buyerCountry = $form.find('.country select').val();
+    var vatNumberApplicable = VAT.isNumberApplicable(buyerCountry);
+
+    // VAT Number is applicable to collection in any EU country
+    $vatNumber.toggleClass('applicable', vatNumberApplicable);
+    $vatNumber.toggleClass('inapplicable', !vatNumberApplicable);
+
+    var vatNumber = $vatNumberInput.val();
+
+    // Only applicable to charge if isVATApplicable()
+    var chargeApplicable = VAT.isChargeApplicable(buyerCountry, vatNumber);
+    $vat.toggleClass('applicable', chargeApplicable);
+    $vat.toggleClass('inapplicable', !chargeApplicable);
+  }
+  // showHideVAT();
+  $form.find('.country select').change(function() {
+    billingInfo.country = $(this).val();
+    subscription.updateTotals();
+    $vat.trigger('recurly.change');
+    showHideVAT();
+  }).change();
+  $vatNumberInput.bind('keyup change', function() {
+    billingInfo.vatNumber = $(this).val();
+    subscription.updateTotals();
+    showHideVAT();
+  });
+
+};
+
+
+//////////////////////////////////////////////////
+// Compiled from src/ui/validation.js
+//////////////////////////////////////////////////
+
+R.UserError = {};
+
+function raiseUserError(validation, elem) {
+  var e = createObject(R.UserError);
+  e.validation = validation;
+  e.element = elem;
+  throw e;
+}
+
+function invalidMode(e) { 
+  var $input = e.element;
+  var message = R.locale.errors[e.validation.errorKey];
+  var validator = e.validation.validator;
+
+  var $e = $('<div class="error">');
+  $e.text(message);
+  $e.appendTo($input.parent());
+
+  $input.addClass('invalid');
+  $input.bind('change keyup', function handler(e) { 
+
+    if(validator($input)) {
+      $input.removeClass('invalid');
+      $e.remove();
+      $input.unbind(e);
+    }
+  });
+}
+
+function validationGroup($form,pull,success) {
+  var anyErrors = false;
+  var puller = {
+    field: function(fieldSel, validations) {
+      validations = Array.prototype.slice.call(arguments, 1);
+      return pullField($form, fieldSel, validations, function onError(error) {
+        if(!anyErrors) error.element.focus();
+        invalidMode(error);
+        anyErrors = true;
+
+        if(R.settings.oneErrorPerForm)
+          throw {stopPulling:true};
+      });
+    }
+  };
+
+
+  try {
+    pull(puller);
+  }
+  catch(e) {
+    if(!e.stopPulling) {
+      throw e;
+    }
+  }
+
+  if(!anyErrors) {
+    success();
+  }
+}
+
+function pullField($form, fieldSel, validations, onError) {
+  // Try text input
+  var $input = $form.find(fieldSel + ' input');
+
+  // Try as select
+  if($input.length == 0) {
+    $input = $form.find(fieldSel + ' select');
+  }
+
+  // Treat nonexistence as removed deliberately
+  if($input.length == 0) return undefined;
+
+  var val = $input.val();
+
+  for(var i=0,l=validations.length; i < l; ++i) {
+    var v = validations[i];
+
+    if(!v.validator($input)) {
+      onError({ 
+        element: $input
+      , validation: v
+      });
+
+      if(R.settings.oneErrorPerField)
+        break;
+    }
+  }
+
+  return val;
+}
+
+
+// Make a 'validation' from validator / errorKey
+function V(v,k) {
+  return {
+    validator: v,
+    errorKey: k || v.defaultErrorKey
+  };
+}
+
+// == SERVER ERROR UI METHODS
+function clearServerErrors($form) {  
+  var $serverErrors = $form.find('.server_errors');
+  $serverErrors.removeClass('any').addClass('none');
+  $serverErrors.empty();
+}
+
+function displayServerErrors($form, errors) {
+  var $serverErrors = $form.find('.server_errors');
+  clearServerErrors($form);
+
+  var l = errors.length;
+  if(l) {
+    $serverErrors.removeClass('none').addClass('any');
+    for(var i=0; i < l; ++i) {
+      var $e = $('<div class="error">');
+      $e.text(errors[i]);
+      $serverErrors.append($e);
+    }
+  }
+}
+
+
+
+
+//////////////////////////////////////////////////
+// Compiled from src/ui/validators.js
+//////////////////////////////////////////////////
+
+var Validator = function() {
+};
+
+Validator.prototype.isNotEmpty = function() {
+  this.check();
+};
+
+(R.isValidCC = function($input) {
+  var v = $input.val();
+
+  // Strip out all non digits 
+  v = v.replace(/\D/g, "");
+
+  if(v == "") return false;
+
+  var nCheck = 0,
+      nDigit = 0,
+      bEven = false;
+
+
+  for (var n = v.length - 1; n >= 0; n--) {
+    var cDigit = v.charAt(n);
+    var nDigit = parseInt(cDigit, 10);
+    if (bEven) {
+      if ((nDigit *= 2) > 9)
+        nDigit -= 9;
+    }
+    nCheck += nDigit;
+    bEven = !bEven;
+  }
+
+  return (nCheck % 10) == 0;
+}).defaultErrorKey = 'invalidCC';
+
+(R.isValidEmail = function($input) {
+  var v = $input.val();
+  return /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i.test(v);
+}).defaultErrorKey = 'invalidEmail';
+
+function wholeNumber(val) {
+  return /^[0-9]+$/.test(val);
+}
+
+(R.isValidCVV = function($input) {
+  var v = $input.val();
+  return (v.length == 3 || v.length == 4) && wholeNumber(v);
+}).defaultErrorKey = 'invalidCVV';
+
+(R.isNotEmpty = function($input) {
+  var v = $input.val();
+  if($input.is('select')) {
+    if(v == '-' || v == '--') return false;
+  }
+  return !!v;
+}).defaultErrorKey = 'emptyField';
+// State is required if its a dropdown, it is not required if it is an input box
+(R.isNotEmptyState = function($input) {
+  var v = $input.val();
+  if($input.is('select')) {
+    if(v == '-' || v == '--') return false;
+  }
+  return true;
+}).defaultErrorKey = 'emptyField';
+
+(R.isChecked = function($input) {
+  return $input.is(':checked');
+}).defaultErrorKey = 'acceptTOS';
+
+(R.isValidQuantity = function($input) {
+  var v = $input.val();
+  return wholeNumber(v) || v == '';
+}).defaultErrorKey = 'invalidQuantity';
+
+
+
+//////////////////////////////////////////////////
+// Compiled from src/ui/states.js
 //////////////////////////////////////////////////
 
 R.states = {};
@@ -2210,37 +2227,37 @@ R.states.CA = {
 
 
 //////////////////////////////////////////////////
-// Compiled from src/dom/contact_info_fields.jade
+// Compiled from src/ui/dom/contact_info_fields.jade
 //////////////////////////////////////////////////
 
 R.dom['contact_info_fields'] = '<div class="title">Contact Info</div><div class="full_name"><div class="field first_name"><div class="placeholder">First Name </div><input type="text"/></div><div class="field last_name"><div class="placeholder">Last Name </div><input type="text"/></div></div><div class="field email"><div class="placeholder">Email </div><input type="text"/></div><div class="field phone"><div class="placeholder">Phone Number</div><input type="text"/></div><div class="field company_name"><div class="placeholder">Company/Organization Name</div><input type="text"/></div>';
 
 //////////////////////////////////////////////////
-// Compiled from src/dom/billing_info_fields.jade
+// Compiled from src/ui/dom/billing_info_fields.jade
 //////////////////////////////////////////////////
 
 R.dom['billing_info_fields'] = '<div class="title">Billing Info</div><div class="accepted_cards"></div><div class="credit_card"><div class="field first_name"><div class="placeholder">First Name </div><input type="text"/></div><div class="field last_name"><div class="placeholder">Last Name </div><input type="text"/></div><div class="card_cvv"><div class="field card_number"><div class="placeholder">Credit Card Number  </div><input type="text"/></div><div class="field cvv"><div class="placeholder">CVV </div><input type="text"/></div></div><div class="field expires"><div class="title">Expires </div><div class="month"><select><option value="1">01 - January</option><option value="2">02 - February</option><option value="3">03 - March</option><option value="4">04 - April</option><option value="5">05 - May</option><option value="6">06 - June</option><option value="7">07 - July</option><option value="8">08 - August</option><option value="9">09 - September</option><option value="10">10 - October</option><option value="11">11 - November</option><option value="12">12 - December</option></select></div><div class="year"><select></select></div></div></div><div class="address"><div class="field address1"><div class="placeholder">Address</div><input type="text"/></div><div class="field address2"><div class="placeholder">Apt/Suite</div><input type="text"/></div><div class="field city"><div class="placeholder">City</div><input type="text"/></div><div class="state_zip"><div class="field state"><div class="placeholder">State/Province</div><input type="text"/></div><div class="field zip"><div class="placeholder">Zip/Postal</div><input type="text"/></div></div><div class="field country"><select><option value="-">Select Country</option><option value="-">--------------</option><option value="AF">Afghanistan</option><option value="AL">Albania</option><option value="DZ">Algeria</option><option value="AS">American Samoa</option><option value="AD">Andorra</option><option value="AO">Angola</option><option value="AI">Anguilla</option><option value="AQ">Antarctica</option><option value="AG">Antigua and Barbuda</option><option value="AR">Argentina</option><option value="AM">Armenia</option><option value="AW">Aruba</option><option value="AC">Ascension Island</option><option value="AU">Australia</option><option value="AT">Austria</option><option value="AZ">Azerbaijan</option><option value="BS">Bahamas</option><option value="BH">Bahrain</option><option value="BD">Bangladesh</option><option value="BB">Barbados</option><option value="BE">Belgium</option><option value="BZ">Belize</option><option value="BJ">Benin</option><option value="BM">Bermuda</option><option value="BT">Bhutan</option><option value="BO">Bolivia</option><option value="BA">Bosnia and Herzegovina</option><option value="BW">Botswana</option><option value="BV">Bouvet Island</option><option value="BR">Brazil</option><option value="BQ">British Antarctic Territory</option><option value="IO">British Indian Ocean Territory</option><option value="VG">British Virgin Islands</option><option value="BN">Brunei</option><option value="BG">Bulgaria</option><option value="BF">Burkina Faso</option><option value="BI">Burundi</option><option value="KH">Cambodia</option><option value="CM">Cameroon</option><option value="CA">Canada</option><option value="IC">Canary Islands</option><option value="CT">Canton and Enderbury Islands</option><option value="CV">Cape Verde</option><option value="KY">Cayman Islands</option><option value="CF">Central African Republic</option><option value="EA">Ceuta and Melilla</option><option value="TD">Chad</option><option value="CL">Chile</option><option value="CN">China</option><option value="CX">Christmas Island</option><option value="CP">Clipperton Island</option><option value="CC">Cocos [Keeling] Islands</option><option value="CO">Colombia</option><option value="KM">Comoros</option><option value="CD">Congo [DRC]</option><option value="CK">Cook Islands</option><option value="CR">Costa Rica</option><option value="HR">Croatia</option><option value="CU">Cuba</option><option value="CY">Cyprus</option><option value="CZ">Czech Republic</option><option value="DK">Denmark</option><option value="DG">Diego Garcia</option><option value="DJ">Djibouti</option><option value="DM">Dominica</option><option value="DO">Dominican Republic</option><option value="NQ">Dronning Maud Land</option><option value="DD">East Germany</option><option value="TL">East Timor</option><option value="EC">Ecuador</option><option value="EG">Egypt</option><option value="SV">El Salvador</option><option value="EE">Estonia</option><option value="ET">Ethiopia</option><option value="EU">European Union</option><option value="FK">Falkland Islands [Islas Malvinas]</option><option value="FO">Faroe Islands</option><option value="FJ">Fiji</option><option value="FI">Finland</option><option value="FR">France</option><option value="GF">French Guiana</option><option value="PF">French Polynesia</option><option value="TF">French Southern Territories</option><option value="FQ">French Southern and Antarctic Territories</option><option value="GA">Gabon</option><option value="GM">Gambia</option><option value="GE">Georgia</option><option value="DE">Germany</option><option value="GH">Ghana</option><option value="GI">Gibraltar</option><option value="GR">Greece</option><option value="GL">Greenland</option><option value="GD">Grenada</option><option value="GP">Guadeloupe</option><option value="GU">Guam</option><option value="GT">Guatemala</option><option value="GG">Guernsey</option><option value="GW">Guinea-Bissau</option><option value="GY">Guyana</option><option value="HT">Haiti</option><option value="HM">Heard Island and McDonald Islands</option><option value="HN">Honduras</option><option value="HK">Hong Kong</option><option value="HU">Hungary</option><option value="IS">Iceland</option><option value="IN">India</option><option value="ID">Indonesia</option><option value="IE">Ireland</option><option value="IM">Isle of Man</option><option value="IL">Israel</option><option value="IT">Italy</option><option value="JM">Jamaica</option><option value="JP">Japan</option><option value="JE">Jersey</option><option value="JT">Johnston Island</option><option value="JO">Jordan</option><option value="KZ">Kazakhstan</option><option value="KE">Kenya</option><option value="KI">Kiribati</option><option value="KW">Kuwait</option><option value="KG">Kyrgyzstan</option><option value="LA">Laos</option><option value="LV">Latvia</option><option value="LS">Lesotho</option><option value="LY">Libya</option><option value="LI">Liechtenstein</option><option value="LT">Lithuania</option><option value="LU">Luxembourg</option><option value="MO">Macau</option><option value="MK">Macedonia [FYROM]</option><option value="MG">Madagascar</option><option value="MW">Malawi</option><option value="MY">Malaysia</option><option value="MV">Maldives</option><option value="ML">Mali</option><option value="MT">Malta</option><option value="MH">Marshall Islands</option><option value="MQ">Martinique</option><option value="MR">Mauritania</option><option value="MU">Mauritius</option><option value="YT">Mayotte</option><option value="FX">Metropolitan France</option><option value="MX">Mexico</option><option value="FM">Micronesia</option><option value="MI">Midway Islands</option><option value="MD">Moldova</option><option value="MC">Monaco</option><option value="MN">Mongolia</option><option value="ME">Montenegro</option><option value="MS">Montserrat</option><option value="MA">Morocco</option><option value="MZ">Mozambique</option><option value="NA">Namibia</option><option value="NR">Nauru</option><option value="NP">Nepal</option><option value="NL">Netherlands</option><option value="AN">Netherlands Antilles</option><option value="NT">Neutral Zone</option><option value="NC">New Caledonia</option><option value="NZ">New Zealand</option><option value="NI">Nicaragua</option><option value="NE">Niger</option><option value="NG">Nigeria</option><option value="NU">Niue</option><option value="NF">Norfolk Island</option><option value="VD">North Vietnam</option><option value="MP">Northern Mariana Islands</option><option value="NO">Norway</option><option value="OM">Oman</option><option value="QO">Outlying Oceania</option><option value="PC">Pacific Islands Trust Territory</option><option value="PK">Pakistan</option><option value="PW">Palau</option><option value="PS">Palestinian Territories</option><option value="PA">Panama</option><option value="PZ">Panama Canal Zone</option><option value="PY">Paraguay</option><option value="YD">People\'s Democratic Republic of Yemen</option><option value="PE">Peru</option><option value="PH">Philippines</option><option value="PN">Pitcairn Islands</option><option value="PL">Poland</option><option value="PT">Portugal</option><option value="PR">Puerto Rico</option><option value="QA">Qatar</option><option value="RO">Romania</option><option value="RU">Russia</option><option value="RW">Rwanda</option><option value="RE">R\u00e9union</option><option value="BL">Saint Barth\u00e9lemy</option><option value="SH">Saint Helena</option><option value="KN">Saint Kitts and Nevis</option><option value="LC">Saint Lucia</option><option value="MF">Saint Martin</option><option value="PM">Saint Pierre and Miquelon</option><option value="VC">Saint Vincent and the Grenadines</option><option value="WS">Samoa</option><option value="SM">San Marino</option><option value="SA">Saudi Arabia</option><option value="SN">Senegal</option><option value="RS">Serbia</option><option value="CS">Serbia and Montenegro</option><option value="SC">Seychelles</option><option value="SL">Sierra Leone</option><option value="SG">Singapore</option><option value="SK">Slovakia</option><option value="SI">Slovenia</option><option value="SB">Solomon Islands</option><option value="ZA">South Africa</option><option value="GS">South Georgia and the South Sandwich Islands</option><option value="KR">South Korea</option><option value="ES">Spain</option><option value="LK">Sri Lanka</option><option value="SR">Suriname</option><option value="SJ">Svalbard and Jan Mayen</option><option value="SZ">Swaziland</option><option value="SE">Sweden</option><option value="CH">Switzerland</option><option value="ST">S\u00e3o Tom\u00e9 and Pr\u00edncipe</option><option value="TW">Taiwan</option><option value="TJ">Tajikistan</option><option value="TZ">Tanzania</option><option value="TH">Thailand</option><option value="TG">Togo</option><option value="TK">Tokelau</option><option value="TO">Tonga</option><option value="TT">Trinidad and Tobago</option><option value="TA">Tristan da Cunha</option><option value="TN">Tunisia</option><option value="TR">Turkey</option><option value="TM">Turkmenistan</option><option value="TC">Turks and Caicos Islands</option><option value="TV">Tuvalu</option><option value="UM">U.S. Minor Outlying Islands</option><option value="PU">U.S. Miscellaneous Pacific Islands</option><option value="VI">U.S. Virgin Islands</option><option value="UG">Uganda</option><option value="UA">Ukraine</option><option value="AE">United Arab Emirates</option><option value="GB">United Kingdom</option><option value="US">United States</option><option value="UY">Uruguay</option><option value="UZ">Uzbekistan</option><option value="VU">Vanuatu</option><option value="VA">Vatican City</option><option value="VE">Venezuela</option><option value="VN">Vietnam</option><option value="WK">Wake Island</option><option value="WF">Wallis and Futuna</option><option value="EH">Western Sahara</option><option value="YE">Yemen</option><option value="ZM">Zambia</option><option value="AX">\u00c5land Islands</option></select></div></div><div class="field vat_number"><div class="placeholder">VAT Number</div><input type="text"/></div>';
 
 //////////////////////////////////////////////////
-// Compiled from src/dom/subscribe_form.jade
+// Compiled from src/ui/dom/subscribe_form.jade
 //////////////////////////////////////////////////
 
 R.dom['subscribe_form'] = '<form class="recurly subscribe"><!--[if lt IE 7]><div class="iefail"><div class="chromeframe"><p class="blast">Your browser is not supported by Recurly.js.</p><p><a href="http://browsehappy.com/">Upgrade to a different browser</a></p><p>or</p><p><a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a></p><p>to use this site.</p></div></div><![endif]--><div class="subscription"><div class="plan"><div class="name"></div><div class="field quantity"><div class="placeholder">Qty</div><input type="text"/></div><div class="recurring_cost"><div class="cost"></div><div class="interval"></div></div><div class="free_trial"></div><div class="setup_fee"><div class="title">Setup Fee</div><div class="cost"></div></div></div><div class="add_ons none"></div><div class="coupon"><div class="coupon_code field"><div class="placeholder">Coupon Code</div><input type="text" class="coupon_code"/></div><div class="check"></div><div class="description"></div><div class="discount"></div></div><div class="vat"><div class="title">VAT</div><div class="cost"></div></div></div><div class="due_now"><div class="title">Order Total</div><div class="cost"></div></div><div class="server_errors none"></div><div class="contact_info"></div><div class="billing_info"></div><div class="accept_tos"></div><div class="footer"><button type="submit" class="submit">Subscribe</button></div></form>';
 
 //////////////////////////////////////////////////
-// Compiled from src/dom/update_billing_info_form.jade
+// Compiled from src/ui/dom/update_billing_info_form.jade
 //////////////////////////////////////////////////
 
 R.dom['update_billing_info_form'] = '<form class="recurly update_billing_info"><div class="server_errors none"></div><div class="billing_info"></div><div class="footer"><button type="submit" class="submit">Update</button></div></form>';
 
 //////////////////////////////////////////////////
-// Compiled from src/dom/one_time_transaction_form.jade
+// Compiled from src/ui/dom/one_time_transaction_form.jade
 //////////////////////////////////////////////////
 
 R.dom['one_time_transaction_form'] = '<form class="recurly update_billing_info"><div class="server_errors none"></div><div class="contact_info"></div><div class="billing_info"></div><div class="accept_tos"></div><div class="footer"><button type="submit" class="submit">Pay</button></div></form>';
 
 //////////////////////////////////////////////////
-// Compiled from src/dom/terms_of_service.jade
+// Compiled from src/ui/dom/terms_of_service.jade
 //////////////////////////////////////////////////
 
 R.dom['terms_of_service'] = '<input id="tos_check" type="checkbox"/><label id="accept_tos" for="tos_check">I accept the <a target="_blank" class="tos_link">Terms of Service</a><span class="and"> and </span><a target="_blank" class="pp_link">Privacy Policy</a></label>';

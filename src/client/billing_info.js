@@ -1,4 +1,4 @@
-R.BillingInfo = {
+var BillingInfo = {
   create: createObject
 , toJSON: function() {    
     return {
@@ -58,3 +58,4 @@ R.BillingInfo = {
   }
 };
 
+R.BillingInfo = BillingInfo;
