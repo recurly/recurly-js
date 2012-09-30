@@ -15,7 +15,8 @@
 , "directories" : { "lib" : "./lib" }
 , "main" : "./lib/recurly.js"
 , "dependencies" : {
-    "xml2js": ">= 0.1.5"
+    "xml2js": ">= 0.1.5",
+    "js2xml": ">= 0.0.2"
 }
 , "engines" : { "node" : "0.4" }
 }
