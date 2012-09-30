@@ -1,3 +1,5 @@
+IMPORTANTE: This version is working with the version 2 of Recurly's API. Documentation will be updated soon.
+
 Node-Recurly
 ===============
 
