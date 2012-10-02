@@ -6,10 +6,6 @@
 , "author" : "Rob Righter <robrighter@gmail.com> (http://github.com/robrighter)"
 , "contributors" :
   [ "Rob Righter <robrighter@gmail.com> (http://github.com/robrighter)" ]
-, "repository" :
-  { "type" : "git"
-  , "url" : "git://github.com/robrighter/node-recurly.git"
-  }
 , "bugs" :
   { "web" : "https://github.com/robrighter/node-recurly/issues" }
 , "directories" : { "lib" : "./lib" }
