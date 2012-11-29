@@ -8,7 +8,7 @@ function createObject(o) {
 var R = {}; 
 R.settings = {
   enableGeoIP: true
-, acceptedCards: ['american_express', 'discover', 'mastercard', 'visa']
+, acceptedCards: ['visa', 'mastercard', 'discover', 'american_express']
 , oneErrorPerField: true
 };
 
