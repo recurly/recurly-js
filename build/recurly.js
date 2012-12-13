@@ -827,17 +827,29 @@ R.Subscription = {
       totals.stages.now = R.Cost.FREE; 
     }
 
-    // COUPON
-    if(this.coupon) {
-      var beforeDiscount = totals.stages.now;
-      var afterDiscount = totals.stages.now.discount(this.coupon);
-      totals.coupon = afterDiscount.sub(beforeDiscount);
-      totals.stages.now = afterDiscount;
-    }
-
     // SETUP FEE
     if(this.plan.setupFee) {
       totals.stages.now = totals.stages.now.add(this.plan.setupFee);
+    }
+
+    // COUPON
+    if(this.coupon) {
+      var beforeDiscount = totals.stages.now;
+
+      var discount;
+      if(this.coupon.discountFixed)
+        discount = this.coupon.discountFixed;
+      else
+        discount = beforeDiscount.sub(this.plan.setupFee || 0).mult(this.coupon.discountRatio);
+      
+      var afterDiscount = beforeDiscount.sub(discount);
+
+      if(afterDiscount.cents() < 0) {
+        afterDiscount = R.Cost.FREE;
+      }
+
+      totals.coupon = afterDiscount.sub(beforeDiscount);
+      totals.stages.now = afterDiscount;
     }
 
     // VAT
@@ -845,11 +857,6 @@ R.Subscription = {
       totals.vat = totals.stages.now.mult( (R.settings.VATPercent/100) );
       totals.stages.now = totals.stages.now.add(totals.vat);
     }
-
-
-    // Don't go below 0
-    if(totals.stages.now.cents() < 0)
-      totals.stages.now = totals.stages.now.cents(0);
 
     return totals;
   }
@@ -941,7 +948,7 @@ R.Coupon = {
     var c = createObject(R.Coupon);
 
     if(json.discount_in_cents)
-      c.discountCost = new R.Cost(-json.discount_in_cents);
+      c.discountFixed = new R.Cost(json.discount_in_cents);
     else if(json.discount_percent)
       c.discountRatio = json.discount_percent/100;
 
@@ -952,18 +959,6 @@ R.Coupon = {
 
 , toJSON: function() {
   }
-};
-
-R.Cost.prototype.discount = function(coupon){ 
-  if(coupon.discountCost)
-    return this.add(coupon.discountCost);
-  
-  var ret = this.sub( this.mult(coupon.discountRatio) );
-  if(ret.cents() < 0) {
-    return R.Cost.FREE;
-  }
-
-  return ret;
 };
 
 R.Subscription.getCoupon = function(couponCode, successCallback, errorCallback) {
