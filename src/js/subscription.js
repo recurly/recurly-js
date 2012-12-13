@@ -50,6 +50,11 @@ R.Subscription = {
       totals.stages.now = totals.stages.now.add(totals.vat);
     }
 
+
+    // Don't go below 0
+    if(totals.stages.now.cents() < 0)
+      totals.stages.now = totals.stages.now.cents(0);
+
     return totals;
   }
 , redeemAddOn: function(addOn) {

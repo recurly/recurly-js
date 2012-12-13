@@ -103,7 +103,7 @@ function pluralize(count, term) {
     if(val === undefined)
       return this._cents;
 
-    return new Cost(val);
+    return new R.Cost(val);
   }
 , dollars: function(val) {
     if(val === undefined)
@@ -845,6 +845,11 @@ R.Subscription = {
       totals.vat = totals.stages.now.mult( (R.settings.VATPercent/100) );
       totals.stages.now = totals.stages.now.add(totals.vat);
     }
+
+
+    // Don't go below 0
+    if(totals.stages.now.cents() < 0)
+      totals.stages.now = totals.stages.now.cents(0);
 
     return totals;
   }
