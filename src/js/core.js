@@ -65,7 +65,7 @@ function pluralize(count, term) {
     if(val === undefined)
       return this._cents;
 
-    return new Cost(val);
+    return new R.Cost(val);
   }
 , dollars: function(val) {
     if(val === undefined)
