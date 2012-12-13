@@ -97,15 +97,33 @@
     module('Coupon'); 
 
     test('discounts percent', function() {
-      var cost = new R.Cost(2000);
-      var discounted = cost.discount(coupon50percent);
-      equal(discounted.dollars(), 10);
+      var subscription = kitchenSink.createSubscription();
+      subscription.coupon = coupon50percent;
+      var totals = subscription.calculateTotals();
+
+      // $50 before setup fee
+      // 50% coupon applied
+      // $50 becomes 25
+      // $20 setup fee added to $25
+      // total now should be $45
+
+      equal(totals.coupon.dollars(), -25);
+      equal(totals.stages.now.dollars(), 45);
     });
 
     test('discounts fixed', function() {
-      var cost = new R.Cost(2000);
-      var discounted = cost.discount(coupon5bucks);
-      equal(discounted.dollars(), 15);
+      var subscription = kitchenSink.createSubscription();
+      subscription.coupon = coupon5bucks;
+      var totals = subscription.calculateTotals();
+
+      // $50 before setup fee
+      // $20 setup fee
+      // = $70
+      // %5 coupon applies to all
+      // total now should be $65
+
+      equal(totals.coupon.dollars(), -5);
+      equal(totals.stages.now.dollars(), 65);
     });
 
 
