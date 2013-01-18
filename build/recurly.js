@@ -1906,7 +1906,7 @@ R.buildSubscriptionForm = function(options) {
         }
 
         // Quantity Change
-        $addOnsList.delegate('.add_ons .quantity input', 'change keyup', function(e) { 
+        $addOnsList.delegate('.quantity input', 'change keyup', function(e) { 
           var $addOn = $(this).closest('.add_on');
           var addOn = $addOn.data('add_on');
           var newQty = parseInt($(this).val(),10) || 1;
@@ -1921,7 +1921,7 @@ R.buildSubscriptionForm = function(options) {
         });
 
         // Add-on click
-        $addOnsList.delegate('.add_ons .add_on', 'click', function(e) {
+        $addOnsList.delegate('.add_on', 'click', function(e) {
           if($(e.target).closest('.quantity').length) return;
 
           var selected = !$(this).hasClass('selected');
