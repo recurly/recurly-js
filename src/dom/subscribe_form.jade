@@ -10,11 +10,11 @@ form.recurly.subscribe
           a(href="http://www.google.com/chromeframe/?redirect=true") install Google Chrome Frame
         p to use this site.
   .subscription
-    .plan 
-      .name 
+    .plan
+      .name
       .field.quantity
         .placeholder Qty
-        input(type="text")
+        input(type="text", name="quantity")
 
       .recurring_cost
         .cost
@@ -27,12 +27,12 @@ form.recurly.subscribe
         .cost
 
 
-    .add_ons.none 
+    .add_ons.none
 
     .coupon
       .coupon_code.field
         .placeholder Coupon Code
-        input.coupon_code(type="text")
+        input.coupon_code(type="text", name="coupon_code")
       .check
       .description
       .discount
@@ -43,7 +43,7 @@ form.recurly.subscribe
 
   .due_now
     .title Order Total
-    .cost 
+    .cost
 
   .server_errors.none
 
@@ -52,6 +52,6 @@ form.recurly.subscribe
   .billing_info
 
   .accept_tos
- 
+
   .footer
-    button.submit(type='submit') Subscribe
+    button.submit(type='submit', name="subscribe") Subscribe
