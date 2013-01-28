@@ -4,57 +4,57 @@
 
 .credit_card
   .field.first_name
-    .placeholder First Name 
-    input(type="text")
+    .placeholder First Name
+    input(type="text", name="billing[first_name]")
 
   .field.last_name
-    .placeholder Last Name 
-    input(type="text")
+    .placeholder Last Name
+    input(type="text", name="billing[last_name]")
 
   .card_cvv
     .field.card_number
-      .placeholder Credit Card Number  
-      input(type="text")
+      .placeholder Credit Card Number
+      input(type="text", name="billing[card_number]")
 
     .field.cvv
-      .placeholder CVV 
-      input(type="text")
+      .placeholder CVV
+      input(type="text", name="billing[cvv]")
 
   .field.expires
-    .title Expires 
+    .title Expires
     .month
-      select
-        include months.jade 
+      select(name="billing[expires_month]")
+        include months.jade
     .year
-      select
+      select(name="billing[expires_year]")
 
 .address
   .field.address1
     .placeholder Address
-    input(type="text")
-  
+    input(type="text", name="billing[address1]")
+
   .field.address2
     .placeholder Apt/Suite
-    input(type="text")
-  
+    input(type="text", name="billing[address2]")
+
   .field.city
     .placeholder City
-    input(type="text")
+    input(type="text", name="billing[city]")
 
   .state_zip
     .field.state
       .placeholder State/Province
-      input(type="text")
+      input(type="text", name="billing[state]")
 
     .field.zip
       .placeholder Zip/Postal
-      input(type="text")
-  
+      input(type="text", name="billing[zip]")
+
   .field.country
-    select
+    select(name="billing[country]")
       include countries.jade
-          
+
 .field.vat_number
   .placeholder VAT Number
-  input(type="text")
+  input(type="text", name="billing[vat_number]")
 
