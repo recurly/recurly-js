@@ -3,7 +3,7 @@
   , "version": "1.1.8"
   , "dependencies": {
       "stylus": "0.19.x"
-    , "jade": "0.17.x"
+    , "jade": "0.28.x"
     , "async": "0.1.x"
   }
 }
