@@ -1,60 +1,63 @@
-.title Billing Info
-
-.accepted_cards
-
-.credit_card
-  .field.first_name
-    .placeholder First Name 
-    input(type="text")
-
-  .field.last_name
-    .placeholder Last Name 
-    input(type="text")
-
-  .card_cvv
-    .field.card_number
-      .placeholder Credit Card Number  
+ul.noBillingInfo
+  .credit_card
+    .field.first_name
+      .  First Name
       input(type="text")
 
-    .field.cvv
-      .placeholder CVV 
+    .field.last_name
+      .  Last Name
       input(type="text")
 
-  .field.expires
-    .title Expires 
-    .month
-      select
-        include months.jade 
-    .year
-      select
+    li.card_cvv
+      .field.card_number
+        label Credit Card Number
+        input.noBillingInfo(type="text")
 
-.address
-  .field.address1
-    .placeholder Address
-    input(type="text")
-  
-  .field.address2
-    .placeholder Apt/Suite
-    input(type="text")
-  
-  .field.city
-    .placeholder City
-    input(type="text")
+      .field.cvv
+        label.shorter CVV
+        input.shorter(type="text")
 
-  .state_zip
-    .field.state
-      .placeholder State/Province
-      input(type="text")
+    li.accepted_cards.moreBelow
+    .security Secure
 
-    .field.zip
-      .placeholder Zip/Postal
-      input(type="text")
-  
-  .field.country
-    select
-      include countries.jade
-          
-.field.vat_number
-  .placeholder VAT Number
-  input(type="text")
+    li
+      div.field.expires
+        label Expires
+        .month
+          select
+            include months.jade
+        .year
+          select
+
+  .address.only_zipstreet
+    li
+      .field.address1
+        label Address
+        input(type="text")
+
+      .field.address2
+        label Apt/Suite
+        input(type="text")
+
+    div.state_zip
+      .field.city(style="display:none")
+        label City
+        input(type="text")
+
+      .state_zip
+        .field.state(style="display:none")
+          label State/Province
+          input(type="text")
+
+        li.field.zip
+          label Zip/Postal
+          input.shorter(type="text")
+
+        .field.country(style="display:none")
+          select
+          include countries.jade
+
+  .field.vat_number
+    .  VAT Number
+    input(type="text")
 
