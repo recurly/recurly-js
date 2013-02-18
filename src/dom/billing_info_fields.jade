@@ -1,60 +1,58 @@
-.title Billing Info
-
-.accepted_cards
-
-.credit_card
+ul.credit_card
   .field.first_name
-    .placeholder First Name 
+    label First Name
     input(type="text")
 
   .field.last_name
-    .placeholder Last Name 
+    label Last Name
     input(type="text")
 
-  .card_cvv
+  li.card_cvv
     .field.card_number
-      .placeholder Credit Card Number  
+      label Credit Card Number
       input(type="text")
 
     .field.cvv
-      .placeholder CVV 
-      input(type="text")
+      label.shorter CVV
+      input.shorter(type="text")
 
-  .field.expires
-    .title Expires 
+  li.accepted_cards.moreBelow
+  li.security Secure
+
+  li.field.expires
+    label Expires
     .month
       select
-        include months.jade 
+        include months.jade
     .year
       select
 
-.address
-  .field.address1
-    .placeholder Address
+ul.address.only_zipstreet
+  li.field.address1
+    label Address
     input(type="text")
   
-  .field.address2
-    .placeholder Apt/Suite
+  li.field.address2
+    label Apt/Suite
     input(type="text")
   
-  .field.city
-    .placeholder City
+  li.field.city(style="display:none")
+    label City
     input(type="text")
 
-  .state_zip
-    .field.state
-      .placeholder State/Province
+  li.state_zip
+    .field.state(style="display:none")
+      label State/Province
       input(type="text")
 
     .field.zip
-      .placeholder Zip/Postal
-      input(type="text")
+      label Zip/Postal
+      input.shorter(type="text")
   
-  .field.country
+  li.field.country(style="display:none")
     select
       include countries.jade
           
 .field.vat_number
-  .placeholder VAT Number
+  label VAT Number
   input(type="text")
-

@@ -10,7 +10,7 @@ form.recurly.subscribe
           a(href="http://www.google.com/chromeframe/?redirect=true") install Google Chrome Frame
         p to use this site.
   .subscription
-    .plan 
+    .plan.hide
       .name 
       .field.quantity
         .placeholder Qty
@@ -29,7 +29,7 @@ form.recurly.subscribe
 
     .add_ons.none 
 
-    .coupon
+    .coupon(style="display:none")
       .coupon_code.field
         .placeholder Coupon Code
         input.coupon_code(type="text")
@@ -41,17 +41,16 @@ form.recurly.subscribe
       .title VAT
       .cost
 
-  .due_now
+  .due_now(style="display:none")
     .title Order Total
     .cost 
 
   .server_errors.none
 
-  .contact_info
+  .contact_info(style="display:none")
 
   .billing_info
 
   .accept_tos
  
   .footer
-    button.submit(type='submit') Subscribe
