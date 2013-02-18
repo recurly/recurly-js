@@ -36,12 +36,12 @@ ul.address.only_zipstreet
     label Apt/Suite
     input(type="text")
   
-  li.field.city(style="display:none")
+  li.hide.city
     label City
     input(type="text")
 
   li.state_zip
-    .field.state(style="display:none")
+    .hide.state
       label State/Province
       input(type="text")
 
@@ -49,7 +49,7 @@ ul.address.only_zipstreet
       label Zip/Postal
       input.shorter(type="text")
   
-  li.field.country(style="display:none")
+  li.hide.country
     select
       include countries.jade
           
