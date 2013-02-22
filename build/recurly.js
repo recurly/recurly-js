@@ -1066,13 +1066,15 @@ function invalidMode(e) {
   });
 }
 
-function validationGroup(pull,success) {
+function validationGroup(pull,success, failure) {
   var anyErrors = false;
   var puller = {
     field: function($form, fieldSel, validations) {
       validations = Array.prototype.slice.call(arguments, 2);
       return pullField($form, fieldSel, validations, function onError(error) {
         if(!anyErrors) error.element.focus();
+        if(failure)
+            failure(error);
         invalidMode(error);
         anyErrors = true;
 
@@ -2083,6 +2085,8 @@ R.buildSubscriptionForm = function(options) {
         , error: function(errors) {
             if(!options.onError || !options.onError(errors)) {
               displayServerErrors($form, errors);
+              if(options.errorHandler)
+                options.errorHandler(errors)
             }
           }
         , complete: function() {
@@ -2090,7 +2094,7 @@ R.buildSubscriptionForm = function(options) {
             $form.find('button.submit').removeAttr('disabled').text('Subscribe');
           }
         });
-      });
+      }, options.errorHandler);
 
     });
 
