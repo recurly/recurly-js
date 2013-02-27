@@ -5,7 +5,7 @@
 <title>RecurlyJS Update Billing Info Example</title> 
 <link rel="stylesheet" href="examples.css" type="text/css" /> 
 <link rel="stylesheet" href="../themes/default/recurly.css" type="text/css" /> 
-<script src="../lib/jquery-1.9.0.js"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="../build/recurly.js"></script>
  
 <script>
@@ -23,7 +23,8 @@
     signature: 'needs-server-support-code',
     successURL: 'confirmation.html',
     accountCode: 'testaccount',
-    distinguishContactFromBillingInfo: false 
+    collectContactInfo: true,
+    distinguishContactFromBillingInfo: true 
   });
 </script>
 

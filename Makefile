@@ -26,7 +26,7 @@ DOM_SOURCES = $(addprefix src/dom/, \
 	terms_of_service.jade \
 )
 
-all: node_modules build build/recurly.min.js
+all: node_modules build build/recurly.min.js themes/default/recurly.css
 
 build:
 	mkdir -p build

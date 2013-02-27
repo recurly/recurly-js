@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <script src="../lib/jquery-1.7.1.js"></script>
+  <script src="../lib/jquery-1.9.0.js"></script>
   <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
   <script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
   <script type="text/javascript" src="../build/recurly.js"></script>
@@ -52,7 +52,7 @@
       , default_unit_amount_in_cents: 500 // $5 add-on
       }]
     });
-
+   
     var coupon50percent = R.Coupon.fromJSON({
       discount_percent: 50
     });
@@ -361,6 +361,8 @@
 
     test('toggle add-ons', function() {
       $('#f .add_on_extras').click();
+      $('#f .country select').val('DE').change(); // VAT-applicable country
+
       ok($('#f .add_on_extras').hasClass('selected')); // selected class
       equal($('#f .add_on_extras .cost').text(), '+ $2.00'); // add-on cost displayed
       equal($('#f .due_now .cost').text(), '$79.20'); // add-on cost displayed (vat at 10% applied)
@@ -411,20 +413,14 @@
           "subscription": {
             "plan_code": "kitchensink",
             "quantity": 1,
-            "coupon_code": undefined,
-            "currency": undefined,
             "add_ons": []
           },
           "account": {
             "first_name": "joe",
             "last_name": "user",
-            "account_code": undefined,
             "email": "joeuser@example.com",
-            "company_name": undefined
           },
           "billing_info": {
-            "first_name": undefined,
-            "last_name": undefined,
             "month": "3",
             "year": "2013",
             "number": "4111-1111-1111-1111",
@@ -435,10 +431,8 @@
             "state": "TX",
             "zip": "12345",
             "country": "US",
-            "phone": undefined,
-            "vat_number": undefined
           },
-          "js_version": "2.1.3",
+          "js_version": "2.2.0-beta",
           "signature": "thiscanbefakeforthetestsoyeah"
         });
 
@@ -490,7 +484,6 @@
         $('#f').empty();
       }
     });
-
 
   });
   </script>
