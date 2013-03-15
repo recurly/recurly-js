@@ -385,10 +385,12 @@ hstack(cols)
       height field_height
       clear both
 
+      // line-height field_height
+
       input[type=radio]
-        display inline-block
-        margin 0 5px
-        vertical-align middle
+        display block
+        float left
+        height field_height - 5px
 
       .card_option
         float left

@@ -2227,7 +2227,8 @@ R.paypal = {
 
       var api = document.createElement('a');
       api.href = R.settings.baseURL;
-      if (e.origin !== api.origin) {
+      var origin = api.protocol + '//' + api.host;
+      if (e.origin !== origin) {
         result = { errors: { base: ['Untrusted origin.'] } };
       }
 

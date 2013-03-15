@@ -348,9 +348,9 @@
   clear: both;
 }
 .recurly .payment_method.multiple input[type=radio] {
-  display: inline-block;
-  margin: 0 5px;
-  vertical-align: middle;
+  display: block;
+  float: left;
+  height: 29px;
 }
 .recurly .payment_method.multiple .card_option {
   float: left;
