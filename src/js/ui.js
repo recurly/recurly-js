@@ -1153,26 +1153,46 @@ R.buildSubscriptionForm = function(options) {
 
 R.paypal = {
   start: function(opts) {
-    var data = $.extend(opts.data, { post_message: true })
+    var data = $.extend(opts.data, {
+        post_message: true,
+        referer: window.location.href
+      })
       , url = opts.url + '?' + $.param(data)
       , popup = window.open(url, 'recurly_paypal', 'menubar=1,resizable=1');
 
-    window.addEventListener('message', function(e) {
+    $(window).on('message', handleMessage);
+
+    var originalHash = window.location.hash;
+    var interval = setInterval(function() {
+      var hash = window.location.hash
+        , decoded = decodeURIComponent(hash)
+        , match = decoded.match(/recurly_result=(.*)[&$]?/)
+        , result = match && $.parseJSON(match[1]);
+
+      if(result) {
+        finish(result);
+        window.location.hash = originalHash;
+      }
+
+    }, 1000);
+
+    $(popup).on('unload', opts.complete);
+
+    function finish(result) {
       popup.close();
+      opts.success(result);
+      opts.complete();
+      $(window).unbind('message', handleMessage);
+      clearInterval(interval);
+    };
 
-      var result = e.data;
-
+    function handleMessage(e) {
       var api = document.createElement('a');
       api.href = R.settings.baseURL;
       var origin = api.protocol + '//' + api.host;
-      if (e.origin !== origin) {
-        result = { errors: { base: ['Untrusted origin.'] } };
+      if (e.originalEvent.origin == origin) {
+        finish(e.originalEvent.data);
       }
-
-      opts.success(result);
-      opts.complete();
-    });
-
-    popup.addEventListener('unload', opts.complete);
+    };
   }
 };

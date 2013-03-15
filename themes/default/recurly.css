@@ -341,6 +341,7 @@
   float: right;
 }
 .recurly .payment_method .payment_option input[type=radio] {
+  margin-right: 10px;
   display: none;
 }
 .recurly .payment_method.multiple {
