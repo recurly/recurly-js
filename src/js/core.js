@@ -33,9 +33,8 @@ R.config = function(settings) {
   $.extend(true, R.settings, settings); 
 
   if(!settings.baseURL) {
-    R.settings.baseURL = 'https://api.recurly.com/jsonp/'; 
     var subdomain = R.settings.subdomain || R.raiseError('company subdomain not configured');
-    R.settings.baseURL += subdomain + '/';
+    R.settings.baseURL = 'https://'+subdomain+'.recurly.com/jsonp/'+subdomain+'/'; 
   }
 };
 
