@@ -2,7 +2,11 @@ R.BillingInfo = {
   create: createObject
 , toJSON: function() {    
     if(this.paymentMethod === 'paypal') {
-      return {payment_method: 'paypal'};
+      return {
+        payment_method: 'paypal'
+      , country: this.country
+      , vat_number: this.vatNumber
+      };
     }
 
     return {

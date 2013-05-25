@@ -537,6 +537,7 @@ function pullBillingInfoFields($form, billingInfo, options, pull) {
   billingInfo.paymentMethod = pull.field($form, '.payment_method'); 
 
   if(billingInfo.paymentMethod === 'paypal') {
+    billingInfo.country = pull.field($form, '.country', V(R.isNotEmpty));
     return;
   }
 

@@ -408,6 +408,7 @@
 .recurly .paypal_message {
   width: 300px;
   font-style: italic;
+  margin-bottom: 10px;
 }
 .recurly .contact_info {
   background: url("images/dash.png") repeat-x 1px bottom;

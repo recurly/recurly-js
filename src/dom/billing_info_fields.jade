@@ -58,16 +58,20 @@
         .placeholder Zip/Postal
         input(type="text")
 
-    .field.country
-      select
-        include countries.jade
+.field.country
+  select
+    include countries.jade
 
-  .field.vat_number
-    .placeholder VAT Number
-    input(type="text")
+.field.vat_number
+  .placeholder VAT Number
+  input(type="text")
 
 .paypal
   .paypal_message.
     You will be taken to PayPal to authorize a billing agreement.
     <br><br>
     Please make sure pop-ups aren't blocked.
+
+
+
+
