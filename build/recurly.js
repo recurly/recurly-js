@@ -2221,6 +2221,14 @@ R.buildSubscriptionForm = function(options) {
 
 R.paypal = {
   start: function(opts) {
+    var originalWindowName = window.name;
+
+    // Very rare edge case of window getting stuck with a prior recurly_result in it.
+    if(originalWindowName.indexOf('recurly_result') > -1) {
+      window.name = '';
+      originalWindowName = '';
+    }
+
     var data = $.extend(opts.data, {
         post_message: true,
         referer: window.location.href
@@ -2232,7 +2240,7 @@ R.paypal = {
 
     $(window).on('message', handleMessage);
 
-    var originalWindowName = window.name;
+
     var interval = setInterval(function() {
       var decoded = decodeURIComponent(window.name)
         , match = decoded.match(/recurly_result=(.*)[&$]?/)
