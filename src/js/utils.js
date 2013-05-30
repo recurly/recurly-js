@@ -166,7 +166,6 @@ R.flattenErrors = function(obj, attr) {
   }
 
   for(var k in obj) {
-    // console.log(k);
     if(obj.hasOwnProperty(k)) {
       // Inherit parent attribute names when property key
       // is a numeric string; how we deal with arrays
@@ -244,9 +243,30 @@ function cc2lcu(obj) {
   }
 }
 
+function removeUndefined(obj) {
+  var ret = {};
+  for(var k in obj) {
+    var v = obj[k];
+    if($.isPlainObject(v)) {
+      ret[k] = removeUndefined(v);
+    }
+    else if(typeof v !== 'undefined') {
+      ret[k] = v;
+    }
+  }
+  return ret;
+}
 
 R.ajax = function(options) {
   options.data = $.extend({js_version: R.version}, options.data);
+  options.data = removeUndefined(options.data);
+
+  if(options.data.billing_info
+     && options.data.billing_info.payment_method == 'paypal') {
+
+     return R.paypal.start(options);
+  }
+
   return $.ajax(options);
 };
 

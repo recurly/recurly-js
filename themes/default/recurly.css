@@ -202,7 +202,7 @@
   background: -o-linear-gradient(top, #f0f0f0, #fff);
   background: linear-gradient(top, #f0f0f0, #fff);
   width: auto;
-  box-shadow: inset 0 1px 4px 0 rgba(0,0,0,0.075);
+  box-shadow: inset 0 1px 4px 0 rgba(0,0,0,0.07);
   text-shadow: none;
 }
 .recurly .add_ons .add_on.selected {
@@ -234,7 +234,7 @@
   background: #70ccf8;
   border: 1px solid #0090c9;
   margin: 3px 0 1px 10px;
-  box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.35), 0 1px 1px 0 rgba(0,0,0,0.1);
+  box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.35), 0 1px 1px 0 rgba(0,0,0,0.10);
   background: #43bef9 url("images/coupon_check.png") no-repeat center center;
   background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
   background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
@@ -246,19 +246,19 @@
   background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
   background: url("images/coupon_check.png") no-repeat center center, -o-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
   background: url("images/coupon_check.png") no-repeat center center linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
-  box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.75), 0 1px 1px 0 rgba(0,0,0,0.1);
+  box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.75), 0 1px 1px 0 rgba(0,0,0,0.10);
 }
 .recurly .coupon .check:active {
   background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #f0f0f0, #fff);
   background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #f0f0f0, #fff);
   background: url("images/coupon_check.png") no-repeat center center, -o-linear-gradient(top, #f0f0f0, #fff);
   background: url("images/coupon_check.png") no-repeat center center linear-gradient(top, #f0f0f0, #fff);
-  box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.025);
+  box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.03);
   border: 1px solid #999;
 }
 .recurly .coupon.checking .check {
   background: #f0f0f0 url("images/coupon_checking.gif") no-repeat center center;
-  box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.025);
+  box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.03);
   border: 1px solid #999;
 }
 .recurly .coupon.invalid .coupon_code {
@@ -291,7 +291,7 @@
   text-shadow: 0 1px 0 #fec;
   background: #ffc;
   border: 1px solid #ba1;
-  box-shadow: 3px 5px 5px 0 rgba(0,0,0,0.1);
+  box-shadow: 3px 5px 5px 0 rgba(0,0,0,0.10);
   border-radius: 5px;
   font-size: 13px;
 }
@@ -303,7 +303,7 @@
 }
 .recurly .server_errors .error {
   padding-left: 26px;
-  background: rgba(240,250,0,0.5) url("images/error.png") no-repeat 5px 9px;
+  background: rgba(240,250,0,0.50) url("images/error.png") no-repeat 5px 9px;
 }
 .recurly .server_errors.any {
   opacity: 1;
@@ -320,20 +320,95 @@
   overflow: hidden;
   zoom: 1;
 }
-.recurly .contact_info .title,
-.recurly .billing_info .title,
-.recurly .accept_tos .title {
+.recurly .title {
   font-size: 16px;
   height: 20px;
   font-weight: bold;
   padding-bottom: 20px;
   color: #404041;
   text-shadow: 0 1px 0 #fff;
+  float: left;
 }
-.recurly .contact_info .credit_card,
-.recurly .billing_info .credit_card,
-.recurly .accept_tos .credit_card {
+.recurly .credit_card,
+.recurly .paypal {
   clear: both;
+}
+.recurly .payment_method {
+  margin-bottom: 20px;
+  width: 300px;
+}
+.recurly .payment_method .payment_option {
+  float: right;
+}
+.recurly .payment_method .payment_option input[type=radio] {
+  margin-right: 10px;
+  display: none;
+}
+.recurly .payment_method.multiple {
+  height: 34px;
+  clear: both;
+}
+.recurly .payment_method.multiple input[type=radio] {
+  display: block;
+  float: left;
+  height: 29px;
+}
+.recurly .payment_method.multiple .card_option {
+  float: left;
+}
+.recurly .payment_method.multiple .paypal_option {
+  float: right;
+}
+.recurly .payment_method.multiple .logo,
+.recurly .payment_method.multiple .accepted_cards {
+  opacity: 0.5;
+}
+.recurly .payment_method.multiple .payment_option:hover .logo,
+.recurly .payment_method.multiple .payment_option.selected .logo,
+.recurly .payment_method.multiple .payment_option:hover .accepted_cards,
+.recurly .payment_method.multiple .payment_option.selected .accepted_cards {
+  cursor: pointer;
+  opacity: 1;
+}
+.recurly .payment_method .payment_option {
+  line-height: 32px;
+  display: block;
+  height: 32px;
+  line-height: 34px;
+}
+.recurly .payment_method .payment_option .title {
+  margin: 0;
+  font-size: 12px;
+}
+.recurly .payment_method .payment_option .icon {
+  float: left;
+  width: 24px;
+  height: 34px;
+  margin: 0 5px;
+}
+.recurly .payment_method .payment_option.card_option {
+  border-radius: 5px 0 0 5px;
+  border-right: none;
+}
+.recurly .payment_method .payment_option.card_option .icon {
+  width: 42px;
+  background: url("images/credit_cards/generic.png") no-repeat 0 center;
+}
+.recurly .payment_method .payment_option.paypal_option {
+  border-radius: 0 5px 5px 0;
+  float: right;
+}
+.recurly .payment_method .payment_option.paypal_option .logo {
+  height: 24px;
+  width: 90px;
+  display: inline-block;
+  vertical-align: middle;
+  background: url("images/paypal_logo.png") no-repeat 0 center;
+}
+.recurly .paypal_message {
+  width: 300px;
+  font-style: italic;
+  margin-bottom: 10px;
 }
 .recurly .contact_info {
   background: url("images/dash.png") repeat-x 1px bottom;
@@ -428,6 +503,8 @@
 .recurly .field.last_name {
   width: 140px;
   margin-left: 20px;
+  margin-left: 20px;
+  clear: none;
   clear: none;
 }
 .recurly .field.last_name input[type=text] {
@@ -445,6 +522,8 @@
 .recurly .field.cvv {
   width: 60px;
   margin-left: 20px;
+  margin-left: 20px;
+  clear: none;
   clear: none;
 }
 .recurly .field.cvv input[type=text] {
@@ -491,6 +570,8 @@
 .recurly .field.zip {
   width: 100px;
   margin-left: 20px;
+  margin-left: 20px;
+  clear: none;
   clear: none;
 }
 .recurly .field.zip input[type=text] {
@@ -512,9 +593,9 @@
   clear: left;
 }
 .recurly .accepted_cards {
-  position: absolute;
-  top: 20px;
-  right: 180px;
+  display: inline-block;
+  height: 34px;
+  overflow: hidden;
 }
 .recurly .card {
   background-position: right top;
@@ -524,7 +605,7 @@
   height: 32px;
   margin: 0;
   padding: 0;
-  float: right;
+  display: inline-block;
 }
 .recurly .card.mastercard {
   background-image: url("images/credit_cards/mastercard.png");
@@ -568,7 +649,7 @@
   display: block;
   background: #fff;
   border: 1px solid #a0a0a5;
-  box-shadow: inset 0 2px 3px rgba(0,0,0,0.1);
+  box-shadow: inset 0 2px 3px rgba(0,0,0,0.10);
   font-size: 16px;
   font-family: inherit;
   padding: 5px;
@@ -599,7 +680,7 @@
   width: 460px;
   position: relative;
   left: -5px;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.50);
 }
 .recurly .due_now .title {
   float: left;
@@ -614,7 +695,7 @@
   letter-spacing: 1px;
   margin: 0;
   position: relative;
-  text-shadow: 0px 1px 1px rgba(0,0,0,0.9);
+  text-shadow: 0px 1px 1px rgba(0,0,0,0.90);
 }
 .recurly .footer {
   border-radius: 0px 0px 9px 9px;
@@ -636,10 +717,10 @@
   background: #e7a500;
   border-radius: 10px;
   outline: none;
-  box-shadow: inset rgba(255,255,255,0.7) 0px 1px 0px, rgba(0,0,0,0.5) 0px 1px 3px;
+  box-shadow: inset rgba(255,255,255,0.70) 0px 1px 0px, rgba(0,0,0,0.50) 0px 1px 3px;
   background-image: -webkit-gradient(linear, 0% 20%, 0% 100%, from(#fecd00), to(#ce7b00));
   background: -moz-linear-gradient(top, #fecd00, #ce7b00);
-  text-shadow: rgba(255,255,255,0.5) 0 1px 0;
+  text-shadow: rgba(255,255,255,0.50) 0 1px 0;
   padding: 10px 20px;
 }
 .recurly button.submit:hover {
@@ -648,7 +729,7 @@
 .recurly button.submit:active {
   top: 2px;
   color: #302106;
-  text-shadow: rgba(255,255,255,0.569) 0 -1px 0;
+  text-shadow: rgba(255,255,255,0.57) 0 -1px 0;
   outline: none;
   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ce7b00), to(#fecd00));
   background: -moz-linear-gradient(top, #ce7b00, #fecd00);
@@ -661,7 +742,7 @@
   padding: 0 10px;
   font-weight: 700;
   color: #555;
-  text-shadow: rgba(255,255,255,0.569) 0 1px 0;
+  text-shadow: rgba(255,255,255,0.57) 0 1px 0;
   text-align: center;
   opacity: 0.75;
   border: 1px solid #767674;
@@ -676,7 +757,7 @@
   background: -moz-linear-gradient(top, #dbd9d2, #999);
   -webkit-background-clip: padding-box;
   -webkit-box-shadow: rgba(255,255,255,0.69) 0px 1px 0px inset, rgba(0,0,0,0.26) 0px 2px 3px;
-  box-shadow: rgba(255,255,255,0.699) 0px 1px 0px inset, rgba(0,0,0,0.269) 0px 2px 3px;
+  box-shadow: rgba(255,255,255,0.70) 0px 1px 0px inset, rgba(0,0,0,0.27) 0px 2px 3px;
 }
 .iefail {
   background: #666;

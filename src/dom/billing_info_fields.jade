@@ -1,19 +1,27 @@
 .title Billing Info
 
-.accepted_cards
+.payment_method.multiple
+  input(type="hidden")
+  .payment_option.card_option.selected
+    input(type="radio", name="payment_method", value="")
+    .accepted_cards
+
+  .payment_option.paypal_option
+    input(type="radio", name="payment_method", value="paypal")
+    .logo
 
 .credit_card
   .field.first_name
-    .placeholder First Name 
+    .placeholder First Name
     input(type="text")
 
   .field.last_name
-    .placeholder Last Name 
+    .placeholder Last Name
     input(type="text")
 
   .card_cvv
     .field.card_number
-      .placeholder Credit Card Number  
+      .placeholder Credit Card Number
       input(type="text")
 
     .field.cvv
@@ -21,40 +29,49 @@
       input(type="text")
 
   .field.expires
-    .title Expires 
+    .title Expires
     .month
       select
-        include months.jade 
+        include months.jade
     .year
       select
 
-.address
-  .field.address1
-    .placeholder Address
-    input(type="text")
-  
-  .field.address2
-    .placeholder Apt/Suite
-    input(type="text")
-  
-  .field.city
-    .placeholder City
-    input(type="text")
-
-  .state_zip
-    .field.state
-      .placeholder State/Province
+  .address
+    .field.address1
+      .placeholder Address
       input(type="text")
 
-    .field.zip
-      .placeholder Zip/Postal
+    .field.address2
+      .placeholder Apt/Suite
       input(type="text")
-  
-  .field.country
-    select
-      include countries.jade
-          
+
+    .field.city
+      .placeholder City
+      input(type="text")
+
+    .state_zip
+      .field.state
+        .placeholder State/Province
+        input(type="text")
+
+      .field.zip
+        .placeholder Zip/Postal
+        input(type="text")
+
+.field.country
+  select
+    include countries.jade
+
 .field.vat_number
   .placeholder VAT Number
   input(type="text")
+
+.paypal
+  .paypal_message.
+    You will be taken to PayPal to authorize a billing agreement.
+    <br><br>
+    Please make sure pop-ups aren't blocked.
+
+
+
 

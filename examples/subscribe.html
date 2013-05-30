@@ -5,7 +5,7 @@
 <title>RecurlyJS Subscribe Example</title>
 <link rel="stylesheet" href="examples.css" type="text/css" />
 <link rel="stylesheet" href="../themes/default/recurly.css" type="text/css" />
-<script src="../lib/jquery-1.9.0.js"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="../build/recurly.js"></script>
 
 <script>
@@ -24,10 +24,12 @@
     distinguishContactFromBillingInfo: true,
     collectCompany: true,
     termsOfServiceURL: 'http://example.com/tos',
+    acceptPaypal: true,
     acceptedCards: ['mastercard',
                     'discover',
                     'american_express', 
                     'visa'],
+    acceptPaypal: true,
     account: {
       firstName: 'Joe',
       lastName: 'User',

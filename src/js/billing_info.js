@@ -1,6 +1,14 @@
 R.BillingInfo = {
   create: createObject
 , toJSON: function() {    
+    if(this.paymentMethod === 'paypal') {
+      return {
+        payment_method: 'paypal'
+      , country: this.country
+      , vat_number: this.vatNumber
+      };
+    }
+
     return {
       first_name: this.firstName
     , last_name: this.lastName
@@ -20,7 +28,8 @@ R.BillingInfo = {
   }
 , save: function(options) { 
     var json = {
-      billing_info: this.toJSON() 
+      account: this.account ? this.account.toJSON() : undefined 
+    , billing_info: this.toJSON() 
     , signature: options.signature
     };
 

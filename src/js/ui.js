@@ -18,7 +18,6 @@ function invalidMode(e) {
 
   $input.addClass('invalid');
   $input.bind('change keyup', function handler(e) { 
-
     if(validator($input)) {
       $input.removeClass('invalid');
       $e.remove();
@@ -98,7 +97,6 @@ function V(v,k) {
     errorKey: k || v.defaultErrorKey
   };
 }
-
 
 // == SERVER ERROR UI METHODS
 
@@ -268,6 +266,50 @@ function initBillingInfoForm($form, options) {
   var $savedStateSelect = {};
   var knownStates = R.states;
   var prevCountry = $countrySelect.val();
+
+  if(options.acceptedCards && options.acceptPaypal) {
+    var $method = $form.find('.payment_method');
+    var $input  = $method.find('input');
+    var $btn = $form.find('button.submit');
+    var btnText = $btn.text();
+    $method.on('click', '.payment_option', function() {
+      var $opt = $(this);
+      $method.find('.selected').removeClass('selected');
+      $opt.addClass('selected');
+
+      $method.find('input[type=radio]:checked').prop('checked', false);
+      $opt.find('input[type=radio]').prop('checked', true);
+
+      if($opt.is('.card_option')) {
+        // Show/hide is broken in jQuery 1
+        $form.find('.credit_card').css({display:'block'});
+        $form.find('.paypal').css({display:'none'});
+        $input.val('');
+        $btn.text(btnText);
+      }
+      else if($opt.is('.paypal_option')) {
+        $form.find('.credit_card').css({display:'none'});
+        $form.find('.paypal').css({display:'block'});
+        $input.val('paypal');
+        $btn.text(btnText + ' with PayPal');
+      }
+    });
+
+    $form.find('.payment_option').first().click();
+  }
+  else {
+    $form.find('.payment_method').removeClass('multiple');
+
+    if(options.acceptedCards) {
+      $form.find('.paypal_option').remove();
+      $form.find('.paypal').remove();
+    }
+    else if(options.acceptPaypal) {
+      $form.find('.payment_method input').val('paypal');
+      $form.find('.card_option').remove();
+      $form.find('.credit_card').remove();
+    }
+  }
 
   function matchKnownStateWithInput(country, stateStr) {
     var ref = knownStates[country];
@@ -491,6 +533,14 @@ function pullAccountFields($form, account, options, pull) {
 
 
 function pullBillingInfoFields($form, billingInfo, options, pull) {
+
+  billingInfo.paymentMethod = pull.field($form, '.payment_method'); 
+
+  if(billingInfo.paymentMethod === 'paypal') {
+    billingInfo.country = pull.field($form, '.country', V(R.isNotEmpty));
+    return;
+  }
+
   billingInfo.firstName = pull.field($form, '.billing_info .first_name', V(R.isNotEmpty)); 
   billingInfo.lastName = pull.field($form, '.billing_info .last_name', V(R.isNotEmpty)); 
   billingInfo.number = pull.field($form, '.card_number', V(R.isNotEmpty), V(R.isValidCC)); 
@@ -520,25 +570,41 @@ function verifyTOSChecked($form, pull) {
   pull.field($form, '.accept_tos', V(R.isChecked)); 
 }
 
-
+R.buildBillingInfoForm =
 R.buildBillingInfoUpdateForm = function(options) {
   var defaults = {
     addressRequirement: 'full'
+  , collectContactInfo: false
   , distinguishContactFromBillingInfo: true 
   };
+
+  // Backwards compatibility with old callback
+  options.successHandler = options.successHandler || options.afterUpdate;
 
   options = $.extend(createObject(R.settings), defaults, options);
 
   if(!options.accountCode) R.raiseError('accountCode missing');
   if(!options.signature) R.raiseError('signature missing');
 
-  var billingInfo = R.BillingInfo.create();
+  var billingInfo = R.BillingInfo.create(),
+      account = R.Account.create();
+
+  billingInfo.account = account;
 
   var $form = $(R.dom.update_billing_info_form);
+
+  if(options.collectContactInfo) {
+    $form.find('.contact_info').html(R.dom.contact_info_fields);
+  }
+  else {
+    $form.find('.contact_info').remove();
+  }
+
   $form.find('.billing_info').html(R.dom.billing_info_fields);
 
 
   initCommonForm($form, options);
+  initContactInfoForm($form, options);
   initBillingInfoForm($form, options);
 
 
@@ -552,9 +618,11 @@ R.buildBillingInfoUpdateForm = function(options) {
 
     validationGroup(function(puller) {
       pullBillingInfoFields($form, billingInfo, options, puller);
+      pullAccountFields($form, account, options, puller);
     }
     , function() {
       $form.addClass('submitting');
+      var prevText = $form.find('button.submit').text();
       $form.find('button.submit').attr('disabled', true).text('Please Wait');
 
       billingInfo.save({
@@ -578,7 +646,7 @@ R.buildBillingInfoUpdateForm = function(options) {
         }
       , complete: function() {
           $form.removeClass('submitting');
-          $form.find('button.submit').removeAttr('disabled').text('Update');
+          $form.find('button.submit').removeAttr('disabled').text(prevText);
         }
       });
     });
@@ -640,8 +708,10 @@ R.buildTransactionForm = function(options) {
   , collectContactInfo: true
   };
 
-  options = $.extend(createObject(R.settings), defaults, options);
+  // Backwards compatibility with old callback
+  options.successHandler = options.successHandler || options.afterPay;
 
+  options = $.extend(createObject(R.settings), defaults, options);
 
   if(!options.collectContactInfo && !options.accountCode) {
     R.raiseError('collectContactInfo is false, but no accountCode provided');
@@ -661,7 +731,6 @@ R.buildTransactionForm = function(options) {
   transaction.cost = new R.Cost(options.amountInCents);
 
   var $form = $(R.dom.one_time_transaction_form);
-  $form.find('.billing_info').html(R.dom.billing_info_fields);
 
   if(options.collectContactInfo) {
     $form.find('.contact_info').html(R.dom.contact_info_fields);
@@ -670,10 +739,11 @@ R.buildTransactionForm = function(options) {
     $form.find('.contact_info').remove();
   }
 
+  $form.find('.billing_info').html(R.dom.billing_info_fields);
 
   initCommonForm($form, options);
-  initContactInfoForm($form, options);
   initBillingInfoForm($form, options);
+  initContactInfoForm($form, options);
   initTOSCheck($form, options);
 
   $form.submit(function(e) {
@@ -691,6 +761,7 @@ R.buildTransactionForm = function(options) {
     }
     , function() {
       $form.addClass('submitting');
+      var prevText = $form.find('button.submit').text();
       $form.find('button.submit').attr('disabled', true).text('Please Wait');
 
       transaction.save({
@@ -713,7 +784,7 @@ R.buildTransactionForm = function(options) {
         }
       , complete: function() {
           $form.removeClass('submitting');
-          $form.find('button.submit').removeAttr('disabled').text('Pay');
+          $form.find('button.submit').removeAttr('disabled').text(prevText);
         }
       });
     });
@@ -731,26 +802,34 @@ R.buildTransactionForm = function(options) {
       options.afterInject($form.get(0));
     }
   });
-
 };
-
 
 R.buildSubscriptionForm = function(options) {
   var defaults = {
     enableAddOns: true
   , enableCoupons: true
   , addressRequirement: 'full'
+  , collectContactInfo: true
   , distinguishContactFromBillingInfo: false
   };
+
+  // Backwards compatibility with old callback
+  options.successHandler = options.successHandler || options.afterSubscribe;
 
   options = $.extend(createObject(R.settings), defaults, options);
 
   if(!options.signature) R.raiseError('signature missing');
 
   var $form = $(R.dom.subscribe_form);
-  $form.find('.contact_info').html(R.dom.contact_info_fields);
-  $form.find('.billing_info').html(R.dom.billing_info_fields);
 
+  if(options.collectContactInfo) {
+    $form.find('.contact_info').html(R.dom.contact_info_fields);
+  }
+  else {
+    $form.find('.contact_info').remove();
+  }
+
+  $form.find('.billing_info').html(R.dom.billing_info_fields);
 
   if(options.planCode)
     R.Plan.get(options.planCode, options.currency, gotPlan);
@@ -1027,20 +1106,20 @@ R.buildSubscriptionForm = function(options) {
       }, function() {
 
         $form.addClass('submitting');
+        var prevText = $form.find('button.submit').text();
         $form.find('button.submit').attr('disabled', true).text('Please Wait');
 
         subscription.save({
-
-        signature: options.signature
-        ,   success: function(response) {
-              if(options.successHandler) {
-                options.successHandler(R.getToken(response));
-              }
-              if(options.successURL) {
-                var url = options.successURL;
-                R.postResult(url, response, options);
-              }
+          signature: options.signature
+        , success: function(response) {
+            if(options.successHandler) {
+              options.successHandler(R.getToken(response));
             }
+            if(options.successURL) {
+              var url = options.successURL;
+              R.postResult(url, response, options);
+            }
+          }
         , error: function(errors) {
             if(!options.onError || !options.onError(errors)) {
               displayServerErrors($form, errors);
@@ -1048,7 +1127,7 @@ R.buildSubscriptionForm = function(options) {
           }
         , complete: function() {
             $form.removeClass('submitting');
-            $form.find('button.submit').removeAttr('disabled').text('Subscribe');
+            $form.find('button.submit').removeAttr('disabled').text(prevText);
           }
         });
       });
@@ -1070,8 +1149,65 @@ R.buildSubscriptionForm = function(options) {
         options.afterInject($form.get(0));
       }
     });
-
   }
-
 };
 
+R.paypal = {
+  start: function(opts) {
+    var originalWindowName = window.name;
+
+    // Very rare edge case of window getting stuck with a prior recurly_result in it.
+    if(originalWindowName.indexOf('recurly_result') > -1) {
+      window.name = '';
+      originalWindowName = '';
+    }
+
+    var data = $.extend(opts.data, {
+        post_message: true,
+        referer: window.location.href
+      })
+      , url = opts.url + '?' + $.param(data)
+      , popup = window.open(url, 'recurly_paypal', 'menubar=1,resizable=1');
+
+      window.popup = popup;
+
+    $(window).on('message', handleMessage);
+
+
+    var interval = setInterval(function() {
+      var decoded = decodeURIComponent(window.name)
+        , match = decoded.match(/recurly_result=(.*)[&$]?/)
+        , result = match && $.parseJSON(match[1]);
+
+      if(result) {
+        finish(result);
+        window.name = originalWindowName;
+      }
+
+    }, 1000);
+
+
+    function finish(result) {
+      try {
+        popup.close();
+      }
+      finally {
+        opts.success(result);
+        opts.complete();
+        $(window).unbind('message', handleMessage);
+        clearInterval(interval);
+      }
+    }
+
+    function handleMessage(e) {
+      var api = document.createElement('a');
+      api.href = R.settings.baseURL;
+
+       var origin = api.protocol + '//' + api.host.replace(/:\d+$/, '');
+
+       if (e.originalEvent.origin == origin) {
+         finish(e.originalEvent.data);
+       }
+    }
+  }
+};

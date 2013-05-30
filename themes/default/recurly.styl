@@ -350,6 +350,7 @@ hstack(cols)
       margin column_space outer_margin
       margin-bottom 0
 
+
   .contact_info
   .billing_info
   .accept_tos
@@ -358,16 +359,95 @@ hstack(cols)
     overflow hidden
     zoom 1 // IE6
 
-    .title 
-      font-size base_font_size
-      height base_font_size + 4px
-      font-weight bold
-      padding-bottom 20px
-      color #404041
-      text-shadow 0 1px 0 white
+  .title 
+    font-size base_font_size
+    height base_font_size + 4px
+    font-weight bold
+    padding-bottom 20px
+    color #404041
+    text-shadow 0 1px 0 white
+    float left
 
-    .credit_card
+  .credit_card
+  .paypal
+    clear both
+
+  .payment_method
+    margin-bottom vertical_space
+    width columns(8)
+
+    .payment_option
+      float right
+      input[type=radio]
+        margin-right 10px
+        display none
+
+    &.multiple
+      height field_height
       clear both
+
+      // line-height field_height
+
+      input[type=radio]
+        display block
+        float left
+        height field_height - 5px
+
+      .card_option
+        float left
+
+      .paypal_option
+        float right
+
+      .logo, .accepted_cards
+        opacity 0.5
+
+      .payment_option
+        &:hover, &.selected
+          .logo, .accepted_cards
+            cursor pointer
+            opacity 1
+
+    .payment_option
+      line-height field_height - 2px
+      display block
+      height field_height - 2px
+      line-height field_height
+
+
+      .title
+        margin 0
+        font-size 12px
+
+      .icon
+        float left
+        width 24px
+        height field_height
+        margin 0 5px
+
+      &.card_option
+        border-radius 5px 0 0 5px
+        border-right none
+
+        .icon
+          width 42px
+          background url(images/credit_cards/generic.png) no-repeat 0 center
+
+      &.paypal_option
+        border-radius 0 5px 5px 0
+        float right
+
+        .logo
+          height 24px
+          width 90px
+          display inline-block
+          vertical-align middle
+          background url(images/paypal_logo.png) no-repeat 0 center
+
+  .paypal_message
+    width columns(8)
+    font-style italic
+    margin-bottom 10px
 
   .contact_info
     background url(images/dash.png) repeat-x 1px bottom
@@ -501,9 +581,9 @@ hstack(cols)
     clear left
 
   .accepted_cards 
-    position absolute
-    top vertical_space
-    right (grid_width - columns(8))
+    display inline-block
+    height field_height
+    overflow hidden
 
    .card 
       background-position right top
@@ -513,7 +593,7 @@ hstack(cols)
       height 32px
       margin 0 
       padding 0
-      float right
+      display inline-block
       
       &.mastercard
         background-image url(images/credit_cards/mastercard.png)
