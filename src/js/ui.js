@@ -1178,6 +1178,7 @@ R.paypal = {
 
     }, 1000);
 
+
     function finish(result) {
       try {
         popup.close();
@@ -1193,10 +1194,12 @@ R.paypal = {
     function handleMessage(e) {
       var api = document.createElement('a');
       api.href = R.settings.baseURL;
-      if(e.originalEvent.origin == 'https://'+api.host
-        || e.originEvent.origin == 'http://'+api.host) {
-        finish(e.originalEvent.data);
-      }
+
+       var origin = api.protocol + '//' + api.host.replace(/:\d+$/, '');
+
+       if (e.originalEvent.origin == origin) {
+         finish(e.originalEvent.data);
+       }
     }
   }
 };
