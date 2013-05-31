@@ -1,5 +1,8 @@
 #Recurly.js CHANGELOG
 
+##Version 2.2.1 (May 29, 2013)
+- Now uses all the same address fields for paypal payments as credit card.
+
 ##Version 2.2.0 (May 29, 2013)
 
 - Add support for PayPal 
