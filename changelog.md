@@ -1,5 +1,10 @@
 #Recurly.js CHANGELOG
 
+##Version 2.2.0 (May 29, 2013)
+
+- Add support for PayPal 
+- Use subdomains in JSONP URLs for DNS loadbalancing
+
 ##Version 2.1.3 (May 22, 2012)
 
 - Automatically set VAT variables for subscription forms using information from Recurly.

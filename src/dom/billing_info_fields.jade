@@ -10,15 +10,15 @@
     input(type="radio", name="payment_method", value="paypal")
     .logo
 
+.field.first_name
+  .placeholder First Name
+  input(type="text")
+
+.field.last_name
+  .placeholder Last Name
+  input(type="text")
+
 .credit_card
-  .field.first_name
-    .placeholder First Name
-    input(type="text")
-
-  .field.last_name
-    .placeholder Last Name
-    input(type="text")
-
   .card_cvv
     .field.card_number
       .placeholder Credit Card Number
@@ -36,31 +36,31 @@
     .year
       select
 
-  .address
-    .field.address1
-      .placeholder Address
+.address
+  .field.address1
+    .placeholder Address
+    input(type="text")
+
+  .field.address2
+    .placeholder Apt/Suite
+    input(type="text")
+
+  .field.city
+    .placeholder City
+    input(type="text")
+
+  .state_zip
+    .field.state
+      .placeholder State/Province
       input(type="text")
 
-    .field.address2
-      .placeholder Apt/Suite
+    .field.zip
+      .placeholder Zip/Postal
       input(type="text")
 
-    .field.city
-      .placeholder City
-      input(type="text")
-
-    .state_zip
-      .field.state
-        .placeholder State/Province
-        input(type="text")
-
-      .field.zip
-        .placeholder Zip/Postal
-        input(type="text")
-
-.field.country
-  select
-    include countries.jade
+  .field.country
+    select
+      include countries.jade
 
 .field.vat_number
   .placeholder VAT Number

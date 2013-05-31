@@ -131,8 +131,8 @@ var preFillMap = {
   , companyName:    '.contact_info > .company_name > input'
   }
 , billingInfo: {
-    firstName:      '.billing_info > .credit_card > .first_name > input'
-  , lastName:       '.billing_info > .credit_card > .last_name > input'
+    firstName:      '.billing_info > .first_name > input'
+  , lastName:       '.billing_info > .last_name > input'
   , address1:       '.billing_info > .address > .address1 > input'
   , address2:       '.billing_info > .address > .address2 > input'
   , country:        '.billing_info > .address > .country > select'
@@ -488,6 +488,10 @@ function initBillingInfoForm($form, options) {
   else if(options.addressRequirement == 'full') {
     $form.find('.address').addClass('full');
   }
+  else if(options.addressRequirement == 'only_country') {
+    $form.find('.address').addClass('only_country');
+  }
+
   // == BUILD ACCEPTED CARDS DOM
   var $acceptedCards = $form.find('.accepted_cards');
 
@@ -536,18 +540,15 @@ function pullBillingInfoFields($form, billingInfo, options, pull) {
 
   billingInfo.paymentMethod = pull.field($form, '.payment_method'); 
 
-  if(billingInfo.paymentMethod === 'paypal') {
-    billingInfo.country = pull.field($form, '.country', V(R.isNotEmpty));
-    return;
-  }
-
   billingInfo.firstName = pull.field($form, '.billing_info .first_name', V(R.isNotEmpty)); 
   billingInfo.lastName = pull.field($form, '.billing_info .last_name', V(R.isNotEmpty)); 
-  billingInfo.number = pull.field($form, '.card_number', V(R.isNotEmpty), V(R.isValidCC)); 
-  billingInfo.cvv = pull.field($form, '.cvv', V(R.isNotEmpty), V(R.isValidCVV)); 
 
-  billingInfo.month = pull.field($form, '.month');
-  billingInfo.year = pull.field($form, '.year');
+  if(billingInfo.paymentMethod !== 'paypal') {
+    billingInfo.number = pull.field($form, '.card_number', V(R.isNotEmpty), V(R.isValidCC)); 
+    billingInfo.cvv = pull.field($form, '.cvv', V(R.isNotEmpty), V(R.isValidCVV)); 
+    billingInfo.month = pull.field($form, '.month');
+    billingInfo.year = pull.field($form, '.year');
+  }
 
   billingInfo.phone = pull.field($form, '.phone');
   billingInfo.address1 = pull.field($form, '.address1', V(R.isNotEmpty));
@@ -856,6 +857,8 @@ R.buildSubscriptionForm = function(options) {
 
     subscription.account = account;
     subscription.billingInfo = billingInfo;
+    billingInfo.account = account;
+    billingInfo.subscription = subscription;
 
     if(options.filterSubscription)
       subscription = options.filterSubscription(subscription) || subscription; 
