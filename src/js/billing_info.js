@@ -1,21 +1,9 @@
 R.BillingInfo = {
   create: createObject
-, toJSON: function() {    
-    if(this.paymentMethod === 'paypal') {
-      return {
-        payment_method: 'paypal'
-      , country: this.country
-      , vat_number: this.vatNumber
-      };
-    }
-
-    return {
-      first_name: this.firstName
-    , last_name: this.lastName
-    , month: this.month
-    , year: this.year
-    , number: this.number
-    , verification_value: this.cvv
+, toJSON: function() {
+    var result = {
+      first_name: this.firstName || this.account.firstName
+    , last_name: this.lastName || this.account.lastName
     , address1: this.address1
     , address2: this.address2
     , city: this.city
@@ -25,6 +13,20 @@ R.BillingInfo = {
     , phone: this.phone
     , vat_number: this.vatNumber
     };
+
+    if(this.paymentMethod == 'paypal') {
+      result.paymentMethod = 'paypal';
+    }
+    else {
+      $.extend(result, {
+        number: this.number
+      , verification_value: this.cvv
+      , month: this.month
+      , year: this.year
+      });
+    }
+
+    return result;
   }
 , save: function(options) { 
     var json = {
@@ -32,16 +34,6 @@ R.BillingInfo = {
     , billing_info: this.toJSON() 
     , signature: options.signature
     };
-
-    // Save first/last name on the account
-    // if not distinguished
-    if(!options.distinguishContactFromBillingInfo) {
-      json.account = {
-        account_code: options.accountCode
-      , first_name: this.firstName
-      , last_name: this.lastName
-      };
-    }
 
     R.ajax({
       url: R.settings.baseURL+'accounts/'+options.accountCode+'/billing_info/update'

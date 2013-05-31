@@ -2,8 +2,8 @@
 
 <html>
 <head>
-  <script src="../lib/jquery-1.9.0.js"></script>
   <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
+  <script src="http://code.jquery.com/jquery-1.10.0.js"></script>
   <script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
   <script type="text/javascript" src="../build/recurly.js"></script>
 
@@ -68,7 +68,7 @@
       R.config({ 
         subdomain: 'flurp-test'
       });
-      equal(R.settings.baseURL, 'https://api.recurly.com/jsonp/flurp-test/');
+      equal(R.settings.baseURL, 'https://flurp-test.recurly.com/jsonp/flurp-test/');
     });
 
 
@@ -395,7 +395,8 @@
       $('.card_number input').val('4111-1111-1111-1111').change();
       $('.cvv input').val('123').change();
 
-      $('.year select').val('2013').change();
+      // test will fail april 1, 2015
+      $('.year select').val('2015').change();
       $('.month select').val('3').change();
 
       $('.address1 input').val('yee').change();
@@ -421,8 +422,10 @@
             "email": "joeuser@example.com",
           },
           "billing_info": {
+            "first_name": "joe",
+            "last_name": "user",
             "month": "3",
-            "year": "2013",
+            "year": "2015",
             "number": "4111-1111-1111-1111",
             "verification_value": "123",
             "address1": "yee",
@@ -432,7 +435,7 @@
             "zip": "12345",
             "country": "US",
           },
-          "js_version": "2.2.0-beta",
+          "js_version": "2.2.0",
           "signature": "thiscanbefakeforthetestsoyeah"
         });
 
