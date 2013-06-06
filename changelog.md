@@ -2,6 +2,7 @@
 
 ##Version 2.2.2 (June 6, 2013)
 - Fix bug in PayPal integration.
+- Fix a bug where a coupon specified by initial prefilled values would not get applied to the subscription.
 
 ##Version 2.2.1 (May 29, 2013)
 - Now uses all the same address fields for paypal payments as credit card.

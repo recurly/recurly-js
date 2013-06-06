@@ -1052,6 +1052,7 @@ R.buildSubscriptionForm = function(options) {
       });
 
       $coupon.find('input').blur(function() { $coupon.find('.check').click(); });
+
     }
     else {
       $coupon.remove();
@@ -1136,6 +1137,8 @@ R.buildSubscriptionForm = function(options) {
       });
 
     });
+
+    updateCoupon();
 
     // FINALLY - UPDATE INITIAL TOTALS AND INJECT INTO DOM
     updateTotals();
