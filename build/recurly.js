@@ -764,7 +764,7 @@ R.BillingInfo = {
     };
 
     if(this.paymentMethod == 'paypal') {
-      result.paymentMethod = 'paypal';
+      result.payment_method = 'paypal';
     }
     else {
       $.extend(result, {
@@ -777,10 +777,10 @@ R.BillingInfo = {
 
     return result;
   }
-, save: function(options) { 
+, save: function(options) {
     var json = {
-      account: this.account ? this.account.toJSON() : undefined 
-    , billing_info: this.toJSON() 
+      account: this.account ? this.account.toJSON() : undefined
+    , billing_info: this.toJSON()
     , signature: options.signature
     };
 
