@@ -540,10 +540,10 @@ function pullBillingInfoFields($form, billingInfo, options, pull) {
 
   billingInfo.paymentMethod = pull.field($form, '.payment_method'); 
 
-  billingInfo.firstName = pull.field($form, '.billing_info .first_name', V(R.isNotEmpty)); 
-  billingInfo.lastName = pull.field($form, '.billing_info .last_name', V(R.isNotEmpty)); 
-
   if(billingInfo.paymentMethod !== 'paypal') {
+    billingInfo.firstName = pull.field($form, '.billing_info .first_name', V(R.isNotEmpty)); 
+    billingInfo.lastName = pull.field($form, '.billing_info .last_name', V(R.isNotEmpty)); 
+
     billingInfo.number = pull.field($form, '.card_number', V(R.isNotEmpty), V(R.isValidCC)); 
     billingInfo.cvv = pull.field($form, '.cvv', V(R.isNotEmpty), V(R.isValidCVV)); 
     billingInfo.month = pull.field($form, '.month');

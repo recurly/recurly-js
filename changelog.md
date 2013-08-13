@@ -1,5 +1,8 @@
 #Recurly.js CHANGELOG
 
+##Version 2.2.3 (Aug 13, 2013)
+- Fix an issue where first/last name show up for PayPal when distinguishContactFromBillingInfo is true
+
 ##Version 2.2.2 (June 6, 2013)
 - Fix bug in PayPal integration.
 - Fix a bug where a coupon specified by initial prefilled values would not get applied to the subscription.
