@@ -201,10 +201,10 @@ function initCommonForm($form, options) {
     var $li = $(this).parent(); 
 
     if($input.val().length > 0) {
-      $li.find('.placeholder').hide();
+      $li.find('.placeholder').css({display:'none'});
     }
     else {
-      $li.find('.placeholder').show();
+      $li.find('.placeholder').css({display:'block'});
     }
   });
 
@@ -281,7 +281,7 @@ function initBillingInfoForm($form, options) {
       $opt.find('input[type=radio]').prop('checked', true);
 
       if($opt.is('.card_option')) {
-        // Show/hide is broken in jQuery 1
+        // Show/hide is broken in jQuery 1.9
         $form.find('.credit_card').css({display:'block'});
         $form.find('.paypal').css({display:'none'});
         $input.val('');

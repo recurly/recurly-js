@@ -1,5 +1,8 @@
 #Recurly.js CHANGELOG
 
+##Version 2.2.4 (Aug 23, 2013)
+- Workaround a bug in jQuery 1.9 that throws style undefined exceptions.  
+
 ##Version 2.2.3 (Aug 13, 2013)
 - Fix an issue where first/last name show up for PayPal when distinguishContactFromBillingInfo is true
 
