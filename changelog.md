@@ -1,5 +1,8 @@
 #Recurly.js CHANGELOG
 
+##Version 2.2.5 (Aug 23, 2013)
+- Added default subscription: quantity option to buildSubscriptionForm
+
 ##Version 2.2.4 (Aug 23, 2013)
 - Workaround a bug in jQuery 1.9 that throws style undefined exceptions.  
 

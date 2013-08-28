@@ -146,6 +146,7 @@ var preFillMap = {
   }
 , subscription: {
     couponCode:     '.subscription > .coupon > .coupon_code > input'
+  , quantity:     '.subscription > .plan > .quantity > input'
   }
 };
 
