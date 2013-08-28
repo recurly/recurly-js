@@ -156,7 +156,7 @@ R.Coupon = {
     else if(json.discount_percent)
       c.discountRatio = json.discount_percent/100;
 
-    c.description = json.description;
+    c.description = json.description || '';
 
     return c;
   }

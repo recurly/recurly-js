@@ -1,6 +1,9 @@
 #Recurly.js CHANGELOG
 
-##Version 2.2.5 (Aug 23, 2013)
+##Version 2.2.6 (Aug 28, 2013)
+- Issue fixed where coupon descriptions could show "null" 
+
+##Version 2.2.5 (Aug 28, 2013)
 - Added default subscription: quantity option to buildSubscriptionForm
 
 ##Version 2.2.4 (Aug 23, 2013)
