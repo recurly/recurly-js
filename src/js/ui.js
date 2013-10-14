@@ -1117,9 +1117,12 @@ R.buildSubscriptionForm = function(options) {
         subscription.save({
           signature: options.signature
         , success: function(response) {
+            $form.addClass("submitting");
+
             if(options.successHandler) {
               options.successHandler(R.getToken(response));
             }
+
             if(options.successURL) {
               var url = options.successURL;
               R.postResult(url, response, options);
@@ -1128,11 +1131,11 @@ R.buildSubscriptionForm = function(options) {
         , error: function(errors) {
             if(!options.onError || !options.onError(errors)) {
               displayServerErrors($form, errors);
+              $form.removeClass("submitting");
+              %form.find('button.submit').removeAttr("disabled").text(prevText);
             }
           }
         , complete: function() {
-            $form.removeClass('submitting');
-            $form.find('button.submit').removeAttr('disabled').text(prevText);
           }
         });
       });
