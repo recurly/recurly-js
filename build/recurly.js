@@ -1872,6 +1872,7 @@ R.buildSubscriptionForm = function(options) {
   , collectPassword: false
   , addressRequirement: 'full'
   , collectContactInfo: true
+  , beforeSubmit: function($f, cb) { cb() }
   , distinguishContactFromBillingInfo: false
   };
 
@@ -2178,33 +2179,34 @@ R.buildSubscriptionForm = function(options) {
         var prevText = $form.find('button.submit').text();
         $form.find('button.submit').attr('disabled', true).text('Please Wait');
 
-        subscription.save({
-          signature: options.signature
-        , success: function(response) {
-            $form.addClass("submitting");
+        options.beforeSubmit($form, function(){
+          subscription.save({
+            signature: options.signature
+          , success: function(response) {
+              $form.addClass("submitting");
 
-            if(options.successHandler) {
-              options.successHandler(R.getToken(response));
-            }
+              if(options.successHandler) {
+                options.successHandler(R.getToken(response));
+              }
 
-            if(options.successURL) {
-              var url = options.successURL;
-              R.postResult(url, response, options);
+              if(options.successURL) {
+                var url = options.successURL;
+                R.postResult(url, response, options);
+              }
             }
-          }
-        , error: function(errors) {
-            if(!options.onError || !options.onError(errors)) {
-              displayServerErrors($form, errors);
-              $form.removeClass("submitting");
-              $form.find('button.submit').removeAttr("disabled").text(prevText);
+          , error: function(errors) {
+              if(!options.onError || !options.onError(errors)) {
+                displayServerErrors($form, errors);
+                $form.removeClass("submitting");
+                $form.find('button.submit').removeAttr("disabled").text(prevText);
+              }
             }
-          }
-        , complete: function() {
-          
-          }
+          , complete: function() {
+            
+            }
+          });
         });
       });
-
     });
 
     updateCoupon();
