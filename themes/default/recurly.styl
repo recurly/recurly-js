@@ -51,6 +51,10 @@ field-width(v)
   // Fit the input by subtracting padding and border from box
   & input[type=text]
     width v - (input_border+input_padding)*2
+    
+  // Fit the input by subtracting padding and border from box
+  & input[type=password]
+    width v - (input_border+input_padding)*2
 
 // Horizontally stack a field on the preceeding field
 hstack(cols)
@@ -131,7 +135,7 @@ hstack(cols)
 
   .setup_fee
     clear both
-    background url(images/dash.png) repeat-x 1px top 
+    background url(dash.png) repeat-x 1px top 
     overflow hidden
     padding-top vertical_space
 
@@ -148,7 +152,7 @@ hstack(cols)
     height 24px
     padding column_space outer_margin
     display none
-    background url(images/dash.png) repeat-x 1px top 
+    background url(dash.png) repeat-x 1px top 
 
     &.applicable
       display block
@@ -251,13 +255,13 @@ hstack(cols)
         text-shadow none
 
       &.selected
-        background #fff url(images/check.png) no-repeat (outer_margin/2) center
+        background #fff url(check.png) no-repeat (outer_margin/2) center
 
         .name
           padding-left 24px
 
         &:hover
-          background #fcf5f0 url(images/uncheck.png) no-repeat (outer_margin/2) center
+          background #fcf5f0 url(uncheck.png) no-repeat (outer_margin/2) center
 
       &.selected .quantity
           display block
@@ -269,7 +273,7 @@ hstack(cols)
     color #333
     padding column_space outer_margin
     position relative
-    background url(images/dash.png) repeat-x 1px top 
+    background url(dash.png) repeat-x 1px top 
    
     .check
       width 26px
@@ -280,20 +284,20 @@ hstack(cols)
       border 1px solid #0090C9
       margin 3px 0 1px 10px
       box-shadow inset 0 1px 0 0 rgba(255,255,255,.35), 0 1px 1px 0 rgba(0,0,0,0.1)
-      background #43BEF9 url(images/coupon_check.png) no-repeat center center
-      background image-linear-gradient(url(images/coupon_check.png) no-repeat center center, top, '#71CDFA 0%', '#43BEF9 50%', '#00B1F6 50%', '#71CEFB 100%')
+      background #43BEF9 url(coupon_check.png) no-repeat center center
+      background image-linear-gradient(url(coupon_check.png) no-repeat center center, top, '#71CDFA 0%', '#43BEF9 50%', '#00B1F6 50%', '#71CEFB 100%')
 
       &:hover
-        background image-linear-gradient(url(images/coupon_check.png) no-repeat center center, top, '#71CDFA 0%', '#43BEF9 50%', '#00B1F6 50%', '#71CEFB 100%')
+        background image-linear-gradient(url(coupon_check.png) no-repeat center center, top, '#71CDFA 0%', '#43BEF9 50%', '#00B1F6 50%', '#71CEFB 100%')
         box-shadow inset 0 1px 0 0 rgba(255,255,255,.75), 0 1px 1px 0 rgba(0,0,0,0.1)
 
       &:active
-        background image-linear-gradient(url(images/coupon_check.png) no-repeat center center, top, #f0f0f0, #fff)
+        background image-linear-gradient(url(coupon_check.png) no-repeat center center, top, #f0f0f0, #fff)
         box-shadow inset 0 3px 3px 0 rgba(0,0,0,0.025)
         border 1px solid #999
 
     &.checking .check
-      background #f0f0f0 url(images/coupon_checking.gif) no-repeat center center
+      background #f0f0f0 url(coupon_checking.gif) no-repeat center center
       box-shadow inset 0 3px 3px 0 rgba(0,0,0,0.025)
       border 1px solid #999
 
@@ -341,7 +345,7 @@ hstack(cols)
 
     .error
       padding-left 26px
-      background rgba(240,250,0,0.5) url(images/error.png) no-repeat 5px (input_padding + 4px)
+      background rgba(240,250,0,0.5) url(error.png) no-repeat 5px (input_padding + 4px)
 
     opacity 0
     &.any
@@ -431,7 +435,7 @@ hstack(cols)
 
         .icon
           width 42px
-          background url(images/credit_cards/generic.png) no-repeat 0 center
+          background url(generic.png) no-repeat 0 center
 
       &.paypal_option
         border-radius 0 5px 5px 0
@@ -442,7 +446,7 @@ hstack(cols)
           width 90px
           display inline-block
           vertical-align middle
-          background url(images/paypal_logo.png) no-repeat 0 center
+          background url(paypal_logo.png) no-repeat 0 center
 
   .paypal_message
     width columns(8)
@@ -450,10 +454,10 @@ hstack(cols)
     margin-bottom 10px
 
   .contact_info
-    background url(images/dash.png) repeat-x 1px bottom
+    background url(dash.png) repeat-x 1px bottom
 
   .accept_tos
-    background url(images/dash.png) repeat-x 1px top
+    background url(dash.png) repeat-x 1px top
     overflow visible
 
     input[type=checkbox]
@@ -596,21 +600,21 @@ hstack(cols)
       display inline-block
       
       &.mastercard
-        background-image url(images/credit_cards/mastercard.png)
+        background-image url(credit_cards/mastercard.png)
       &.american_express
-        background-image url(images/credit_cards/american_express.png)
+        background-image url(credit_cards/american_express.png)
       &.visa
-        background-image url(images/credit_cards/visa.png)
+        background-image url(credit_cards/visa.png)
       &.discover
-        background-image url(images/credit_cards/discover.png)
+        background-image url(credit_cards/discover.png)
       &.jcb
-        background-image url(images/credit_cards/jcb.png)
+        background-image url(credit_cards/jcb.png)
       &.laser
-        background-image url(images/credit_cards/laser.png)
+        background-image url(credit_cards/laser.png)
       &.diners_club
-        background-image url(images/credit_cards/diners_club.png)
+        background-image url(credit_cards/diners_club.png)
       &.maestro
-        background-image url(images/credit_cards/maestro.png)
+        background-image url(credit_cards/maestro.png)
 
       &.match
         // nothing
@@ -640,7 +644,19 @@ hstack(cols)
     padding input_padding
     height input_height
 
-    
+    &[disabled]
+      background #eee
+
+  input[type=password]
+    display block
+    background white
+    border input_border solid #a0a0a5
+    box-shadow inset 0 2px 3px rgba(0,0,0,0.1)    
+    font-size base_font_size
+    font-family inherit
+    padding input_padding
+    height input_height
+
     &[disabled]
       background #eee
 
@@ -657,7 +673,7 @@ hstack(cols)
 
    // DUE NOW BAR
   .due_now
-    background url(images/due_now.png) no-repeat top left
+    background url(due_now.png) no-repeat top left
     clear both
     color #2a3a3c
     height 70px
@@ -691,7 +707,7 @@ hstack(cols)
     padding outer_margin 
 
   &.submitting .footer
-    background url(images/submitting.gif) no-repeat columns(5) 28px
+    background url(submitting.gif) no-repeat columns(5) 28px
 
   button.submit
     height 46px

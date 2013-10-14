@@ -35,6 +35,9 @@
 .recurly .plan .quantity.field input[type=text] {
   width: 48px;
 }
+.recurly .plan .quantity.field input[type=password] {
+  width: 48px;
+}
 .recurly .plan .quantity.field:before {
   content: "\d7";
   height: 48px;
@@ -73,7 +76,7 @@
 }
 .recurly .setup_fee {
   clear: both;
-  background: url("images/dash.png") repeat-x 1px top;
+  background: url("dash.png") repeat-x 1px top;
   overflow: hidden;
   padding-top: 20px;
 }
@@ -91,7 +94,7 @@
   height: 24px;
   padding: 20px 20px;
   display: none;
-  background: url("images/dash.png") repeat-x 1px top;
+  background: url("dash.png") repeat-x 1px top;
 }
 .recurly .vat.applicable {
   display: block;
@@ -165,6 +168,9 @@
 .recurly .add_ons .add_on .quantity.field input[type=text] {
   width: 48px;
 }
+.recurly .add_ons .add_on .quantity.field input[type=password] {
+  width: 48px;
+}
 .recurly .add_ons .add_on .quantity.field:before {
   content: "\d7";
   height: 48px;
@@ -206,13 +212,13 @@
   text-shadow: none;
 }
 .recurly .add_ons .add_on.selected {
-  background: #fff url("images/check.png") no-repeat 10px center;
+  background: #fff url("check.png") no-repeat 10px center;
 }
 .recurly .add_ons .add_on.selected .name {
   padding-left: 24px;
 }
 .recurly .add_ons .add_on.selected:hover {
-  background: #fcf5f0 url("images/uncheck.png") no-repeat 10px center;
+  background: #fcf5f0 url("uncheck.png") no-repeat 10px center;
 }
 .recurly .add_ons .add_on.selected .quantity {
   display: block;
@@ -224,7 +230,7 @@
   color: #333;
   padding: 20px 20px;
   position: relative;
-  background: url("images/dash.png") repeat-x 1px top;
+  background: url("dash.png") repeat-x 1px top;
 }
 .recurly .coupon .check {
   width: 26px;
@@ -235,29 +241,29 @@
   border: 1px solid #0090c9;
   margin: 3px 0 1px 10px;
   box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.35), 0 1px 1px 0 rgba(0,0,0,0.10);
-  background: #43bef9 url("images/coupon_check.png") no-repeat center center;
-  background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
-  background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
-  background: url("images/coupon_check.png") no-repeat center center, -o-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
-  background: url("images/coupon_check.png") no-repeat center center linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: #43bef9 url("coupon_check.png") no-repeat center center;
+  background: url("coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: url("coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: url("coupon_check.png") no-repeat center center, -o-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: url("coupon_check.png") no-repeat center center linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
 }
 .recurly .coupon .check:hover {
-  background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
-  background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
-  background: url("images/coupon_check.png") no-repeat center center, -o-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
-  background: url("images/coupon_check.png") no-repeat center center linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: url("coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: url("coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: url("coupon_check.png") no-repeat center center, -o-linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
+  background: url("coupon_check.png") no-repeat center center linear-gradient(top, #71CDFA 0%, #43BEF9 50%, #00B1F6 50%, #71CEFB 100%);
   box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.75), 0 1px 1px 0 rgba(0,0,0,0.10);
 }
 .recurly .coupon .check:active {
-  background: url("images/coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #f0f0f0, #fff);
-  background: url("images/coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #f0f0f0, #fff);
-  background: url("images/coupon_check.png") no-repeat center center, -o-linear-gradient(top, #f0f0f0, #fff);
-  background: url("images/coupon_check.png") no-repeat center center linear-gradient(top, #f0f0f0, #fff);
+  background: url("coupon_check.png") no-repeat center center, -webkit-linear-gradient(top, #f0f0f0, #fff);
+  background: url("coupon_check.png") no-repeat center center, -moz-linear-gradient(top, #f0f0f0, #fff);
+  background: url("coupon_check.png") no-repeat center center, -o-linear-gradient(top, #f0f0f0, #fff);
+  background: url("coupon_check.png") no-repeat center center linear-gradient(top, #f0f0f0, #fff);
   box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.03);
   border: 1px solid #999;
 }
 .recurly .coupon.checking .check {
-  background: #f0f0f0 url("images/coupon_checking.gif") no-repeat center center;
+  background: #f0f0f0 url("coupon_checking.gif") no-repeat center center;
   box-shadow: inset 0 3px 3px 0 rgba(0,0,0,0.03);
   border: 1px solid #999;
 }
@@ -303,7 +309,7 @@
 }
 .recurly .server_errors .error {
   padding-left: 26px;
-  background: rgba(240,250,0,0.50) url("images/error.png") no-repeat 5px 9px;
+  background: rgba(240,250,0,0.50) url("error.png") no-repeat 5px 9px;
 }
 .recurly .server_errors.any {
   opacity: 1;
@@ -392,7 +398,7 @@
 }
 .recurly .payment_method .payment_option.card_option .icon {
   width: 42px;
-  background: url("images/credit_cards/generic.png") no-repeat 0 center;
+  background: url("generic.png") no-repeat 0 center;
 }
 .recurly .payment_method .payment_option.paypal_option {
   border-radius: 0 5px 5px 0;
@@ -403,7 +409,7 @@
   width: 90px;
   display: inline-block;
   vertical-align: middle;
-  background: url("images/paypal_logo.png") no-repeat 0 center;
+  background: url("paypal_logo.png") no-repeat 0 center;
 }
 .recurly .paypal_message {
   width: 300px;
@@ -411,10 +417,10 @@
   margin-bottom: 10px;
 }
 .recurly .contact_info {
-  background: url("images/dash.png") repeat-x 1px bottom;
+  background: url("dash.png") repeat-x 1px bottom;
 }
 .recurly .accept_tos {
-  background: url("images/dash.png") repeat-x 1px top;
+  background: url("dash.png") repeat-x 1px top;
   overflow: visible;
 }
 .recurly .accept_tos input[type=checkbox] {
@@ -442,6 +448,9 @@
   position: relative;
 }
 .recurly .field input[type=text] {
+  width: 288px;
+}
+.recurly .field input[type=password] {
   width: 288px;
 }
 .recurly .field.company_name {
@@ -490,11 +499,17 @@
 .recurly .field.coupon_code input[type=text] {
   width: 128px;
 }
+.recurly .field.coupon_code input[type=password] {
+  width: 128px;
+}
 .recurly .field.first_name {
   clear: left;
   width: 140px;
 }
 .recurly .field.first_name input[type=text] {
+  width: 128px;
+}
+.recurly .field.first_name input[type=password] {
   width: 128px;
 }
 .recurly .field.first_name .error {
@@ -510,10 +525,16 @@
 .recurly .field.last_name input[type=text] {
   width: 128px;
 }
+.recurly .field.last_name input[type=password] {
+  width: 128px;
+}
 .recurly .field.card_number {
   width: 220px;
 }
 .recurly .field.card_number input[type=text] {
+  width: 208px;
+}
+.recurly .field.card_number input[type=password] {
   width: 208px;
 }
 .recurly .field.card_number .error {
@@ -529,10 +550,16 @@
 .recurly .field.cvv input[type=text] {
   width: 48px;
 }
+.recurly .field.cvv input[type=password] {
+  width: 48px;
+}
 .recurly .field.expires {
   width: 300px;
 }
 .recurly .field.expires input[type=text] {
+  width: 288px;
+}
+.recurly .field.expires input[type=password] {
   width: 288px;
 }
 .recurly .field.expires .title {
@@ -550,6 +577,9 @@
 .recurly .field.expires .month input[type=text] {
   width: 108px;
 }
+.recurly .field.expires .month input[type=password] {
+  width: 108px;
+}
 .recurly .field.expires .year {
   float: left;
   margin-left: 1px;
@@ -558,10 +588,16 @@
 .recurly .field.expires .year input[type=text] {
   width: 48px;
 }
+.recurly .field.expires .year input[type=password] {
+  width: 48px;
+}
 .recurly .field.state {
   width: 180px;
 }
 .recurly .field.state input[type=text] {
+  width: 168px;
+}
+.recurly .field.state input[type=password] {
   width: 168px;
 }
 .recurly .field.state .error {
@@ -577,11 +613,17 @@
 .recurly .field.zip input[type=text] {
   width: 88px;
 }
+.recurly .field.zip input[type=password] {
+  width: 88px;
+}
 .recurly .field.vat_number {
   width: 140px;
   display: none;
 }
 .recurly .field.vat_number input[type=text] {
+  width: 128px;
+}
+.recurly .field.vat_number input[type=password] {
   width: 128px;
 }
 .recurly .field.vat_number.applicable {
@@ -608,28 +650,28 @@
   display: inline-block;
 }
 .recurly .card.mastercard {
-  background-image: url("images/credit_cards/mastercard.png");
+  background-image: url("credit_cards/mastercard.png");
 }
 .recurly .card.american_express {
-  background-image: url("images/credit_cards/american_express.png");
+  background-image: url("credit_cards/american_express.png");
 }
 .recurly .card.visa {
-  background-image: url("images/credit_cards/visa.png");
+  background-image: url("credit_cards/visa.png");
 }
 .recurly .card.discover {
-  background-image: url("images/credit_cards/discover.png");
+  background-image: url("credit_cards/discover.png");
 }
 .recurly .card.jcb {
-  background-image: url("images/credit_cards/jcb.png");
+  background-image: url("credit_cards/jcb.png");
 }
 .recurly .card.laser {
-  background-image: url("images/credit_cards/laser.png");
+  background-image: url("credit_cards/laser.png");
 }
 .recurly .card.diners_club {
-  background-image: url("images/credit_cards/diners_club.png");
+  background-image: url("credit_cards/diners_club.png");
 }
 .recurly .card.maestro {
-  background-image: url("images/credit_cards/maestro.png");
+  background-image: url("credit_cards/maestro.png");
 }
 .recurly .card.no_match {
   opacity: 0.5;
@@ -658,6 +700,19 @@
 .recurly input[type=text][disabled] {
   background: #eee;
 }
+.recurly input[type=password] {
+  display: block;
+  background: #fff;
+  border: 1px solid #a0a0a5;
+  box-shadow: inset 0 2px 3px rgba(0,0,0,0.10);
+  font-size: 16px;
+  font-family: inherit;
+  padding: 5px;
+  height: 22px;
+}
+.recurly input[type=password][disabled] {
+  background: #eee;
+}
 .recurly input[type=checkbox] {
   color: #f00;
 }
@@ -670,7 +725,7 @@
   color: inherit;
 }
 .recurly .due_now {
-  background: url("images/due_now.png") no-repeat top left;
+  background: url("due_now.png") no-repeat top left;
   clear: both;
   color: #2a3a3c;
   height: 70px;
@@ -703,7 +758,7 @@
   padding: 20px;
 }
 .recurly.submitting .footer {
-  background: url("images/submitting.gif") no-repeat 180px 28px;
+  background: url("submitting.gif") no-repeat 180px 28px;
 }
 .recurly button.submit {
   height: 46px;

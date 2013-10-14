@@ -810,6 +810,7 @@ R.buildSubscriptionForm = function(options) {
   var defaults = {
     enableAddOns: true
   , enableCoupons: true
+  , collectPassword: false
   , addressRequirement: 'full'
   , collectContactInfo: true
   , distinguishContactFromBillingInfo: false
@@ -831,6 +832,10 @@ R.buildSubscriptionForm = function(options) {
     $form.find('.contact_info').remove();
   }
 
+  if(!options.collectPassword) {
+    $form.find('.field.password').remove();
+  }
+  
   $form.find('.billing_info').html(R.dom.billing_info_fields);
 
   if(options.planCode)
@@ -1132,10 +1137,11 @@ R.buildSubscriptionForm = function(options) {
             if(!options.onError || !options.onError(errors)) {
               displayServerErrors($form, errors);
               $form.removeClass("submitting");
-              %form.find('button.submit').removeAttr("disabled").text(prevText);
+              $form.find('button.submit').removeAttr("disabled").text(prevText);
             }
           }
         , complete: function() {
+          
           }
         });
       });

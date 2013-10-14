@@ -972,7 +972,7 @@ R.Coupon = {
     else if(json.discount_percent)
       c.discountRatio = json.discount_percent/100;
 
-    c.description = json.description;
+    c.description = json.description || '';
 
     return c;
   }
@@ -1869,6 +1869,7 @@ R.buildSubscriptionForm = function(options) {
   var defaults = {
     enableAddOns: true
   , enableCoupons: true
+  , collectPassword: false
   , addressRequirement: 'full'
   , collectContactInfo: true
   , distinguishContactFromBillingInfo: false
@@ -1890,6 +1891,10 @@ R.buildSubscriptionForm = function(options) {
     $form.find('.contact_info').remove();
   }
 
+  if(!options.collectPassword) {
+    $form.find('.field.password').remove();
+  }
+  
   $form.find('.billing_info').html(R.dom.billing_info_fields);
 
   if(options.planCode)
@@ -2176,9 +2181,12 @@ R.buildSubscriptionForm = function(options) {
         subscription.save({
           signature: options.signature
         , success: function(response) {
+            $form.addClass("submitting");
+
             if(options.successHandler) {
               options.successHandler(R.getToken(response));
             }
+
             if(options.successURL) {
               var url = options.successURL;
               R.postResult(url, response, options);
@@ -2187,11 +2195,12 @@ R.buildSubscriptionForm = function(options) {
         , error: function(errors) {
             if(!options.onError || !options.onError(errors)) {
               displayServerErrors($form, errors);
+              $form.removeClass("submitting");
+              $form.find('button.submit').removeAttr("disabled").text(prevText);
             }
           }
         , complete: function() {
-            $form.removeClass('submitting');
-            $form.find('button.submit').removeAttr('disabled').text(prevText);
+          
           }
         });
       });
@@ -2376,7 +2385,7 @@ R.states.CA = {
 // Compiled from src/dom/contact_info_fields.jade
 //////////////////////////////////////////////////
 
-R.dom['contact_info_fields'] = '<div class="title">Contact Info</div><div class="full_name"><div class="field first_name"><div class="placeholder">First Name </div><input type="text"/></div><div class="field last_name"><div class="placeholder">Last Name </div><input type="text"/></div></div><div class="field email"><div class="placeholder">Email </div><input type="text"/></div><div class="field phone"><div class="placeholder">Phone Number</div><input type="text"/></div><div class="field company_name"><div class="placeholder">Company/Organization Name</div><input type="text"/></div>';
+R.dom['contact_info_fields'] = '<div class="title">Contact Info</div><div class="full_name"><div class="field first_name"><div class="placeholder">First Name </div><input type="text"/></div><div class="field last_name"><div class="placeholder">Last Name </div><input type="text"/></div></div><div class="field email"><div class="placeholder">Email </div><input type="text"/></div><div class="field password"><div class="placeholder">Password</div><input type="password"/></div><div class="field phone"><div class="placeholder">Phone Number</div><input type="text"/></div><div class="field company_name"><div class="placeholder">Company/Organization Name</div><input type="text"/></div>';
 
 //////////////////////////////////////////////////
 // Compiled from src/dom/billing_info_fields.jade
