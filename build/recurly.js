@@ -2232,7 +2232,7 @@ R.paypal = {
         referer: window.location.href
       })
       , url = opts.url + '?' + $.param(data)
-      , popup = window.open(url, 'recurly_paypal', 'menubar=1,resizable=1');
+      , popup = window.open(url, 'recurly_paypal', 'menubar=1,resizable=1,scrollbars=1');
 
       window.popup = popup;
 
