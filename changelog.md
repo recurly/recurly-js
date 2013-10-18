@@ -1,13 +1,18 @@
-#Recurly.js CHANGELOG
+
+##Version 2.2.7 (Oct 18, 2013)
+
+- Sort states by display name #88 [drewish](https://github.com/drewish)
+- BillingInfo expects a reference to the account #87 [drewish](https://github.com/drewish)
+- Remove trailing whitespace #86 [drewish](https://github.com/drewish)
 
 ##Version 2.2.6 (Aug 28, 2013)
-- Issue fixed where coupon descriptions could show "null" 
+- Issue fixed where coupon descriptions could show "null"
 
 ##Version 2.2.5 (Aug 28, 2013)
 - Added default subscription: quantity option to buildSubscriptionForm
 
 ##Version 2.2.4 (Aug 23, 2013)
-- Workaround a bug in jQuery 1.9 that throws style undefined exceptions.  
+- Workaround a bug in jQuery 1.9 that throws style undefined exceptions.
 
 ##Version 2.2.3 (Aug 13, 2013)
 - Fix an issue where first/last name show up for PayPal when distinguishContactFromBillingInfo is true
@@ -21,7 +26,7 @@
 
 ##Version 2.2.0 (May 29, 2013)
 
-- Add support for PayPal 
+- Add support for PayPal
 - Use subdomains in JSONP URLs for DNS loadbalancing
 
 ##Version 2.1.3 (May 22, 2012)
