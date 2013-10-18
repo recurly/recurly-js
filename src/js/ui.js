@@ -726,7 +726,7 @@ R.buildTransactionForm = function(options) {
   ,   account = R.Account.create()
   ,   transaction = R.Transaction.create();
 
-
+  billingInfo.account = account;
   transaction.account = account;
   transaction.billingInfo = billingInfo;
   transaction.currency = options.currency;
