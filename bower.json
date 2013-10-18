@@ -1,0 +1,7 @@
+{
+  "name": "recurlyjs",
+  "version": "2.2.3",
+  "main": "./build/recurly.js",
+  "dependencies": {
+  }
+}
