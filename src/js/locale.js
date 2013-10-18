@@ -7,9 +7,9 @@ R.locale.errors = {
 , invalidCC: 'Invalid'
 , invalidCVV: 'Invalid'
 , invalidCoupon: 'Invalid'
-, cardDeclined: 'Transaction declined' 
-, acceptTOS: 'Please accept the Terms of Service.' 
-, invalidQuantity: 'Invalid quantity' 
+, cardDeclined: 'Transaction declined'
+, acceptTOS: 'Please accept the Terms of Service.'
+, invalidQuantity: 'Invalid quantity'
 };
 
 R.locale.currencies = {};

@@ -42,7 +42,7 @@ image-linear-gradient(image, start, stops...)
 transition()
   -webkit-transition arguments
   -moz-transition arguments
- 
+
 // For IE6/7 support we use this for all inputs,
 // in lieu of border-box sizing 100%
 field-width(v)
@@ -59,7 +59,7 @@ hstack(cols)
   add-property(clear, none)
 
 // Subscription form
-.recurly 
+.recurly
   display block
   position relative
   width columns(grid_columns) + (outer_margin*2)
@@ -69,7 +69,7 @@ hstack(cols)
     text-align right
 
   .subscription
-    border-radius 9px 9px 0 0 
+    border-radius 9px 9px 0 0
     text-shadow 0 1px 0 white
     padding-top 20px
     overflow hidden
@@ -92,12 +92,12 @@ hstack(cols)
       field-width columns(2)
       margin 4px 0
 
-      &:before 
+      &:before
         content "\d7"
         height 48px
         line-height 30px
         position absolute
-        right 100% 
+        right 100%
         width column_space * 2
         font-size 20px
         text-align center
@@ -124,14 +124,14 @@ hstack(cols)
     height 22px
     margin 0
     position absolute
-    top 35px 
+    top 35px
     left outer_margin
     font-style italic
 
 
   .setup_fee
     clear both
-    background url(images/dash.png) repeat-x 1px top 
+    background url(images/dash.png) repeat-x 1px top
     overflow hidden
     padding-top vertical_space
 
@@ -144,11 +144,11 @@ hstack(cols)
       float right
       padding-right outer_margin
 
-  .vat 
+  .vat
     height 24px
     padding column_space outer_margin
     display none
-    background url(images/dash.png) repeat-x 1px top 
+    background url(images/dash.png) repeat-x 1px top
 
     &.applicable
       display block
@@ -197,12 +197,12 @@ hstack(cols)
         border-bottom-left-radius 10px
         border-bottom-right-radius 10px
 
-      .name 
+      .name
         font-size inherit
         font-weight inherit
         font-style italic
         color inherit
-        width columns(6) - outer_margin 
+        width columns(6) - outer_margin
         margin-left (outer_margin/2) - 1
         margin-right column_space
         position absolute
@@ -216,12 +216,12 @@ hstack(cols)
         field-width columns(2)
         display none
 
-        &:before 
+        &:before
           content "\d7"
           height 48px
           line-height 30px
           position absolute
-          right 100% 
+          right 100%
           width column_space * 2
           font-size 20px
           text-align center
@@ -269,8 +269,8 @@ hstack(cols)
     color #333
     padding column_space outer_margin
     position relative
-    background url(images/dash.png) repeat-x 1px top 
-   
+    background url(images/dash.png) repeat-x 1px top
+
     .check
       width 26px
       height 26px
@@ -329,10 +329,10 @@ hstack(cols)
     text-shadow 0 1px 0 #fec
     background #ffc
     border 1px solid #ba1
-    box-shadow 3px 5px 5px 0 rgba(0,0,0,0.1) 
+    box-shadow 3px 5px 5px 0 rgba(0,0,0,0.1)
     border-radius 5px
     font-size 13px
- 
+
 
   .server_errors
     color #fff
@@ -359,7 +359,7 @@ hstack(cols)
     overflow hidden
     zoom 1 // IE6
 
-  .title 
+  .title
     font-size base_font_size
     height base_font_size + 4px
     font-weight bold
@@ -527,26 +527,26 @@ hstack(cols)
       .error
         left columns(8)
 
-    &.last_name 
+    &.last_name
       hstack(4)
 
-    &.card_number 
-      field-width columns(6) 
+    &.card_number
+      field-width columns(6)
 
       .error
         left columns(8)
 
-    &.cvv 
-      hstack(2) 
+    &.cvv
+      hstack(2)
 
-    &.expires 
+    &.expires
       field-width columns(8)
 
       .title
         float left
         font-size round(base_font_size*0.8)
         line-height 24px
-        vertical-align middle 
+        vertical-align middle
         width columns(2) - 1px
 
       .month
@@ -559,17 +559,17 @@ hstack(cols)
         margin-left 1px
         field-width columns(2)
 
- 
+
     &.state
-      field-width columns(5) 
+      field-width columns(5)
       .error
         left columns(8)
-  
+
     &.zip
-      hstack(3) 
+      hstack(3)
 
     &.vat_number
-      field-width columns(4) 
+      field-width columns(4)
       display none
       &.applicable
         display block
@@ -580,21 +580,21 @@ hstack(cols)
     margin-left 0
     clear left
 
-  .accepted_cards 
+  .accepted_cards
     display inline-block
     height field_height
     overflow hidden
 
-   .card 
+   .card
       background-position right top
       background-repeat no-repeat
       text-indent -3000px
       width 32px
       height 32px
-      margin 0 
+      margin 0
       padding 0
       display inline-block
-      
+
       &.mastercard
         background-image url(images/credit_cards/mastercard.png)
       &.american_express
@@ -616,9 +616,9 @@ hstack(cols)
         // nothing
 
       &.no_match
-        opacity 0.5 
+        opacity 0.5
 
- 
+
   // General
   input[type=text],
   select
@@ -634,25 +634,25 @@ hstack(cols)
     display block
     background white
     border input_border solid #a0a0a5
-    box-shadow inset 0 2px 3px rgba(0,0,0,0.1)    
+    box-shadow inset 0 2px 3px rgba(0,0,0,0.1)
     font-size base_font_size
     font-family inherit
     padding input_padding
     height input_height
 
-    
+
     &[disabled]
       background #eee
 
   input[type=checkbox]
     color red
 
-  select 
+  select
     color inherit
     font-family inherit
     width 100%
 
-    > option 
+    > option
       color inherit
 
    // DUE NOW BAR
@@ -664,18 +664,18 @@ hstack(cols)
     line-height 67px
     vertical-align middle
     // overflow hidden
-    padding 0 outer_margin + 5px 
-    width columns(12) 
+    padding 0 outer_margin + 5px
+    width columns(12)
     position relative
-    left -5px 
+    left -5px
     text-shadow 0 1px 0 rgba(255,255,255,0.5)
 
     .title
       float left
       font-size 29px
-      position relative 
+      position relative
 
-    .cost 
+    .cost
       color #fff
       float right
       font-size 33px
@@ -688,7 +688,7 @@ hstack(cols)
   .footer
     border-radius 0px 0px 9px 9px
     margin 0px
-    padding outer_margin 
+    padding outer_margin
 
   &.submitting .footer
     background url(images/submitting.gif) no-repeat columns(5) 28px
@@ -710,10 +710,10 @@ hstack(cols)
     background -moz-linear-gradient(top, #fecd00, #ce7b00)
     text-shadow rgba(255,255,255, .5) 0 1px 0
     padding 10px 20px
-    
+
     &:hover
       color #451
- 
+
     &:active
       top 2px
       color #302106
@@ -722,7 +722,7 @@ hstack(cols)
       background-image  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#CE7B00), to(#FECD00))
       background  -moz-linear-gradient(top, #ce7b00, #fecd00)
       box-shadow rgba(255, 255, 255, 0.69) 0px -1px 0px inset, rgba(0,0,0, 0.26) 0px 2px 3px
- 
+
     &[disabled]
       position relative
       height  46px
@@ -732,11 +732,11 @@ hstack(cols)
       color  #555
       text-shadow  rgba(255,255,255, .5694) 0 1px 0
       text-align  center
-      
+
       opacity  .75
       border  1px solid #767674
       background  #e7a500
-      
+
       -moz-border-radius  10px
       -webkit-border-radius  10px
       border-radius  10px
@@ -761,7 +761,7 @@ hstack(cols)
     background #fff
     border 1px solid #ccc
     padding 10px
-    
+
     p
       text-align center
       &.blast

@@ -2,10 +2,10 @@
 R.Transaction = {
  // Note - No toJSON function for this object, all parameters must be signed.
  create: createObject
-, save: function(options) { 
+, save: function(options) {
     var json = {
-      account: this.account ? this.account.toJSON() : undefined 
-    , billing_info: this.billingInfo.toJSON() 
+      account: this.account ? this.account.toJSON() : undefined
+    , billing_info: this.billingInfo.toJSON()
     , signature: options.signature
     };
 

@@ -69,7 +69,7 @@ R.Plan = {
 R.AddOn = {
   fromJSON: function(json) {
     var a = createObject(R.AddOn);
-    a.name = json.name;   
+    a.name = json.name;
     a.code = json.add_on_code;
     a.cost = new R.Cost(json.default_unit_amount_in_cents);
     a.displayQuantity = json.display_quantity;
