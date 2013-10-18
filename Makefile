@@ -28,6 +28,8 @@ DOM_SOURCES = $(addprefix src/dom/, \
 
 all: node_modules build build/recurly.min.js themes/default/recurly.css
 
+release: clean all package
+
 build:
 	mkdir -p build
 
@@ -47,5 +49,8 @@ clean:
 node_modules: package.json
 	npm install
 	touch node_modules
+
+package:
+	node updatePackage.js
 
 .PHONY: clean
