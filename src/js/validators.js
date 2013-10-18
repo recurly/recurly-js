@@ -2,7 +2,7 @@
 (R.isValidCC = function($input) {
   var v = $input.val();
 
-  // Strip out all non digits 
+  // Strip out all non digits
   v = v.replace(/\D/g, "");
 
   if(v == "") return false;

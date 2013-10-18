@@ -1,4 +1,4 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -11,7 +11,7 @@
   $(document).ready(function(){
     var R = Recurly;
 
-    R.config({ 
+    R.config({
       environment: 'production'
     , subdomain: 'flurp-test'
     , currency: 'USD'
@@ -23,22 +23,22 @@
     // We get reasonable coverage by testing the opposition of a really simple plan,
     // and a really complex one. Random permutations would create more redundancy than coverage, IMO.
     var barebone = R.Plan.fromJSON({
-      name: 'Barebone' 
+      name: 'Barebone'
     , plan_code: 'barebone'
     , unit_amount_in_cents: 5000 // $50
-    , plan_interval_length: 1 
-    , plan_interval_unit: 'months' 
+    , plan_interval_length: 1
+    , plan_interval_unit: 'months'
     , display_quantity: false
     , add_ons: []
     });
 
     var kitchenSink = R.Plan.fromJSON({
-      name: 'KitchenSink' 
+      name: 'KitchenSink'
     , plan_code: 'kitchensink'
     , setup_fee_in_cents: 2000 // $20 setup
     , unit_amount_in_cents: 5000 // $50 recurring
-    , plan_interval_length: 1 
-    , plan_interval_unit: 'months' 
+    , plan_interval_length: 1
+    , plan_interval_unit: 'months'
     , display_quantity: true
     , add_ons: [{
         add_on_code: 'extras'
@@ -52,7 +52,7 @@
       , default_unit_amount_in_cents: 500 // $5 add-on
       }]
     });
-   
+
     var coupon50percent = R.Coupon.fromJSON({
       discount_percent: 50
     });
@@ -62,17 +62,17 @@
     });
 
 
-    module('config'); 
+    module('config');
 
     test('constructs proper endpoint urls', function() {
-      R.config({ 
+      R.config({
         subdomain: 'flurp-test'
       });
       equal(R.settings.baseURL, 'https://flurp-test.recurly.com/jsonp/flurp-test/');
     });
 
 
-    module('Cost'); 
+    module('Cost');
 
     test('currency formatting', function() {
       var cost = new R.Cost(2000); // 20 bucks
@@ -90,11 +90,11 @@
       var total = cost.mult(m).add(a).sub(s); // (20*2)+5-1 == 44
 
       equal(cost.dollars(), 20); // verify immutability
-      equal(total.dollars(), 44); 
-      equal(cost.dollars(100).dollars(), 100); 
+      equal(total.dollars(), 44);
+      equal(cost.dollars(100).dollars(), 100);
     });
 
-    module('Coupon'); 
+    module('Coupon');
 
     test('discounts percent', function() {
       var subscription = kitchenSink.createSubscription();
@@ -127,7 +127,7 @@
     });
 
 
-    module('Subscription'); 
+    module('Subscription');
 
     test('add/remove add-on', function() {
       var subscription = kitchenSink.createSubscription()
@@ -137,7 +137,7 @@
       equal(subscription.addOns.length, 0);
     });
 
-    test('toJSON', function() { 
+    test('toJSON', function() {
       var subscription = kitchenSink.createSubscription();
       subscription.redeemAddOn(kitchenSink.addOns[0]);
       var json = subscription.toJSON();
@@ -154,7 +154,7 @@
     });
 
 
-    module('Subscription.calculateTotals'); 
+    module('Subscription.calculateTotals');
 
     test('basic subscription', function() {
       var subscription = kitchenSink.createSubscription();
@@ -196,7 +196,7 @@
       // discount: 102/2 = $51
       // so total should be: $122 - $51 = $71
 
-      equal(totals.stages.now.dollars(), 71); 
+      equal(totals.stages.now.dollars(), 71);
     });
 
     test('permutation: add-ons + vat', function() {
@@ -235,7 +235,7 @@
 
       equal(totals.stages.now.dollars(), 117); // 122 - 5
     });
-    module('Validators'); 
+    module('Validators');
 
 
     function stubVal(v) {
@@ -262,7 +262,7 @@
       ok(! R.isValidCVV(stubVal('abc')) );
     });
 
-    module('Util'); 
+    module('Util');
 
     test('detectCardType', function() {
       equal( R.detectCardType('4111-1111-1111-1111'), 'visa'); // w/ dashes
@@ -277,17 +277,17 @@
     test('isVATChargeApplicable', function() {
       R.config({country: 'GB', VATPercent: 10});
       ok( R.isVATChargeApplicable('USA', false) == false);    // outside EU: doesn't pay
-      ok( R.isVATChargeApplicable('DE', true)    ==  false);  // in EU, different countries, with VAT number: doesn't pay 
-      ok( R.isVATChargeApplicable('DE', false)   ==  true);   // in EU, different countries, no VAT number: pay 
-      ok( R.isVATChargeApplicable('GB', true)    ==  true);   // in EU, same country, with VAT number: pay 
-      ok( R.isVATChargeApplicable('GB', false)   ==  true);   // in EU, same country, no VAT number: pay 
+      ok( R.isVATChargeApplicable('DE', true)    ==  false);  // in EU, different countries, with VAT number: doesn't pay
+      ok( R.isVATChargeApplicable('DE', false)   ==  true);   // in EU, different countries, no VAT number: pay
+      ok( R.isVATChargeApplicable('GB', true)    ==  true);   // in EU, same country, with VAT number: pay
+      ok( R.isVATChargeApplicable('GB', false)   ==  true);   // in EU, same country, no VAT number: pay
     });
 
-    
+
     test('flattenErrors', function() {
       var test = {a: ['one'], b: {c:['two','three']}}
       var expect = ['a one','c two','c three'];
-      var result = R.flattenErrors(test); 
+      var result = R.flattenErrors(test);
       deepEqual(result, expect);
     });
 
@@ -409,7 +409,7 @@
 
     test('posts correct data', function() {
       $.ajax = function(opt) {
-        
+
         deepEqual(opt.data, {
           "subscription": {
             "plan_code": "kitchensink",
@@ -490,7 +490,7 @@
 
   });
   </script>
-  
+
 </head>
 <body>
   <h1 id="qunit-header">recurly.js</h1>

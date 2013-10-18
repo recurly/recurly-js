@@ -1,6 +1,6 @@
 R.Account = {
   create: createObject
-, toJSON: function() {    
+, toJSON: function() {
     return {
       first_name: this.firstName
     , last_name: this.lastName
