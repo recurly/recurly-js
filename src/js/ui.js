@@ -197,7 +197,7 @@ function initCommonForm($form, options) {
     $li.find('input').focus();
   });
 
-  $form.delegate('input', 'change keyup', function() {
+  $form.delegate('input', 'change keyup init', function() {
     var $input = $(this);
     var $li = $(this).parent();
 
@@ -208,7 +208,6 @@ function initCommonForm($form, options) {
       $li.find('.placeholder').css({display:'block'});
     }
   });
-
 
   $form.delegate('input', 'focus', function() {
     $(this).parent().addClass('focus');
@@ -938,7 +937,7 @@ R.buildSubscriptionForm = function(options) {
           '<div class="name">'+addOn.name+'</div>' +
           '<div class="field quantity">' +
             '<div class="placeholder">Qty</div>' +
-            '<input type="text">' +
+            '<input type="text" value="1">' +
           '</div>' +
           '<div class="cost"/>' +
           '</div>');
@@ -987,6 +986,8 @@ R.buildSubscriptionForm = function(options) {
 
           updateTotals();
         });
+
+        $addOnsList.find('input').trigger('init');
       }
     }
     else {
