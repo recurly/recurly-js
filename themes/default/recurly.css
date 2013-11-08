@@ -713,6 +713,11 @@
 .recurly input[type=password][disabled] {
   background: #eee;
 }
+.recurly input[type=password].invalid {
+  border-color: #a55;
+  background: #fee;
+  color: #311;
+}
 .recurly input[type=checkbox] {
   color: #f00;
 }

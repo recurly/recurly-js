@@ -51,7 +51,7 @@ field-width(v)
   // Fit the input by subtracting padding and border from box
   & input[type=text]
     width v - (input_border+input_padding)*2
-    
+
   // Fit the input by subtracting padding and border from box
   & input[type=password]
     width v - (input_border+input_padding)*2
@@ -659,6 +659,11 @@ hstack(cols)
 
     &[disabled]
       background #eee
+
+    &.invalid
+      border-color #a55
+      background #fee
+      color #311
 
   input[type=checkbox]
     color red

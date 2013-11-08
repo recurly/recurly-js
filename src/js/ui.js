@@ -531,7 +531,10 @@ function pullAccountFields($form, account, options, pull) {
   account.firstName = pull.field($form, '.contact_info .first_name', V(R.isNotEmpty)); 
   account.lastName = pull.field($form, '.contact_info .last_name', V(R.isNotEmpty)); 
   account.companyName = pull.field($form, '.contact_info .company_name'); 
-  account.email = pull.field($form, '.email', V(R.isNotEmpty), V(R.isValidEmail)); 
+  account.email = pull.field($form, '.email', V(R.isNotEmpty), V(R.isValidEmail));
+  if(options.collectPassword) {
+    account.password = pull.field($form, '.password', V(R.isNotEmpty));
+  }
   account.code = options.accountCode || 
     (options.account && (options.account.code || options.account.accountCode));
 }
