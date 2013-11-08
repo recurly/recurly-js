@@ -748,17 +748,6 @@
   color: inherit;
 }
 .recurly .due_now {
-  background: url("due_now.png") no-repeat top left;
-  clear: both;
-  color: #2a3a3c;
-  height: 70px;
-  line-height: 67px;
-  vertical-align: middle;
-  padding: 0 25px;
-  width: 460px;
-  position: relative;
-  left: -5px;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.50);
 }
 .recurly .due_now .title {
   float: left;
