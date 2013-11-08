@@ -326,6 +326,19 @@
   overflow: hidden;
   zoom: 1;
 }
+
+.recurly .billing_info {
+    background-color: #dddddd;
+}
+
+.recurly .checkout_lock_icon {
+  height: 40px;
+  width: 35px;
+  background: url("checkout_lock_icon.png") no-repeat center center;
+  background-size: 100% 100%;
+  float: left;
+  margin-bottom: 10px;
+}
 .recurly .title {
   font-size: 16px;
   height: 20px;
@@ -334,6 +347,10 @@
   color: #404041;
   text-shadow: 0 1px 0 #fff;
   float: left;
+}
+
+.recurly .billing_info_title {
+    padding: 12px;
 }
 .recurly .credit_card,
 .recurly .paypal {
@@ -638,6 +655,7 @@
   display: inline-block;
   height: 34px;
   overflow: hidden;
+  padding: 5px;
 }
 .recurly .card {
   background-position: right top;
