@@ -1,5 +1,16 @@
 #Change Log
 
+##Version 2.2.8 (Nov 15, 2013)
+
+- fixed; removing an addon with a negative quantity and re-adding it resets the quantity to 1 #92
+- fixed; setting addon quantity to a negative value contributes 0 to the total #92
+- fixed; setting addon quantity to 0 removes it #92
+- fixed; addons have a default quantity of "1" if quantity is allowed #91
+- docs; fix release notes format
+- docs; added release documentation
+- docs; updated for contributors and employees
+- make; add `make release`
+
 ##Version 2.2.7 (Oct 18, 2013)
 
 - Sort states by display name #88 [drewish](https://github.com/drewish)

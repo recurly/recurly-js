@@ -1,4 +1,4 @@
-//   Recurly.js - v2.2.7
+//   Recurly.js - v2.2.8
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API,
 //   generates UI, handles user error, and passes control to the client
@@ -50,7 +50,7 @@ R.settings = {
 , oneErrorPerField: true
 };
 
-R.version = '2.2.7';
+R.version = '2.2.8';
 
 R.dom = {};
 
@@ -1256,7 +1256,7 @@ function initCommonForm($form, options) {
     $li.find('input').focus();
   });
 
-  $form.delegate('input', 'change keyup', function() {
+  $form.delegate('input', 'change keyup init', function() {
     var $input = $(this);
     var $li = $(this).parent();
 
@@ -1267,7 +1267,6 @@ function initCommonForm($form, options) {
       $li.find('.placeholder').css({display:'block'});
     }
   });
-
 
   $form.delegate('input', 'focus', function() {
     $(this).parent().addClass('focus');
@@ -1997,7 +1996,7 @@ R.buildSubscriptionForm = function(options) {
           '<div class="name">'+addOn.name+'</div>' +
           '<div class="field quantity">' +
             '<div class="placeholder">Qty</div>' +
-            '<input type="text">' +
+            '<input type="text" value="1">' +
           '</div>' +
           '<div class="cost"/>' +
           '</div>');
@@ -2009,12 +2008,26 @@ R.buildSubscriptionForm = function(options) {
         }
 
         // Quantity Change
-        $addOnsList.delegate('.quantity input', 'change keyup', function(e) {
-          var $addOn = $(this).closest('.add_on');
+        $addOnsList.delegate('.quantity input', 'change keyup recalculate', function(e) {
+          var $qty = $(this);
+          var $addOn = $qty.closest('.add_on');
           var addOn = $addOn.data('add_on');
-          var newQty = parseInt($(this).val(),10) || 1;
-          subscription.findAddOnByCode(addOn.code).quantity = newQty;
+          var newQty = $qty.val() === '' ? 1 : parseInt($qty.val(), 10);
+
+          subscription.findAddOnByCode(addOn.code).quantity = newQty > 0 ? newQty : 0;
           updateTotals();
+        });
+
+        $addOnsList.delegate('.quantity input', 'blur', function(e) {
+          var $qty = $(this);
+          var $addOn = $qty.closest('.add_on');
+          var newQty = parseInt($qty.val(), 10);
+          if (newQty < 1) {
+            $qty.trigger('recalculate');
+          }
+          if (newQty === 0) {
+            $addOn.trigger('actuate');
+          }
         });
 
         $addOnsList.bind('selectstart', function(e) {
@@ -2024,7 +2037,7 @@ R.buildSubscriptionForm = function(options) {
         });
 
         // Add-on click
-        $addOnsList.delegate('.add_on', 'click', function(e) {
+        $addOnsList.delegate('.add_on', 'click actuate', function(e) {
           if($(e.target).closest('.quantity').length) return;
 
           var selected = !$(this).hasClass('selected');
@@ -2036,7 +2049,12 @@ R.buildSubscriptionForm = function(options) {
             // add
             var sa = subscription.redeemAddOn(addOn);
             var $qty = $(this).find('.quantity input');
-            sa.quantity = parseInt($qty.val(),10) || 1;
+            var qty = parseInt($qty.val(), 10);
+            if (qty < 1 || isNaN(qty)) {
+              qty = 1;
+              $qty.val(qty);
+            }
+            sa.quantity = qty;
             $qty.focus();
           }
           else {
@@ -2046,6 +2064,8 @@ R.buildSubscriptionForm = function(options) {
 
           updateTotals();
         });
+
+        $addOnsList.find('input').trigger('init');
       }
     }
     else {

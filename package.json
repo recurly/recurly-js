@@ -1,9 +1,9 @@
 {
-    "name": "recurly-js"
-  , "version": "2.2.7"
-  , "dependencies": {
-      "stylus": "0.19.x"
-    , "jade": "0.17.x"
-    , "async": "0.1.x"
+  "name": "recurly-js",
+  "version": "2.2.8",
+  "dependencies": {
+    "stylus": "0.19.x",
+    "jade": "0.17.x",
+    "async": "0.1.x"
   }
 }
