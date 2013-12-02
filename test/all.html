@@ -474,19 +474,33 @@
     });
 
 
-    module('buildUpdateBillingInfoForm', {
+    module('buildBillingInfoUpdateForm', {
       setup: function() {
         var context = this;
-        Recurly.buildUpdateBillingInfoForm({
+        Recurly.buildBillingInfoUpdateForm({
           target: '#f'
         , accountCode: 'existingaccount'
         , signature: 'thiscanbefakeforthetestsoyeah'
+        , billingInfo: {
+              firstName: "Test"
+            , lastName: "Johnson"
+            , cardNumber: "1234567"
+            , CVV: "123"
+        }
         });
       }
     , teardown: function() {
         $('#f').empty();
       }
     });
+
+    test("prefill is visible", function() {
+        equal($('#f .billing_info > .credit_card > .first_name > input').val(), "Test");
+        equal($('#f .billing_info > .credit_card > .last_name > input').val(), "Johnson");
+        equal($('#f .billing_info > .credit_card > .card_cvv > .card_number > input').val(), "1234567");
+        equal($('#f .billing_info > .credit_card > .card_cvv > .cvv > input').val(), "123");
+    });
+
 
   });
   </script>
