@@ -1,5 +1,9 @@
 #Change Log
 
+##Version 2.2.9 (Dec 3, 2013)
+
+- fixed; billing info prefill selectors #98 [lancekruegger](https://github.com/lancekruegger)
+
 ##Version 2.2.8 (Nov 15, 2013)
 
 - fixed; removing an addon with a negative quantity and re-adding it resets the quantity to 1 #92
