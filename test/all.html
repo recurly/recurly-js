@@ -447,7 +447,6 @@
       $('#f form').submit();
     });
 
-
     test('handles post error response', function() {
       $.ajax = function(opt) {
         opt.success({errors: {base: 'server error'}});
@@ -473,6 +472,38 @@
       ok( this.handleSuccessCalled );
     });
 
+    module('buildBillingInfoUpdateForm');
+
+    test('includes account email if "collectContactInfo" is set', function() {
+      $.ajax = function(opt) {
+        ok(opt.data && opt.data.account);
+        equal('test@example.com', opt.data.account.email);
+        opt.success({success: {invoice: {}}});
+        opt.complete();
+      };
+
+      R.buildBillingInfoUpdateForm({
+        target: '#f',
+        accountCode: 'M32658',
+        addressRequirement: 'full',
+        successHandler: function(){},
+        signature: '0d76d5a310423202c70186313148891910133243|nonce=4864580745&account%5Baccount_code%5D=M32658&timestamp=1385163306',
+        distinguishContactFromBillingInfo: false,
+        collectContactInfo: true,
+        account: {firstName: 'Matt', lastName: 'Snider', email: 'test@example.com'},
+        billingInfo: {
+          address1: '605 Test Ave',
+          address2: '',
+          country: '',
+          city: 'Fort Testings',
+          state: 'CA',
+          zip: '12334a',
+          cardNumber: '4111111111111111'
+        }
+      });
+      $('.cvv input').val('123');
+      $('#f form').submit();
+    });
 
     module('buildBillingInfoUpdateForm', {
       setup: function() {
