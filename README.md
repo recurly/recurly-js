@@ -32,6 +32,10 @@ Accounts
 ===============
 http://docs.recurly.com/api/accounts
 
+
+
+	recurly.accounts.list(callback, filter)
+
 	recurly.accounts.create(details, callback)
 
 	recurly.accounts.update(accountcode, details, callback) 
@@ -40,9 +44,8 @@ http://docs.recurly.com/api/accounts
 
 	recurly.accounts.close(accountcode, callback) 
 
-  recurly.accounts.reopen(accountcode, callback)
+	recurly.accounts.reopen(accountcode, callback)
 
-  recurly.accounts.list(callback, filter)
 
 Billing Information
 ===============
