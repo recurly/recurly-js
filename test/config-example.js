@@ -1,7 +1,5 @@
 module.exports = {
-	API_USERNAME: '',
-	API_PASSWORD: '',
-	PRIVATE_KEY:  '',
+	API_KEY: '',
 	SUBDOMAIN:    '',
 	ENVIRONMENT:  'sandbox',
 	DEBUG: true,
