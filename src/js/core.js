@@ -36,8 +36,23 @@ R.config = function(settings) {
     var subdomain = R.settings.subdomain || R.raiseError('company subdomain not configured');
     R.settings.baseURL = 'https://'+subdomain+'.recurly.com/jsonp/'+subdomain+'/';
   }
+
+  R.settings.origin = parseURL(R.settings.baseURL).origin;
 };
 
+function parseURL(url) {
+  var a = document.createElement('a');
+  a.href = url;
+  return {
+      href: a.href
+    , host: a.host
+    , port: a.port
+    , hostname: a.hostname
+    , pathname: a.pathname
+    , protocol: a.protocol
+    , origin: a.protocol + '//' + a.host
+  };
+}
 
 function pluralize(count, term) {
   if(count == 1) {
