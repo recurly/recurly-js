@@ -270,6 +270,10 @@ R.ajax = function(options) {
   return $.ajax(options);
 };
 
+R.isInternetExplorer = function(){
+  return navigator.appName === 'Microsoft Internet Explorer'
+    || navigator.userAgent.indexOf('Trident') > -1;
+};
 
 function errorDialog(message) {
   $('body').append(R.dom.error_dialog);
