@@ -1,4 +1,4 @@
-//   Recurly.js - v2.2.9
+//   Recurly.js - v2.2.10-beta
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API,
 //   generates UI, handles user error, and passes control to the client
@@ -50,7 +50,7 @@ R.settings = {
 , oneErrorPerField: true
 };
 
-R.version = '2.2.9';
+R.version = '2.2.10-beta';
 
 R.dom = {};
 
@@ -74,8 +74,23 @@ R.config = function(settings) {
     var subdomain = R.settings.subdomain || R.raiseError('company subdomain not configured');
     R.settings.baseURL = 'https://'+subdomain+'.recurly.com/jsonp/'+subdomain+'/';
   }
+
+  R.settings.origin = parseURL(R.settings.baseURL).origin;
 };
 
+function parseURL(url) {
+  var a = document.createElement('a');
+  a.href = url;
+  return {
+      href: a.href
+    , host: a.host
+    , port: a.port
+    , hostname: a.hostname
+    , pathname: a.pathname
+    , protocol: a.protocol
+    , origin: a.protocol + '//' + a.host
+  };
+}
 
 function pluralize(count, term) {
   if(count == 1) {
@@ -554,6 +569,10 @@ R.ajax = function(options) {
   return $.ajax(options);
 };
 
+R.isInternetExplorer = function(){
+  return navigator.appName === 'Microsoft Internet Explorer'
+    || navigator.userAgent.indexOf('Trident') > -1;
+};
 
 function errorDialog(message) {
   $('body').append(R.dom.error_dialog);
@@ -2240,60 +2259,47 @@ R.buildSubscriptionForm = function(options) {
 
 R.paypal = {
   start: function(opts) {
-    var originalWindowName = window.name;
-
-    // Very rare edge case of window getting stuck with a prior recurly_result in it.
-    if(originalWindowName.indexOf('recurly_result') > -1) {
-      window.name = '';
-      originalWindowName = '';
-    }
-
-    var data = $.extend(opts.data, {
-        post_message: true,
-        referer: window.location.href
-      })
-      , url = opts.url + '?' + $.param(data)
-      , popup = window.open(url, 'recurly_paypal', 'menubar=1,resizable=1');
-
-      window.popup = popup;
-
     $(window).on('message', handleMessage);
 
+    var data = $.extend(opts.data, {
+	post_message: true
+      , referer: window.location.href
+    });
 
-    var interval = setInterval(function() {
-      var decoded = decodeURIComponent(window.name)
-        , match = decoded.match(/recurly_result=(.*)[&$]?/)
-        , result = match && $.parseJSON(match[1]);
+    var url = opts.url + '?' + $.param(data);
 
-      if(result) {
-        finish(result);
-        window.name = originalWindowName;
-      }
-
-    }, 1000);
-
-
-    function finish(result) {
-      try {
-        popup.close();
-      }
-      finally {
-        opts.success(result);
-        opts.complete();
-        $(window).unbind('message', handleMessage);
-        clearInterval(interval);
-      }
+    if (R.isInternetExplorer()) {
+      var frame = $('<iframe></iframe>');
+      frame.attr('name', 'recurly_relay');
+      frame.attr('src', R.settings.origin + '/relay.html');
+      frame.css('display', 'none');
+      frame.appendTo(document.body);
     }
 
-    function handleMessage(e) {
-      var api = document.createElement('a');
-      api.href = R.settings.baseURL;
+    var popup = window.open(url, 'recurly_paypal', 'menubar=1,resizable=1');
 
-       var origin = api.protocol + '//' + api.host.replace(/:\d+$/, '');
+    function handleMessage(event){
+      var origin = event.originalEvent.origin;
+      var data = event.originalEvent.data;
 
-       if (e.originalEvent.origin == origin) {
-         finish(e.originalEvent.data);
-       }
+      if (0 !== origin.indexOf(R.settings.origin)) return;
+
+      data = $.parseJSON(data);
+      opts.success(data);
+      opts.complete();
+      cleanup();
+    }
+
+    function cleanup(){
+      $(window).off('message', handleMessage);
+
+      if (frame) {
+	frame.remove();
+      }
+
+      try {
+	popup.close();
+      } catch (e) { }
     }
   }
 };
