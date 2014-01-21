@@ -1193,7 +1193,7 @@ R.paypal = {
     if (R.isInternetExplorer()) {
       var frame = $('<iframe></iframe>');
       frame.attr('name', 'recurly_relay');
-      frame.attr('src', R.settings.origin + '/relay.html');
+      frame.attr('src', R.settings.baseURL + 'relay.html');
       frame.css('display', 'none');
       frame.appendTo(document.body);
     }
