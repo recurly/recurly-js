@@ -1,4 +1,4 @@
-//   Recurly.js - v2.2.10-beta
+//   Recurly.js - v2.2.11-beta
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API,
 //   generates UI, handles user error, and passes control to the client
@@ -50,7 +50,7 @@ R.settings = {
 , oneErrorPerField: true
 };
 
-R.version = '2.2.10-beta';
+R.version = '2.2.11-beta';
 
 R.dom = {};
 
@@ -2262,7 +2262,7 @@ R.paypal = {
     $(window).on('message', handleMessage);
 
     var data = $.extend(opts.data, {
-	post_message: true
+        post_message: true
       , referer: window.location.href
     });
 
@@ -2271,7 +2271,7 @@ R.paypal = {
     if (R.isInternetExplorer()) {
       var frame = $('<iframe></iframe>');
       frame.attr('name', 'recurly_relay');
-      frame.attr('src', R.settings.origin + '/relay.html');
+      frame.attr('src', R.settings.baseURL + 'relay.html');
       frame.css('display', 'none');
       frame.appendTo(document.body);
     }
@@ -2294,11 +2294,11 @@ R.paypal = {
       $(window).off('message', handleMessage);
 
       if (frame) {
-	frame.remove();
+        frame.remove();
       }
 
       try {
-	popup.close();
+        popup.close();
       } catch (e) { }
     }
   }
