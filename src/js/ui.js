@@ -1189,22 +1189,27 @@ R.paypal = {
     });
 
     var url = opts.url + '?' + $.param(data);
+    var frame, popup;
 
     if (R.isInternetExplorer()) {
-      var frame = $('<iframe></iframe>');
-      frame.attr('name', 'recurly_relay');
+      frame = $('<iframe name="recurly_relay"></iframe>');
       frame.attr('src', R.settings.baseURL + 'relay.html');
       frame.css('display', 'none');
+      frame.load(openWindow);
       frame.appendTo(document.body);
+    } else {
+      openWindow();
     }
 
-    var popup = window.open(url, 'recurly_paypal', 'menubar=1,resizable=1');
+    function openWindow () {
+      popup = window.open(url, 'recurly_paypal', 'menubar=1,resizable=1');
+    }
 
     function handleMessage(event){
       var origin = event.originalEvent.origin;
       var data = event.originalEvent.data;
 
-      if (0 !== origin.indexOf(R.settings.origin)) return;
+      if (0 !== R.settings.origin.indexOf(origin)) return;
 
       data = $.parseJSON(data);
       opts.success(data);
