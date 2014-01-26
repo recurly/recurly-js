@@ -12,9 +12,7 @@ Installation
 add a config file to your project that has contents similar to:
 
 		module.exports = {
-			API_USERNAME: 'secret',
-			API_PASSWORD: 'secret',
-			PRIVATE_KEY:  'secret',
+			API_KEY: 'secret',
 			SUBDOMAIN:    '[your_account]',
 			ENVIRONMENT:  'sandbox',
 			DEBUG: false
@@ -34,22 +32,24 @@ Accounts
 ===============
 http://docs.recurly.com/api/accounts
 
+
+
+	recurly.accounts.list(callback, filter)
+
 	recurly.accounts.create(details, callback)
 
 	recurly.accounts.update(accountcode, details, callback) 
 
-
 	recurly.accounts.get(accountcode, callback) 
-
 
 	recurly.accounts.close(accountcode, callback) 
 
+	recurly.accounts.reopen(accountcode, callback)
 
-	recurly.accounts.listAll(callback, filter)
 
 Billing Information
 ===============
-http://docs.recurly.com/transparent-post/billing-info
+http://docs.recurly.com/api/billing-info
 
 	recurly.billingInfo.update(accountcode, details, callback) 
 
@@ -57,129 +57,130 @@ http://docs.recurly.com/transparent-post/billing-info
 	recurly.billingInfo.get(accountcode, callback) 
 
 
-	recurly.billingInfo.delete(accountcode, callback) 
+	recurly.billingInfo.remove(accountcode, callback) 
 
 
-Charges
+
+Adjustments
 ===============
-http://docs.recurly.com/api/charges
+http://docs.recurly.com/api/adjustments
 
-	recurly.charges.listAll(accountcode, callback, filter) 
+	recurly.adjustments.get(accountcode, callback)
+  
+	recurly.adjustments.create(accountcode, details, callback)
 
-
-	recurly.charges.chargeAccount(accountcode, details, callback) 
+	recurly.adjustments.remove(uuid, callback)
 
 
 Coupons
 ===============
 http://docs.recurly.com/api/coupons
 
-	recurly.coupons.getAssociatedWithAccount(accountcode, callback) 
+	recurly.coupons.list(callback, filter)
+	
+	recurly.coupons.get(couponcode, callback)
 
+	recurly.coupons.create(details, callback)
 
+	recurly.coupons.deactivate(couponcode, callback)
 
-NOTE: Redeem coupon with subscription not added here since it is a duplication of the subscription creation method
-
-	recurly.coupons.redeemOnAccount(accountcode, details, callback) 
-
-
-	recurly.coupons.removeFromAccount(accountcode, callback) 
-
+Coupon Redemtion
+=================
+http://docs.recurly.com/api/coupons/coupon-redemption
   
-Charges
-===============
-http://docs.recurly.com/api/credits
+	recurly.couponRedemption.redeem(couponcode, details, callback)
 
-	recurly.credits.listAll(accountcode, callback) 
+	recurly.couponRedemption.get(accountcode, callback)
 
+	recurly.couponRedemption.remove(accountcode, callback)
 
-	recurly.credits.creditAccount(accountcode, details, callback) 
+	recurly.couponRedemption.getByInvoice(invoicenumber, callback)
+
 
 
 Invoices
 ===============
 http://docs.recurly.com/api/invoices
 
-	recurly.invoices.getAssociatedWithAccount(accountcode, callback) 
+	recurly.invoices.list(callback, filter)
+	
+	recurly.invoices.listByAccount(accountcode, callback, filter)
 
+	recurly.invoices.get(invoicenumber, callback)
+  
+	recurly.invoices.create(accountcode, details, callback)
 
-	recurly.invoices.get(invoiceid, callback) 
+	recurly.invoices.markSuccessful(invoicenumber, callback)
 
-
-	recurly.invoices.invoiceAccount(accountcode, callback) 
-
+	recurly.invoices.markFailed(invoicenumber, callback)
 
 
 Subscriptions
 ===============
 http://docs.recurly.com/api/subscriptions
 
-	recurly.subscriptions.getAssociatedWithAccount(accountcode, callback) 
+	recurly.subscriptions.list(callback, filter) 
+	
+	recurly.subscriptions.listByAccount(accountcode, callback) 
 
+	recurly.subscriptions.get(uuid, callback) 
 
+	recurly.subscriptions.create(details, callback) 
+  
+	recurly.subscriptions.update(uuid, details, callback) 
+  
+	recurly.subscriptions.cancel(uuid, callback) 
+  
+	recurly.subscriptions.reactivate(uuid, callback) 
+  
+	recurly.subscriptions.terminate(uuid, refundType, callback) 
 
-**NOTE Certain uses of this method will have implications on PCI compliance because this
-function requires access to and transmission of customer credit card information.
-
-	recurly.subscriptions.create(accountcode, details, callback) 
-
-
-
-refundtype can be 'partial', 'full' or 'none'
-
-	recurly.subscriptionsrefund(accountcode, callback, refundtype) 
-
+ 	recurly.subscriptions.postpone(uuid, nextRenewalDate, callback) 
 
 
 Subscription Plans
-===============
-http://docs.recurly.com/api/subscription-plans
+==================
+http://docs.recurly.com/api/plans
 
-	recurly.subscriptionPlans.listAll(callback) 
+	recurly.plans.list(callback, filter) 
 
+	recurly.plans.get(plancode, callback) 
+	
+	recurly.plans.create(details, callback)
+  
+	recurly.plans.update(plancode, details, callback)
+  
+	recurly.plans.remove(plancode, callback)
 
-	recurly.subscriptionPlans.get(plancode, callback) 
+Plan Add-ons
+==================
+http://docs.recurly.com/api/plans/add-ons
 
+	recurly.planAddons.list(plancode, callback, filter) 
 
-
-Create, Update, and Delete are not implemented because the reculy documentation indicates them as advanced cases
+	recurly.planAddons.get(plancode, addoncode, callback) 
+  
+	recurly.planAddons.create(plancode, details, callback)
+  
+	recurly.planAddons.update(plancode, addoncode, details, callback)
+  
+	recurly.planAddons.remove(plancode, addoncode, callback)
 
 
 Transactions
 ===============
 http://docs.recurly.com/api/transactions
 
-	recurly.transactions.listAll(accountcode, callback, filter) 
+	recurly.transactions.list(callback, filter) 
 
 
-	recurly.transactions.getAssociatedWithAccount(accountcode, callback) 
+	recurly.transactions.listByAccount(accountcode, callback, filter) 
 
 
-	recurly.transactions.get(transactionid, callback) 
+	recurly.transactions.get(id, callback) 
 
 
-	recurly.transactions.void(transactionid, callback) 
+	recurly.transactions.create(details, callback) 
 
 
-	recurly.transactions.refund(transactionid, callback, amount) 
-
-NOTE Certain uses of this method will have implications on PCI compliance because this
-function requires access to and transmission of customer credit card information.
-
-	recurly.transactions.createImmediateOneTimeTransaction(accountcode, details, callback)
-
-Transparent Post
-==================
-http://docs.recurly.com/transparent-post/basics
-
-	recurly.transparent.billingInfoUrl
-
-	recurly.transparent.subscribeUrl
-
-	recurly.transparent.transactionUrl
-
-	recurly.transparent.hidden_field(data)
-
-	recurly.transparent.getResults(confirm, result, status, type, callback){
-
-	recurly.transparent..getFormValuesFromResult(result, type)
+	recurly.transactions.refund(id, callback, amount) 
