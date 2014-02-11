@@ -1,4 +1,4 @@
-//   Recurly.js - v2.2.12-beta
+//   Recurly.js - v2.2.13-beta
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API,
 //   generates UI, handles user error, and passes control to the client
@@ -50,7 +50,7 @@ R.settings = {
 , oneErrorPerField: true
 };
 
-R.version = '2.2.12-beta';
+R.version = '2.2.13-beta';
 
 R.dom = {};
 
@@ -2289,7 +2289,10 @@ R.paypal = {
 
       if (0 !== R.settings.origin.indexOf(origin)) return;
 
-      data = $.parseJSON(data);
+      if ('string' == typeof data) {
+        data = $.parseJSON(data);
+      };
+
       opts.success(data);
       opts.complete();
       cleanup();
