@@ -1211,7 +1211,10 @@ R.paypal = {
 
       if (0 !== R.settings.origin.indexOf(origin)) return;
 
-      data = $.parseJSON(data);
+      if ('string' == typeof data) {
+        data = $.parseJSON(data);
+      };
+
       opts.success(data);
       opts.complete();
       cleanup();
