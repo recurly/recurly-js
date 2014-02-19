@@ -396,7 +396,7 @@ R.formatCurrency = function(num,denomination) {
   return str;
 };
 
-var euCountries = ["AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB"];
+var euCountries = ["AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB"];
 R.isCountryInEU = function(country) {
   return $.inArray(country, euCountries) !== -1;
 }
