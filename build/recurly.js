@@ -1,4 +1,4 @@
-//   Recurly.js - v2.2.13-beta
+//   Recurly.js - v2.2.9
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API,
 //   generates UI, handles user error, and passes control to the client
@@ -50,7 +50,7 @@ R.settings = {
 , oneErrorPerField: true
 };
 
-R.version = '2.2.13-beta';
+R.version = '2.2.9';
 
 R.dom = {};
 
@@ -74,23 +74,8 @@ R.config = function(settings) {
     var subdomain = R.settings.subdomain || R.raiseError('company subdomain not configured');
     R.settings.baseURL = 'https://'+subdomain+'.recurly.com/jsonp/'+subdomain+'/';
   }
-
-  R.settings.origin = parseURL(R.settings.baseURL).origin;
 };
 
-function parseURL(url) {
-  var a = document.createElement('a');
-  a.href = url;
-  return {
-      href: a.href
-    , host: a.host
-    , port: a.port
-    , hostname: a.hostname
-    , pathname: a.pathname
-    , protocol: a.protocol
-    , origin: a.protocol + '//' + a.host
-  };
-}
 
 function pluralize(count, term) {
   if(count == 1) {
@@ -411,7 +396,7 @@ R.formatCurrency = function(num,denomination) {
   return str;
 };
 
-var euCountries = ["AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB"];
+var euCountries = ["AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB"];
 R.isCountryInEU = function(country) {
   return $.inArray(country, euCountries) !== -1;
 }
@@ -569,10 +554,6 @@ R.ajax = function(options) {
   return $.ajax(options);
 };
 
-R.isInternetExplorer = function(){
-  return navigator.appName === 'Microsoft Internet Explorer'
-    || navigator.userAgent.indexOf('Trident') > -1;
-};
 
 function errorDialog(message) {
   $('body').append(R.dom.error_dialog);
@@ -2259,55 +2240,60 @@ R.buildSubscriptionForm = function(options) {
 
 R.paypal = {
   start: function(opts) {
-    $(window).on('message', handleMessage);
+    var originalWindowName = window.name;
+
+    // Very rare edge case of window getting stuck with a prior recurly_result in it.
+    if(originalWindowName.indexOf('recurly_result') > -1) {
+      window.name = '';
+      originalWindowName = '';
+    }
 
     var data = $.extend(opts.data, {
-        post_message: true
-      , referer: window.location.href
-    });
+        post_message: true,
+        referer: window.location.href
+      })
+      , url = opts.url + '?' + $.param(data)
+      , popup = window.open(url, 'recurly_paypal', 'menubar=1,resizable=1');
 
-    var url = opts.url + '?' + $.param(data);
-    var frame, popup;
+      window.popup = popup;
 
-    if (R.isInternetExplorer()) {
-      frame = $('<iframe name="recurly_relay"></iframe>');
-      frame.attr('src', R.settings.baseURL + 'relay.html');
-      frame.css('display', 'none');
-      frame.load(openWindow);
-      frame.appendTo(document.body);
-    } else {
-      openWindow();
-    }
+    $(window).on('message', handleMessage);
 
-    function openWindow () {
-      popup = window.open(url, 'recurly_paypal', 'menubar=1,resizable=1');
-    }
 
-    function handleMessage(event){
-      var origin = event.originalEvent.origin;
-      var data = event.originalEvent.data;
+    var interval = setInterval(function() {
+      var decoded = decodeURIComponent(window.name)
+        , match = decoded.match(/recurly_result=(.*)[&$]?/)
+        , result = match && $.parseJSON(match[1]);
 
-      if (0 !== R.settings.origin.indexOf(origin)) return;
-
-      if ('string' == typeof data) {
-        data = $.parseJSON(data);
-      };
-
-      opts.success(data);
-      opts.complete();
-      cleanup();
-    }
-
-    function cleanup(){
-      $(window).off('message', handleMessage);
-
-      if (frame) {
-        frame.remove();
+      if(result) {
+        finish(result);
+        window.name = originalWindowName;
       }
 
+    }, 1000);
+
+
+    function finish(result) {
       try {
         popup.close();
-      } catch (e) { }
+      }
+      finally {
+        opts.success(result);
+        opts.complete();
+        $(window).unbind('message', handleMessage);
+        clearInterval(interval);
+      }
+    }
+
+    function handleMessage(e) {
+      var api = document.createElement('a');
+      api.href = R.settings.baseURL;
+
+       var origin = api.protocol + '//' + api.host.replace(/:\d+$/, '');
+
+       if (e.originalEvent.origin == origin) {
+         finish(e.originalEvent.data);
+       }
     }
   }
 };

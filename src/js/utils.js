@@ -112,7 +112,7 @@ R.formatCurrency = function(num,denomination) {
   return str;
 };
 
-var euCountries = ["AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB"];
+var euCountries = ["AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB"];
 R.isCountryInEU = function(country) {
   return $.inArray(country, euCountries) !== -1;
 }
@@ -270,10 +270,6 @@ R.ajax = function(options) {
   return $.ajax(options);
 };
 
-R.isInternetExplorer = function(){
-  return navigator.appName === 'Microsoft Internet Explorer'
-    || navigator.userAgent.indexOf('Trident') > -1;
-};
 
 function errorDialog(message) {
   $('body').append(R.dom.error_dialog);
