@@ -1,5 +1,9 @@
 #Change Log
 
+##Version 2.2.10 (Feb 27, 2014)
+
+- Add Croatia to the list of EU countries
+
 ##Version 2.2.9 (Dec 3, 2013)
 
 - fixed; billing info prefill selectors #98 [lancekruegger](https://github.com/lancekruegger)
