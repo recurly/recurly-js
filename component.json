@@ -1,0 +1,47 @@
+{
+  "name": "recurly",
+  "repo": "recurly/recurly-js",
+  "description": "Official Recurly JavaScript client for the browser.",
+  "version": "3.0.0-beta",
+  "keywords": [
+    "recurly"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "dependencies": {
+    "chrissrogers/querystring": "*",
+    "chrissrogers/noop": "*",
+    "component/emitter": "*",
+    "component/indexof": "*",
+    "component/bind": "*",
+    "component/find": "*",
+    "component/each": "*",
+    "component/map": "*",
+    "yields/merge": "*",
+    "learnboost/jsonp": "*",
+    "visionmedia/debug": "*",
+    "component/type": "*",
+    "component/json": "*",
+    "kewah/mixin": "*",
+    "component/event": "*",
+    "danmilon/object.keys-shim": "*"
+  },
+  "scripts": [
+    "lib/index.js",
+    "lib/recurly.js",
+    "lib/version.js",
+    "lib/errors.js",
+    "lib/util/dom.js",
+    "lib/util/parse-card.js",
+    "lib/mixins/coupon.js",
+    "lib/mixins/paypal.js",
+    "lib/mixins/plan.js",
+    "lib/mixins/tax.js",
+    "lib/mixins/token.js",
+    "lib/mixins/validate.js",
+    "lib/mixins/pricing/index.js",
+    "lib/mixins/pricing/calculations.js",
+    "lib/mixins/pricing/binding.js"
+  ],
+  "remotes": []
+}

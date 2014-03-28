@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "not_found",
+    "message": "Couldn't find Plan with plan_code = invalid",
+    "locale": "en-US"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "recurly.js",
+  "description": "Zen subscription billing in the browser",
+  "version": "3.0.0-beta",
+  "license": "MIT",
+  "main": "recurly.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/recurly/recurly-js.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "1.x",
+    "should": "2.x",
+    "uglify-js": "2.4.x",
+    "component": "0.19.x",
+    "express": "3.4.8",
+    "jade": "1.1.5",
+    "mocha-phantomjs": "3.3.1",
+    "gravy": "0.1.0",
+    "debug": "0.7.4"
+  }
+}

@@ -1,0 +1,15 @@
+language: node_js
+script: make test-sauce
+node_js:
+  - '0.10'
+env:
+  global:
+    - secure: 'Q2BpyJZM/sgK5I9FRc2RqJ6LTQ3MR8Rk0Bs4BgzYE+QlsOS0mbwI5kjVwVCERu8+5MipD9pDXxeror3gnexQjtlD2DC2yhEvsjE1Q9nUc1fJO8yjH0LdRhcRj3i6cNciydTkvS/QJgi8mXO3Nfb+MDIhiBPyZbCfyj+yjcFgu2c='
+    - secure: 'KFrQZYFBREY1xKAnnDJFUJaOwTn0sb4oHkFjhlSYzsTpDcWQEowPK72i8IOknf3r55qAuxi5VDKHcV/AcEGSSnG8Olopm3RZQ4mugPz/93lXg9lm73pT0tfK4jGPlQV7rYT4kkexy5F3LAW8ojSOTctGImIzgmm2Qm3RQJBBl5E='
+  matrix:
+  - BROWSERS: 'chrome, safari, firefox, ie8..11'
+notifications:
+  campfire:
+    rooms:
+      secure: VG1YCnwpSWtd/2wl+d0kyADt6zLWeXVFHXUVo7X0DndK/kRHIea3SAB5vBMAXWS84LvLaVKW7e9NFLsEjeJm1iIu8VzH6B4ersXm4Gr+ba+KLMNKXrWcqp0/1aluWy0ooIxa6zMICYpOZdOyOMhvxys8nESSNwDYdKnRsrjb7bw=
+

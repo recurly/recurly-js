@@ -1,0 +1,20 @@
+{
+  "name": "recurly-test",
+  "main": "index.js",
+  "scripts": [
+    "index.js",
+    "unit/recurly.test.js",
+    "unit/configure.test.js",
+    "unit/open.test.js",
+    "unit/coupon.test.js"
+  ],
+  "dependencies": {
+    "component/bind": "*",
+    "component/assert": "*",
+    "ianstormtaylor/sinon": "*",
+    "yields/gravy": "*",
+    "component/each": "*",
+    "chrissrogers/noop": "*",
+    "component/querystring": "*"
+  }
+}

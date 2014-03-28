@@ -1,0 +1,20 @@
+doctype html
+html
+  head
+    title recurly.js tests
+    link(rel='stylesheet', href='/test/server/mocha.css')
+    script(src='/recurly.js')
+    script(src='/test/server/mocha.js')
+    script.
+      mocha.setup({ ui: 'bdd' })
+    script(src='/test/build/build.js')
+    script.
+      require('recurly-test');
+  body
+    #mocha
+    script.
+      if (window.mochaPhantomJS) {
+        mochaPhantomJS.run();
+      } else {
+        require('gravy')(mocha.run());
+      }

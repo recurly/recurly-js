@@ -1,0 +1,13 @@
+.DS_Store
+.sauce
+
+node_modules
+npm-debug.log
+
+build
+components
+
+test/server/pid.txt
+
+/recurly.js
+/recurly.min.js

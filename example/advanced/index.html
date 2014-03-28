@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<!--[if lt IE 9]> <html> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="modern"> <!--<![endif]-->
+  <head>
+    <title>recurly.js example</title>
+    <link rel="stylesheet" href="advanced.css">
+    <script src="../../recurly.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+    <script>
+      // enable html5 elements in ie
+      var elems = ['header', 'nav', 'menu', 'section', 'article', 'aside', 'footer'];
+      for (var elem, i = 0; elem = elems[i++];) document.createElement(elem);
+    </script>
+    <![endif]-->
+  </head>
+  <body>
+    <form>
+      <section class="payment">
+        <section id="payment-errors" class="payment-error-box"></section>
+        <section class="payment-front">
+          <div class="payment-cover">
+            <header class="payment-top">
+              This is a secure 128-bit SSL encrypted payment
+            </header>
+            <section class="payment-mid">
+              <p>
+                <input type="radio" name="payment-method-select" value="card" id="payment-method-select-card" checked>
+                <label for="payment-method-select-card">Credit Card</label>
+                <input type="radio" name="payment-method-select" value="paypal" id="payment-method-select-paypal">
+                <label for="payment-method-select-paypal">PayPal</label>
+              </p>
+              <section id="payment-method-card">
+                <p>
+                  <input type="text" data-recurly="number" value="4111111111111111" placeholder="Card Number" class="payment-number">
+                </p>
+                <p>
+                  <span class="payment-select">
+                    <select data-recurly="month">
+                      <option value="01">Jan</option>
+                      <option value="02">Feb</option>
+                      <option value="03">Mar</option>
+                      <option value="04">Apr</option>
+                      <option value="05">May</option>
+                      <option value="06">Jun</option>
+                      <option value="07">Jul</option>
+                      <option value="08">Aug</option>
+                      <option value="09">Sep</option>
+                      <option value="10">Oct</option>
+                      <option value="11">Nov</option>
+                      <option value="12">Dec</option>
+                    </select>
+                  </span>
+                  <span class="payment-select">
+                    <select data-recurly="year">
+                      <option value="2014">2014</option>
+                      <option value="2015" selected>2015</option>
+                      <option value="2016">2016</option>
+                      <option value="2017">2017</option>
+                      <option value="2018">2018</option>
+                    </select>
+                  </span>
+                  <input type="text" data-recurly="cvv" id="payment-cvv" placeholder="CVV" class="payment-cvv">
+                  <span class="payment-cvv-hint">the 3 digits on the back of your card</span>
+                </p>
+                <p>
+                  <input type="text" data-recurly="first_name" value="John" placeholder="First Name">
+                  <input type="text" data-recurly="last_name" value="Doe" placeholder="Last Name" class="payment-last-name">
+                </p>
+                Address
+                <p>
+                  <input type="text" data-recurly="address1" value="300 Brannan St." placeholder="Address" class="payment-address">
+                </p>
+                <p>
+                  <input type="text" data-recurly="city" value="San Francisco" placeholder="City" class="payment-city">
+                  <span class="payment-select">
+                    <select data-recurly="state" class="payment-state">
+                      <option value="" selected>State</option>
+                      <option value="AL">Alabama</option>
+                      <option value="AK">Alaska</option>
+                      <option value="AZ">Arizona</option>
+                      <option value="AR">Arkansas</option>
+                      <option value="CA" selected>California</option>
+                      <option value="CO">Colorado</option>
+                      <option value="CT">Connecticut</option>
+                      <option value="DE">Delaware</option>
+                      <option value="DC">District Of Columbia</option>
+                      <option value="FL">Florida</option>
+                      <option value="GA">Georgia</option>
+                      <option value="HI">Hawaii</option>
+                      <option value="ID">Idaho</option>
+                      <option value="IL">Illinois</option>
+                      <option value="IN">Indiana</option>
+                      <option value="IA">Iowa</option>
+                      <option value="KS">Kansas</option>
+                      <option value="KY">Kentucky</option>
+                      <option value="LA">Louisiana</option>
+                      <option value="ME">Maine</option>
+                      <option value="MD">Maryland</option>
+                      <option value="MA">Massachusetts</option>
+                      <option value="MI">Michigan</option>
+                      <option value="MN">Minnesota</option>
+                      <option value="MS">Mississippi</option>
+                      <option value="MO">Missouri</option>
+                      <option value="MT">Montana</option>
+                      <option value="NE">Nebraska</option>
+                      <option value="NV">Nevada</option>
+                      <option value="NH">New Hampshire</option>
+                      <option value="NJ">New Jersey</option>
+                      <option value="NM">New Mexico</option>
+                      <option value="NY">New York</option>
+                      <option value="NC">North Carolina</option>
+                      <option value="ND">North Dakota</option>
+                      <option value="OH">Ohio</option>
+                      <option value="OK">Oklahoma</option>
+                      <option value="OR">Oregon</option>
+                      <option value="PA">Pennsylvania</option>
+                      <option value="RI">Rhode Island</option>
+                      <option value="SC">South Carolina</option>
+                      <option value="SD">South Dakota</option>
+                      <option value="TN">Tennessee</option>
+                      <option value="TX">Texas</option>
+                      <option value="UT">Utah</option>
+                      <option value="VT">Vermont</option>
+                      <option value="VA">Virginia</option>
+                      <option value="WA">Washington</option>
+                      <option value="WV">West Virginia</option>
+                      <option value="WI">Wisconsin</option>
+                      <option value="WY">Wyoming</option>
+                    </select>
+                  </span>
+                </p>
+                <p>
+                  <input type="text" data-recurly="zip" value="94117" placeholder="Zip" class="payment-zip">
+                  <span class="payment-select">
+                    <select data-recurly="country" class="payment-country">
+                      <option value="US" selected>United States</option>
+                    </select>
+                  </span>
+                </p>
+              </section>
+              <section id="payment-method-paypal">
+                
+              </section>
+              <input type="hidden" data-recurly="currency" value="USD">
+              <input type="hidden" data-recurly="token" name="recurly-token">
+            </section>
+            <footer class="payment-bottom">
+              You will be charged $29 monthly
+            </footer>
+          </div>
+        </section>
+        <section class="payment-back">
+          <header class="payment-top">
+            Thanks for signing up!
+          </header>
+          <p>
+            <span class="payment-check"></span>
+          </p>
+          <p>
+            Here's your token from Recurly
+          </p>
+          <p id="token-out">
+            :)
+          </p>
+        </section>
+      </section>
+      <button id="subscribe" class="payment-button">Subscribe</button>
+    </form>
+    <script>
+
+      // the first thing to do is configure recurly
+      // to use our domain
+      recurly.configure({ publicKey: 'PUBLIC-KEY' });
+
+      // store dom bindings
+      var form = $('form');
+      var methodRadio = $('input[name=payment-method-select]');
+      var box = form.find('.payment');
+      var tokenOut = $('#token-out');
+      var inputs = form.find('input, select, button');
+      var errorBox = $('#payment-errors');
+      var submit = form.find('button');
+
+      // payment method selection
+      methodRadio.on('change', function () {
+        if (method() === 'paypal') {
+          box.addClass('payment-small');
+        } else {
+          box.removeClass('payment-small');
+        }
+      });
+
+      // bind tokenization to form submission
+      form.on('submit', function (event) {
+        // prevent the form from going to the server
+        event.preventDefault();
+
+        // remove any previous error indications
+        inputs.removeClass('payment-error');
+        errorBox.hide();
+
+        // set form to its 'submitting' state
+        box.addClass('payment-submitting');
+        inputs.prop('disabled', true);
+
+        // get token from recurly using whichever method the user selected
+        if (method() === 'paypal') {
+          recurly.paypal({ description: 'membership' }, handler);
+        } else {
+          recurly.token(form, handler);
+        }
+      });
+
+      function method () {
+        return methodRadio.filter(':checked').val();
+      }
+
+      function handler (err, token) {
+        if (err) error(err);
+        else success(token);
+      }
+
+      function success (token) {
+        // this is where we would typically just submit the form
+        // normally or via ajax -- but for the demo we will display it
+        // to the user
+        tokenOut.text(token.id);
+
+        // fancy animations
+        submit.fadeOut(function () {
+          box.find('.payment-mid').hide();
+          box.removeClass('payment-small');
+          box.addClass('payment-flip');
+        });
+      }
+
+      // generic error handling function
+      function error (err) {
+        // reset form to its original state
+        box.removeClass('payment-flip payment-submitting');
+        inputs.prop('disabled', false);
+
+        // if the error is on a certain field, indicate that to the user
+        if (err.fields) {
+          for (var i = 0, field; field = err.fields[i++];) {
+            $('[data-recurly=' + field + ']').addClass('payment-error');
+          }
+        }
+
+        // show the error
+        errorBox.text(err.message).show();
+
+        // log the error
+        console.log(err);
+      }
+    </script>
+  </body>
+</html>

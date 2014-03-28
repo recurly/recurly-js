@@ -1,0 +1,19 @@
+doctype html
+html
+  head
+    title recurly.js coverage
+    link(rel='stylesheet', href='build/build.css')
+    script(src='test/server/mocha.js')
+    script
+      mocha.setup({ ui: 'bdd' })
+    script(src='build/build.js')
+    script
+      cov = require('coverage')('recurly');
+    script(src='test/recurly.test.js')
+  body
+    #coverage
+    #mocha(style='display: none;')
+    script
+      mocha.run(function(){
+        cov.render();
+      });

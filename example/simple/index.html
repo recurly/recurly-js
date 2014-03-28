@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>recurly.js example</title>
+    <script src="../../recurly.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  </head>
+  <style>
+    input { display: block; }
+  </style>
+  <body>
+    <form>
+      <label for="number">Card Number</label>
+      <input type="text" data-recurly="number" id="number">
+      <label for="month">Month</label>
+      <input type="text" data-recurly="month" id="month" maxlength="2">
+      <label for="year">Year</label>
+      <input type="text" data-recurly="year" id="year" maxlength="4">
+      <label for="first_name">First Name</label>
+      <input type="text" data-recurly="first_name" id="first_name">
+      <label for="last_name">Last Name</label>
+      <input type="text" data-recurly="last_name" id="last_name">
+      <input type="hidden" data-recurly="token" name="recurly-token">
+      <button id="subscribe">Subscribe</button>
+      <div id="errors"></div>
+    </form>
+    <script>
+      // configure recurly
+      recurly.configure({ publicKey: 'PUBLIC-KEY' });
+
+      // listen for form submission
+      $('form').on('submit', function (event) {
+
+        // prevent the form from going to the server
+        event.preventDefault();
+
+        // remove error messages
+        $('#errors').text('');
+
+        // disable the submit button
+        $('button').prop('disabled', true);
+
+        recurly.token(this, function (err, token) {
+          if (err) error(err);
+          else $('form')[0].submit();
+        });
+
+        function error (err) {
+          $('#errors').text(err.message);
+          $('button').prop('disabled', false);
+        }
+
+      });
+    </script>
+  </body>
+</html>
