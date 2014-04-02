@@ -89,6 +89,7 @@ R.formatCurrency = function(num,denomination) {
   }
 
   function insertDelimiters(str) {
+    if (langspec.delimiter === '') return str;
     var sRegExp = new RegExp('(-?[0-9]+)([0-9]{3})');
     while(sRegExp.test(str)) {
       str = str.replace(sRegExp, '$1'+langspec.delimiter+'$2');
