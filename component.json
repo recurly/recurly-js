@@ -40,6 +40,7 @@
     "lib/mixins/token.js",
     "lib/mixins/validate.js",
     "lib/mixins/pricing/index.js",
+    "lib/mixins/pricing/promise.js",
     "lib/mixins/pricing/calculations.js",
     "lib/mixins/pricing/binding.js"
   ],
