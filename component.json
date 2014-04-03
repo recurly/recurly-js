@@ -23,8 +23,9 @@
     "yields/merge": "*",
     "learnboost/jsonp": "*",
     "visionmedia/debug": "*",
-    "then/promise": "*",
-    "kewah/mixin": "*"
+    "chrissrogers/promise": "*",
+    "kewah/mixin": "*",
+    "pluma/par": "*"
   },
   "scripts": [
     "lib/index.js",
