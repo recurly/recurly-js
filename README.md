@@ -5,16 +5,9 @@ Zen subscription billing in the browser
 ## Overview
 This JavaScript library is included in a merchants form page and simplifies integration with
 Recurly. When a user submits their credit card information, it is sent to the api.recurly.com and
-a Recurly token is returned. This token is then sent to the merchant site, making it simple for
-the merchant to be PCI compliant.
-
-If a purchase is being made on the page, the payment is reserved on the credit credit card when
-the token is generated. If there is a problem processing the payment, the error can be displayed
-on the form page simplifying the user experience and error management required on the merchant
-server.
-
-3D Secure is transparently managed to the form developer by the RecurlyJS library and
-api.recurly.com.
+a Recurly token is returned. You may then use this token to create subscriptions and update billing
+information using the Recurly API, without ever having to handle a credit card number on your server, 
+greatly simplifying PCI Compliance.
 
 ## API Documentation
 
@@ -32,7 +25,7 @@ api.recurly.com.
 ```json
 {
   "dependencies": {
-    "recurly/recurly-js-v3": "*"
+    "recurly/recurly-js": "*"
   }
 }
 ```
