@@ -22,6 +22,7 @@ greatly simplifying PCI Compliance.
 
 ### Component
 **component.json**
+
 ```json
 {
   "dependencies": {
@@ -30,11 +31,13 @@ greatly simplifying PCI Compliance.
 }
 ```
 **index.html**
+
 ```html
 <script>
   var recurly = require('recurly');
 </script>
 ```
+
 [Learn more about component](http://github.com/component/component)
 
 ## Build
