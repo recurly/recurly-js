@@ -1,5 +1,11 @@
 # Recurly.js
 
+### :zap: Beta Version 3 Available
+
+Interested in trying out the new (beta) version of recurly.js? [Get started here](https://github.com/recurly/recurly-js/tree/v3), [check out the docs](https://docs.recurly.com/api/recurlyjs/v3beta), and let us know what you think in [#recurly on freenode](irc://chat.freenode.net:+6697/recurly).
+
+## Introduction
+
 Recurly.js is an open-source JavaScript library for creating great looking
 credit card forms to securely create subscriptions, one-time transactions, and
 update billing information using Recurly. The library is designed to create
