@@ -11,7 +11,7 @@ greatly simplifying PCI Compliance.
 
 ## API Documentation
 
-[Recurly.js API Docs](https://docs.recurly.com/api/recurlyjs/v3beta)
+[Recurly.js API Docs][docs]
 
 ## Installation
 
@@ -38,7 +38,7 @@ greatly simplifying PCI Compliance.
 </script>
 ```
 
-[Learn more about component](http://github.com/component/component)
+[Learn more about component][component]
 
 ## Build
 ```bash
@@ -49,3 +49,9 @@ $ make
 ```bash
 $ make test
 ```
+
+[*aurea mediocritas*][aristotle]
+
+[aristotle]: http://en.wikipedia.org/wiki/Golden_mean_(philosophy)
+[docs]: https://docs.recurly.com/api/recurlyjs/v3beta
+[component]: http://github.com/component/component
