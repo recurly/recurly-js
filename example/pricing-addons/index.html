@@ -40,6 +40,11 @@
       <p>Coupon</p>
       <input type="text" data-recurly="coupon">
 
+      <div id="vat-number">
+        <p>VAT Number</p>
+        <input type="text" data-recurly="vat_number">
+      </div>
+
       <input type="radio" value="USD" name="currency" data-recurly="currency" id="currency-USD" checked>
       <label for="currency-USD">USD</label>
       <input type="radio" value="GBP" name="currency" data-recurly="currency" id="currency-GBP">
@@ -133,6 +138,18 @@
         // since the form has changed, we need to refresh the binding
         pricing.binding(form);
       });
+
+      // shows and hites the VAT number field based on being in an EU country
+      var country = $('#country');
+      var vatNumber = $('#vat-number');
+      country.on('change init', function (event) {
+        var select = $(this);
+        if (select.val() === 'GB') {
+          vatNumber.show();
+        } else {
+          vatNumber.hide();
+        }
+      }).triggerHandler('init');
 
       // listen for form submission
       form.on('submit', function (event) {
