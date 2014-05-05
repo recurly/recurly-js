@@ -14,6 +14,7 @@
     "component/emitter": "*",
     "component/indexof": "*",
     "component/event": "*",
+    "component/clone": "*",
     "component/bind": "*",
     "component/each": "*",
     "component/find": "*",
