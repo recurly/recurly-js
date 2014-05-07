@@ -9,10 +9,10 @@
   "license": "MIT",
   "main": "lib/index.js",
   "dependencies": {
-    "danmilon/object.keys-shim": "*",
     "visionmedia/node-querystring": "0.6.6",
     "component/emitter": "1.1.2",
     "component/indexof": "0.0.3",
+    "component/object": "0.0.3",
     "component/event": "0.1.3",
     "component/clone": "0.2.2",
     "component/bind": "0.0.1",
