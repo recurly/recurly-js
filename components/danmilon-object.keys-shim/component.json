@@ -1,0 +1,17 @@
+{
+  "name": "object.keys-shim",
+  "repo": "danmilon/object.keys-shim",
+  "description": "Object.keys shim",
+  "version": "0.0.1",
+  "keywords": [
+    "object",
+    "keys",
+    "shim"
+  ],
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ],
+  "dependencies": {},
+  "license": "MIT"
+}

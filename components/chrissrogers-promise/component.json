@@ -1,0 +1,17 @@
+{
+  "name": "promise",
+  "repo": "chrissrogers/promise",
+  "description": "Bare bones Promises/A+ implementation",
+  "version": "5.0.0-p0",
+  "keywords": [],
+  "dependencies": {
+    "johntron/asap": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "scripts": [
+    "index.js",
+    "core.js"
+  ],
+  "twitter": "@ForbesLindesay"
+}

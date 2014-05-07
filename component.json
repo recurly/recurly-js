@@ -1,6 +1,6 @@
 {
   "name": "recurly",
-  "repo": "recurly/recurly-js",
+  "repository": "recurly/recurly-js",
   "description": "Official Recurly JavaScript client for the browser.",
   "version": "3.0.0-beta",
   "keywords": [
@@ -10,23 +10,23 @@
   "main": "lib/index.js",
   "dependencies": {
     "danmilon/object.keys-shim": "*",
-    "chrissrogers/querystring": "*",
-    "component/emitter": "*",
-    "component/indexof": "*",
-    "component/event": "*",
-    "component/clone": "*",
-    "component/bind": "*",
-    "component/each": "*",
-    "component/find": "*",
-    "component/json": "*",
-    "component/type": "*",
-    "component/map": "*",
-    "yields/merge": "*",
-    "learnboost/jsonp": "*",
-    "visionmedia/debug": "*",
-    "chrissrogers/promise": "*",
-    "kewah/mixin": "*",
-    "pluma/par": "*"
+    "visionmedia/node-querystring": "0.6.6",
+    "component/emitter": "1.1.2",
+    "component/indexof": "0.0.3",
+    "component/event": "0.1.3",
+    "component/clone": "0.2.2",
+    "component/bind": "0.0.1",
+    "component/each": "0.2.3",
+    "component/find": "0.0.1",
+    "component/json": "0.0.2",
+    "component/type": "1.0.0",
+    "component/map": "0.0.1",
+    "yields/merge": "1.0.0",
+    "learnboost/jsonp": "0.0.4",
+    "visionmedia/debug": "0.8.1",
+    "chrissrogers/promise": "5.0.0-p1",
+    "kewah/mixin": "0.1.0",
+    "pluma/par": "0.3.0"
   },
   "scripts": [
     "lib/index.js",
@@ -45,6 +45,5 @@
     "lib/mixins/pricing/promise.js",
     "lib/mixins/pricing/calculations.js",
     "lib/mixins/pricing/attach.js"
-  ],
-  "remotes": []
+  ]
 }
