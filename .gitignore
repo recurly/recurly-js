@@ -6,6 +6,7 @@ npm-debug.log
 
 build
 
+test/components
 test/server/pid.txt
 
 /recurly.js

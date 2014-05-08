@@ -4,7 +4,10 @@ node_js:
   - '0.10'
 env:
   global:
-    - secure: 'Q2BpyJZM/sgK5I9FRc2RqJ6LTQ3MR8Rk0Bs4BgzYE+QlsOS0mbwI5kjVwVCERu8+5MipD9pDXxeror3gnexQjtlD2DC2yhEvsjE1Q9nUc1fJO8yjH0LdRhcRj3i6cNciydTkvS/QJgi8mXO3Nfb+MDIhiBPyZbCfyj+yjcFgu2c='
-    - secure: 'KFrQZYFBREY1xKAnnDJFUJaOwTn0sb4oHkFjhlSYzsTpDcWQEowPK72i8IOknf3r55qAuxi5VDKHcV/AcEGSSnG8Olopm3RZQ4mugPz/93lXg9lm73pT0tfK4jGPlQV7rYT4kkexy5F3LAW8ojSOTctGImIzgmm2Qm3RQJBBl5E='
+    - secure: DB2wQz4E2uN/GH4nm8jqjaNFWHwxtnR8HRKBianwdix0HU2R/wKKV3te7dLndPLsZXedNQmeWw7/b453yFvIoWp++bt5G89qV0lRPINCYmkZaxBYEVMDdAlcwgffQX+Xf5KoLXkV7pb4cFpKtiTq4ZNXNyi3eDmD43+B1NdifI0=
+    - secure: tqNx+rpmlxlN2wVr8aeFWanVV+Nf03zHxnnbDS7T9gIebaegicRzW40NHU6WO3+aAVlwXl+GvluIAmad9+/T2mKIRT4kU/sZRdbQyQvdE7QieG0n/uDf+Dk4AVHvm9FVTjj0rHrhllV5HFsH/pbMM4PJKMwEOAUFYAZfUoESa5Y=
   matrix:
-  - BROWSERS: 'chrome, safari, firefox, ie8..11'
+    - BROWSER: chrome
+    - BROWSER: safari
+    - BROWSER: firefox
+    - BROWSER: ie8..11
