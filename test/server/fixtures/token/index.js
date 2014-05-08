@@ -21,9 +21,7 @@ module.exports = function token (req, res) {
  */
 
 var ok = {
-  "amount_in_cents": 0,
-  "currency": "USD",
-  "token": "7QF5CSJ2n-6CXX1k15FtYA"
+  "id": "7QF5CSJ2n-6CXX1k15FtYA"
 };
 
 /**
@@ -33,8 +31,7 @@ var ok = {
 var blankParam = {
   "error": {
     "code": "missing_parameter",
-    "message": "'first_name' is blank",
-    "locale": "en-US",
+    "message": "'first_name' is blank"
     "fields": ["first_name"]
   }
 };
@@ -47,8 +44,7 @@ var decline = {
   "error": {
     "code": "declined",
     "message": "Your card was declined. In order to resolve the issue, you will need to contact your bank.",
-    "fields": ["number"],
-    "locale": "en-US"
+    "fields": ["number"]
   }
 };
 

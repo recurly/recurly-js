@@ -1,7 +1,6 @@
 {
   "error": {
-    "code": "not_found",
-    "message": "coupon is invalid",
-    "locale": "en-US"
+    "code": "not-found",
+    "message": "Couldn't find Coupon with coupon_code = invalid"
   }
 }

@@ -28,6 +28,7 @@ app.locals.pretty = true;
  * Middleware.
  */
 
+app.use(express.logger());
 app.use(express.static(path.resolve(__dirname + '/../..')));
 
 /**

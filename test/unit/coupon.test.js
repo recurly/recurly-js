@@ -15,7 +15,7 @@ describe('Recurly.coupon', function () {
     recurly = new Recurly();
     recurly.configure({
       publicKey: 'test',
-      api: 'http://' + window.location.host
+      api: '//' + window.location.host
     });
   });
 
@@ -38,7 +38,7 @@ describe('Recurly.coupon', function () {
 
   describe('when given an invalid plan', function () {
     it('produces an error', function (done) {
-      recurly.coupon({ plan: 'invalid', coupon: 'coop' }, function (err) {
+      recurly.coupon({ plan: 'invalid', coupon: 'coop' }, function (err, coupon) {
         assert(err);
         done();
       });
@@ -47,11 +47,43 @@ describe('Recurly.coupon', function () {
 
   describe('when given a valid plan', function () {
     describe('when given an invalid coupon', function () {
-      it('should throw an error');
+      it('should throw an error', function (done) {
+        recurly.coupon({ plan: 'basic', coupon: 'coop-invalid' }, function (err) {
+          assert(err);
+          done();
+        });
+      });
     });
 
     describe('when given a valid coupon', function () {
-      it('should fetch them from the api');
+      it('contains a discount amount', function (done) {
+        assertValidCoupon('coop', function (coupon) {
+          assert(!coupon.discount.rate);
+          each(coupon.discount, function (currency, amount) {
+            assert(currency.length === 3);
+            assert(typeof amount === 'number');
+          });
+          done();
+        });
+      });
+    });
+
+    describe('when given a valid percent-based coupon', function () {
+      it('contains a discount rate', function (done) {
+        assertValidCoupon('coop-pct', function (coupon) {
+          assert(typeof coupon.discount.rate === 'number');
+          done();
+        });
+      });
     });
   });
+
+  function assertValidCoupon (code, done) {
+    recurly.coupon({ plan: 'basic', coupon: code }, function (err, coupon) {
+      assert(coupon);
+      assert(coupon.code);
+      assert(coupon.name);
+      done(coupon);
+    });
+  }
 });

@@ -15,7 +15,7 @@ describe('Recurly.open', function () {
     recurly = new Recurly;
     recurly.configure({
       publicKey: 'test',
-      api: 'http://' + window.location.host
+      api: '//' + window.location.host
     });
     sinon.stub(window, 'open');
   });

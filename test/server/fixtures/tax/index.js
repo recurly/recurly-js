@@ -34,16 +34,14 @@ var usst = {
   "taxes": [{
     "type": "usst",
     "rate": "0.0875"
-  }],
-  "locale": "en-US"
+  }]
 };
 
 var vat = {
   "taxes": [{
     "type": "vat",
     "rate": "0.015"
-  }],
-  "locale": "en-US"
+  }]
 };
 
 var none = {

@@ -11,8 +11,8 @@
   },
   "price": {
     "USD": {
-      "setup_fee_in_cents": 200,
-      "unit_amount_in_cents": 1999
+      "setup_fee": 2.0,
+      "unit_amount": 19.99
     }
   },
   "addons": [{
@@ -21,7 +21,7 @@
     "quantity": 1,
     "price": {
       "USD": {
-        "unit_amount_in_cents": 100
+        "unit_amount": 1.0
       }
     }
   }],
@@ -30,6 +30,5 @@
       "card_types": ["visa", "master", "american_express", "discover", "diners_club", "jcb"]
     }
   }],
-  "tax_exempt": false,
-  "locale": "en-US"
+  "tax_exempt": false
 }
