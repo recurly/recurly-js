@@ -9,6 +9,7 @@ describe('Recurly.open', function () {
   var Recurly = window.recurly.Recurly;
   var exampleUrl = 'http://recurly.com';
   var exampleData = { example: 'data' };
+  var originalOpen = window.open;
   var recurly;
 
   beforeEach(function () {
@@ -17,14 +18,14 @@ describe('Recurly.open', function () {
       publicKey: 'test',
       api: '//' + window.location.host
     });
-    sinon.stub(window, 'open');
+    window.open = sinon.spy();
     sinon.stub(recurly, 'relay', function (done) {
       done();
     });
   });
 
   afterEach(function () {
-    window.open.restore();
+    window.open = originalOpen;
     recurly.relay.restore();
   });
 
@@ -58,8 +59,7 @@ describe('Recurly.open', function () {
 
   it('attaches an event listener to Recurly', function () {
     var eventName;
-    window.open.restore();
-    sinon.stub(window, 'open', function (url) {
+    window.open = sinon.spy(function (url) {
       eventName = url.match(/(recurly-open-\d+)/)[0];
     });
     recurly.open(exampleUrl);
@@ -115,8 +115,7 @@ describe('Recurly.open', function () {
 
     it('is called when the event is emitted', function () {
       var eventName;
-      window.open.restore();
-      sinon.stub(window, 'open', function (url) {
+      window.open = sinon.spy(function (url) {
         eventName = url.match(/(recurly-open-\d+)/)[0];
       });
       recurly.open(exampleUrl, callback);
