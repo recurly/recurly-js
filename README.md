@@ -1,8 +1,8 @@
 # Recurly.js 3
 
-![](https://travis-ci.org/recurly/recurly-js.svg)
+Simple subscription billing in the browser
 
-Zen subscription billing in the browser
+![](https://travis-ci.org/recurly/recurly-js.svg)
 
 ## Overview
 This JavaScript library is included in a merchants form page and simplifies integration with
