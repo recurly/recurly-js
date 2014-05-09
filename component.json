@@ -26,7 +26,8 @@
     "visionmedia/debug": "0.8.1",
     "chrissrogers/promise": "5.0.0-p1",
     "kewah/mixin": "0.1.0",
-    "pluma/par": "0.3.0"
+    "pluma/par": "0.3.0",
+    "ianstormtaylor/to-slug-case": "0.1.2"
   },
   "scripts": [
     "lib/index.js",
