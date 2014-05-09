@@ -2,8 +2,8 @@ doctype html
 html
   head
     script.
-      window.relay = function (msg, origin) {
-        window.setTimeout(function () {
-          window.postMessage(msg, origin);
+      function send (msg, origin) {
+        setTimeout(function () {
+          window.parent.postMessage(msg, origin);
         }, 0);
-      };
+      }

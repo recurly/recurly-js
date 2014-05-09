@@ -18,10 +18,14 @@ describe('Recurly.open', function () {
       api: '//' + window.location.host
     });
     sinon.stub(window, 'open');
+    sinon.stub(recurly, 'relay', function (done) {
+      done();
+    });
   });
 
   afterEach(function () {
     window.open.restore();
+    recurly.relay.restore();
   });
 
   it('requires Recurly.configure', function () {
