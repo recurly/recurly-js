@@ -1,5 +1,7 @@
 # Recurly.js 3
 
+![](https://travis-ci.org/recurly/recurly-js.svg)
+
 Zen subscription billing in the browser
 
 ## Overview
