@@ -1,5 +1,5 @@
 {
-  "name": "recurly-test",
+  "name": "recurly-js-test",
   "main": "index.js",
   "scripts": [
     "index.js",
