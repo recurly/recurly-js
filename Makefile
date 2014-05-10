@@ -17,7 +17,7 @@ $(DELEGATE): recurly.js
 	@cd test && make $@
 
 clean:
-	@rm -rf components node_modules recurly.js recurly.min.js
+	@rm -rf node_modules recurly.js recurly.min.js
 	@cd test && make $@
 
 .PHONY: recurly.js
