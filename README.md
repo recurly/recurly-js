@@ -2,7 +2,7 @@
 
 Simple subscription billing in the browser
 
-![https://travis-ci.org/recurly/recurly-js/builds](https://travis-ci.org/recurly/recurly-js.svg)
+[![Travis](https://travis-ci.org/recurly/recurly-js.svg "Travis")](https://travis-ci.org/recurly/recurly-js/builds)
 
 ## Overview
 This JavaScript library is included in a merchants form page and simplifies integration with
