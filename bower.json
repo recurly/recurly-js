@@ -1,6 +1,6 @@
 {
   "name": "recurly",
-  "version": "3.0.0-beta",
+  "version": "3.0.0",
   "main": "recurly.js",
   "dependencies": {},
   "devDependencies": {}

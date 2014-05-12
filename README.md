@@ -55,5 +55,5 @@ $ make test
 [*aurea mediocritas*][aristotle]
 
 [aristotle]: http://en.wikipedia.org/wiki/Golden_mean_(philosophy)
-[docs]: https://docs.recurly.com/api/recurlyjs/v3beta
+[docs]: https://docs.recurly.com/js
 [component]: http://github.com/component/component
