@@ -1,8 +1,10 @@
-# Recurly.js
+# Recurly.js v2
 
-### :zap: Beta Version 3 Available
+### :zap: Version 3 Available
 
-Interested in trying out the new (beta) version of recurly.js? [Get started here](https://github.com/recurly/recurly-js/tree/v3), [check out the docs](https://docs.recurly.com/api/recurlyjs/v3beta), and let us know what you think in [#recurly on freenode](irc://chat.freenode.net:+6697/recurly).
+Version 2 of Recurly.js has been deprecated in favor of version 3,
+[available here](https://github.com/recurly/recurly-js). Version 2 will see
+minimal mainenance updates, and we encourage all to switch to the new version.
 
 ## Introduction
 
