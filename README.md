@@ -1,19 +1,12 @@
-# Recurly.js 3
+[<img src="https://travis-ci.org/recurly/recurly-js.svg" alt="Travis" align="right">](https://travis-ci.org/recurly/recurly-js/builds)
+
+![Recurly.js](http://docs.recurly.com/js/images/recurly-js-black.png "Recurly.js")
 
 Simple subscription billing in the browser
 
-[![Travis](https://travis-ci.org/recurly/recurly-js.svg "Travis")](https://travis-ci.org/recurly/recurly-js/builds)
+## Documentation
 
-## Overview
-This JavaScript library is included in a merchants form page and simplifies integration with
-Recurly. When a user submits their credit card information, it is sent to the api.recurly.com and
-a Recurly token is returned. You may then use this token to create subscriptions and update billing
-information using the Recurly API, without ever having to handle a credit card number on your server, 
-greatly simplifying PCI Compliance.
-
-## API Documentation
-
-[Recurly.js API Docs][docs]
+[Recurly.js Documentation][docs]
 
 ## Installation
 
