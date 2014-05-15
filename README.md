@@ -4,9 +4,11 @@
 
 Simple subscription billing in the browser
 
+v3.0.0
+
 ## Documentation
 
-[Recurly.js Documentation][docs]
+[Getting Started & API Documentation][docs]
 
 ## Installation
 
