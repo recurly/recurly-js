@@ -6,7 +6,8 @@
     "unit/recurly.test.js",
     "unit/configure.test.js",
     "unit/open.test.js",
-    "unit/coupon.test.js"
+    "unit/coupon.test.js",
+    "unit/validate.test.js"
   ],
   "dependencies": {
     "component/bind": "*",
