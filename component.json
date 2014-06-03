@@ -2,7 +2,7 @@
   "name": "recurly",
   "repository": "recurly/recurly-js",
   "description": "Official Recurly JavaScript client for the browser.",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "keywords": [
     "recurly"
   ],
