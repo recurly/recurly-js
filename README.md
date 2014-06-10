@@ -4,7 +4,7 @@
 
 Simple subscription billing in the browser
 
-**current** v3.0.2
+**current** v3.0.3
 
 ## Documentation
 
