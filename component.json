@@ -20,6 +20,7 @@
     "component/find": "0.0.1",
     "component/json": "0.0.2",
     "component/type": "1.0.0",
+    "component/trim": "0.0.1",
     "component/map": "0.0.1",
     "yields/merge": "1.0.0",
     "learnboost/jsonp": "0.0.4",

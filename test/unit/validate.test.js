@@ -51,12 +51,27 @@ describe('Recurly.validate', function () {
   });
 
   describe('cvv', function() {
-    it('should return true for a valid cvv', function() {
+    it('should return true for a valid CVV String or Number', function() {
+      assert(true === recurly.validate.cvv(123));
+      assert(true === recurly.validate.cvv(1234));
       assert(true === recurly.validate.cvv('123'));
+      assert(true === recurly.validate.cvv('1234'));
     });
 
-    it('should return false for an invalid cvv', function() {
+    it('should trim input', function () {
+      assert(true === recurly.validate.cvv(' 123'));
+      assert(true === recurly.validate.cvv('123 '));
+      assert(true === recurly.validate.cvv('   1234  '));
+    });
+
+    it('should return false for an invalid CVV String or Number', function() {
+      assert(false === recurly.validate.cvv(1));
+      assert(false === recurly.validate.cvv(123456));
       assert(false === recurly.validate.cvv('1'));
+      assert(false === recurly.validate.cvv('xyz'));
+      assert(false === recurly.validate.cvv('12f'));
+      assert(false === recurly.validate.cvv('123f'));
+      assert(false === recurly.validate.cvv('123456'));
     });
   })
 });
