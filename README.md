@@ -1,10 +1,8 @@
-[<img src="https://travis-ci.org/recurly/recurly-js.svg" alt="Travis" align="right">][travis]
-
 ![Recurly.js](http://docs.recurly.com/js/images/recurly-js-black.png "Recurly.js")
 
 Simple subscription billing in the browser
 
-**current** v3.0.3
+[![build status][travis-image]][travis-url]
 
 ## Documentation
 
@@ -53,8 +51,10 @@ $ make test
 
 [*aurea mediocritas*][aristotle]
 
-[travis]: https://travis-ci.org/recurly/recurly-js/builds
-[aristotle]: http://en.wikipedia.org/wiki/Golden_mean_(philosophy)
+[travis-url]: https://travis-ci.org/recurly/recurly-js/builds
+[travis-image]: https://img.shields.io/travis/recurly/recurly-js.svg?style=flat
+
 [docs]: https://docs.recurly.com/js
 [component]: http://github.com/component/component
 [license]: LICENSE.md
+[aristotle]: http://en.wikipedia.org/wiki/Golden_mean_(philosophy)
