@@ -3,6 +3,7 @@
 Simple subscription billing in the browser
 
 [![build status][travis-image]][travis-url]
+[![code quality][climate-image]][climate-url]
 
 ## Documentation
 
@@ -53,6 +54,8 @@ $ make test
 
 [travis-url]: https://travis-ci.org/recurly/recurly-js/builds
 [travis-image]: https://img.shields.io/travis/recurly/recurly-js.svg?style=flat
+[climate-url]: https://codeclimate.com/github/recurly/recurly-js
+[climate-image]: http://img.shields.io/codeclimate/github/recurly/recurly-js.svg?style=flat
 
 [docs]: https://docs.recurly.com/js
 [component]: http://github.com/component/component
