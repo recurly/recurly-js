@@ -60,4 +60,4 @@ $ make test
 [docs]: https://docs.recurly.com/js
 [component]: http://github.com/component/component
 [license]: LICENSE.md
-[aristotle]: http://en.wikipedia.org/wiki/Golden_mean_(philosophy)
+[aristotle]: https://en.wikipedia.org/wiki/Golden_mean_(philosophy)
