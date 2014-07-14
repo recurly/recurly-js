@@ -1,10 +1,11 @@
-PORT= 8989
-BIN= ../node_modules/.bin
+PORT = 8989
+PID = server/pid.txt
+BIN = ../node_modules/.bin
 BROWSERS ?= 'chrome, safari, firefox'
-TEST= http://localhost:$(PORT)
-COMPONENT= $(BIN)/component
-GRAVY=$(BIN)/gravy
-PHANTOMJS= $(BIN)/mocha-phantomjs \
+TEST = http://localhost:$(PORT)
+COMPONENT = $(BIN)/component
+GRAVY = $(BIN)/gravy
+PHANTOMJS = $(BIN)/mocha-phantomjs \
   --setting local-to-remote-url-access=true \
   --setting-web-security=false
 
@@ -35,9 +36,9 @@ clean: kill
 	rm -rf components build
 
 kill:
-	-@test ! -e server/pid.txt || \
-		(kill `cat server/pid.txt` && \
-			rm -f server/pid.txt)
+	-@test ! -e $(PID) || \
+		(kill `cat $(PID)` && \
+			rm -f $(PID))
 
 .PHONY: build
 .PHONY: test-sauce test-coverage

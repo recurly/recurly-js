@@ -12,7 +12,7 @@
   "dependencies": {
     "component/bind": "*",
     "component/assert": "*",
-    "ianstormtaylor/sinon": "*",
+    "chrissrogers/sinon": "*",
     "yields/gravy": "*",
     "component/each": "*",
     "chrissrogers/noop": "*",

@@ -1,7 +1,7 @@
-BIN= node_modules/.bin
-COMPONENT= $(BIN)/component
-MINIFY= $(BIN)/uglifyjs
-DELEGATE= test test-browser test-sauce
+BIN = node_modules/.bin
+COMPONENT = $(BIN)/component
+MINIFY = $(BIN)/uglifyjs
+DELEGATE = test test-browser test-sauce
 
 recurly.js: node_modules components $(SRC)
 	@$(COMPONENT) build --standalone recurly --name recurly --out .
