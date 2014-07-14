@@ -53,7 +53,7 @@ $ make test
 [*aurea mediocritas*][aristotle]
 
 [travis-url]: https://travis-ci.org/recurly/recurly-js/builds
-[travis-image]: https://img.shields.io/travis/recurly/recurly-js.svg?style=flat
+[travis-image]: http://img.shields.io/travis/recurly/recurly-js.svg?style=flat
 [climate-url]: https://codeclimate.com/github/recurly/recurly-js
 [climate-image]: http://img.shields.io/codeclimate/github/recurly/recurly-js.svg?style=flat
 
