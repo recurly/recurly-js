@@ -2,7 +2,7 @@
 
 ### Version 3.0.3 (June 10, 2014)
 
-* Added 'phone' and 'vat_number' to list of tokenizable fields[#126][126]
+* Added 'phone' and 'vat_number' to list of tokenizable fields [#126][126]
 * Added checkbox support to Pricing.prototype.attach [#123][123]
 * Fixed issue in Pricing.prototype.attach where addons would attempt to load out of order [#127][127]
 * Fixed issue where coupon not found errors would go uncaught in Pricing.prototype.attach [#124][124]

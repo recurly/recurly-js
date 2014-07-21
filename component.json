@@ -37,15 +37,16 @@
     "lib/errors.js",
     "lib/util/dom.js",
     "lib/util/parse-card.js",
-    "lib/mixins/coupon.js",
-    "lib/mixins/paypal.js",
-    "lib/mixins/plan.js",
-    "lib/mixins/tax.js",
-    "lib/mixins/token.js",
-    "lib/mixins/validate.js",
-    "lib/mixins/pricing/index.js",
-    "lib/mixins/pricing/promise.js",
-    "lib/mixins/pricing/calculations.js",
-    "lib/mixins/pricing/attach.js"
+    "lib/recurly/open.js",
+    "lib/recurly/coupon.js",
+    "lib/recurly/paypal.js",
+    "lib/recurly/plan.js",
+    "lib/recurly/tax.js",
+    "lib/recurly/token.js",
+    "lib/recurly/validate.js",
+    "lib/recurly/pricing/index.js",
+    "lib/recurly/pricing/promise.js",
+    "lib/recurly/pricing/calculations.js",
+    "lib/recurly/pricing/attach.js"
   ]
 }
