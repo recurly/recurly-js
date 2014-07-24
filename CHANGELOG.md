@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 3.0.4 (July 24, 2014)
+
+* Fixed issue with addons and pricing module [#137][137]
+
 ### Version 3.0.3 (June 10, 2014)
 
 * Added 'phone' and 'vat_number' to list of tokenizable fields [#126][126]
@@ -22,6 +26,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[137]: https://github.com/recurly/recurly-js/commit/db481de4459dcb7918060f1d3fbfaeb57c39d802
 [127]: https://github.com/recurly/recurly-js/commit/744942e2922c42ee6a67fb131cdf1f8a208ab797
 [126]: https://github.com/recurly/recurly-js/commit/0fa3b8a57a12e89050a51e40e91ec1a9b34bb30e
 [125]: https://github.com/recurly/recurly-js/commit/f7072d7387b8a43d41a5ec94bb069a26eb28f19d
