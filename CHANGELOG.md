@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 3.0.5 (August 5, 2014)
+
+* Fixed missing json module dependency [#138][138]
+
 ### Version 3.0.4 (July 24, 2014)
 
 * Fixed issue with addons and pricing module [#137][137]
@@ -26,6 +30,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[138]: https://github.com/recurly/recurly-js/commit/ce631dbd75c62670f91f226ab02dad0218f5c90f
 [137]: https://github.com/recurly/recurly-js/commit/db481de4459dcb7918060f1d3fbfaeb57c39d802
 [127]: https://github.com/recurly/recurly-js/commit/744942e2922c42ee6a67fb131cdf1f8a208ab797
 [126]: https://github.com/recurly/recurly-js/commit/0fa3b8a57a12e89050a51e40e91ec1a9b34bb30e
