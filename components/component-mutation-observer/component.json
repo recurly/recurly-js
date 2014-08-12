@@ -1,0 +1,15 @@
+{
+  "name": "mutation-observer",
+  "repo": "component/mutation-observer",
+  "version": "0.0.1",
+  "description": "Exposes the `MutationObserver` constructor.",
+  "keywords": [
+    "mutation",
+    "observer",
+    "dom",
+    "changes"
+  ],
+  "scripts": [
+    "index.js"
+  ]
+}
