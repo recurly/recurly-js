@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 3.0.6 (September 8, 2014)
+
+* Fixes rounding issues around tax and floats [#147][147]
+* Correctly sets setup_fee on pricing output object [#144][144]
+
 ### Version 3.0.5 (August 5, 2014)
 
 * Fixed missing json module dependency [#138][138]
@@ -30,6 +35,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[147]: https://github.com/recurly/recurly-js/commit/30a7310148d2109dfb4f2b46232d9204ee3f7211
+[144]: https://github.com/recurly/recurly-js/commit/25c505b5a158c30fdf6ab8009dae37f2ddc3b749
 [138]: https://github.com/recurly/recurly-js/commit/ce631dbd75c62670f91f226ab02dad0218f5c90f
 [137]: https://github.com/recurly/recurly-js/commit/db481de4459dcb7918060f1d3fbfaeb57c39d802
 [127]: https://github.com/recurly/recurly-js/commit/744942e2922c42ee6a67fb131cdf1f8a208ab797
