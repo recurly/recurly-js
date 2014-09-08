@@ -98,7 +98,7 @@
 
       pricing.on('change', console.info.bind(console));
       pricing.on('error', console.error.bind(console));
-      pricing.binding(form);
+      pricing.attach(form);
 
       // listen for form submission
       form.on('submit', function (event) {
