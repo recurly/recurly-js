@@ -9,6 +9,11 @@ Simple subscription billing in the browser
 
 [Getting Started & API Documentation][docs]
 
+## Examples
+
+See our [Examples Repo][examples] for example client-side and server-side
+implementations.
+
 ## Installation
 
 ### Standard
@@ -58,6 +63,7 @@ $ make test
 [climate-image]: http://img.shields.io/codeclimate/github/recurly/recurly-js.svg?style=flat
 
 [docs]: https://docs.recurly.com/js
+[examples]: https://github.com/recurly/recurly-js-examples
 [component]: http://github.com/component/component
 [license]: LICENSE.md
 [aristotle]: https://en.wikipedia.org/wiki/Golden_mean_(philosophy)
