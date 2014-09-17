@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 3.0.7 (September 17, 2014)
+
+* Fixes issue with IE PayPal communication [#152][152]
+
 ### Version 3.0.6 (September 8, 2014)
 
 * Fixes rounding issues around tax and floats [#147][147]
@@ -35,6 +39,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[152]: https://github.com/recurly/recurly-js/commit/47d120185804e28ecbe7d96a0ce8a07b4234353d
 [147]: https://github.com/recurly/recurly-js/commit/30a7310148d2109dfb4f2b46232d9204ee3f7211
 [144]: https://github.com/recurly/recurly-js/commit/25c505b5a158c30fdf6ab8009dae37f2ddc3b749
 [138]: https://github.com/recurly/recurly-js/commit/ce631dbd75c62670f91f226ab02dad0218f5c90f
