@@ -1,0 +1,10 @@
+{
+  "name": "debug",
+  "repo": "visionmedia/debug",
+  "description": "small debugging utility",
+  "version": "0.7.4",
+  "keywords": ["debug", "log", "debugger"],
+  "main": "debug.js",
+  "scripts": ["debug.js"],
+  "dependencies": {}
+}

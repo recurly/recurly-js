@@ -1,0 +1,14 @@
+{
+  "name": "map",
+  "repo": "component/map",
+  "description": "Array map utility",
+  "version": "0.0.1",
+  "keywords": ["array", "map", "utility"],
+  "dependencies": {
+    "component/to-function": "*"
+  },
+  "development": {},
+  "scripts": [
+    "index.js"
+  ]
+}

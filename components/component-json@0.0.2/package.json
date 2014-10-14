@@ -1,0 +1,14 @@
+{
+  "name": "json-component",
+  "repo": "component/json",
+  "description": "JSON parser / stringifier",
+  "version": "0.0.2",
+  "keywords": ["json"],
+  "dependencies": {},
+  "development": {},
+  "component": {
+    "scripts": {
+      "json": "index.js"
+    }
+  }
+}
