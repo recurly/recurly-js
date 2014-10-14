@@ -1,14 +1,11 @@
 BIN = node_modules/.bin
-COMPONENT = $(BIN)/component
+DUO = $(BIN)/duo
 MINIFY = $(BIN)/uglifyjs
 DELEGATE = test test-browser test-sauce test-coverage
 
-recurly.js: node_modules components $(SRC)
-	@$(COMPONENT) build --standalone recurly --name recurly --out .
+recurly.js: node_modules
+	@$(DUO) --global recurly --out . lib/index.js > recurly.js
 	@$(MINIFY) recurly.js --output recurly.min.js
-
-components: component.json
-	@$(COMPONENT) install
 
 node_modules: package.json
 	@npm install --silent

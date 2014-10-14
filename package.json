@@ -13,7 +13,7 @@
     "mocha": "1.x",
     "should": "4.x",
     "uglify-js": "2.4.x",
-    "component": "0.19.x",
+    "duo": "0.x",
     "express": "3.x",
     "jade": "1.x",
     "mocha-phantomjs": "3.x",
