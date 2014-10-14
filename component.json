@@ -24,7 +24,7 @@
     "yields/merge": "1.0.0",
     "learnboost/jsonp": "0.0.4",
     "visionmedia/debug": "0.8.1",
-    "chrissrogers/promise": "5.0.0-p2",
+    "then/promise": "6.0.0",
     "kewah/mixin": "0.1.0",
     "pluma/par": "0.3.0",
     "ianstormtaylor/to-slug-case": "0.1.2"

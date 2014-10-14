@@ -5,9 +5,9 @@ This is a simple implementation of Promises.  It is a super set of ES6 Promises 
 
 For detailed tutorials on its use, see www.promisejs.org
 
-[![Build Status](https://travis-ci.org/then/promise.png)](https://travis-ci.org/then/promise)
-[![Dependency Status](https://gemnasium.com/then/promise.png)](https://gemnasium.com/then/promise)
-[![NPM version](https://badge.fury.io/js/promise.png)](http://badge.fury.io/js/promise)
+[![Build Status](https://img.shields.io/travis/then/promise/master.svg)](https://travis-ci.org/then/promise)
+[![Dependency Status](https://img.shields.io/gemnasium/then/promise.svg)](https://gemnasium.com/then/promise)
+[![NPM version](https://img.shields.io/npm/v/promise.svg)](https://www.npmjs.org/package/promise)
 
 ## Installation
 
@@ -17,10 +17,16 @@ For detailed tutorials on its use, see www.promisejs.org
 
 **Client:**
 
-You can use browserify on the client, or use the pre-compiled script that acts as a pollyfill.
+You can use browserify on the client, or use the pre-compiled script that acts as a polyfill.
 
 ```html
 <script src="https://www.promisejs.org/polyfills/promise-4.0.0.js"></script>
+```
+
+Note that the [es5-shim](https://github.com/es-shims/es5-shim) must be loaded before this library to support browsers pre IE9.
+
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.min.js"></script>
 ```
 
 ## Usage
