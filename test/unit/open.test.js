@@ -3,7 +3,6 @@ var assert = require('assert');
 var each = require('each');
 var noop = require('noop');
 var qs = require('querystring');
-var sinon = require('sinon');
 
 describe('Recurly.open', function () {
   var Recurly = window.recurly.Recurly;

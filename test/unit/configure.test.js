@@ -2,7 +2,6 @@
 var assert = require('assert');
 var each = require('each');
 var bind = require('bind');
-var sinon = require('sinon');
 
 describe('Recurly.configure', function () {
   var Recurly = window.recurly.Recurly;
