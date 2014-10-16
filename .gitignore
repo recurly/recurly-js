@@ -4,8 +4,7 @@
 node_modules
 npm-debug.log
 
-build
-
+test/build.js
 test/components
 test/server/pid.txt
 

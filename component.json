@@ -7,7 +7,6 @@
     "recurly"
   ],
   "license": "MIT",
-  "main": "lib/index.js",
   "dependencies": {
     "visionmedia/node-querystring": "0.6.6",
     "component/emitter": "1.1.2",
@@ -25,28 +24,9 @@
     "yields/merge": "1.0.0",
     "learnboost/jsonp": "0.0.4",
     "visionmedia/debug": "0.8.1",
-    "chrissrogers/promise": "5.0.0-p2",
+    "then/promise": "6.0.0",
     "kewah/mixin": "0.1.0",
     "pluma/par": "0.3.0",
     "ianstormtaylor/to-slug-case": "0.1.2"
-  },
-  "scripts": [
-    "lib/index.js",
-    "lib/recurly.js",
-    "lib/version.js",
-    "lib/errors.js",
-    "lib/util/dom.js",
-    "lib/util/parse-card.js",
-    "lib/recurly/open.js",
-    "lib/recurly/coupon.js",
-    "lib/recurly/paypal.js",
-    "lib/recurly/plan.js",
-    "lib/recurly/tax.js",
-    "lib/recurly/token.js",
-    "lib/recurly/validate.js",
-    "lib/recurly/pricing/index.js",
-    "lib/recurly/pricing/promise.js",
-    "lib/recurly/pricing/calculations.js",
-    "lib/recurly/pricing/attach.js"
-  ]
+  }
 }

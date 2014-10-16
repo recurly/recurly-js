@@ -1,0 +1,25 @@
+{
+  "name": "component-each",
+  "version": "0.2.2",
+  "description": "Array / object / string iteration utility",
+  "dependencies": {
+    "component-type": "~1.0.0",
+    "to-function": "~1.2.1"
+  },
+  "browser": {
+    "type": "component-type"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
+  },
+  "component": {
+    "scripts": {
+      "each/index.js": "index.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/component/each.git"
+  }
+}

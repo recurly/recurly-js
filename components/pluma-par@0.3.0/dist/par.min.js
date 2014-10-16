@@ -1,0 +1,2 @@
+/*! par 0.3.0 Original author Alan Plum <me@pluma.io>. Released into the Public Domain under the UNLICENSE. @preserve */
+var slice=Array.prototype.slice;function par(r){var a=slice.call(arguments,1);return function(){var l=slice.call(arguments,0),p=[];p.push.apply(p,a);p.push.apply(p,l);return r.apply(this,p)}}function rpartial(r){var a=slice.call(arguments,1);return function(){var l=slice.call(arguments,0);l.push.apply(l,a);return r.apply(this,l)}}par.rpartial=rpartial;par.lpartial=par;module.exports=par;

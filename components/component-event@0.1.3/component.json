@@ -1,0 +1,10 @@
+{
+  "name": "event",
+  "repo": "component/event",
+  "description": "Event binding component",
+  "version": "0.1.3",
+  "keywords": ["event", "events"],
+  "scripts": [
+    "index.js"
+  ]
+}

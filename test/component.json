@@ -12,10 +12,9 @@
   "dependencies": {
     "component/bind": "*",
     "component/assert": "*",
-    "ianstormtaylor/sinon": "*",
-    "yields/gravy": "*",
     "component/each": "*",
     "chrissrogers/noop": "*",
-    "component/querystring": "*"
+    "component/querystring": "*",
+    "yields/gravy": "*"
   }
 }

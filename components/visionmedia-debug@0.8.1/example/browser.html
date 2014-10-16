@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>debug()</title>
+    <script src="../build/build.js"></script>
+    <script>
+      // type debug.enable('*') in
+      // the console and refresh :)
+      var debug = require('debug');
+
+      a = debug('worker:a');
+      b = debug('worker:b');
+
+      setInterval(function(){
+        a('doing some work');
+      }, 1000);
+
+      setInterval(function(){
+        a('doing some work');
+      }, 1200);
+    </script>
+  </head>
+  <body>
+
+  </body>
+</html>

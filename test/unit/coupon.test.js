@@ -1,7 +1,6 @@
 
 var assert = require('assert');
 var each = require('each');
-var sinon = require('sinon');
 var noop = require('noop');
 
 describe('Recurly.coupon', function () {

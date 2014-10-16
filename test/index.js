@@ -1,4 +1,6 @@
 
+window.gravy = require('gravy');
+
 require('./unit/recurly.test.js');
 require('./unit/configure.test.js');
 require('./unit/open.test.js');

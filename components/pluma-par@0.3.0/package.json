@@ -1,0 +1,51 @@
+{
+  "name": "par",
+  "version": "0.3.0",
+  "author": "Alan Plum <me@pluma.io>",
+  "description": "Simple partial function application.",
+  "licenses": {
+    "type": "UNLICENSE",
+    "url": "https://github.com/pluma/par/blob/master/UNLICENSE"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pluma/par.git"
+  },
+  "keywords": [
+    "partial",
+    "partial function application",
+    "curry"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "~1.17",
+    "expect.js": "~0.2",
+    "uglify-js": "~2.4",
+    "jshint": "~2.4",
+    "istanbul": "~0.2",
+    "coveralls": "~2.6"
+  },
+  "main": "./dist/par.js",
+  "scripts": {
+    "test": "make test",
+    "coveralls": "make coveralls"
+  },
+  "engines": {
+    "node": ">=0.6"
+  },
+  "testling": {
+    "files": "spec/*.js",
+    "harness": "mocha",
+    "browsers": [
+      "chrome/latest",
+      "chrome/canary",
+      "firefox/3.6..4",
+      "firefox/latest",
+      "firefox/nightly",
+      "opera/10..latest",
+      "opera/next",
+      "safari/4..latest",
+      "ie/6..latest"
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "component-clone",
+  "version": "0.2.2",
+  "dependencies": {
+    "component-type": "*"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "expect.js": "*"
+  },
+  "component": {
+    "scripts": {
+      "clone/index.js": "index.js"
+    }
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/component/clone.git"
+  },
+  "browser": {
+    "type": "component-type"
+  }
+}

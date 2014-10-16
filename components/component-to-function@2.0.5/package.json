@@ -1,0 +1,35 @@
+{
+  "name": "to-function",
+  "repo": "component/to-function",
+  "description": "Convert property access strings into functions",
+  "version": "2.0.5",
+  "keywords": [
+    "utility"
+  ],
+  "dependencies": {
+    "component-props": "*",
+    "remove-try-require": "0.0.0"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "devDependencies": {
+    "better-assert": "*",
+    "mocha": "*",
+    "should": "*"
+  },
+  "browserify": {
+    "transform": [
+      "remove-try-require"
+    ]
+  },
+  "component": {
+    "scripts": {
+      "to-function/index.js": "index.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/component/to-function.git"
+  }
+}

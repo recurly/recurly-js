@@ -1,0 +1,15 @@
+{
+  "name": "find",
+  "description": "Array find first value utility",
+  "version": "0.0.1",
+  "keywords": ["array", "find", "utility"],
+  "dependencies": {
+    "component/to-function": "*"
+  },
+  "development": {},
+  "component": {
+    "scripts": {
+      "find/index.js": "index.js"
+    }
+  }
+}

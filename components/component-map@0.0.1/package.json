@@ -1,0 +1,17 @@
+{
+  "name": "map-component",
+  "version": "0.0.1",
+  "description": "Map utility",
+  "dependencies": {
+    "to-function": "*"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
+  },
+  "component": {
+    "scripts": {
+      "map/index.js": "index.js"
+    }
+  }
+}

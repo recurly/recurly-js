@@ -2,14 +2,13 @@ doctype html
 html
   head
     title recurly.js coverage
-    link(rel='stylesheet', href='build/build.css')
-    script(src='test/server/mocha.js')
+    script(src='/test/server/mocha.js')
     script
       mocha.setup({ ui: 'bdd' })
-    script(src='build/build.js')
+    script(src='/test/build.js')
     script
       cov = require('coverage')('recurly');
-    script(src='test/recurly.test.js')
+    script(src='/recurly.js')
   body
     #coverage
     #mocha(style='display: none;')

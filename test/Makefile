@@ -3,17 +3,14 @@ PID = server/pid.txt
 BIN = ../node_modules/.bin
 BROWSERS ?= 'chrome, safari, firefox'
 TEST = http://localhost:$(PORT)
-COMPONENT = $(BIN)/component
+DUO = $(BIN)/duo
 GRAVY = $(BIN)/gravy
 PHANTOMJS = $(BIN)/mocha-phantomjs \
   --setting local-to-remote-url-access=true \
   --setting-web-security=false
 
-build: components
-	@$(COMPONENT) build
-
-components: component.json
-	@$(COMPONENT) install
+build:
+	@$(DUO) index.js > build.js
 
 server: kill
 	@PORT=$(PORT) node server &> /dev/null &

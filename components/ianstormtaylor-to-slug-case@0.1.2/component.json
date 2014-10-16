@@ -1,0 +1,15 @@
+{
+  "name": "to-slug-case",
+  "repo": "ianstormtaylor/to-slug-case",
+  "license": "MIT",
+  "version": "0.1.2",
+  "description": "Convert a string to a slug case.",
+  "keywords": ["slug", "case", "slugcase", "string"],
+  "dependencies": {
+    "ianstormtaylor/to-space-case": "0.1.2"
+  },
+  "development": {
+    "component/assert": "*"
+  },
+  "scripts": ["index.js"]
+}

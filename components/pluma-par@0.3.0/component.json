@@ -1,0 +1,22 @@
+{
+  "name": "par",
+  "repo": "pluma/par",
+  "description": "Simple partial function application.",
+  "keywords": [
+    "partial",
+    "partial function application",
+    "curry"
+  ],
+  "version": "0.3.0",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": ["dist/par.js"],
+  "main": "./dist/par.js",
+  "ignore": [
+    "**/.*",
+    "build",
+    "components",
+    "node_modules"
+  ],
+  "license": "UNLICENSE"
+}
