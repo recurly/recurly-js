@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-var Recurly = require('./recurly');
+var Recurly = require('./lib/recurly');
 
 /**
  * Export a single instance.
