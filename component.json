@@ -23,7 +23,7 @@
     "component/map": "0.0.1",
     "yields/merge": "1.0.0",
     "learnboost/jsonp": "0.0.4",
-    "visionmedia/debug": "0.8.1",
+    "visionmedia/debug": "2.1.0",
     "then/promise": "6.0.0",
     "kewah/mixin": "0.1.0",
     "pluma/par": "0.3.0",
