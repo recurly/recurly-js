@@ -30,7 +30,7 @@ test-sauce: build server
 	@BROWSERS=$(BROWSERS) $(GRAVY) --url $(TEST)
 
 clean: kill
-	rm -rf components build
+	@rm -rf components
 
 kill:
 	-@test ! -e $(PID) || \
