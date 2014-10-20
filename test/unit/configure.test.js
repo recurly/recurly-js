@@ -75,4 +75,25 @@ describe('Recurly.configure', function () {
       });
     });
   });
+
+  describe('when falsey options are given', function () {
+    var examples = [0, '', null, false, undefined];
+
+    it('sets default values instead', function () {
+      each(examples, function (falsey) {
+        var recurly = new Recurly();
+
+        recurly.configure({
+          publicKey: 'foo',
+          currency: falsey,
+          api: falsey,
+          timeout: falsey
+        });
+
+        assert(recurly.config.currency === 'USD');
+        assert(recurly.config.timeout === 60000);
+        assert(recurly.config.api === 'https://api.recurly.com/js/v1');
+      });
+    });
+  });
 });
