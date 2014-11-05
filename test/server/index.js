@@ -6,6 +6,7 @@
 var fs = require('fs');
 var path = require('path');
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = module.exports = express();
 
 /**
@@ -29,17 +30,39 @@ app.locals.pretty = true;
  */
 
 app.use(express.logger());
+
+// This corrects an incorrect Content-type header
+// sent by IE9 XDomainRequests
+app.use(function (req, res, next) {
+  if (req.method === 'POST') {
+    req.headers['content-type'] = 'application/x-www-form-urlencoded';
+  }
+  next();
+});
+
+app.use(express.bodyParser());
 app.use(express.static(path.resolve(__dirname + '/../..')));
+
+// CORS headers
+app.use(function (req, res, next) {
+  res.set({
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Allow-Headers': 'Accept, Accept-Encoding, Accept-Language, Content-Type, Origin, User-Agent, X-Requested-With',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
+  });
+  next();
+});
 
 /**
  * Fixtures.
  */
 
-app.get('/plans/:plan_code', jsonp);
-app.get('/plans/:plan_code/coupons/:coupon_code', jsonp);
-app.get('/token', jsonp);
-app.get('/tax', jsonp);
-app.get('/3d_secure/start', postMessage);
+app.get('/plans/:plan_code', json);
+app.get('/plans/:plan_code/coupons/:coupon_code', json);
+app.get('/token', json);
+app.post('/token', json);
+app.get('/tax', json);
 app.get('/paypal/start', postMessage);
 app.get('/relay', render('relay'));
 app.get('*', render('index'));
@@ -62,8 +85,12 @@ function render (view) {
   };
 }
 
-function jsonp (req, res) {
-  res.jsonp(fixture(req, res));
+function json (req, res) {
+  if (req.query.callback) {
+    res.jsonp(fixture(req, res));
+  } else {
+    res.json(fixture(req, res));
+  }
 }
 
 function postMessage (req, res) {
@@ -81,4 +108,3 @@ function fixture (req, res) {
     ? fixture(req, res)
     : fixture;
 }
-
