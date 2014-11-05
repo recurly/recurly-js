@@ -8,7 +8,7 @@ describe('Recurly.configure', function () {
   var recurly;
 
   beforeEach(function () {
-     recurly = new Recurly();
+    recurly = new Recurly();
   });
 
   describe('when options.publicKey is not given', function () {
@@ -41,6 +41,7 @@ describe('Recurly.configure', function () {
         { publicKey: 'foo' }
       , { publicKey: 'foo', currency: 'USD' }
       , { publicKey: 'foo', currency: 'AUD', api: 'https://localhost' }
+      , { publicKey: 'foo', currency: 'AUD', api: 'https://localhost', cors: true }
     ];
 
     it('sets Recurly.config to the options given', function () {
@@ -74,6 +75,13 @@ describe('Recurly.configure', function () {
         assert(recurly.config.api === 'http://localhost');
       });
     });
+
+    describe('when options.cors is given', function () {
+      it('sets Recurly.config.cors to the given value', function () {
+        recurly.configure({ publicKey: 'foo', cors: true });
+        assert(recurly.config.cors === true);
+      });
+    });
   });
 
   describe('when falsey options are given', function () {
@@ -87,7 +95,8 @@ describe('Recurly.configure', function () {
           publicKey: 'foo',
           currency: falsey,
           api: falsey,
-          timeout: falsey
+          timeout: falsey,
+          cors: falsey
         });
 
         assert(recurly.config.currency === 'USD');

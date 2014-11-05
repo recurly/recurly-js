@@ -3,7 +3,7 @@
  * postal code to match for US sales tax
  */
 
-var USST_POSTAL_CODE = '94107';
+var USST_POSTAL_CODE = '94110';
 
 
 /**
@@ -30,20 +30,14 @@ module.exports = function tax (req, res) {
   return none;
 };
 
-var usst = {
-  "taxes": [{
-    "type": "usst",
-    "rate": "0.0875"
-  }]
-};
+var usst = [{
+  type: 'us',
+  rate: '0.0875'
+}];
 
-var vat = {
-  "taxes": [{
-    "type": "vat",
-    "rate": "0.015"
-  }]
-};
+var vat = [{
+  type: 'vat',
+  rate: '0.015'
+}];
 
-var none = {
-  "locale": "en-US"
-};
+var none = [];
