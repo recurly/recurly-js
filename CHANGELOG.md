@@ -1,5 +1,11 @@
 ## Recurly.js CHANGELOG
 
+### Version 3.0.8 (November 6, 2014)
+
+* Rejects falsey configuration values [#155][155]
+* Switches build from component to duo [#154][154]
+* Adds plan unit price and setup fee to pricing output [#150][150]
+
 ### Version 3.0.7 (September 17, 2014)
 
 * Fixes issue with IE PayPal communication [#152][152]
@@ -39,7 +45,10 @@
 
 * Full rewrite for Billing Info tokenization
 
+[155]: https://github.com/recurly/recurly-js/commit/7c3d22b5e75ddd565631adbd96ecc02d8cc868b7
+[154]: https://github.com/recurly/recurly-js/commit/63d7ba073d22841401ff5fe6bf0d5bba36328f62
 [152]: https://github.com/recurly/recurly-js/commit/47d120185804e28ecbe7d96a0ce8a07b4234353d
+[150]: https://github.com/recurly/recurly-js/commit/4b0fb749c36b46c22a0ca2b49f690b2b09243dd5
 [147]: https://github.com/recurly/recurly-js/commit/30a7310148d2109dfb4f2b46232d9204ee3f7211
 [144]: https://github.com/recurly/recurly-js/commit/25c505b5a158c30fdf6ab8009dae37f2ddc3b749
 [138]: https://github.com/recurly/recurly-js/commit/ce631dbd75c62670f91f226ab02dad0218f5c90f
