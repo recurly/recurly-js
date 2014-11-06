@@ -8,7 +8,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "visionmedia/node-querystring": "0.6.6",
     "component/emitter": "1.1.2",
     "component/indexof": "0.0.3",
     "component/object": "0.0.3",
@@ -24,10 +23,12 @@
     "webmodules/jsonp": "0.0.4",
     "yields/cors-xhr": "1.0.1",
     "yields/merge": "1.0.0",
-    "visionmedia/debug": "2.1.0",
+    "learnboost/jsonp": "0.0.4",
     "then/promise": "6.0.0",
     "kewah/mixin": "0.1.0",
     "pluma/par": "0.3.0",
+    "chrissrogers/qs": "*",
+    "visionmedia/debug": "2.1.0",
     "ianstormtaylor/to-slug-case": "0.1.2"
   }
 }
