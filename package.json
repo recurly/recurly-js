@@ -15,6 +15,7 @@
     "uglify-js": "2.4.x",
     "duo": "0.x",
     "express": "3.x",
+    "body-parser": "1.9.2",
     "jade": "1.x",
     "mocha-phantomjs": "3.x",
     "gravy": "0.x",
