@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 3.0.9 (November 12, 2014)
+
+* Adds CORS support [#157][157]
+
 ### Version 3.0.8 (November 6, 2014)
 
 * Rejects falsey configuration values [#155][155]
@@ -45,6 +49,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[157]: https://github.com/recurly/recurly-js/commit/8585f26f9a816b21c6689b9fd72c65714f138378
 [155]: https://github.com/recurly/recurly-js/commit/7c3d22b5e75ddd565631adbd96ecc02d8cc868b7
 [154]: https://github.com/recurly/recurly-js/commit/63d7ba073d22841401ff5fe6bf0d5bba36328f62
 [152]: https://github.com/recurly/recurly-js/commit/47d120185804e28ecbe7d96a0ce8a07b4234353d
