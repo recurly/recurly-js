@@ -51,6 +51,28 @@ $ make
 $ make test
 ```
 
+## Beta Features
+
+### XHR+CORS
+
+As of v3.0.9, Recurly.js supports API communication using
+Cross-Origin Resource Sharing over XMLHttpRequest, as opposed
+to the traditional method of JSONP. A later version of Recurly.js will
+switch over to using CORS+XHR exclusively, but if you would like to test
+out this feature first, you may enable it by setting the `cors` configuration
+property to `true`.
+
+```js
+recury.configure({
+  publicKey: 'YOUR PUBLIC KEY',
+  cors: true
+});
+```
+
+Please note that in order to use this feature in IE9, you must serve your
+payment page over HTTPS. This is a known limitation in the CORS implementation
+in IE9.
+
 ## License
 
 [MIT][license]
