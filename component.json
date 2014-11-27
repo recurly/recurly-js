@@ -9,6 +9,7 @@
   "license": "MIT",
   "dependencies": {
     "visionmedia/node-querystring": "0.6.6",
+    "component/mutation-observer": "0.0.1",
     "component/emitter": "1.1.2",
     "component/indexof": "0.0.3",
     "component/object": "0.0.3",
