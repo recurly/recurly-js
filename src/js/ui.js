@@ -363,6 +363,8 @@ function initBillingInfoForm($form, options) {
       // Restore original manual state input field
       $state.empty().append($manualStateInput).removeClass('select_mode');
     }
+    // Triggers event should anything need to act on this field after the swap.
+    $state.trigger('recurly_state_swap');
   }
 
   $stateInput.bind('change keyup', function() {
