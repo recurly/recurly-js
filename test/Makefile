@@ -10,7 +10,7 @@ PHANTOMJS = $(BIN)/mocha-phantomjs \
   --setting-web-security=false
 
 build:
-	@$(DUO) index.js > build.js
+	@$(DUO) --stdout index.js > build.js
 
 server: kill
 	@PORT=$(PORT) node server &> /dev/null &
