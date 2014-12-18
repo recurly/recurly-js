@@ -4,7 +4,7 @@ MINIFY = $(BIN)/uglifyjs
 DELEGATE = test test-browser test-sauce test-coverage
 
 recurly.js: node_modules
-	@$(DUO) --global recurly --out . index.js > recurly.js
+	@$(DUO) --global recurly --stdout index.js > recurly.js
 	@$(MINIFY) recurly.js --output recurly.min.js
 
 node_modules: package.json

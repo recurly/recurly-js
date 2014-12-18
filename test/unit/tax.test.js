@@ -1,6 +1,7 @@
 var assert = require('assert');
 var noop = require('noop');
 var helpers = require('../support/helpers');
+var sinon = window.sinon;
 
 helpers.apiTest(function (requestMethod) {
   describe('Recurly.tax (' + requestMethod + ')', function () {
@@ -89,6 +90,41 @@ helpers.apiTest(function (requestMethod) {
         }, function (err, taxes) {
           assert(!err);
           assert(taxes.length === 0);
+          done();
+        });
+      });
+    });
+
+    describe('when given a tax_code', function () {
+      it('sends the tax_code', function (done) {
+        var spy = sinon.spy(recurly, 'request');
+
+        recurly.tax({
+          country: 'US',
+          postal_code: '70118',
+          tax_code: 'digital'
+        }, function (err, taxes) {
+          assert(!err);
+          assert(spy.calledOnce);
+          assert(spy.args[0][2].tax_code === 'digital');
+          spy.restore();
+          done();
+        });
+      });
+    });
+
+    describe('when given a vat_number', function () {
+      it('sends the vat_number', function (done) {
+        var spy = sinon.spy(recurly, 'request');
+
+        recurly.tax({
+          country: 'GB',
+          vat_number: 'GB0000'
+        }, function (err, taxes) {
+          assert(!err);
+          assert(spy.calledOnce);
+          assert(spy.args[0][2].vat_number === 'GB0000');
+          spy.restore();
           done();
         });
       });
