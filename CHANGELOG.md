@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 3.0.10 (December 18, 2014)
+
+* Adds Pricing support for tax_code [#166][166]
+
 ### Version 3.0.9 (November 12, 2014)
 
 * Adds CORS support [#157][157]
@@ -49,6 +53,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[166]: https://github.com/recurly/recurly-js/commit/f5b476550d23a46028f8a24579ea5dbc1bd23236
 [157]: https://github.com/recurly/recurly-js/commit/8585f26f9a816b21c6689b9fd72c65714f138378
 [155]: https://github.com/recurly/recurly-js/commit/7c3d22b5e75ddd565631adbd96ecc02d8cc868b7
 [154]: https://github.com/recurly/recurly-js/commit/63d7ba073d22841401ff5fe6bf0d5bba36328f62
