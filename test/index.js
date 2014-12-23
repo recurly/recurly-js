@@ -9,3 +9,4 @@ require('./unit/plan.test.js');
 require('./unit/tax.test.js');
 require('./unit/token.test.js');
 require('./unit/validate.test.js');
+require('./unit/recurly/priceing.test.js');
