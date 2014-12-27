@@ -19,7 +19,7 @@ env:
     - BROWSER: chrome
     - BROWSER: firefox
     - BROWSER: safari
-    - BROWSER: ie8..11
+    - BROWSER: ie9..11
     - BROWSER: ipad5..7
     - BROWSER: iphone5..7
     - ARTIFACT: 1
