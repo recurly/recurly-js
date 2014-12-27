@@ -38,9 +38,9 @@ var VAT_2015_COUNTRY = 'GB';
 
 module.exports = function tax (req, res) {
   if (req.query.country === 'US' && req.query.postal_code === USST_POSTAL_CODE) return usst;
-  if (req.query.country === 'US' && req.query.postal_code === USST_POSTAL_CODE_WITH_REGION) return usst_with_region;
+  if (req.query.country === 'US' && req.query.postal_code === USST_POSTAL_CODE_WITH_REGION) return usstWithRegion;
   if (req.query.country === VAT_COUNTRY) return vat;
-  if (req.query.country === VAT_2015_COUNTRY) return vat_2015;
+  if (req.query.country === VAT_2015_COUNTRY) return vat2015;
   return none;
 };
 
@@ -49,7 +49,7 @@ var usst = [{
   rate: '0.0875'
 }];
 
-var usst_with_region = [{
+var usstWithRegion = [{
   type: 'us',
   rate: '0.0875',
   region: 'CA'
@@ -60,7 +60,7 @@ var vat = [{
   rate: '0.015'
 }];
 
-var vat_2015 = [{
+var vat2015 = [{
   type: 'vat',
   rate: '0.2',
   region: 'GB'

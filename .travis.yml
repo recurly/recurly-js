@@ -20,6 +20,6 @@ env:
     - BROWSER: firefox
     - BROWSER: safari
     - BROWSER: ie9..11
-    - BROWSER: ipad5..7
-    - BROWSER: iphone5..7
+    - BROWSER: ipad6..8
+    - BROWSER: iphone6..8
     - ARTIFACT: 1
