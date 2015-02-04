@@ -15,7 +15,7 @@
 , "main" : "./lib/recurly.js"
 , "dependencies" : {
     "xml2js": ">= 0.4.0",
-    "js2xml": "valorkin/js2xml"
+    "js2xmlparser": "0.1.7"
 }
 , "engines" : { "node" : ">= 0.4" }
 }
