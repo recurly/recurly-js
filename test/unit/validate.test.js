@@ -16,6 +16,14 @@ describe('Recurly.validate', function () {
 
     it('should return false for invalid card numbers', function() {
       assert(false === recurly.validate.cardNumber('4111-1111-1111-1112'));
+      assert(false === recurly.validate.cardNumber('1234'));
+      assert(false === recurly.validate.cardNumber(1234));
+      assert(false === recurly.validate.cardNumber('0'));
+      assert(false === recurly.validate.cardNumber(0));
+      assert(false === recurly.validate.cardNumber('abcxyz'));
+      assert(false === recurly.validate.cardNumber(''));
+      assert(false === recurly.validate.cardNumber());
+      assert(false === recurly.validate.cardNumber(null));
     });
   });
 
