@@ -63,7 +63,7 @@ out this feature first, you may enable it by setting the `cors` configuration
 property to `true`.
 
 ```js
-recury.configure({
+recurly.configure({
   publicKey: 'YOUR PUBLIC KEY',
   cors: true
 });
