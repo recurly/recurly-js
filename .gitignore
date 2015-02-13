@@ -10,5 +10,3 @@ test/build.js
 test/components
 test/server/pid.txt
 
-/recurly.js
-/recurly.min.js
