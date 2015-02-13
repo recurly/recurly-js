@@ -28,6 +28,7 @@
     "then/promise": "6.0.0",
     "kewah/mixin": "0.1.0",
     "pluma/par": "0.3.0",
-    "ianstormtaylor/to-slug-case": "0.1.2"
+    "ianstormtaylor/to-slug-case": "0.1.2",
+    "component/json-fallback": "^1.0.0"
   }
 }
