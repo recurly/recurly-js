@@ -1,0 +1,22 @@
+{
+  "name": "cors-xhr",
+  "description": "cors xhr",
+  "version": "1.0.1",
+  "keywords": [
+    "cors",
+    "xhr"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ],
+  "development": {
+    "dependencies": {
+      "visionmedia/mocha": "*",
+      "visionmedia/mocha-matrix": "*",
+      "component/assert": "*"
+    }
+  },
+  "repository": "yields/cors-xhr"
+}

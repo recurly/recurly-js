@@ -1,0 +1,14 @@
+{
+  "name": "mixin",
+  "description": "ES5 compatible mixin",
+  "version": "0.1.0",
+  "keywords": [],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ],
+  "repository": "kewah/mixin"
+}

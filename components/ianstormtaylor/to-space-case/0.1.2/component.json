@@ -1,0 +1,24 @@
+{
+  "name": "to-space-case",
+  "license": "MIT",
+  "version": "0.1.2",
+  "description": "Convert a string to a space case.",
+  "keywords": [
+    "space",
+    "case",
+    "spacecase",
+    "string"
+  ],
+  "dependencies": {
+    "ianstormtaylor/to-no-case": "0.1.0"
+  },
+  "development": {
+    "dependencies": {
+      "component/assert": "*"
+    }
+  },
+  "scripts": [
+    "index.js"
+  ],
+  "repository": "ianstormtaylor/to-space-case"
+}

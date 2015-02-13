@@ -1,0 +1,15 @@
+{
+  "name": "ms",
+  "version": "0.6.1",
+  "description": "ms parsing / formatting",
+  "keywords": [
+    "ms",
+    "parse",
+    "format"
+  ],
+  "scripts": [
+    "index.js"
+  ],
+  "license": "MIT",
+  "repository": "guille/ms.js"
+}

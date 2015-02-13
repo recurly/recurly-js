@@ -1,0 +1,26 @@
+{
+  "name": "to-no-case",
+  "license": "MIT",
+  "version": "0.1.0",
+  "description": "Remove an existing case from a string.",
+  "keywords": [
+    "case",
+    "remove",
+    "camel",
+    "camelcase",
+    "snake",
+    "snakecase",
+    "slug",
+    "slugcase",
+    "string"
+  ],
+  "development": {
+    "dependencies": {
+      "component/assert": "*"
+    }
+  },
+  "scripts": [
+    "index.js"
+  ],
+  "repository": "ianstormtaylor/to-no-case"
+}
