@@ -30,17 +30,27 @@ describe('Recurly.validate', function () {
   describe('cardType', function() {
     it('should parse visa', function() {
       var type = recurly.validate.cardType('4111-1111-1111-1111');
-      assert('visa' === type);
+      assert(type === 'visa');
     });
 
     it('should parse american_express', function() {
       var type = recurly.validate.cardType('372546612345678');
-      assert('american_express' === type);
+      assert(type === 'american_express');
     });
 
     it('should parse unknown', function() {
       var type = recurly.validate.cardType('867-5309-jenny');
-      assert('unknown' === type);
+      assert(type === 'unknown');
+    });
+
+    it('should not parse partial numbers', function () {
+      var type = recurly.validate.cardType('3725');
+      assert(type === 'unknown');
+    });
+
+    it('should parse partial numbers if instructed', function () {
+      var type = recurly.validate.cardType('3725', true);
+      assert(type === 'american_express');
     });
   });
 
