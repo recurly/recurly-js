@@ -30,6 +30,20 @@ describe('Recurly.Pricing', function () {
       });
   });
 
+  it('should not apply tax if plan is tax exempt and not usst', function (done) {
+    pricing
+      .plan('tax_exempt', { quantity: 1 })
+      .address({
+        country: 'GB'
+      })
+      .done(function (price) {
+        assert.equal(price.taxes.length, 0);
+        assert.equal(price.now.tax, '0.00');
+        assert.equal(price.next.tax, '0.00');
+        done();
+      });
+  });
+
   it('should append US tax elements in the US', function (done) {
     pricing
       .plan('basic', { quantity: 1 })
