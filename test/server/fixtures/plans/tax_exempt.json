@@ -1,0 +1,34 @@
+{
+  "code": "basic",
+  "name": "Basic",
+  "period": {
+    "interval": "months",
+    "length": 1
+  },
+  "trial": {
+    "interval": "days",
+    "length": 7
+  },
+  "price": {
+    "USD": {
+      "setup_fee": 2.0,
+      "unit_amount": 19.99
+    }
+  },
+  "addons": [{
+    "name": "Snarf",
+    "code": "snarf",
+    "quantity": 1,
+    "price": {
+      "USD": {
+        "unit_amount": 1.0
+      }
+    }
+  }],
+  "accepted_card_types": [{
+    "USD": {
+      "card_types": ["visa", "master", "american_express", "discover", "diners_club", "jcb"]
+    }
+  }],
+  "tax_exempt": true
+}
