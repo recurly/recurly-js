@@ -19,6 +19,7 @@
     "jade": "1.x",
     "mocha-phantomjs": "3.5.2",
     "gravy": "0.x",
-    "debug": "0.x"
+    "debug": "0.x",
+    "wr": "*"
   }
 }
