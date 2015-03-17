@@ -2,13 +2,12 @@
   "name": "to-function",
   "repo": "component/to-function",
   "description": "Convert property access strings into functions",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "keywords": [
     "utility"
   ],
   "dependencies": {
-    "component-props": "*",
-    "remove-try-require": "0.0.0"
+    "component-props": "*"
   },
   "scripts": {
     "test": "make test"
@@ -18,10 +17,8 @@
     "mocha": "*",
     "should": "*"
   },
-  "browserify": {
-    "transform": [
-      "remove-try-require"
-    ]
+  "browser": {
+    "props": "component-props"
   },
   "component": {
     "scripts": {
