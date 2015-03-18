@@ -1,4 +1,10 @@
 
+2.0.6 / 2015-01-29
+==================
+
+  * package: fix "browserify" usage
+  * Remove unused dependency (#16, @Raynos)
+
 2.0.5 / 2014-05-27
 ==================
 

@@ -1,4 +1,16 @@
 
+0.7.0 / 2014-11-24
+==================
+
+ * add time abbreviations, updated tests and readme for the new units
+ * fix example in the readme.
+ * add LICENSE file
+
+0.6.2 / 2013-12-05
+==================
+
+ * Adding repository section to package.json to suppress warning from NPM.
+
 0.6.1 / 2013-05-10
 ==================
 

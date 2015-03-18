@@ -2,7 +2,7 @@
   "name": "to-function",
   "repo": "component/to-function",
   "description": "Convert property access strings into functions",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "keywords": [
     "utility",
     "function"
