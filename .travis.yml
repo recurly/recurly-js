@@ -5,7 +5,7 @@ node_js:
 before_script:
   - 'if [ -n "$ARTIFACT" ]; then gem install travis-artifacts; fi'
 after_success:
-  - 'if [ -n "$ARTIFACT" ]; then travis-artifacts upload --path recurly.min.js --target-path artifacts/$TRAVIS_COMMIT; fi'
+  - 'if [ -n "$ARTIFACT" ]; then cd build; travis-artifacts upload --path recurly.min.js --target-path artifacts/$TRAVIS_COMMIT; fi'
 env:
   global:
     - secure: 1Fve9UwwgFSoX0Qemh2CkAN9Nyo/bkT5nrHx0MVbc4jRziw8IWdluOPNnzg+Zpx7NXu1BPIUsOvMCjsfJcpJhiuqNPMZZHFfT7vOXW3Htj3UbxrQKpNpyFPQSfCoO4Xz7a3VNusLLqx1RTnFr7plV9F7vrUf8IsL1yYXCyWa6W0=

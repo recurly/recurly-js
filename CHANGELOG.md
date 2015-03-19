@@ -1,5 +1,14 @@
 ## Recurly.js CHANGELOG
 
+### Version 3.0.11 (March 17, 2015)
+
+* Adds partial number detection to cardType method [#187][187]
+* Adds tax information to pricing object [#169][169]
+* Fixes plan tax exemption for taxation other than US sales tax [#186][186]
+* Fixes validate.cardNumber throwing on falsey values [#179][179]
+* Fixes issue with pricing coupon and plan mismatches [#177][177]
+* Fixes issue where Pricing detachment fails on multiple instances [#188][188]
+
 ### Version 3.0.10 (December 18, 2014)
 
 * Adds Pricing support for tax_code [#166][166]
@@ -53,6 +62,12 @@
 
 * Full rewrite for Billing Info tokenization
 
+[188]: https://github.com/recurly/recurly-js/commit/7f03c8798a7286fbcc30e32388ad0eeae86c1be5
+[187]: https://github.com/recurly/recurly-js/commit/5e771eae688135338478281d947bd96c7fa5dbc6
+[186]: https://github.com/recurly/recurly-js/commit/b5ab08d328c8687e747443cb9c0cae42d8d9fe48
+[179]: https://github.com/recurly/recurly-js/commit/410182d331d787c180b6e8dbf628e365cc9a0865
+[177]: https://github.com/recurly/recurly-js/commit/4973d752291fa76410469fed4d965d66c68bcb9d
+[169]: https://github.com/recurly/recurly-js/commit/0f3088c4ee3ada7f23a3ef3fa4d512d53f363307
 [166]: https://github.com/recurly/recurly-js/commit/f5b476550d23a46028f8a24579ea5dbc1bd23236
 [157]: https://github.com/recurly/recurly-js/commit/8585f26f9a816b21c6689b9fd72c65714f138378
 [155]: https://github.com/recurly/recurly-js/commit/7c3d22b5e75ddd565631adbd96ecc02d8cc868b7
