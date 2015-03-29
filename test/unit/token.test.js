@@ -70,6 +70,7 @@ helpers.apiTest(function (requestMethod) {
             '   <input type="text" data-recurly="postal_code" value="' + (values.last_name || '') + '"> ' +
             '   <input type="text" data-recurly="phone" value="' + (values.phone || '') + '"> ' +
             '   <input type="text" data-recurly="vat_number" value="' + (values.vat_number || '') + '"> ' +
+            '   <input type="text" data-recurly="country" value="' + (values.country || '') + '"> ' +
             '   <input type="hidden" name="recurly-token" data-recurly="token"> ' +
             '   <button>submit</button> ' +
             ' </form> '
@@ -156,17 +157,38 @@ helpers.apiTest(function (requestMethod) {
         });
       });
 
+      describe('when given an invalid cvv', function () {
+        var example = merge(clone(valid), {
+          cvv: 'blah'
+        });
+
+        it('produces a validation error', function (done) {
+          builder(example, function (example) {
+            recurly.token(example, function (err, token) {
+              assert(err.code === 'validation');
+              assert(err.fields.length === 1);
+              assert(err.fields[0] === 'cvv');
+              assert(!token);
+              done();
+            });
+          });
+        });
+      });
+
       describe('when given valid values', function () {
         var examples = [
           valid,
-          merge({
+          merge(clone(valid), {
+            cvv: ''
+          }),
+          merge(clone(valid), {
             address1: '400 Alabama St.',
             address2: 'Suite 202',
             city: 'San Francisco',
             state: 'CA',
             postal_code: '94110',
             phone: '1-844-732-8759'
-          }, valid)
+          })
         ];
 
         it('yields a token', function (done) {
@@ -195,6 +217,99 @@ helpers.apiTest(function (requestMethod) {
                   assert(example.querySelector('[data-recurly=token]').value === token.id);
                 }
                 part();
+              });
+            });
+          });
+        });
+      });
+
+      describe('when given an required configured', function () {
+        beforeEach(function () {
+          recurly = new Recurly();
+          recurly.configure({
+            publicKey: 'test',
+            api: '//' + window.location.host,
+            cors: requestMethod === 'cors',
+            required: ['country', 'postal_code', 'unrelated_configured_field']
+          });
+        });
+
+        describe('when given an blank value for required', function () {
+          var examples = [
+            merge(clone(valid), {
+              country: '',
+              postal_code: '98765'
+            }),
+            merge(clone(valid), {
+              country: '',
+              postal_code: '98765',
+              unrelated_configured_field: ''
+            })
+          ];
+
+          it('produces a validation error', function (done) {
+            var part = after(examples.length, done);
+
+            each(examples, function (example) {
+              builder(example, function (example) {
+                recurly.token(example, function (err, token) {
+                  assert(err.code === 'validation');
+                  assert(err.fields.length === 1);
+                  assert(~index(err.fields, 'country'));
+                  assert(!~index(err.fields, 'postal_code'));
+                  assert(!~index(err.fields, 'unrelated_configured_field'));
+                  assert(!token);
+                  part();
+                });
+              });
+            });
+          });
+        });
+
+        describe('when given valid values', function () {
+          var examples = [
+            merge(clone(valid), {
+              postal_code: '94110',
+              country: 'US'
+            }),
+            merge(clone(valid), {
+              address1: '400 Alabama St.',
+              address2: 'Suite 202',
+              city: 'San Francisco',
+              state: 'CA',
+              postal_code: '94110',
+              country: 'US',
+              phone: '1-844-732-8759'
+            })
+          ];
+
+          it('yields a token', function (done) {
+            var part = after(examples.length, done);
+
+            each(examples, function (example) {
+              builder(example, function (example) {
+                recurly.token(example, function (err, token) {
+                  assert(!err);
+                  assert(token.id);
+                  part();
+                });
+              });
+            });
+          });
+
+          it('sets the value of a data-recurly="token" field', function (done) {
+            var part = after(examples.length, done);
+
+            each(examples, function (example) {
+              builder(example, function (example) {
+                recurly.token(example, function (err, token) {
+                  assert(!err);
+                  assert(token.id);
+                  if (example && example.nodeType === 3) {
+                    assert(example.querySelector('[data-recurly=token]').value === token.id);
+                  }
+                  part();
+                });
               });
             });
           });
