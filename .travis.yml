@@ -1,7 +1,7 @@
 language: node_js
 script: 'if [ -n "$ARTIFACT" ]; then make test; else make test-sauce; fi'
 node_js:
-  - '0.10'
+  - '0.12'
 before_script:
   - 'if [ -n "$ARTIFACT" ]; then gem install travis-artifacts; fi'
 after_success:
