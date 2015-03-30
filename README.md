@@ -46,6 +46,8 @@ implementations.
 $ make
 ```
 
+If you are having issues with the build, try `make clean`
+
 ## Test
 ```bash
 $ make test
