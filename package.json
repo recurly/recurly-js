@@ -9,6 +9,9 @@
     "url": "git://github.com/recurly/recurly-js.git"
   },
   "dependencies": {},
+  "engines": {
+    "node" : ">=0.11"
+  },
   "devDependencies": {
     "mocha": "1.x",
     "should": "4.x",
