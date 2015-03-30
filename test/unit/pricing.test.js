@@ -112,4 +112,21 @@ describe('Recurly.Pricing', function () {
       });
   });
 
+  it('should append 20% of 49.00 to have a correct tax of $9.80', function (done) {
+    pricing
+      .plan('intermediate', { quantity: 1 })
+      .address({
+        country: 'GB'
+      })
+      .done(function (price) {
+        assert.equal(price.taxes.length, 1);
+        assert.equal(price.taxes[0].type, 'vat');
+        assert.equal(price.taxes[0].region, 'GB');
+        assert.equal(price.taxes[0].rate, '0.2');
+        assert.equal(price.now.tax, '0.40');
+        assert.equal(price.next.tax, '9.80');
+        done();
+      });
+  });
+
 });
