@@ -57,19 +57,19 @@ helpers.apiTest(function (requestMethod) {
         helpers.domTest(function (testbed, done) {
           testbed.insertAdjacentHTML('beforeend',
             ' <form id="test-form"> ' +
-            '   <input type="text" data-recurly="number" value="' + values.number + '"> ' +
-            '   <input type="text" data-recurly="month" value="' + values.month + '"> ' +
-            '   <input type="text" data-recurly="year" value="' + values.year + '"> ' +
-            '   <input type="text" data-recurly="cvv" value="' + values.cvv + '"> ' +
-            '   <input type="text" data-recurly="first_name" value="' + values.first_name + '"> ' +
-            '   <input type="text" data-recurly="last_name" value="' + values.last_name + '"> ' +
-            '   <input type="text" data-recurly="address1" value="' + values.address1 + '"> ' +
-            '   <input type="text" data-recurly="address2" value="' + values.address2 + '"> ' +
-            '   <input type="text" data-recurly="city" value="' + values.city + '"> ' +
-            '   <input type="text" data-recurly="state" value="' + values.state + '"> ' +
-            '   <input type="text" data-recurly="postal_code" value="' + values.last_name + '"> ' +
-            '   <input type="text" data-recurly="phone" value="' + values.phone + '"> ' +
-            '   <input type="text" data-recurly="vat_number" value="' + values.vat_number + '"> ' +
+            '   <input type="text" data-recurly="number" value="' + (values.number || '') + '"> ' +
+            '   <input type="text" data-recurly="month" value="' + (values.month || '') + '"> ' +
+            '   <input type="text" data-recurly="year" value="' + (values.year || '') + '"> ' +
+            '   <input type="text" data-recurly="cvv" value="' + (values.cvv || '') + '"> ' +
+            '   <input type="text" data-recurly="first_name" value="' + (values.first_name || '') + '"> ' +
+            '   <input type="text" data-recurly="last_name" value="' + (values.last_name || '') + '"> ' +
+            '   <input type="text" data-recurly="address1" value="' + (values.address1 || '') + '"> ' +
+            '   <input type="text" data-recurly="address2" value="' + (values.address2 || '') + '"> ' +
+            '   <input type="text" data-recurly="city" value="' + (values.city || '') + '"> ' +
+            '   <input type="text" data-recurly="state" value="' + (values.state || '') + '"> ' +
+            '   <input type="text" data-recurly="postal_code" value="' + (values.last_name || '') + '"> ' +
+            '   <input type="text" data-recurly="phone" value="' + (values.phone || '') + '"> ' +
+            '   <input type="text" data-recurly="vat_number" value="' + (values.vat_number || '') + '"> ' +
             '   <input type="hidden" name="recurly-token" data-recurly="token"> ' +
             '   <button>submit</button> ' +
             ' </form> '
