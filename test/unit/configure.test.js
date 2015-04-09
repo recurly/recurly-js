@@ -17,6 +17,7 @@ describe('Recurly.configure', function () {
       , { invalid: 'parameter' }
       , { currency: 'USD' }
       , { currency: 'AUD', api: 'https://localhost' }
+      , { currency: 'USD', api: 'https://localhost', required: ['postal_code'] }
     ];
 
     it('throws', function () {
@@ -42,6 +43,8 @@ describe('Recurly.configure', function () {
       , { publicKey: 'foo', currency: 'USD' }
       , { publicKey: 'foo', currency: 'AUD', api: 'https://localhost' }
       , { publicKey: 'foo', currency: 'AUD', api: 'https://localhost', cors: true }
+      , { publicKey: 'foo', currency: 'USD', api: 'https://localhost', required: ['country'] }
+      , { publicKey: 'foo', currency: 'USD', api: 'https://localhost', required: ['postal_code', 'country'] }
     ];
 
     it('sets Recurly.config to the options given', function () {
