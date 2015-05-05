@@ -13,7 +13,6 @@ var DECLINE_CARD = '4000000000000002';
 module.exports = function token (req, res) {
   var params = req.method === 'GET' ? req.query : req.body;
   if (params.number === DECLINE_CARD) return decline;
-  else if (!params.first_name) return blankParam;
   else return ok;
 };
 
@@ -23,18 +22,6 @@ module.exports = function token (req, res) {
 
 var ok = {
   id: "7QF5CSJ2n-6CXX1k15FtYA"
-};
-
-/**
- * 'first_name' is blank
- */
-
-var blankParam = {
-  error: {
-    code: "missing_parameter",
-    message: "'first_name' is blank",
-    fields: ["first_name"]
-  }
 };
 
 /**

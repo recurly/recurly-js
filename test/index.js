@@ -9,4 +9,5 @@ require('./unit/plan.test.js');
 require('./unit/pricing.test.js');
 require('./unit/tax.test.js');
 require('./unit/token.test.js');
+require('./unit/bank-account.test.js');
 require('./unit/validate.test.js');
