@@ -1,7 +1,7 @@
 {
   "name": "recurly.js",
   "description": "Zen subscription billing in the browser",
-  "version": "3.0.11",
+  "version": "3.1.0",
   "license": "MIT",
   "main": "recurly.js",
   "repository": {

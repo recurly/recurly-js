@@ -1,5 +1,11 @@
 ## Recurly.js CHANGELOG
 
+### Version 3.1.0 (May 7, 2015)
+
+* Adds bank account tokenization [#202][202]
+* Adds optional additional field validations [#196][196]
+* Fixes tax rounding issue [#199][199]
+
 ### Version 3.0.11 (March 17, 2015)
 
 * Adds partial number detection to cardType method [#187][187]
@@ -62,6 +68,9 @@
 
 * Full rewrite for Billing Info tokenization
 
+[202]: https://github.com/recurly/recurly-js/commit/684119566898568f9947210b26cb794f0823e28e
+[199]: https://github.com/recurly/recurly-js/commit/e04662b887e3f51553a0c691d704ec680c36f772
+[196]: https://github.com/recurly/recurly-js/commit/bd49c9a7785bda07ade74d4f17cf9351599dbf11
 [188]: https://github.com/recurly/recurly-js/commit/7f03c8798a7286fbcc30e32388ad0eeae86c1be5
 [187]: https://github.com/recurly/recurly-js/commit/5e771eae688135338478281d947bd96c7fa5dbc6
 [186]: https://github.com/recurly/recurly-js/commit/b5ab08d328c8687e747443cb9c0cae42d8d9fe48

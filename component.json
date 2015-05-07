@@ -2,7 +2,7 @@
   "name": "recurly",
   "repository": "recurly/recurly-js",
   "description": "Official Recurly JavaScript client for the browser.",
-  "version": "3.0.11",
+  "version": "3.1.0",
   "keywords": [
     "recurly", "recurring", "payment", "billing", "subscription",
     "bank", "credit-card"
