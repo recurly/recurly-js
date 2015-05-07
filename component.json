@@ -4,7 +4,8 @@
   "description": "Official Recurly JavaScript client for the browser.",
   "version": "3.0.11",
   "keywords": [
-    "recurly"
+    "recurly", "recurring", "payment", "billing", "subscription",
+    "bank", "credit-card"
   ],
   "license": "MIT",
   "dependencies": {
