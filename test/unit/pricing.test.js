@@ -129,4 +129,35 @@ describe('Recurly.Pricing', function () {
       });
   });
 
+  describe('with applied coupon', function () {
+    it('should apply multi-use coupon correctly', function (done) {
+      pricing
+        .plan('basic', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .coupon('coop')
+        .done(function (price) {
+          assert.equal(price.now.discount, '20.00');
+          assert.equal(price.next.discount, '20.00');
+          done();
+        });
+    });
+
+    it('should apply single-use coupon correctly', function (done) {
+      pricing
+        .plan('basic', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .coupon('coop-single-use')
+        .done(function (price) {
+          assert.equal(price.now.discount, '20.00');
+          assert.equal(price.next.discount, '0.00');
+          done();
+        });
+    });
+  });
 });

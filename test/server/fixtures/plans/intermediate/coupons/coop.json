@@ -2,6 +2,10 @@
   "code": "coop",
   "name": "Test coupon with a long and silly name",
   "discount": {
-    "USD": 20.0
-  }
+    "type":"dollars",
+    "amount": {
+      "USD": 20.0
+    }
+  },
+  "single_use": false
 }

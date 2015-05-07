@@ -63,7 +63,7 @@ helpers.apiTest(function (requestMethod) {
         it('contains a discount amount', function (done) {
           assertValidCoupon('coop', function (coupon) {
             assert(!coupon.discount.rate);
-            each(coupon.discount, function (currency, amount) {
+            each(coupon.discount.amount, function (currency, amount) {
               assert(currency.length === 3);
               assert(typeof amount === 'number');
             });
