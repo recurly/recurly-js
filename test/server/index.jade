@@ -7,7 +7,8 @@ html
     script(src='/test/server/sinon.js')
     script(src='/test/server/mocha.js')
     script.
-      mocha.setup({ ui: 'bdd' })
+      mocha.setup({ ui: 'bdd' });
+      mocha.timeout(0);
     script(src='/test/build.js')
   body
     #mocha
