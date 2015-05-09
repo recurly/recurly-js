@@ -1,0 +1,15 @@
+{
+  "name": "assert",
+  "repo": "component/assert",
+  "description": "Assertion lib",
+  "version": "0.5.0",
+  "keywords": ["assert", "test"],
+  "dependencies": {
+    "component/stack": "*",
+    "jkroso/equals": "*",
+    "yields/fmt": "0.0.2"
+  },
+  "scripts": [
+    "index.js"
+  ]
+}

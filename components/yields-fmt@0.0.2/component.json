@@ -1,0 +1,14 @@
+{
+  "name": "fmt",
+  "repo": "yields/fmt",
+  "description": "string format utility",
+  "version": "0.0.2",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": ["index.js"],
+  "development": {
+    "visionmedia/mocha-matrix": "*",
+    "visionmedia/mocha": "*",
+    "component/assert": "*"
+  }
+}

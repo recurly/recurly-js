@@ -1,7 +1,13 @@
 language: node_js
-script: 'if [ -n "$ARTIFACT" ]; then make test; else make test-sauce; fi'
 node_js:
   - '0.12'
+install:
+  - mkdir travis-phantomjs
+  - wget https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -O $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2
+  - tar -xvf $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -C $PWD/travis-phantomjs
+  - export PATH=$PWD/travis-phantomjs:$PATH
+script:
+  - 'if [ -n "$ARTIFACT" ]; then make test; else make test-sauce; fi'
 before_script:
   - 'if [ -n "$ARTIFACT" ]; then gem install travis-artifacts; fi'
 after_success:
@@ -19,7 +25,10 @@ env:
     - BROWSER: chrome
     - BROWSER: firefox
     - BROWSER: safari
-    - BROWSER: ie9..11
-    - BROWSER: ipad6..8
-    - BROWSER: iphone6..8
+    - BROWSER: ie:11
+    - BROWSER: ie:10
+    - BROWSER: ie:9
+    - BROWSER: iphone:8
+    - BROWSER: iphone:7
+    - BROWSER: iphone:6
     - ARTIFACT: 1

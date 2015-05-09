@@ -1,0 +1,7 @@
+{
+  "name": "type",
+  "description": "less broken typeof",
+  "keywords": ["typeof", "type", "utility"],
+  "dependencies": {},
+  "scripts": ["index.js"]
+}

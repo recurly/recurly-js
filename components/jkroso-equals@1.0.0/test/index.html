@@ -1,0 +1,18 @@
+
+<title>equals tests</title>
+<link rel="stylesheet" href="../node_modules/hydro-html/index.css">
+
+<div id="hydro"></div>
+
+<script>
+  var Hydro = require('hydro')
+  var hydro = new Hydro
+
+  require('./hydro.conf')(hydro)
+  hydro.set('formatter', require('hydro-html'))
+  hydro.setup()
+
+  require('./equals.test')
+
+  hydro.run()
+</script>

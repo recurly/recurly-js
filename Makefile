@@ -1,28 +1,42 @@
 BIN = node_modules/.bin
 DUO = $(BIN)/duo
-MINIFY = $(BIN)/uglifyjs
-WATCH = $(BIN)/wr
-DELEGATE = test test-browser test-sauce test-coverage
+T = $(BIN)/duo-test -m test/api.js -R spec -P 8378
 
-BUILD = ./build
-WATCH_FILES = lib index.js component.json Makefile
+SRC = index.js $(shell find lib -type f -name '*.js')
+TESTS = $(wildcard test/*.test.js)
 
-build: node_modules
-	@mkdir -p $(BUILD)
-	@$(DUO) --quiet --stdout --global recurly index.js > $(BUILD)/recurly.js
-	@$(MINIFY) $(BUILD)/recurly.js --output $(BUILD)/recurly.min.js
+test: test-phantomjs
+
+test-phantomjs: build/recurly.min.js build/test.js
+	@$(T) phantomjs
+
+test-browser: build/recurly.min.js build/test.js
+	@$(T) browser
+
+test-sauce: BROWSER ?= ie:9
+test-sauce: build/recurly.min.js build/test.js
+	@$(T) saucelabs -b $(BROWSER)
+
+build: build/recurly.min.js
+
+build/recurly.js: index.js $(SRC) node_modules component.json
+	@mkdir -p $(@D)
+	@$(DUO) --quiet --stdout --global recurly < $< > $@
+
+build/recurly.min.js: build/recurly.js
+	@$(BIN)/uglifyjs $< --output $@
+
+build/test.js: TESTFILE = $(foreach test, $(TESTS), 'require("./$(test)");')
+build/test.js: $(TESTS)
+	@echo $(TESTFILE) | $(DUO) --quiet --development --type js --stdout > $@
 
 watch: node_modules
-	@$(WATCH) make $(WATCH_FILES)
+	@$(BIN)/wr $(MAKE) component.json $(SRC)
 
 node_modules: package.json
 	@npm install --silent
 
-$(DELEGATE): build
-	@cd test && make $@
-
 clean:
-	@rm -rf node_modules components/duo.json $(BUILD)
-	@cd test && make $@
+	@rm -rf node_modules components/duo.json build
 
-.PHONY: clean build test test-browser test-sauce test-coverage
+.PHONY: test watch clean
