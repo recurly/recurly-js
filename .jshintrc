@@ -1,0 +1,13 @@
+{
+  "curly": false,
+  "browser": true,
+  "esnext": true,
+  "globals": {
+    "require": true,
+    "exports": true,
+    "module": true
+  },
+  "globalstrict": false,
+  "quotmark": true,
+  "unused": "vars"
+}
