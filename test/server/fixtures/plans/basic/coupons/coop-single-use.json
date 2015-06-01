@@ -1,5 +1,5 @@
 {
-  "code": "coop",
+  "code": "coop-single-use",
   "name": "Test coupon with a long and silly name",
   "discount": {
     "type":"dollars",
@@ -7,5 +7,5 @@
       "USD": 20.0
     }
   },
-  "single_use": false
+  "single_use": true
 }
