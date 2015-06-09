@@ -1,4 +1,4 @@
-//   Recurly.js - v2.2.10
+//   Recurly.js - v2.2.11
 //
 //   Communicates with Recurly <https://recurly.com> via a JSONP API,
 //   generates UI, handles user error, and passes control to the client
@@ -50,7 +50,7 @@ R.settings = {
 , oneErrorPerField: true
 };
 
-R.version = '2.2.10';
+R.version = '2.2.11';
 
 R.dom = {};
 
@@ -229,6 +229,10 @@ C('GBP', {
   symbol: '\u00a3'
 });
 
+C('BRL', {
+  symbol: 'R$'
+});
+
 C('CZK', {
   symbol: '\u004b'
 });
@@ -241,8 +245,20 @@ C('HUF', {
   symbol: 'Ft'
 });
 
+C('ILS', {
+  symbol: '\u20aa'
+});
+
+C('INR', {
+  symbol: '\u20b9'
+});
+
 C('JPY', {
   symbol: '\u00a5'
+});
+
+C('MXN', {
+  symbol: '$'
 });
 
 C('NOK', {

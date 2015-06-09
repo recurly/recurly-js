@@ -48,6 +48,10 @@ C('GBP', {
   symbol: '\u00a3'
 });
 
+C('BRL', {
+  symbol: 'R$'
+});
+
 C('CZK', {
   symbol: '\u004b'
 });
@@ -60,8 +64,20 @@ C('HUF', {
   symbol: 'Ft'
 });
 
+C('ILS', {
+  symbol: '\u20aa'
+});
+
+C('INR', {
+  symbol: '\u20b9'
+});
+
 C('JPY', {
   symbol: '\u00a5'
+});
+
+C('MXN', {
+  symbol: '$'
 });
 
 C('NOK', {
