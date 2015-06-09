@@ -1,6 +1,6 @@
 {
   "name": "recurly-js",
-  "version": "2.2.10",
+  "version": "2.2.11",
   "dependencies": {
     "stylus": "0.19.x",
     "jade": "0.17.x",

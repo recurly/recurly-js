@@ -1,5 +1,9 @@
 #Change Log
 
+##Vesion 2.2.11 (Jun 9, 2015)
+
+-Adds Brazilian Real, Israeli New Sheqel, Indian Rupee, and Mexican Peso
+
 ##Version 2.2.10 (Feb 27, 2014)
 
 - Add Croatia to the list of EU countries
