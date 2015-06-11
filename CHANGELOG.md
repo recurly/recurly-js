@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 3.1.1 (June 11, 2015)
+
+* Adds single use coupon support to discount calculations
+* Fix issue where XDRs aborted unpredictably
+
 ### Version 3.1.0 (May 7, 2015)
 
 * Adds bank account tokenization [#202][202]
