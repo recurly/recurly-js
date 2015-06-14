@@ -9,7 +9,7 @@ This library is intended to follow very closely the recurly documentation found 
 Installation
 ===============
 
-	npm install git://github.com/umayr/node-recurly.git#v2.1.1 --save
+	npm install recurly-js --save
 
 Add a config file to your project that has contents similar to:
 
@@ -24,7 +24,7 @@ Add a config file to your project that has contents similar to:
 Usage
 ===============
 
-		var Recurly = require('node-recurly');
+		var Recurly = require('recurly-js');
 		var recurly = new Recurly(require('./config'));
 
 After that, just call the methods below:

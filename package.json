@@ -6,8 +6,8 @@
     "e-commerce",
     "recurring billing"
   ],
-  "version": "2.1.1",
-  "homepage": "https://github.com/robrighter/node-recurly",
+  "version": "2.1.2",
+  "homepage": "https://github.com/umayr/recurly-js",
   "author": "Rob Righter <robrighter@gmail.com> (http://github.com/robrighter)",
   "contributors": [
     "Iván Guardado <dev.ivangc@gmail.com> (http://github.com/IvanGuardado)",
