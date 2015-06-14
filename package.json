@@ -1,24 +1,25 @@
 {
-  "name": "node-recurly",
+  "name": "recurly-js",
   "description": "Library for accessing the api for the Recurly recurring billing service.",
   "keywords": [
     "recurly",
     "e-commerce",
     "recurring billing"
   ],
-  "version": "2.1.0",
+  "version": "2.1.1",
   "homepage": "https://github.com/robrighter/node-recurly",
   "author": "Rob Righter <robrighter@gmail.com> (http://github.com/robrighter)",
   "contributors": [
     "Iván Guardado <dev.ivangc@gmail.com> (http://github.com/IvanGuardado)",
     "Rob Righter <robrighter@gmail.com> (http://github.com/robrighter)",
-    "Dmitriy Shekhovtsov <valorkin@gmail.com> (https://github.com/valorkin)"
+    "Dmitriy Shekhovtsov <valorkin@gmail.com> (https://github.com/valorkin)",
+    "Umayr Shahid <umayrshahid@gmail.com> (https://github.com/umayr)"
   ],
   "bugs": {
-    "web": "https://github.com/robrighter/node-recurly/issues"
+    "url": "https://github.com/robrighter/node-recurly/issues"
   },
   "directories": {
-    "lib": "./lib"
+    "test": "test"
   },
   "main": "./lib/recurly.js",
   "dependencies": {
@@ -27,5 +28,13 @@
   },
   "engines": {
     "node": ">= 0.4"
-  }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umayr/recurly-js.git"
+  },
+  "license": "ISC"
 }
