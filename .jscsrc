@@ -1,0 +1,73 @@
+{
+  "disallowEmptyBlocks": true,
+  "disallowMixedSpacesAndTabs": true,
+  "disallowImplicitTypeConversion": [
+    "numeric",
+    "boolean",
+    "binary",
+    "string"
+  ],
+  "disallowMultipleLineStrings": true,
+  "disallowMultipleVarDecl": true,
+  "disallowOperatorBeforeLineBreak": [
+    "."
+  ],
+  "disallowSpaceBeforePostfixUnaryOperators": [
+    "++",
+    "--"
+  ],
+  "disallowSpacesInCallExpression": true,
+  "disallowTrailingComma": true,
+  "disallowTrailingWhitespace": true,
+  "disallowYodaConditions": true,
+  "requireParenthesesAroundIIFE": true,
+  "requireCurlyBraces": [
+    "if",
+    "else",
+    "for",
+    "while",
+    "do",
+    "try",
+    "catch",
+    "case",
+    "default"
+  ],
+  "requireSpaceAfterBinaryOperators": [
+    "=",
+    ",",
+    "+",
+    "-",
+    "/",
+    "*",
+    "==",
+    "===",
+    "!=",
+    "!=="
+  ],
+  "requireSpaceBeforeBinaryOperators": [
+    "=",
+    "+",
+    "-",
+    "/",
+    "*",
+    "==",
+    "===",
+    "!=",
+    "!=="
+  ],
+  "requireLineBreakAfterVariableAssignment": true,
+  "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
+  "requireSpacesInForStatement": true,
+  "requireSpacesInConditionalExpression": {
+    "afterTest": true,
+    "beforeConsequent": true,
+    "afterConsequent": true,
+    "beforeAlternate": true
+  },
+  "validateParameterSeparator": ", ",
+  "validateQuoteMarks": {
+    "mark": "'",
+    "escape": true
+  },
+  "maximumLineLength": 120
+}
