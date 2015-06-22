@@ -147,6 +147,22 @@ var Recurly = require('../'),
 // 	console.log(res);
 // })
 
+// recurly.subscriptions.preview(
+// 	{plan_code: 'premium', 
+// 	account: 1, 
+// 	currency: 'EUR',
+// 	account: {
+// 		account_code: 1, 
+// 		billing_info: {
+// 			number: '4111-1111-1111-1111',
+// 			first_name: 'Ivan',
+// 			last_name: 'Guardado'
+// 		} 
+// 	}
+// }, function(res){
+// 	console.log(res);
+// })
+
 // recurly.subscriptions.reactivate('1b71110580e1768adb5a224bbc9dd0b0', function(res){
 // 	console.log(res);
 // })

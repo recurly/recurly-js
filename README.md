@@ -140,6 +140,8 @@ http://docs.recurly.com/api/subscriptions
 
 	recurly.subscriptions.create(details, callback) 
   
+    recurly.subscriptions.preview(details, callback) 
+  
 	recurly.subscriptions.update(uuid, details, callback) 
   
 	recurly.subscriptions.cancel(uuid, callback) 
