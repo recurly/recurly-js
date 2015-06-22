@@ -67,11 +67,15 @@ Adjustments
 ===============
 http://docs.recurly.com/api/adjustments
 
-	recurly.adjustments.get(accountcode, callback)
+	recurly.adjustments.list(accountcode, callback)
+  
+    recurly.adjustments.get(uuid, callback)
   
 	recurly.adjustments.create(accountcode, details, callback)
 
 	recurly.adjustments.remove(uuid, callback)
+    
+
 
 
 Coupons
