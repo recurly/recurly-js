@@ -112,6 +112,8 @@ http://docs.recurly.com/api/invoices
   
 	recurly.invoices.create(accountcode, details, callback)
 
+	recurly.invoices.preview(accountcode, callback)
+
 	recurly.invoices.markSuccessful(invoicenumber, callback)
 
 	recurly.invoices.markFailed(invoicenumber, callback)
