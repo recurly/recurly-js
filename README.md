@@ -116,6 +116,8 @@ http://docs.recurly.com/api/invoices
 
     recurly.invoices.refundLineItems(invoicenumber, details, callback)
 
+    recurly.invoices.refundOpenAmount(invoicenumber, details, callback)
+
 	recurly.invoices.markSuccessful(invoicenumber, callback)
 
 	recurly.invoices.markFailed(invoicenumber, callback)
