@@ -144,6 +144,8 @@ http://docs.recurly.com/api/subscriptions
   
 	recurly.subscriptions.update(uuid, details, callback) 
   
+    recurly.subscriptions.updateNotes(uuid, details, callback)
+  
 	recurly.subscriptions.cancel(uuid, callback) 
   
 	recurly.subscriptions.reactivate(uuid, callback) 
