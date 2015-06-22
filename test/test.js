@@ -27,6 +27,10 @@ var Recurly = require('../'),
 // 	console.log(res);
 // })
 
+// recurly.adjustments.list(11, function(res){
+// 	console.log(res);
+// })
+
 // recurly.adjustments.remove('1b874884827e0b9eee7d974446874231', function(res){
 // 	console.log(res);
 // })
