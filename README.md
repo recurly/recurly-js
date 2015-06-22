@@ -114,6 +114,8 @@ http://docs.recurly.com/api/invoices
 
 	recurly.invoices.preview(accountcode, callback)
 
+    recurly.invoices.refundLineItems(invoicenumber, details, callback)
+
 	recurly.invoices.markSuccessful(invoicenumber, callback)
 
 	recurly.invoices.markFailed(invoicenumber, callback)
