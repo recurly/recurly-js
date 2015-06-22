@@ -122,6 +122,7 @@ http://docs.recurly.com/api/invoices
 
 	recurly.invoices.markFailed(invoicenumber, callback)
 
+    recurly.invoices.enterOfflinePayment(invoicenumber, details, callback)
 
 Subscriptions
 ===============
