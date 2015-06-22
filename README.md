@@ -45,6 +45,8 @@ http://docs.recurly.com/api/accounts
 	recurly.accounts.close(accountcode, callback) 
 
 	recurly.accounts.reopen(accountcode, callback)
+  
+    recurly.accounts.notes(accountcode, callback)
 
 
 Billing Information

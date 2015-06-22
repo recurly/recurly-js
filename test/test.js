@@ -19,6 +19,10 @@ var Recurly = require('../'),
 // 	console.log(res);
 // })
 
+// recurly.accounts.notes(11, function(res){
+//  console.log(res);
+// })
+
 // recurly.adjustments.create(11, {currency: 'EUR', unit_amount_in_cents: 100, description: 'Testing'}, function(res){
 // 	console.log(res);
 // })
