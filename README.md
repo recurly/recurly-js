@@ -55,9 +55,7 @@ http://docs.recurly.com/api/billing-info
 
 	recurly.billingInfo.update(accountcode, details, callback) 
 
-
 	recurly.billingInfo.get(accountcode, callback) 
-
 
 	recurly.billingInfo.remove(accountcode, callback) 
 
