@@ -1,0 +1,14 @@
+{
+  "name": "noop",
+  "repo": "chrissrogers/noop",
+  "description": "noop function",
+  "version": "0.0.1",
+  "keywords": [
+    "function"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}

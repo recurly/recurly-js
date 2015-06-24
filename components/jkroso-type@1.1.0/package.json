@@ -1,0 +1,14 @@
+{
+  "name": "type",
+  "description": "less broken typeof",
+  "version": "1.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "assert": "jkroso/assert#0.2.1",
+    "serve": "jkroso/serve#1.5.3",
+    "mocha": "*",
+    "jsmd": "*"
+  },
+  "keywords": ["typeof", "type", "utility"],
+  "files": ["index.js"]
+}

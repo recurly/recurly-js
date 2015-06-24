@@ -1,0 +1,23 @@
+{
+  "name": "equals",
+  "version": "1.0.0",
+  "description": "Check if two values are deeply equivalent",
+  "dependencies": {
+    "type": "jkroso/type"
+  },
+  "devDependencies": {
+    "serve": "jkroso/serve",
+    "hydro-html": "*",
+    "hydro-chai": "*",
+    "hydro-dot": "*",
+    "hydro-bdd": "*",
+    "hydro": "*",
+    "jsmd": "*",
+    "chai": "*"
+  },
+  "repository": "git://github.com/jkroso/equals.git",
+  "keywords": ["equality", "equal", "equivalent", "equivalence", "="],
+  "files": ["index.js"],
+  "author": "Jake Rosoman",
+  "license": "MIT"
+}
