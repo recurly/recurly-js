@@ -41,6 +41,7 @@ http://docs.recurly.com/api/accounts
 	recurly.accounts.get(accountcode, callback) 
 	recurly.accounts.close(accountcode, callback) 
 	recurly.accounts.reopen(accountcode, callback)
+    recurly.accounts.notes(accountcode, callback)
 
 
 Billing Information
@@ -48,6 +49,7 @@ Billing Information
 http://docs.recurly.com/api/billing-info
 
 	recurly.billingInfo.update(accountcode, details, callback) 
+
 	recurly.billingInfo.get(accountcode, callback) 
 	recurly.billingInfo.remove(accountcode, callback) 
 
@@ -56,9 +58,12 @@ Adjustments
 ===============
 http://docs.recurly.com/api/adjustments
 
-	recurly.adjustments.get(accountcode, callback)
+	recurly.adjustments.list(accountcode, callback)
+    recurly.adjustments.get(uuid, callback)
 	recurly.adjustments.create(accountcode, details, callback)
 	recurly.adjustments.remove(uuid, callback)
+    
+
 
 Coupons
 ===============
@@ -87,9 +92,12 @@ http://docs.recurly.com/api/invoices
 	recurly.invoices.listByAccount(accountcode, callback, filter)
 	recurly.invoices.get(invoicenumber, callback)
 	recurly.invoices.create(accountcode, details, callback)
+	recurly.invoices.preview(accountcode, callback)
+    recurly.invoices.refundLineItems(invoicenumber, details, callback)
+    recurly.invoices.refundOpenAmount(invoicenumber, details, callback)
 	recurly.invoices.markSuccessful(invoicenumber, callback)
 	recurly.invoices.markFailed(invoicenumber, callback)
-
+    recurly.invoices.enterOfflinePayment(invoicenumber, details, callback)
 
 Subscriptions
 ===============
@@ -99,7 +107,10 @@ http://docs.recurly.com/api/subscriptions
 	recurly.subscriptions.listByAccount(accountcode, callback) 
 	recurly.subscriptions.get(uuid, callback) 
 	recurly.subscriptions.create(details, callback) 
+    recurly.subscriptions.preview(details, callback) 
 	recurly.subscriptions.update(uuid, details, callback) 
+    recurly.subscriptions.updateNotes(uuid, details, callback)
+    recurly.subscriptions.updatePreview(uuid, details, callback)
 	recurly.subscriptions.cancel(uuid, callback) 
 	recurly.subscriptions.reactivate(uuid, callback) 
 	recurly.subscriptions.terminate(uuid, refundType, callback) 

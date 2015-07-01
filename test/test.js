@@ -19,7 +19,15 @@ var Recurly = require('../'),
 // 	console.log(res);
 // })
 
+// recurly.accounts.notes(11, function(res){
+//  console.log(res);
+// })
+
 // recurly.adjustments.create(11, {currency: 'EUR', unit_amount_in_cents: 100, description: 'Testing'}, function(res){
+// 	console.log(res);
+// })
+
+// recurly.adjustments.list(11, function(res){
 // 	console.log(res);
 // })
 
@@ -124,6 +132,22 @@ var Recurly = require('../'),
 // })
 
 // recurly.subscriptions.create(
+// 	{plan_code: 'premium', 
+// 	account: 1, 
+// 	currency: 'EUR',
+// 	account: {
+// 		account_code: 1, 
+// 		billing_info: {
+// 			number: '4111-1111-1111-1111',
+// 			first_name: 'Ivan',
+// 			last_name: 'Guardado'
+// 		} 
+// 	}
+// }, function(res){
+// 	console.log(res);
+// })
+
+// recurly.subscriptions.preview(
 // 	{plan_code: 'premium', 
 // 	account: 1, 
 // 	currency: 'EUR',
