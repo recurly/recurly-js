@@ -6,7 +6,7 @@
     "e-commerce",
     "recurring billing"
   ],
-  "version": "2.1.2",
+  "version": "2.1.3",
   "homepage": "https://github.com/umayr/recurly-js",
   "author": "Rob Righter <robrighter@gmail.com> (http://github.com/robrighter)",
   "contributors": [
