@@ -41,7 +41,7 @@ http://docs.recurly.com/api/accounts
 	recurly.accounts.get(accountcode, callback) 
 	recurly.accounts.close(accountcode, callback) 
 	recurly.accounts.reopen(accountcode, callback)
-    recurly.accounts.notes(accountcode, callback)
+  recurly.accounts.notes(accountcode, callback)
 
 
 Billing Information
@@ -49,7 +49,6 @@ Billing Information
 http://docs.recurly.com/api/billing-info
 
 	recurly.billingInfo.update(accountcode, details, callback) 
-
 	recurly.billingInfo.get(accountcode, callback) 
 	recurly.billingInfo.remove(accountcode, callback) 
 
