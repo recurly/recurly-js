@@ -2,8 +2,8 @@
 
 ### Version 3.1.1 (June 11, 2015)
 
-* Adds single use coupon support to discount calculations
-* Fix issue where XDRs aborted unpredictably
+* Adds single use coupon support to discount calculations [#204][204]
+* Fix issue where XDRs aborted unpredictably [#207][207]
 
 ### Version 3.1.0 (May 7, 2015)
 
@@ -73,6 +73,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[204]: https://github.com/recurly/recurly-js/commit/6623b0a1d55384b3c03b2918b4ba94a0a34238b5
+[207]: https://github.com/recurly/recurly-js/commit/0ecc549acc218176db72578747c07288578db027
 [202]: https://github.com/recurly/recurly-js/commit/684119566898568f9947210b26cb794f0823e28e
 [199]: https://github.com/recurly/recurly-js/commit/e04662b887e3f51553a0c691d704ec680c36f772
 [196]: https://github.com/recurly/recurly-js/commit/bd49c9a7785bda07ade74d4f17cf9351599dbf11
