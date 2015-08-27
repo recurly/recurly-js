@@ -7,14 +7,14 @@ TESTS = $(wildcard test/*.test.js)
 
 test: test-phantomjs
 
-test-phantomjs: build/recurly.min.js build/test.js
+test-phantomjs: build build/test.js
 	@$(T) phantomjs
 
-test-browser: build/recurly.min.js build/test.js
+test-browser: build build/test.js
 	@$(T) browser
 
 test-sauce: BROWSER ?= ie:9
-test-sauce: build/recurly.min.js build/test.js
+test-sauce: build build/test.js
 	@$(T) saucelabs -b $(BROWSER)
 
 build: build/recurly.min.js
