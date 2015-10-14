@@ -1,0 +1,15 @@
+{
+  "name": "fmt",
+  "repo": "yields/fmt",
+  "remotes": ["https://raw.githubusercontent.com"],
+  "description": "string format utility",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": ["index.js"],
+  "development": {
+    "visionmedia/mocha-matrix": "*",
+    "visionmedia/mocha": "*",
+    "component/assert": "*"
+  }
+}

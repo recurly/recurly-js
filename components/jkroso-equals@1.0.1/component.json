@@ -1,0 +1,19 @@
+{
+  "name": "equals",
+  "repo": "jkroso/equals",
+  "description": "Check if two values are deeply equivalent",
+  "keywords": [
+    "equality",
+    "equal",
+    "same",
+    "equivalent",
+    "equivalence",
+    "=",
+    "equals"
+  ],
+  "dependencies": {
+    "jkroso/type": "*"
+  },
+  "scripts": ["index.js"],
+  "license": "MIT"
+}
