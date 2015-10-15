@@ -28,10 +28,12 @@ build/recurly.min.js: build/recurly.js
 
 build/test.js: TESTFILE = $(foreach test, $(TESTS), 'require("./$(test)");')
 build/test.js: $(TESTS)
-	@echo $(TESTFILE) | $(DUO) --quiet --development --type js --stdout > $@
+	@echo $(TESTFILE) | $(DUO) --quiet --use duo-babel --development --type js --stdout > $@
 
 watch: node_modules
-	@$(BIN)/wr $(MAKE) component.json $(SRC)
+	@watchman watch-del .
+	@watchman watch-project .
+	@watchman -- trigger . build -- make build
 
 node_modules: package.json
 	@npm install --silent
