@@ -30,10 +30,12 @@ build/test.js: TESTFILE = $(foreach test, $(TESTS), 'require("./$(test)");')
 build/test.js: $(TESTS)
 	@echo $(TESTFILE) | $(DUO) --quiet --use duo-babel --development --type js --stdout > $@
 
-watch: node_modules
-	@watchman watch-del .
+watch: unwatch node_modules
 	@watchman watch-project .
-	@watchman -- trigger . build -- make build
+	@watchman -j < .watchman-triggers.json
+
+unwatch:
+	@watchman watch-del .
 
 node_modules: package.json
 	@npm install --silent
@@ -41,4 +43,4 @@ node_modules: package.json
 clean:
 	@rm -rf node_modules components/duo.json build
 
-.PHONY: test watch clean
+.PHONY: test watch unwatch clean

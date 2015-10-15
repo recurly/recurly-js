@@ -5,6 +5,7 @@ node_modules
 npm-debug.log
 
 components/duo.json
+components/duo-cache
 
 build
 

@@ -1,0 +1,10 @@
+[
+  "trigger",
+  "./",
+  {
+    "name": "rjs-build",
+    "command": ["make", "build"],
+    "stdout": ">./build/build.log",
+    "stderr": ">./build/error.log"
+  }
+]
