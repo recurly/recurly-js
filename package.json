@@ -15,11 +15,11 @@
   "devDependencies": {
     "uglify-js": "2.4.x",
     "duo": "0.x",
+    "duo-babel": "6.x",
     "duo-test": "0.x",
     "koa-route": "2.x",
     "koa-bodyparser": "2.x",
     "ejs": "2.x",
-    "debug": "0.x",
-    "wr": "*"
+    "debug": "0.x"
   }
 }

@@ -21,7 +21,7 @@ build: build/recurly.min.js
 
 build/recurly.js: index.js $(SRC) node_modules component.json
 	@mkdir -p $(@D)
-	@$(DUO) --quiet --stdout --global recurly < $< > $@
+	@$(DUO) --use duo-babel --stdout --global recurly < $< > $@
 
 build/recurly.min.js: build/recurly.js
 	@$(BIN)/uglifyjs $< --output $@
