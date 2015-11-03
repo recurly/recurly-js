@@ -8,18 +8,44 @@
     "type": "git",
     "url": "git://github.com/recurly/recurly-js.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "qs": "0.6.6",
+    "component-emitter": "1.1.2",
+    "component-indexof": "0.0.3",
+    "object-component": "0.0.3",
+    "component-event": "0.1.4",
+    "component-clone": "0.2.2",
+    "component-bind": "1.0.0",
+    "component-each": "0.2.6",
+    "component-find": "1.0.0",
+    "json-component": "0.0.1",
+    "component-type": "1.0.0",
+    "trim": "0.0.1",
+    "map-component": "0.0.1",
+    "jsonp": "0.0.4",
+    "merge": "1.0.0",
+    "debug": "2.2.0",
+    "promise": "6.0.0",
+    "mixin": "0.1.0",
+    "par": "0.3.0",
+    "to-slug-case": "0.1.2"
+  },
   "engines": {
     "node" : ">=0.11"
   },
   "devDependencies": {
+    "babel-core": "^5.8.25",
+    "babel-loader": "^5.3.2",
+    "uglifyjs": "^2.4.10",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.1",
+
     "uglify-js": "2.4.x",
     "duo": "0.x",
     "duo-babel": "6.x",
     "duo-test": "0.x",
     "koa-route": "2.x",
     "koa-bodyparser": "2.x",
-    "ejs": "2.x",
-    "debug": "0.x"
+    "ejs": "2.x"
   }
 }
