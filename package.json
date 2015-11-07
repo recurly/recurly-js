@@ -28,7 +28,8 @@
     "promise": "6.0.0",
     "mixin": "https://github.com/kewah/mixin#0.1.0",
     "par": "0.3.0",
-    "to-slug-case": "0.1.2"
+    "to-slug-case": "0.1.2",
+    "lodash.partial": "*"
   },
   "engines": {
     "node": ">=0.11"
@@ -43,7 +44,7 @@
     "koa-bodyparser": "2.x",
     "koa-route": "2.x",
     "uglify-js": "2.4.x",
-    "webpack": "^1.12.2",
-    "webpack-dev-server": "^1.12.1"
+    "webpack": "1.12.2",
+    "webpack-dev-server": "1.12.1"
   }
 }
