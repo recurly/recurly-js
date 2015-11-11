@@ -1,5 +1,3 @@
-# BIN = node_modules/.bin
-# DUO = $(BIN)/duo
 # T = $(BIN)/duo-test -m test/api.js -R spec -P 8378
 
 BIN = node_modules/.bin
@@ -43,4 +41,4 @@ node_modules: package.json
 clean:
 	@rm -rf node_modules build
 
-.PHONY: test watch clean
+.PHONY: test clean
