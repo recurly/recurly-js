@@ -1,25 +1,50 @@
 {
   "name": "recurly.js",
   "description": "Zen subscription billing in the browser",
-  "version": "3.1.1",
+  "version": "4.0.0-alpha",
   "license": "MIT",
   "main": "recurly.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/recurly/recurly-js.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "qs": "0.6.6",
+    "component-emitter": "1.1.2",
+    "component-indexof": "0.0.3",
+    "object-component": "0.0.3",
+    "component-event": "0.1.4",
+    "component-clone": "0.2.2",
+    "component-bind": "1.0.0",
+    "component-each": "0.2.6",
+    "component-find": "1.0.0",
+    "json-component": "0.0.1",
+    "component-type": "1.0.0",
+    "trim": "0.0.1",
+    "map-component": "0.0.1",
+    "jsonp": "0.0.4",
+    "merge": "1.0.0",
+    "debug": "2.2.0",
+    "promise": "6.0.0",
+    "mixin": "https://github.com/kewah/mixin#0.1.0",
+    "par": "0.3.0",
+    "to-slug-case": "0.1.2",
+    "lodash.partial": "*"
+  },
   "engines": {
-    "node" : ">=0.11"
+    "node": ">=0.11"
   },
   "devDependencies": {
-    "uglify-js": "2.4.x",
+    "babel-core": "^6.1.2",
+    "babel-loader": "^6.0.1",
+    "babel-preset-es2015": "^6.1.2",
     "duo": "0.x",
     "duo-test": "0.x",
-    "koa-route": "2.x",
-    "koa-bodyparser": "2.x",
     "ejs": "2.x",
-    "debug": "0.x",
-    "wr": "*"
+    "koa-bodyparser": "2.x",
+    "koa-route": "2.x",
+    "uglify-js": "2.4.x",
+    "webpack": "1.12.2",
+    "webpack-dev-server": "1.12.1"
   }
 }

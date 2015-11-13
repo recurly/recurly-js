@@ -1,9 +1,8 @@
-
 /*!
  * Module dependencies.
  */
 
-var Recurly = require('./lib/recurly');
+const Recurly = require('./lib/recurly').Recurly;
 
 /**
  * Export a single instance.
