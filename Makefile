@@ -17,6 +17,10 @@ build/recurly.js: index.js $(SRC) node_modules
 build/recurly.min.js: build/recurly.js
 	@$(WEBPACK) -p
 
+test: build
+
+test-sauce:
+
 # TESTS = $(wildcard test/*.test.js)
 
 # test: test-phantomjs
