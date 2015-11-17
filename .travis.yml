@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - '0.12'
+  - '4.1'
 install:
   - mkdir travis-phantomjs
   - wget https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -O $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2
@@ -8,16 +8,17 @@ install:
   - export PATH=$PWD/travis-phantomjs:$PATH
 script:
   - 'if [ -n "$ARTIFACT" ]; then make test; else make test-sauce; fi'
-before_script:
-  - 'if [ -n "$ARTIFACT" ]; then gem install travis-artifacts; fi'
-after_success:
-  - 'if [ -n "$ARTIFACT" ]; then cd build; travis-artifacts upload --path recurly.min.js --target-path artifacts/$TRAVIS_COMMIT; fi'
+addons:
+  artifacts:
+    debug: true
+    paths:
+      - build/recurly.js:build/recurly.min.js
+  s3_region: us-west-1
 env:
   global:
-    - secure: 1Fve9UwwgFSoX0Qemh2CkAN9Nyo/bkT5nrHx0MVbc4jRziw8IWdluOPNnzg+Zpx7NXu1BPIUsOvMCjsfJcpJhiuqNPMZZHFfT7vOXW3Htj3UbxrQKpNpyFPQSfCoO4Xz7a3VNusLLqx1RTnFr7plV9F7vrUf8IsL1yYXCyWa6W0=
-    - secure: QLUFB2xoxYmlhIgsuyZzcOY9qKeB6Ct/WOmXXfOkX5bOMyWvjnTtWK5x2qRn813qFBX3/xED9CcQhmJBEgzCBCXodFkgAXGON1mIqJvN5ubBs2fsejF4+/dnVnSiZ3zy0bQKEofTJJZisESaQ4N7a/CmIXgBJtFedDGvxB4ibSs=
-    - secure: NUIojJW7KxzxTvWDKAwPb9ph8x1G/tEE3UL50HRsCOjEbtKYWJT887T3ZAzTXMslZictEeBUD9d4/BymUUy6dOfvohhMCZbXy5ebFHDnCiayPnoxtYXDjaoSZoMTM/wkcFBCNXtauzrkAD1q+aSauONLcSSu0IM5V4LMsCRAz3E=
-    - secure: hP6DZjohCePpsqNoD0gzaOwWij4GIh3znS0SY87HCVzsymkrL23t0R4vKxmqOp+qQ3erSwDFT0B6NImWMnIhroIBNzWXrZ8AsT8PACv/fCOzxpR0UuiBOZMPXnkCzygoSmLYF/Xg72kyDSAABdWNwPxLEc0tBIH/e0iN8G2R2sg=
+    - ARTIFACTS_BUCKET=recurly-js
+    - secure: XanwF2h2Ftx4FMPMahKBot3V3yyV6NMv9NT1KrPCbS5rRO5WVCgCJV07i3h5CavJS773/nvT0Fn/vpuMIAkHhX1ikuaknRqKXy27W8foQSdpV+pHXnjFbWmnNZU8WuwjnFmhKqtHxyNZ3sKsAENvLTEPfG9k+rdPgM7eiVK7gqs=
+    - secure: d4AMDdCMD6ZN/XCMm2PwUofCiUOoNhJhRLZCCNw4Vt4vb/uUQHfTHIaR4VGOog5Nwkabk9nOQhxwVTEVpmZ80aa31eWTmthx51jHQ80NDiKL0+sLolPYnLb6whSVXacn2cJc1CISDwCL+0/M6VUgQbK6bl3CvCtFIBNrc0tL1WU=
     - secure: jQt9v3zZAKmq774J4TOm8a6Zgxea83faf++RRM3azsgLSz5vLfZK6IH4UiC9SmiMZVTYa87mTA71+IO8Mg0lUDJoF8F3EHB+U957el4fDdGak5OULz6FCh0tME1lsstHi+GJ3GtdJGA1DsC6bUR+DsPB5anZZ+wl3QGdUCJToeY=
     - secure: Bv5h9pXMa5O0EdOuN2Dt1n9/+T1dMHimnn6XQb0ozjfwzjfhcPR6eKHkOxDVJ0c1rzne48ql0FK0P42QaCdZpEmy8wUyUTmI1gTMhjILcFbQFk+r9GOwGJsPttLNRS2J9+8u5tEDZjf5LiCnPBjy6vIinK7nlas93xTLTQwNEmI=
     - secure: yIrHdkLhWtO37N24cRU71PK80zvkPzlJ1Jm+1MS3C6/icgJ8At1N/UgpBdxuBs1tlJm1O7Ahk+/MhpGWlspx9tCF7Hzw9Rj0xpKhqsvM155zgH582xNPwNebiCr/tmsH2/ELgFBBgC9sCW5luzeKx9nyuedGA4fmD2fK5Phc5EE=
