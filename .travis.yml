@@ -13,7 +13,7 @@ addons:
     debug: true
     paths:
       - build/recurly.js:build/recurly.min.js
-  s3_region: us-west-1
+    s3_region: us-west-1
 env:
   global:
     - ARTIFACTS_BUCKET=recurly-js
