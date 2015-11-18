@@ -10,7 +10,6 @@ script:
   - 'if [ -n "$ARTIFACT" ]; then make test; else make test-sauce; fi'
 addons:
   artifacts:
-    debug: true
     paths:
       - build
     target_paths:
