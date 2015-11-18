@@ -12,24 +12,25 @@ addons:
   artifacts:
     debug: true
     paths:
-      - build/recurly.js:build/recurly.min.js
+      - build
     s3_region: us-west-1
 env:
   global:
     - ARTIFACTS_BUCKET=recurly-js
+    - ARTIFACTS_TARGET_PATHS="artifacts/$TRAVIS_COMMIT"
     - secure: dzZNq3i4t8fMRoQWSKr4QQNSh4dBk9u1pDtwBh+dNx4bbgNC2EyXOcjL6vTPH0poDf71ggbt5VpyiqebU9bTA3+hMrMLJPPqKT54z7o58ESoUB1VHzWh40p++2uvZwIJC2HSWTdQDp/Hl3JDG4dCyD4sxuJrACa50gHp8xj0Pcc=
     - secure: HcEuKA0wbmbdDo9xXzZ8ICZW750EYNKzqeAYIXJWAVhnMwKQ/LXbJhbBhV4jSjWc73pTAi9ZD57UqxoH4/14KpwK8MKPxN5QZV5l4O/1HtOyL/REMhM1dr9RCM0wbSPMeVU/vwggIeW/YSk2WHYEc+smtWAjQeJJiV8+WS4eAu8=
     - secure: jQt9v3zZAKmq774J4TOm8a6Zgxea83faf++RRM3azsgLSz5vLfZK6IH4UiC9SmiMZVTYa87mTA71+IO8Mg0lUDJoF8F3EHB+U957el4fDdGak5OULz6FCh0tME1lsstHi+GJ3GtdJGA1DsC6bUR+DsPB5anZZ+wl3QGdUCJToeY=
     - secure: Bv5h9pXMa5O0EdOuN2Dt1n9/+T1dMHimnn6XQb0ozjfwzjfhcPR6eKHkOxDVJ0c1rzne48ql0FK0P42QaCdZpEmy8wUyUTmI1gTMhjILcFbQFk+r9GOwGJsPttLNRS2J9+8u5tEDZjf5LiCnPBjy6vIinK7nlas93xTLTQwNEmI=
     - secure: yIrHdkLhWtO37N24cRU71PK80zvkPzlJ1Jm+1MS3C6/icgJ8At1N/UgpBdxuBs1tlJm1O7Ahk+/MhpGWlspx9tCF7Hzw9Rj0xpKhqsvM155zgH582xNPwNebiCr/tmsH2/ELgFBBgC9sCW5luzeKx9nyuedGA4fmD2fK5Phc5EE=
   matrix:
-    - BROWSER: chrome
-    - BROWSER: firefox
-    - BROWSER: safari
-    - BROWSER: ie:11
-    - BROWSER: ie:10
-    - BROWSER: ie:9
-    - BROWSER: iphone:8
-    - BROWSER: iphone:7
-    - BROWSER: iphone:6
+    # - BROWSER: chrome
+    # - BROWSER: firefox
+    # - BROWSER: safari
+    # - BROWSER: ie:11
+    # - BROWSER: ie:10
+    # - BROWSER: ie:9
+    # - BROWSER: iphone:8
+    # - BROWSER: iphone:7
+    # - BROWSER: iphone:6
     - ARTIFACT: 1
