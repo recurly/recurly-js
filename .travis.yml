@@ -15,6 +15,7 @@ addons:
     target_paths:
       - artifacts/$TRAVIS_COMMIT
     s3_region: us-west-1
+    permissions: public-read
 env:
   global:
     - ARTIFACTS_BUCKET=recurly-js
