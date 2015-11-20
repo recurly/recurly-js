@@ -29,7 +29,8 @@
     "mixin": "https://github.com/kewah/mixin#0.1.0",
     "par": "0.3.0",
     "to-slug-case": "0.1.2",
-    "lodash.partial": "*"
+    "lodash.partial": "*",
+    "lodash.omit": "*"
   },
   "engines": {
     "node": ">=0.11"
