@@ -31,7 +31,7 @@
     "to-slug-case": "0.1.2",
     "lodash.partial": "*",
     "lodash.omit": "*",
-    "lodash.intersection": ""
+    "lodash.intersection": "*"
   },
   "engines": {
     "node": ">=0.11"
