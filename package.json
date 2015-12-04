@@ -30,8 +30,7 @@
     "to-slug-case": "0.1.2",
     "lodash.partial": "*",
     "lodash.merge": "*",
-    "lodash.omit": "*",
-    "lodash.intersection": "*"
+    "lodash.omit": "*"
   },
   "engines": {
     "node": ">=0.11"
