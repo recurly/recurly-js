@@ -1,24 +1,24 @@
-var assert = require('component/assert');
-var noop = require('chrissrogers/noop');
-var helpers = require('./support/helpers');
-var sinon = window.sinon;
+import assert from 'assert';
+import helpers from './support/helpers';
+
+const sinon = window.sinon;
 
 helpers.apiTest(function (requestMethod) {
   describe('Recurly.tax (' + requestMethod + ')', function () {
-    var Recurly = window.recurly.Recurly;
-    var recurly;
+    const Recurly = window.recurly.Recurly;
+    let recurly;
 
-    var us = {
+    const us = {
       country: 'US',
       postal_code: '94110'
     };
-    var vat = {
+    const vat = {
       country: 'DE'
     };
-    var none = {
+    const none = {
       country: 'CA',
       postal_code: 'A1A 1A1'
-    }
+    };
 
     beforeEach(function () {
       recurly = new Recurly();
@@ -40,7 +40,7 @@ helpers.apiTest(function (requestMethod) {
     it('requires Recurly.configure', function () {
       try {
         recurly = new Recurly();
-        recurly.tax(us, noop);
+        recurly.tax(us, () => {});
       } catch (e) {
         assert(~e.message.indexOf('configure'));
       }

@@ -1,11 +1,8 @@
-var assert = require('component/assert');
-var index = require('component/indexof');
-var clone = require('component/clone');
-var each = require('component/each');
-var noop = require('chrissrogers/noop');
-var after = require('segmentio/after');
-var merge = require('yields/merge');
-var helpers = require('./support/helpers');
+import assert from 'assert';
+import after from 'lodash.after';
+import merge from 'lodash.merge';
+import clone from 'component-clone';
+import helpers from './support/helpers';
 
 helpers.apiTest(function (requestMethod) {
   describe('Recurly.token (' + requestMethod + ')', function () {
@@ -39,7 +36,7 @@ helpers.apiTest(function (requestMethod) {
     it('requires Recurly.configure', function () {
       try {
         recurly = new Recurly();
-        recurly.token(valid, noop);
+        recurly.token(valid, () => {});
       } catch (e) {
         assert(~e.message.indexOf('configure'));
       }
@@ -110,8 +107,8 @@ helpers.apiTest(function (requestMethod) {
             recurly.token(example, function (err, token) {
               assert(err.code === 'validation');
               assert(err.fields.length === 2);
-              assert(~index(err.fields, 'month'));
-              assert(~index(err.fields, 'year'));
+              assert(~err.fields.indexOf('month'));
+              assert(~err.fields.indexOf('year'));
               assert(!token);
               done();
             });
@@ -193,7 +190,7 @@ helpers.apiTest(function (requestMethod) {
         it('yields a token', function (done) {
           var part = after(examples.length, done);
 
-          each(examples, function (example) {
+          examples.forEach(function (example) {
             builder(example, function (example) {
               recurly.token(example, function (err, token) {
                 assert(!err);
@@ -207,7 +204,7 @@ helpers.apiTest(function (requestMethod) {
         it('sets the value of a data-recurly="token" field', function (done) {
           var part = after(examples.length, done);
 
-          each(examples, function (example) {
+          examples.forEach(function (example) {
             builder(example, function (example) {
               recurly.token(example, function (err, token) {
                 assert(!err);
@@ -249,14 +246,14 @@ helpers.apiTest(function (requestMethod) {
           it('produces a validation error', function (done) {
             var part = after(examples.length, done);
 
-            each(examples, function (example) {
+            examples.forEach(function (example) {
               builder(example, function (example) {
                 recurly.token(example, function (err, token) {
                   assert(err.code === 'validation');
                   assert(err.fields.length === 1);
-                  assert(~index(err.fields, 'country'));
-                  assert(!~index(err.fields, 'postal_code'));
-                  assert(!~index(err.fields, 'unrelated_configured_field'));
+                  assert(~err.fields.indexOf('country'));
+                  assert(!~err.fields.indexOf('postal_code'));
+                  assert(!~err.fields.indexOf('unrelated_configured_field'));
                   assert(!token);
                   part();
                 });

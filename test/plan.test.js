@@ -1,13 +1,12 @@
-var assert = require('component/assert');
-var noop = require('chrissrogers/noop');
-var helpers = require('./support/helpers');
+import assert from 'assert';
+import helpers from './support/helpers';
 
 helpers.apiTest(function (requestMethod) {
   describe('Recurly.plan (' + requestMethod + ')', function () {
-    var Recurly = window.recurly.Recurly;
-    var valid = 'basic';
-    var invalid = 'invalid';
-    var recurly;
+    const Recurly = window.recurly.Recurly;
+    const valid = 'basic';
+    const invalid = 'invalid';
+    let recurly;
 
     beforeEach(function () {
       recurly = new Recurly();
@@ -29,7 +28,7 @@ helpers.apiTest(function (requestMethod) {
     it('requires Recurly.configure', function () {
       try {
         recurly = new Recurly();
-        recurly.plan(valid, noop);
+        recurly.plan(valid, () => {});
       } catch (e) {
         assert(~e.message.indexOf('configure'));
       }

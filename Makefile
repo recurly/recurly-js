@@ -4,6 +4,7 @@ BIN = node_modules/.bin
 WEBPACK = $(BIN)/webpack
 SERVER = $(BIN)/webpack-dev-server
 SRC = index.js $(shell find lib -type f -name '*.js')
+TESTS = $(wildcard test/*.test.js)
 
 server: build
 	@$(SERVER) --inline --hot --port 8020
@@ -17,11 +18,13 @@ build/recurly.js: index.js $(SRC) node_modules
 build/recurly.min.js: build/recurly.js
 	@$(WEBPACK) -p
 
-test: build
+build/test.js: $(TESTS)
+	$(WEBPACK) --config webpack.test.config.js
+
+test: build build/test.js
+	# $(WEBPACK) 'mocha!./build/test.js'
 
 test-sauce:
-
-# TESTS = $(wildcard test/*.test.js)
 
 # test: test-phantomjs
 
@@ -34,10 +37,6 @@ test-sauce:
 # test-sauce: BROWSER ?= ie:9
 # test-sauce: build build/test.js
 # 	@$(T) saucelabs -b $(BROWSER)
-
-# build/test.js: TESTFILE = $(foreach test, $(TESTS), 'require("./$(test)");')
-# build/test.js: $(TESTS)
-# 	@echo $(TESTFILE) | $(DUO) --quiet --use duo-babel --development --type js --stdout > $@
 
 node_modules: package.json
 	@npm install --silent

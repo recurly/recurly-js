@@ -1,13 +1,12 @@
-var assert = require('component/assert');
-var each = require('component/each');
-var noop = require('chrissrogers/noop');
+import assert from 'assert';
 
 describe('Recurly.open', function () {
-  var Recurly = window.recurly.Recurly;
-  var exampleUrl = 'http://recurly.com';
-  var exampleData = { example: 'data' };
-  var originalOpen = window.open;
-  var recurly;
+  const Recurly = window.recurly.Recurly;
+  const exampleUrl = 'http://recurly.com';
+  const exampleData = { example: 'data' };
+  const originalOpen = window.open;
+  const noop = () => {};
+  let recurly;
 
   beforeEach(function () {
     recurly = new Recurly;
@@ -70,7 +69,7 @@ describe('Recurly.open', function () {
     ];
 
     it('opens that url', function () {
-      each(examples, function (example) {
+      examples.forEach(function (example) {
         recurly.open(example);
         assert(window.open.calledWithMatch(example));
       });
@@ -85,7 +84,7 @@ describe('Recurly.open', function () {
     ];
 
     it('opens the url relative to Recurly.config.api', function () {
-      each(examples, function (example) {
+      examples.forEach(function (example) {
         var expectation = recurly.config.api + example;
         recurly.open(example);
         assert(window.open.calledWithMatch(expectation));

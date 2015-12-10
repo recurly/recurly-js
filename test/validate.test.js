@@ -1,11 +1,11 @@
-var assert = require('component/assert');
+import assert from 'assert';
 
 describe('Recurly.validate', function () {
-  var Recurly = window.recurly.Recurly;
-  var recurly;
+  const Recurly = window.recurly.Recurly;
+  let recurly;
 
   beforeEach(function () {
-     recurly = new Recurly();
+    recurly = new Recurly();
   });
 
   describe('cardNumber', function () {

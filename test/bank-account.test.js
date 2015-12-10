@@ -1,10 +1,8 @@
-var assert = require('component/assert');
-var clone = require('component/clone');
-var each = require('component/each');
-var noop = require('chrissrogers/noop');
-var after = require('segmentio/after');
-var merge = require('yields/merge');
-var helpers = require('./support/helpers');
+import assert from 'assert';
+import clone from 'component-clone';
+import after from 'lodash.after';
+import merge from 'lodash.merge';
+import helpers from './support/helpers';
 
 helpers.apiTest(function (requestMethod) {
   var Recurly = window.recurly.Recurly;
@@ -40,7 +38,7 @@ helpers.apiTest(function (requestMethod) {
     it('requires Recurly.configure', function () {
       try {
         recurly = new Recurly();
-        recurly.bankAccount.token(valid, noop);
+        recurly.bankAccount.token(valid, () => {});
       } catch (e) {
         assert(~e.message.indexOf('configure'));
       }
@@ -116,7 +114,7 @@ helpers.apiTest(function (requestMethod) {
         it('yields a token', function (done) {
           var part = after(examples.length, done);
 
-          each(examples, function (example) {
+          examples.forEach(function (example) {
             builder(example, function (example) {
               recurly.bankAccount.token(example, function (err, token) {
                 assert(!err);
@@ -130,7 +128,7 @@ helpers.apiTest(function (requestMethod) {
         it('sets the value of a data-recurly="token" field', function (done) {
           var part = after(examples.length, done);
 
-          each(examples, function (example) {
+          examples.forEach(function (example) {
             builder(example, function (example) {
               recurly.bankAccount.token(example, function (err, token) {
                 assert(!err);

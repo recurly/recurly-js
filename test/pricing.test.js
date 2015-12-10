@@ -1,9 +1,9 @@
-var assert = require('component/assert');
+import assert from 'assert';
 
 describe('Recurly.Pricing', function () {
-  var Recurly = window.recurly.Recurly;
-  var recurly;
-  var pricing;
+  const Recurly = window.recurly.Recurly;
+  let recurly;
+  let pricing;
 
   beforeEach(function () {
     recurly = new Recurly();
