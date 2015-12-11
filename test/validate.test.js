@@ -1,12 +1,10 @@
 import assert from 'assert';
+import {Recurly} from '../lib/recurly';
 
 describe('Recurly.validate', function () {
-  const Recurly = window.recurly.Recurly;
   let recurly;
 
-  beforeEach(function () {
-    recurly = new Recurly();
-  });
+  beforeEach(() => recurly = new Recurly);
 
   describe('cardNumber', function () {
     it('returns true for valid card numbers', function() {

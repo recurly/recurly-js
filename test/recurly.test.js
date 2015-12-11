@@ -1,10 +1,10 @@
 import assert from 'assert';
+import {Recurly} from '../lib/recurly';
 
 describe('Recurly', () => {
-  const Recurly = window.recurly.Recurly;
   let recurly;
 
-  beforeEach(() => recurly = new Recurly());
+  beforeEach(() => recurly = new Recurly);
 
   it('should have a version', () => {
     assert('string' === typeof recurly.version);

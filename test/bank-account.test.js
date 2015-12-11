@@ -3,13 +3,13 @@ import clone from 'component-clone';
 import after from 'lodash.after';
 import merge from 'lodash.merge';
 import helpers from './support/helpers';
+import {Recurly} from '../lib/recurly';
 
 helpers.apiTest(function (requestMethod) {
-  var Recurly = window.recurly.Recurly;
-  var recurly;
+  let recurly;
 
   beforeEach(function () {
-    recurly = new Recurly();
+    recurly = new Recurly;
     recurly.configure({
       publicKey: 'test',
       api: '//' + window.location.host,
@@ -17,7 +17,7 @@ helpers.apiTest(function (requestMethod) {
     });
   });
 
-  describe('Recurly.bankAccount.token (' + requestMethod + ')', function () {
+  describe(`Recurly.bankAccount.token (${requestMethod})`, function () {
     var valid = {
       routing_number: '123456780',
       account_number: '1987649876',

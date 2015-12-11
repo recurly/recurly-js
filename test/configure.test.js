@@ -1,12 +1,10 @@
 import assert from 'assert';
+import {Recurly} from '../lib/recurly';
 
 describe('Recurly.configure', function () {
-  var Recurly = window.recurly.Recurly;
-  var recurly;
+  let recurly;
 
-  beforeEach(function () {
-    recurly = new Recurly();
-  });
+  beforeEach(() => recurly = new Recurly);
 
   describe('when options.publicKey is not given', function () {
     var examples = [

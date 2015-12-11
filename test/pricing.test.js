@@ -1,12 +1,12 @@
 import assert from 'assert';
+import {Recurly} from '../lib/recurly';
 
 describe('Recurly.Pricing', function () {
-  const Recurly = window.recurly.Recurly;
   let recurly;
   let pricing;
 
   beforeEach(function () {
-    recurly = new Recurly();
+    recurly = new Recurly;
     recurly.configure({
       publicKey: 'test',
       api: '//' + window.location.host

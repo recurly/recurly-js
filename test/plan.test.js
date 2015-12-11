@@ -1,15 +1,15 @@
 import assert from 'assert';
+import {Recurly} from '../lib/recurly';
 import helpers from './support/helpers';
 
 helpers.apiTest(function (requestMethod) {
   describe('Recurly.plan (' + requestMethod + ')', function () {
-    const Recurly = window.recurly.Recurly;
     const valid = 'basic';
     const invalid = 'invalid';
     let recurly;
 
     beforeEach(function () {
-      recurly = new Recurly();
+      recurly = new Recurly;
       recurly.configure({
         publicKey: 'test',
         api: '//' + window.location.host,

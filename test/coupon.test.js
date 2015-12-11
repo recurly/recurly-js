@@ -1,16 +1,16 @@
 import assert from 'assert';
+import {Recurly} from '../lib/recurly';
 import helpers from './support/helpers';
 
 helpers.apiTest(function (requestMethod) {
   describe('Recurly.coupon (' + requestMethod + ')', function () {
-    const Recurly = window.recurly.Recurly;
     const valid = { plan: 'basic', coupon: 'coop' };
     const invalidPlan = { plan: 'invalid', coupon: 'coop' };
     const invalidCoupon = { plan: 'basic', coupon: 'coop-invalid' };
     let recurly;
 
     beforeEach(function () {
-      recurly = new Recurly();
+      recurly = new Recurly;
       recurly.configure({
         publicKey: 'test',
         api: '//' + window.location.host,

@@ -2,22 +2,22 @@ import assert from 'assert';
 import after from 'lodash.after';
 import merge from 'lodash.merge';
 import clone from 'component-clone';
+import {Recurly} from '../lib/recurly';
 import helpers from './support/helpers';
 
 helpers.apiTest(function (requestMethod) {
   describe('Recurly.token (' + requestMethod + ')', function () {
-    var Recurly = window.recurly.Recurly;
-    var recurly;
-    var valid = {
+    const valid = {
       number: '4111111111111111',
       month: '01',
       year: new Date().getFullYear() + 1,
       first_name: 'foo',
       last_name: 'bar'
     };
+    let recurly;
 
     beforeEach(function () {
-      recurly = new Recurly();
+      recurly = new Recurly;
       recurly.configure({
         publicKey: 'test',
         api: '//' + window.location.host,

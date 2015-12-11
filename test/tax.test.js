@@ -1,11 +1,11 @@
 import assert from 'assert';
+import {Recurly} from '../lib/recurly';
 import helpers from './support/helpers';
 
 const sinon = window.sinon;
 
 helpers.apiTest(function (requestMethod) {
   describe('Recurly.tax (' + requestMethod + ')', function () {
-    const Recurly = window.recurly.Recurly;
     let recurly;
 
     const us = {
@@ -21,7 +21,7 @@ helpers.apiTest(function (requestMethod) {
     };
 
     beforeEach(function () {
-      recurly = new Recurly();
+      recurly = new Recurly;
       recurly.configure({
         publicKey: 'test',
         api: '//' + window.location.host,

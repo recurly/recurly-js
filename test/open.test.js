@@ -1,7 +1,9 @@
 import assert from 'assert';
+import {Recurly} from '../lib/recurly';
+
+const sinon = window.sinon;
 
 describe('Recurly.open', function () {
-  const Recurly = window.recurly.Recurly;
   const exampleUrl = 'http://recurly.com';
   const exampleData = { example: 'data' };
   const originalOpen = window.open;
