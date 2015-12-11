@@ -2,6 +2,7 @@
 
 BIN = node_modules/.bin
 WEBPACK = $(BIN)/webpack
+KARMA = $(BIN)/karma
 SERVER = $(BIN)/webpack-dev-server
 SRC = index.js $(shell find lib -type f -name '*.js')
 TESTS = $(wildcard test/*.test.js)
@@ -19,10 +20,10 @@ build/recurly.min.js: build/recurly.js
 	@$(WEBPACK) -p
 
 build/test.js: $(TESTS)
-	$(WEBPACK) --config webpack.test.config.js
+	@$(WEBPACK) --config webpack.test.config.js
 
 test: build build/test.js
-	# $(WEBPACK) 'mocha!./build/test.js'
+	@$(KARMA) start karma.conf.js
 
 test-sauce:
 

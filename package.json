@@ -47,8 +47,12 @@
     "karma-ie-launcher": "^0.2.0",
     "karma-mocha": "^0.2.1",
     "karma-phantomjs-launcher": "^0.2.1",
+    "karma-phantomjs-shim": "^1.1.2",
+    "karma-sinon": "^1.0.4",
     "lodash.after": "^3.0.1",
+    "mocha": "^2.3.4",
     "phantomjs": "^1.9.19",
+    "sinon": "^1.17.2",
     "webpack": "1.12.2",
     "webpack-dev-server": "1.12.1"
   }

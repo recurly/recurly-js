@@ -1,7 +1,7 @@
 module.exports = function (config) {
   config.set({
     basePath: '',
-    frameworks: ['mocha'],
+    frameworks: ['mocha', 'sinon', 'phantomjs-shim'],
     files: ['build/test.js'],
     preprocessors: {},
     reporters: ['progress'],
