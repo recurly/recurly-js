@@ -3,6 +3,7 @@ module.exports = function (config) {
     basePath: '',
     frameworks: ['mocha', 'sinon', 'phantomjs-shim'],
     files: ['build/test.js'],
+    proxies: { '/api': 'http://localhost:9877' },
     preprocessors: {},
     reporters: ['progress'],
     port: 9876,
@@ -14,3 +15,5 @@ module.exports = function (config) {
     concurrency: Infinity
   });
 };
+
+var server = require('./test/server');

@@ -9,7 +9,7 @@ describe('Recurly.Pricing', function () {
     recurly = new Recurly;
     recurly.configure({
       publicKey: 'test',
-      api: '//' + window.location.host
+      api: `//${window.location.host}/api`
     });
     pricing = recurly.Pricing();
   });

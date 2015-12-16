@@ -20,7 +20,7 @@ helpers.apiTest(function (requestMethod) {
       recurly = new Recurly;
       recurly.configure({
         publicKey: 'test',
-        api: '//' + window.location.host,
+        api: `//${window.location.host}/api`,
         cors: requestMethod === 'cors'
       });
     });
