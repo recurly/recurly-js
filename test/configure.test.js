@@ -54,12 +54,13 @@ describe('Recurly.configure', function () {
       examples.forEach(function (opts) {
         var recurly = new Recurly();
         recurly.configure(opts);
-        recurly.config.forEach(function (option, val) {
-          if (opts[option]) {
-            assert(opts[option] === val);
+        Object.keys(recurly.config).forEach((opt) => {
+          let val = recurly.config[opt];
+          if (opts[opt]) {
+            assert(opts[opt] === val);
           } else {
             assert(val !== undefined);
-            assert(val !== opts[option]);
+            assert(val !== opts[opt]);
           }
         });
       });
@@ -94,6 +95,8 @@ describe('Recurly.configure', function () {
           timeout: falsey,
           cors: falsey
         });
+
+        console.log(recurly.config.currency)
 
         assert(recurly.config.currency === 'USD');
         assert(recurly.config.timeout === 60000);
