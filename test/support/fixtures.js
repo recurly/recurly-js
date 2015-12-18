@@ -1,4 +1,3 @@
-
 const minimal = `
   <form action="#">
     <input type="text" data-recurly="first_name">
@@ -16,6 +15,6 @@ const fixtures = {minimal};
 export function fixture (name = '') {
   const body = global.document.body.innerHTML;
 
-  before(() => window.document.body.innerHTML = fixtures[name] + body);
-  after(() => window.document.body.innerHTML = body);
+  before(() => global.document.body.innerHTML = fixtures[name] + body);
+  after(() => global.document.body.innerHTML = body);
 };

@@ -16,13 +16,13 @@ describe('Recurly.configure', function () {
     ];
 
     it('throws', function () {
-      examples.forEach(function (opts) {
-        assert.throws(bind(recurly, recurly.configure, opts));
+      examples.forEach((opts) => {
+        assert.throws(recurly.configure.bind(recurly, opts));
       });
     });
 
     it('Recurly.configured remains false', function () {
-      examples.forEach(function (opts) {
+      examples.forEach((opts) => {
         try {
           recurly.configure(opts);
         } catch (e) {
@@ -43,12 +43,10 @@ describe('Recurly.configure', function () {
     ];
 
     it('sets Recurly.config to the options given', function () {
-      examples.forEach(function (opts) {
+      examples.forEach((opts) => {
         var recurly = new Recurly();
         recurly.configure(opts);
-        opts.forEach(function (opt, val) {
-          assert(recurly.config[opt] === val);
-        });
+        Object.keys(opts).forEach((opt) => assert(recurly.config[opt] === opts[opt]));
       });
     });
 

@@ -1,8 +1,8 @@
 import assert from 'assert';
 import {Recurly} from '../lib/recurly';
-import helpers from './support/helpers';
+import {apiTest} from './support/helpers';
 
-helpers.apiTest(function (requestMethod) {
+apiTest(function (requestMethod) {
   describe('Recurly.coupon (' + requestMethod + ')', function () {
     const valid = { plan: 'basic', coupon: 'coop' };
     const invalidPlan = { plan: 'invalid', coupon: 'coop' };

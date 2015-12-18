@@ -1,10 +1,10 @@
 import assert from 'assert';
 import {Recurly} from '../lib/recurly';
-import helpers from './support/helpers';
+import {initRecurly, apiTest, domTest} from './support/helpers';
 
 const sinon = window.sinon;
 
-helpers.apiTest(function (requestMethod) {
+apiTest(function (requestMethod) {
   describe('Recurly.tax (' + requestMethod + ')', function () {
     let recurly;
 
@@ -20,14 +20,7 @@ helpers.apiTest(function (requestMethod) {
       postal_code: 'A1A 1A1'
     };
 
-    beforeEach(function () {
-      recurly = new Recurly;
-      recurly.configure({
-        publicKey: 'test',
-        api: `//${window.location.host}/api`,
-        cors: requestMethod === 'cors'
-      });
-    });
+    beforeEach(() => recurly = initRecurly({ cors: requestMethod === 'cors' }));
 
     it('requires a callback', function () {
       try {

@@ -1,21 +1,15 @@
 import assert from 'assert';
 import {Recurly} from '../lib/recurly';
 import helpers from './support/helpers';
+import {initRecurly, apiTest} from './support/helpers';
 
-helpers.apiTest(function (requestMethod) {
+apiTest(function (requestMethod) {
   describe('Recurly.plan (' + requestMethod + ')', function () {
     const valid = 'basic';
     const invalid = 'invalid';
     let recurly;
 
-    beforeEach(function () {
-      recurly = new Recurly;
-      recurly.configure({
-        publicKey: 'test',
-        api: `//${window.location.host}/api`,
-        cors: requestMethod === 'cors'
-      });
-    });
+    beforeEach(() => recurly = initRecurly({ cors: requestMethod === 'cors' }));
 
     it('requires a callback', function () {
       try {

@@ -3,10 +3,10 @@ import after from 'lodash.after';
 import merge from 'lodash.merge';
 import clone from 'component-clone';
 import {Recurly} from '../lib/recurly';
-import helpers from './support/helpers';
+import {initRecurly, apiTest, domTest} from './support/helpers';
 
-helpers.apiTest(function (requestMethod) {
-  describe('Recurly.token (' + requestMethod + ')', function () {
+apiTest(function (requestMethod) {
+  describe(`Recurly.token (${requestMethod})`, () => {
     const valid = {
       number: '4111111111111111',
       month: '01',
@@ -16,14 +16,7 @@ helpers.apiTest(function (requestMethod) {
     };
     let recurly;
 
-    beforeEach(function () {
-      recurly = new Recurly;
-      recurly.configure({
-        publicKey: 'test',
-        api: `//${window.location.host}/api`,
-        cors: requestMethod === 'cors'
-      });
-    });
+    beforeEach(() => recurly = initRecurly({ cors: requestMethod === 'cors' }));
 
     it('requires a callback', function () {
       try {
@@ -50,7 +43,7 @@ helpers.apiTest(function (requestMethod) {
 
     describe('when called with an HTMLFormElement', function () {
       tokenSuite(function (values, runner) {
-        helpers.domTest(function (testbed, done) {
+        domTest(function (testbed, done) {
           testbed.insertAdjacentHTML('beforeend',
             ' <form id="test-form"> ' +
             '   <input type="text" data-recurly="number" value="' + (values.number || '') + '"> ' +
