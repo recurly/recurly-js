@@ -219,14 +219,12 @@ apiTest(requestMethod => {
       });
 
       describe('when given additional required fields', () => {
-        beforeEach(() => {
-          recurly = new Recurly();
-          recurly.configure({
-            publicKey: 'test',
-            api: '//' + window.location.host,
+        beforeEach(done => {
+          recurly = initRecurly({
             cors: requestMethod === 'cors',
             required: ['country', 'postal_code', 'unrelated_configured_field']
           });
+          recurly.on('ready', done);
         });
 
         describe('when given a blank required value', () => {

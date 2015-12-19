@@ -8,7 +8,9 @@ describe('Recurly', () => {
 
   it('should have a version', () => assert(typeof recurly.version === 'string'));
   it('should be an event emitter', () => assert(recurly.on && recurly.emit));
-  it('should be exposed as a global singleton', () => assert(window.recurly instanceof Recurly));
+  it('should be exposed as a global singleton', () => {
+    assert(window.recurly instanceof window.recurly.Recurly)
+  });
 
   describe('Recurly.request', () => {
     let cors = false;
