@@ -1,3 +1,4 @@
+import each from 'lodash.foreach';
 import assert from 'assert';
 import {Recurly} from '../lib/recurly';
 
@@ -44,9 +45,9 @@ describe('Recurly.configure', function () {
 
     it('sets Recurly.config to the options given', function () {
       examples.forEach((opts) => {
-        var recurly = new Recurly();
+        var recurly = new Recurly;
         recurly.configure(opts);
-        Object.keys(opts).forEach((opt) => assert(recurly.config[opt] === opts[opt]));
+        each(opts, (val, opt) => assert(recurly.config[opt] === val));
       });
     });
 
@@ -54,8 +55,7 @@ describe('Recurly.configure', function () {
       examples.forEach(function (opts) {
         var recurly = new Recurly();
         recurly.configure(opts);
-        Object.keys(recurly.config).forEach((opt) => {
-          let val = recurly.config[opt];
+        each(recurly.config, (val, opt) => {
           if (opts[opt]) {
             assert(opts[opt] === val);
           } else {
@@ -95,8 +95,6 @@ describe('Recurly.configure', function () {
           timeout: falsey,
           cors: falsey
         });
-
-        console.log(recurly.config.currency)
 
         assert(recurly.config.currency === 'USD');
         assert(recurly.config.timeout === 60000);

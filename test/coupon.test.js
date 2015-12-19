@@ -1,3 +1,4 @@
+import each from 'lodash.foreach';
 import assert from 'assert';
 import {Recurly} from '../lib/recurly';
 import {apiTest} from './support/helpers';
@@ -60,7 +61,7 @@ apiTest(function (requestMethod) {
         it('contains a discount amount', function (done) {
           assertValidCoupon('coop', function (coupon) {
             assert(!coupon.discount.rate);
-            coupon.discount.amount.forEach(function (currency, amount) {
+            each(coupon.discount.amount, (amount, currency) => {
               assert(currency.length === 3);
               assert(typeof amount === 'number');
             });
