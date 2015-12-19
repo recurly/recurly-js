@@ -6,17 +6,9 @@ describe('Recurly', () => {
 
   beforeEach(() => recurly = new Recurly);
 
-  it('should have a version', () => {
-    assert('string' === typeof recurly.version);
-  });
-
-  it('should be an event emitter', () => {
-    assert(recurly.on && recurly.emit);
-  });
-
-  it('should be exposed as a global singleton', () => {
-    assert(window.recurly instanceof Recurly);
-  });
+  it('should have a version', () => assert(typeof recurly.version === 'string'));
+  it('should be an event emitter', () => assert(recurly.on && recurly.emit));
+  it('should be exposed as a global singleton', () => assert(window.recurly instanceof Recurly));
 
   describe('Recurly.request', () => {
     let cors = false;
@@ -24,7 +16,7 @@ describe('Recurly', () => {
     beforeEach(() => {
       recurly.configure({
         publicKey: 'test',
-        api: `//${window.location.host}/api`,
+        api: `//${global.location.host}/api`,
         cors: cors
       });
     });

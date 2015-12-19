@@ -19,7 +19,7 @@ build/recurly.js: index.js $(SRC) node_modules
 build/recurly.min.js: build/recurly.js
 	@$(WEBPACK) -p
 
-build/test.js: $(TESTS)
+build/test.js: $(SRC) $(TESTS)
 	@$(WEBPACK) --config webpack.test.config.js
 
 test: build build/test.js

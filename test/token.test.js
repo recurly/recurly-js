@@ -5,7 +5,7 @@ import clone from 'component-clone';
 import {Recurly} from '../lib/recurly';
 import {initRecurly, apiTest, domTest} from './support/helpers';
 
-apiTest(function (requestMethod) {
+apiTest(requestMethod => {
   describe(`Recurly.token (${requestMethod})`, () => {
     const valid = {
       number: '4111111111111111',
@@ -16,9 +16,12 @@ apiTest(function (requestMethod) {
     };
     let recurly;
 
-    beforeEach(() => recurly = initRecurly({ cors: requestMethod === 'cors' }));
+    beforeEach(done => {
+      recurly = initRecurly({ cors: requestMethod === 'cors' });
+      recurly.on('ready', done);
+    });
 
-    it('requires a callback', function () {
+    it('requires a callback', () => {
       try {
         recurly.token(valid);
       } catch (e) {
@@ -26,7 +29,7 @@ apiTest(function (requestMethod) {
       }
     });
 
-    it('requires Recurly.configure', function () {
+    it('requires Recurly.configure', () => {
       try {
         recurly = new Recurly();
         recurly.token(valid, () => {});
@@ -35,34 +38,37 @@ apiTest(function (requestMethod) {
       }
     });
 
-    describe('when called with a plain object', function () {
-      tokenSuite(function (values, runner) {
+    describe('when called with a plain object', () => {
+      tokenSuite((values, runner) => {
         return runner(values);
       });
     });
 
-    describe('when called with an HTMLFormElement', function () {
-      tokenSuite(function (values, runner) {
-        domTest(function (testbed, done) {
+    // TODO: Rebuild this for fixtures...
+    describe('when called with an HTMLFormElement', () => {
+      tokenSuite((values, runner) => {
+        domTest((testbed, done) => {
           testbed.insertAdjacentHTML('beforeend',
-            ' <form id="test-form"> ' +
-            '   <input type="text" data-recurly="number" value="' + (values.number || '') + '"> ' +
-            '   <input type="text" data-recurly="month" value="' + (values.month || '') + '"> ' +
-            '   <input type="text" data-recurly="year" value="' + (values.year || '') + '"> ' +
-            '   <input type="text" data-recurly="cvv" value="' + (values.cvv || '') + '"> ' +
-            '   <input type="text" data-recurly="first_name" value="' + (values.first_name || '') + '"> ' +
-            '   <input type="text" data-recurly="last_name" value="' + (values.last_name || '') + '"> ' +
-            '   <input type="text" data-recurly="address1" value="' + (values.address1 || '') + '"> ' +
-            '   <input type="text" data-recurly="address2" value="' + (values.address2 || '') + '"> ' +
-            '   <input type="text" data-recurly="city" value="' + (values.city || '') + '"> ' +
-            '   <input type="text" data-recurly="state" value="' + (values.state || '') + '"> ' +
-            '   <input type="text" data-recurly="postal_code" value="' + (values.last_name || '') + '"> ' +
-            '   <input type="text" data-recurly="phone" value="' + (values.phone || '') + '"> ' +
-            '   <input type="text" data-recurly="vat_number" value="' + (values.vat_number || '') + '"> ' +
-            '   <input type="text" data-recurly="country" value="' + (values.country || '') + '"> ' +
-            '   <input type="hidden" name="recurly-token" data-recurly="token"> ' +
-            '   <button>submit</button> ' +
-            ' </form> '
+            `
+            <form id="test-form"> ' +
+              <input type="text" data-recurly="number" value="${(values.number || '')}">
+              <input type="text" data-recurly="month" value="${(values.month || '')}">
+              <input type="text" data-recurly="year" value="${(values.year || '')}">
+              <input type="text" data-recurly="cvv" value="${(values.cvv || '')}">
+              <input type="text" data-recurly="first_name" value="${(values.first_name || '')}">
+              <input type="text" data-recurly="last_name" value="${(values.last_name || '')}">
+              <input type="text" data-recurly="address1" value="${(values.address1 || '')}">
+              <input type="text" data-recurly="address2" value="${(values.address2 || '')}">
+              <input type="text" data-recurly="city" value="${(values.city || '')}">
+              <input type="text" data-recurly="state" value="${(values.state || '')}">
+              <input type="text" data-recurly="postal_code" value="${(values.last_name || '')}">
+              <input type="text" data-recurly="phone" value="${(values.phone || '')}">
+              <input type="text" data-recurly="vat_number" value="${(values.vat_number || '')}">
+              <input type="text" data-recurly="country" value="${(values.country || '')}">
+              <input type="hidden" name="recurly-token" data-recurly="token">
+              <button>submit</button>
+            </form>
+            `
           );
 
           runner(testbed.querySelector('#test-form'));
@@ -72,14 +78,14 @@ apiTest(function (requestMethod) {
     });
 
     function tokenSuite (builder) {
-      describe('when given an invalid card number', function () {
+      describe('when given an invalid card number', () => {
         var example = merge(clone(valid), {
           number: '4111111111111112'
         });
 
-        it('produces a validation error', function (done) {
-          builder(example, function (example) {
-            recurly.token(example, function (err, token) {
+        it('produces a validation error', done => {
+          builder(example, example => {
+            recurly.token(example, (err, token) => {
               assert(err.code === 'validation');
               assert(err.fields.length === 1);
               assert(err.fields[0] === 'number');
@@ -90,14 +96,14 @@ apiTest(function (requestMethod) {
         });
       });
 
-      describe('when given an invalid expiration', function () {
+      describe('when given an invalid expiration', () => {
         var example = merge(clone(valid), {
           year: new Date().getFullYear() - 1
         });
 
-        it('produces a validation error', function (done) {
-          builder(example, function (example) {
-            recurly.token(example, function (err, token) {
+        it('produces a validation error', done => {
+          builder(example, example => {
+            recurly.token(example, (err, token) => {
               assert(err.code === 'validation');
               assert(err.fields.length === 2);
               assert(~err.fields.indexOf('month'));
@@ -109,14 +115,14 @@ apiTest(function (requestMethod) {
         });
       });
 
-      describe('when given a blank value', function () {
+      describe('when given a blank value', () => {
         var example = merge(clone(valid), {
           first_name: ''
         });
 
-        it('produces a validation error', function (done) {
-          builder(example, function (example) {
-            recurly.token(example, function (err, token) {
+        it('produces a validation error', done => {
+          builder(example, example => {
+            recurly.token(example, (err, token) => {
               assert(err.code === 'validation');
               assert(err.fields.length === 1);
               assert(err.fields[0] === 'first_name');
@@ -127,14 +133,14 @@ apiTest(function (requestMethod) {
         });
       });
 
-      describe('when given a declining card', function () {
+      describe('when given a declining card', () => {
         var example = merge(clone(valid), {
           number: '4000000000000002'
         });
 
-        it('produces a validation error', function (done) {
-          builder(example, function (example) {
-            recurly.token(example, function (err, token) {
+        it('produces a validation error', done => {
+          builder(example, example => {
+            recurly.token(example, (err, token) => {
               assert(err.code === 'declined')
               assert(err.message.indexOf('card was declined'));
               assert(err.fields.length === 1);
@@ -146,14 +152,14 @@ apiTest(function (requestMethod) {
         });
       });
 
-      describe('when given an invalid cvv', function () {
+      describe('when given an invalid cvv', () => {
         var example = merge(clone(valid), {
           cvv: 'blah'
         });
 
-        it('produces a validation error', function (done) {
-          builder(example, function (example) {
-            recurly.token(example, function (err, token) {
+        it('produces a validation error', done => {
+          builder(example, example => {
+            recurly.token(example, (err, token) => {
               assert(err.code === 'validation');
               assert(err.fields.length === 1);
               assert(err.fields[0] === 'cvv');
@@ -164,7 +170,7 @@ apiTest(function (requestMethod) {
         });
       });
 
-      describe('when given valid values', function () {
+      describe('when given valid values', () => {
         var examples = [
           valid,
           merge(clone(valid), {
@@ -180,12 +186,12 @@ apiTest(function (requestMethod) {
           })
         ];
 
-        it('yields a token', function (done) {
+        it('yields a token', done => {
           var part = after(examples.length, done);
 
-          examples.forEach(function (example) {
-            builder(example, function (example) {
-              recurly.token(example, function (err, token) {
+          examples.forEach(example => {
+            builder(example, example => {
+              recurly.token(example, (err, token) => {
                 assert(!err);
                 assert(token.id);
                 part();
@@ -194,12 +200,12 @@ apiTest(function (requestMethod) {
           });
         });
 
-        it('sets the value of a data-recurly="token" field', function (done) {
+        it('sets the value of a data-recurly="token" field', done => {
           var part = after(examples.length, done);
 
-          examples.forEach(function (example) {
-            builder(example, function (example) {
-              recurly.token(example, function (err, token) {
+          examples.forEach(example => {
+            builder(example, example => {
+              recurly.token(example, (err, token) => {
                 assert(!err);
                 assert(token.id);
                 if (example && example.nodeType === 3) {
@@ -212,8 +218,8 @@ apiTest(function (requestMethod) {
         });
       });
 
-      describe('when given additional required fields', function () {
-        beforeEach(function () {
+      describe('when given additional required fields', () => {
+        beforeEach(() => {
           recurly = new Recurly();
           recurly.configure({
             publicKey: 'test',
@@ -223,7 +229,7 @@ apiTest(function (requestMethod) {
           });
         });
 
-        describe('when given a blank required value', function () {
+        describe('when given a blank required value', () => {
           var examples = [
             merge(clone(valid), {
               country: '',
@@ -236,12 +242,12 @@ apiTest(function (requestMethod) {
             })
           ];
 
-          it('produces a validation error', function (done) {
+          it('produces a validation error', done => {
             var part = after(examples.length, done);
 
-            examples.forEach(function (example) {
-              builder(example, function (example) {
-                recurly.token(example, function (err, token) {
+            examples.forEach(example => {
+              builder(example, example => {
+                recurly.token(example, (err, token) => {
                   assert(err.code === 'validation');
                   assert(err.fields.length === 1);
                   assert(~err.fields.indexOf('country'));

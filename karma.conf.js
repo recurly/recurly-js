@@ -2,7 +2,7 @@ module.exports = function (config) {
   config.set({
     basePath: '',
     frameworks: ['mocha', 'sinon', 'phantomjs-shim'],
-    files: ['build/test.js'],
+    files: ['build/recurly.js', 'build/test.js'],
     proxies: { '/api': 'http://localhost:9877' },
     preprocessors: {},
     reporters: ['progress'],
