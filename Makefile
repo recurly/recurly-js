@@ -5,7 +5,7 @@ WEBPACK = $(BIN)/webpack
 KARMA = $(BIN)/karma
 SERVER = $(BIN)/webpack-dev-server
 SRC = index.js $(shell find lib -type f -name '*.js')
-TESTS = $(wildcard test/*.test.js)
+TESTS = $(shell find test -type f -name '*.js')
 
 server: build
 	@$(SERVER) --inline --hot --port 8020

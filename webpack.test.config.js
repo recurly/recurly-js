@@ -2,7 +2,7 @@ var glob = require('glob');
 var path = require('path');
 
 module.exports = {
-  entry: glob.sync('./test/*.test.js'),
+  entry: glob.sync('./test/token.test.js'),
   output: {
     path: path.join(__dirname, 'build'),
     publicPath: '/build/',
@@ -24,5 +24,6 @@ module.exports = {
   resolve: {
     root: [path.join(__dirname, 'test')],
     extensions: ['', '.js']
-  }
+  },
+  devtool: 'inline-source-map'
 };
