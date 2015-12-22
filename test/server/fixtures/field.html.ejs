@@ -23,7 +23,7 @@
     }
 
     function message (name, body) {
-      window.parent.postMessage({ event: name, body: body }, '*');
+      if (window.parent) window.parent.postMessage({ event: name, body: body }, '*');
     }
 
     function recurlyConfig() {
