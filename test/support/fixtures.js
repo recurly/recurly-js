@@ -33,20 +33,20 @@ const all = opts => `
 `;
 
 const bank = opts => `
-  <for action="#" id="test-form">
-    <input type="text" data-recurly="name_on_account" value="${opts.name_on_account}">
-    <input type="text" data-recurly="routing_number" value="${opts.routing_number}">
-    <input type="text" data-recurly="account_number" value="${opts.account_number}">
-    <input type="text" data-recurly="account_number_confirmation" value="${opts.account_number_confirmation}">
-    <input type="text" data-recurly="account_type" value="${opts.account_type}">
-    <input type="text" data-recurly="address1" value="${opts.address1}">
-    <input type="text" data-recurly="address2" value="${opts.address2}">
-    <input type="text" data-recurly="city" value="${opts.city}">
-    <input type="text" data-recurly="state" value="${opts.state}">
-    <input type="text" data-recurly="postal_code" value="${opts.postal_code}">
-    <input type="text" data-recurly="country" value="${opts.country}">
-    <input type="text" data-recurly="phone" value="${opts.phone}">
-    <input type="text" data-recurly="vat_number" value="${opts.vat_number}">
+  <form action="#" id="test-form">
+    <input type="text" data-recurly="name_on_account" value="${opts.name_on_account || ''}">
+    <input type="text" data-recurly="routing_number" value="${opts.routing_number || ''}">
+    <input type="text" data-recurly="account_number" value="${opts.account_number || ''}">
+    <input type="text" data-recurly="account_number_confirmation" value="${opts.account_number_confirmation || ''}">
+    <input type="text" data-recurly="account_type" value="${opts.account_type || ''}">
+    <input type="text" data-recurly="address1" value="${opts.address1 || ''}">
+    <input type="text" data-recurly="address2" value="${opts.address2 || ''}">
+    <input type="text" data-recurly="city" value="${opts.city || ''}">
+    <input type="text" data-recurly="state" value="${opts.state || ''}">
+    <input type="text" data-recurly="postal_code" value="${opts.postal_code || ''}">
+    <input type="text" data-recurly="country" value="${opts.country || ''}">
+    <input type="text" data-recurly="phone" value="${opts.phone || ''}">
+    <input type="text" data-recurly="vat_number" value="${opts.vat_number || ''}">
     <input type="hidden" name="recurly-token" data-recurly="token">
     <button>submit</button>
   </form>

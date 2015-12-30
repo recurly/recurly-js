@@ -2,7 +2,7 @@ var glob = require('glob');
 var path = require('path');
 
 module.exports = {
-  entry: glob.sync('./test/token.test.js'),
+  entry: glob.sync('./test/*.test.js'),
   output: {
     path: path.join(__dirname, 'build'),
     publicPath: '/build/',
