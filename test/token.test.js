@@ -1,12 +1,14 @@
 import assert from 'assert';
 import after from 'lodash.after';
 import merge from 'lodash.merge';
+import each from 'lodash.foreach';
 import clone from 'component-clone';
 import {Recurly} from '../lib/recurly';
+import {fixture} from './support/fixtures';
 import {initRecurly, apiTest, domTest} from './support/helpers';
 
 apiTest(requestMethod => {
-  describe(`Recurly.token (${requestMethod})`, () => {
+  describe(`Recurly.token (${requestMethod})`, function () {
     const valid = {
       number: '4111111111111111',
       month: '01',
@@ -14,168 +16,159 @@ apiTest(requestMethod => {
       first_name: 'foo',
       last_name: 'bar'
     };
-    let recurly;
 
-    beforeEach(done => {
-      recurly = initRecurly({ cors: requestMethod === 'cors' });
-      recurly.on('ready', done);
+    beforeEach(function (done) {
+      if (this.currentTest.ctx.fixture) fixture(this.currentTest.ctx.fixture);
+      this.recurly = initRecurly({ cors: requestMethod === 'cors' });
+      this.recurly.ready(done);
     });
 
-    it('requires a callback', () => {
-      try {
-        recurly.token(valid);
-      } catch (e) {
-        assert(~e.message.indexOf('callback'));
-      }
+    afterEach(function () {
+      if (this.currentTest.ctx.fixture) fixture();
     });
 
-    it('requires Recurly.configure', () => {
-      try {
-        recurly = new Recurly();
-        recurly.token(valid, () => {});
-      } catch (e) {
-        assert(~e.message.indexOf('configure'));
-      }
-    });
+    describe('without markup', function () {
+      it('requires a callback', function () {
+        try {
+          this.recurly.token(clone(valid));
+        } catch (e) {
+          assert(~e.message.indexOf('callback'));
+        }
+      });
 
-    describe('when called with a plain object', () => {
-      tokenSuite((values, runner) => {
-        return runner(values);
+      it('requires Recurly.configure', function () {
+        try {
+          let recurly = new Recurly();
+          recurly.token(clone(valid), () => {});
+        } catch (e) {
+          assert(~e.message.indexOf('configure'));
+        }
       });
     });
 
-    // TODO: Rebuild this for fixtures...
-    describe('when called with an HTMLFormElement', () => {
-      tokenSuite((values, runner) => {
-        domTest((testbed, done) => {
-          testbed.insertAdjacentHTML('beforeend',
-            `
-            <form id="test-form"> ' +
-              <input type="text" data-recurly="number" value="${(values.number || '')}">
-              <input type="text" data-recurly="month" value="${(values.month || '')}">
-              <input type="text" data-recurly="year" value="${(values.year || '')}">
-              <input type="text" data-recurly="cvv" value="${(values.cvv || '')}">
-              <input type="text" data-recurly="first_name" value="${(values.first_name || '')}">
-              <input type="text" data-recurly="last_name" value="${(values.last_name || '')}">
-              <input type="text" data-recurly="address1" value="${(values.address1 || '')}">
-              <input type="text" data-recurly="address2" value="${(values.address2 || '')}">
-              <input type="text" data-recurly="city" value="${(values.city || '')}">
-              <input type="text" data-recurly="state" value="${(values.state || '')}">
-              <input type="text" data-recurly="postal_code" value="${(values.last_name || '')}">
-              <input type="text" data-recurly="phone" value="${(values.phone || '')}">
-              <input type="text" data-recurly="vat_number" value="${(values.vat_number || '')}">
-              <input type="text" data-recurly="country" value="${(values.country || '')}">
-              <input type="hidden" name="recurly-token" data-recurly="token">
-              <button>submit</button>
-            </form>
-            `
-          );
+    describe('when using minimal markup', function () {
+      this.ctx.fixture = 'minimal';
+      describe('when called with a plain object', function () {
+        // For each example, updates corresponding input fields or hosted fields
+        tokenSuite(example => {
+          example = clone(example);
+          const form = global.document.querySelector('#test-form');
+          each(example, (val, key) => {
+            let el = form.querySelector(`[data-recurly=${key}]`);
+            if (el instanceof HTMLDivElement) {
+              el.querySelector('iframe').contentWindow.value(val);
+              delete example[key];
+            }
+          });
+          return example;
+        });
+      });
+    });
 
-          runner(testbed.querySelector('#test-form'));
-          done();
+    describe('when using all markup', function () {
+      this.ctx.fixture = 'all';
+      describe('when called with an HTMLFormElement', function () {
+        // For each example, updates corresponding input fields or hosted fields
+        tokenSuite(example => {
+          const form = global.document.querySelector('#test-form');
+          each(example, (val, key) => {
+            let el = form.querySelector(`[data-recurly=${key}]`);
+            if (el instanceof HTMLDivElement) {
+              el.querySelector('iframe').contentWindow.value(val);
+            } else if (el && 'value' in el) {
+              el.value = val;
+            }
+          });
+          return form;
         });
       });
     });
 
     function tokenSuite (builder) {
-      describe('when given an invalid card number', () => {
-        var example = merge(clone(valid), {
+      describe('when given an invalid card number', function () {
+        let example = merge(clone(valid), {
           number: '4111111111111112'
         });
 
-        it('produces a validation error', done => {
-          builder(example, example => {
-            recurly.token(example, (err, token) => {
-              assert(err.code === 'validation');
-              assert(err.fields.length === 1);
-              assert(err.fields[0] === 'number');
-              assert(!token);
-              done();
-            });
+        it('produces a validation error', function (done) {
+          this.recurly.token(builder(example), (err, token) => {
+            assert(err.code === 'validation');
+            assert(err.fields.length === 1);
+            assert(err.fields[0] === 'number');
+            assert(!token);
+            done();
           });
         });
       });
 
-      describe('when given an invalid expiration', () => {
-        var example = merge(clone(valid), {
+      describe('when given an invalid expiration', function () {
+        let example = merge(clone(valid), {
           year: new Date().getFullYear() - 1
         });
 
-        it('produces a validation error', done => {
-          builder(example, example => {
-            recurly.token(example, (err, token) => {
-              assert(err.code === 'validation');
-              assert(err.fields.length === 2);
-              assert(~err.fields.indexOf('month'));
-              assert(~err.fields.indexOf('year'));
-              assert(!token);
-              done();
-            });
+        it('produces a validation error', function (done) {
+          this.recurly.token(builder(example), (err, token) => {
+            assert(err.code === 'validation');
+            assert(err.fields.length === 2);
+            assert(~err.fields.indexOf('month'));
+            assert(~err.fields.indexOf('year'));
+            assert(!token);
+            done();
           });
         });
       });
 
-      describe('when given a blank value', () => {
-        var example = merge(clone(valid), {
+      describe('when given a blank value', function () {
+        let example = merge(clone(valid), {
           first_name: ''
         });
 
-        it('produces a validation error', done => {
-          builder(example, example => {
-            recurly.token(example, (err, token) => {
-              assert(err.code === 'validation');
-              assert(err.fields.length === 1);
-              assert(err.fields[0] === 'first_name');
-              assert(!token);
-              done();
-            });
+        it('produces a validation error', function (done) {
+          this.recurly.token(builder(example), (err, token) => {
+            assert(err.code === 'validation');
+            assert(err.fields.length === 1);
+            assert(err.fields[0] === 'first_name');
+            assert(!token);
+            done();
           });
         });
       });
 
-      describe('when given a declining card', () => {
-        var example = merge(clone(valid), {
+      describe('when given a declining card', function () {
+        let example = merge(clone(valid), {
           number: '4000000000000002'
         });
 
-        it('produces a validation error', done => {
-          builder(example, example => {
-            recurly.token(example, (err, token) => {
-              assert(err.code === 'declined')
-              assert(err.message.indexOf('card was declined'));
-              assert(err.fields.length === 1);
-              assert(err.fields[0] === 'number');
-              assert(!token);
-              done();
-            });
+        it('produces a validation error', function (done) {
+          this.recurly.token(builder(example), (err, token) => {
+            assert(err.code === 'declined')
+            assert(err.message.indexOf('card was declined'));
+            assert(err.fields.length === 1);
+            assert(err.fields[0] === 'number');
+            assert(!token);
+            done();
           });
         });
       });
 
-      describe('when given an invalid cvv', () => {
-        var example = merge(clone(valid), {
-          cvv: 'blah'
-        });
+      describe('when given an invalid cvv', function () {
+        let example = merge(clone(valid), { cvv: 'blah' });
 
-        it('produces a validation error', done => {
-          builder(example, example => {
-            recurly.token(example, (err, token) => {
-              assert(err.code === 'validation');
-              assert(err.fields.length === 1);
-              assert(err.fields[0] === 'cvv');
-              assert(!token);
-              done();
-            });
+        it('produces a validation error', function (done) {
+          this.recurly.token(builder(example), (err, token) => {
+            assert(err.code === 'validation');
+            assert(err.fields.length === 1);
+            assert(err.fields[0] === 'cvv');
+            assert(!token);
+            done();
           });
         });
       });
 
-      describe('when given valid values', () => {
-        var examples = [
+      describe('when given valid values', function () {
+        let examples = [
           valid,
-          merge(clone(valid), {
-            cvv: ''
-          }),
+          merge(clone(valid), { cvv: '' }),
           merge(clone(valid), {
             address1: '400 Alabama St.',
             address2: 'Suite 202',
@@ -186,49 +179,46 @@ apiTest(requestMethod => {
           })
         ];
 
-        it('yields a token', done => {
-          var part = after(examples.length, done);
+        it('yields a token', function (done) {
+          let part = after(examples.length, done);
 
           examples.forEach(example => {
-            builder(example, example => {
-              recurly.token(example, (err, token) => {
-                assert(!err);
-                assert(token.id);
-                part();
-              });
+            this.recurly.token(builder(example), (err, token) => {
+              assert(!err);
+              assert(token.id);
+              part();
             });
           });
         });
 
-        it('sets the value of a data-recurly="token" field', done => {
-          var part = after(examples.length, done);
+        it('sets the value of a data-recurly="token" field', function (done) {
+          let part = after(examples.length, done);
 
           examples.forEach(example => {
-            builder(example, example => {
-              recurly.token(example, (err, token) => {
-                assert(!err);
-                assert(token.id);
-                if (example && example.nodeType === 3) {
-                  assert(example.querySelector('[data-recurly=token]').value === token.id);
-                }
-                part();
-              });
+            this.recurly.token(builder(example), (err, token) => {
+              // if (err) console.log(examples)
+              assert(!err);
+              assert(token.id);
+              if (example && example.nodeType === 3) {
+                assert(example.querySelector('[data-recurly=token]').value === token.id);
+              }
+              part();
             });
           });
         });
       });
 
-      describe('when given additional required fields', () => {
-        beforeEach(done => {
-          recurly = initRecurly({
+      describe('when given additional required fields', function () {
+        beforeEach(function (done) {
+          this.recurly = initRecurly({
             cors: requestMethod === 'cors',
             required: ['country', 'postal_code', 'unrelated_configured_field']
           });
-          recurly.on('ready', done);
+          this.recurly.ready(done);
         });
 
-        describe('when given a blank required value', () => {
-          var examples = [
+        describe('when given a blank required value', function () {
+          let examples = [
             merge(clone(valid), {
               country: '',
               postal_code: '98765'
@@ -240,25 +230,40 @@ apiTest(requestMethod => {
             })
           ];
 
-          it('produces a validation error', done => {
-            var part = after(examples.length, done);
+          it('produces a validation error', function (done) {
+            let part = after(examples.length, done);
 
             examples.forEach(example => {
-              builder(example, example => {
-                recurly.token(example, (err, token) => {
-                  assert(err.code === 'validation');
-                  assert(err.fields.length === 1);
-                  assert(~err.fields.indexOf('country'));
-                  assert(!~err.fields.indexOf('postal_code'));
-                  assert(!~err.fields.indexOf('unrelated_configured_field'));
-                  assert(!token);
-                  part();
-                });
+              this.recurly.token(builder(example), (err, token) => {
+                assert(err.code === 'validation');
+                assert(err.fields.length === 1);
+                assert(~err.fields.indexOf('country'));
+                assert(!~err.fields.indexOf('postal_code'));
+                assert(!~err.fields.indexOf('unrelated_configured_field'));
+                assert(!token);
+                part();
               });
+            });
+          });
+
+          it('produces a validation error', function (done) {
+            var example = merge(clone(valid), {
+              country: 'US',
+              postal_code: ''
+            });
+
+            this.recurly.token(builder(example), (err, token) => {
+              assert(err.code === 'validation');
+              assert(err.fields.length === 1);
+              assert(~err.fields.indexOf('postal_code'));
+              assert(!~err.fields.indexOf('country'));
+              assert(!token);
+              done();
             });
           });
         });
       });
+
     };
   });
 });

@@ -6,8 +6,12 @@
   </body>
   <script>
     // Hosted field stub. This listens for window events and passes back
-    window.name = 'recurlyHostedField:number'
-    window.addEventListener('message', receive, false);
+    window.name = 'recurlyHostedField:stub';
+    window.inputValue = '';
+
+    if (config().type === 'number') {
+      window.addEventListener('message', receive, false);
+    }
 
     message('hostedField:ready', { type: config().type });
 
@@ -17,8 +21,16 @@
 
     function token (body) {
       var recurly = new parent.recurly.Recurly(recurlyConfig());
-      recurly.token(body, function send (err, token) {
-        message('token:done', { err: err, token: token });
+      var inputs = body.inputs;
+      var id = body.id;
+
+      for (var i = 0; i < window.parent.frames.length; i++) {
+        var frame = window.parent.frames[i].contentWindow || window.parent.frames[i];
+        inputs[frame.config().type] = frame.value();
+      }
+
+      recurly.token(inputs, function send (err, token) {
+        message('token:done:' + id, { err: err, token: token });
       });
     }
 
@@ -35,6 +47,11 @@
     function config () {
       var query = window.location.search;
       return JSON.parse(decodeURIComponent(query.substring(query.indexOf('config=') + 7)) || {});
+    }
+
+    function value (newValue) {
+      if (typeof newValue !== 'undefined') window.inputValue = newValue + '';
+      return window.inputValue;
     }
   </script>
 </html>

@@ -11,7 +11,10 @@ apiTest(function (requestMethod) {
 
   fixture('minimal');
 
-  beforeEach(() => recurly = initRecurly({ cors: requestMethod === 'cors' }));
+  beforeEach(done => {
+    recurly = initRecurly({ cors: requestMethod === 'cors' });
+    recurly.on('ready', done);
+  });
 
   describe(`Recurly.bankAccount.token (${requestMethod})`, () => {
     var valid = {
@@ -48,32 +51,12 @@ apiTest(function (requestMethod) {
 
     describe('when called with an HTMLFormElement', () => {
       tokenSuite((values, runner) => {
+        fixture('bank', values);
         domTest((testbed, done) => {
-          testbed.insertAdjacentHTML('beforeend',
-            `
-             <form id="test-form">
-               <input type="text" data-recurly="name_on_account" value="${values.name_on_account}">
-               <input type="text" data-recurly="routing_number" value="${values.routing_number}">
-               <input type="text" data-recurly="account_number" value="${values.account_number}">
-               <input type="text" data-recurly="account_number_confirmation" value="${values.account_number_confirmation}">
-               <input type="text" data-recurly="account_type" value="${values.account_type}">
-               <input type="text" data-recurly="address1" value="${values.address1}">
-               <input type="text" data-recurly="address2" value="${values.address2}">
-               <input type="text" data-recurly="city" value="${values.city}">
-               <input type="text" data-recurly="state" value="${values.state}">
-               <input type="text" data-recurly="postal_code" value="${values.postal_code}">
-               <input type="text" data-recurly="country" value="${values.country}">
-               <input type="text" data-recurly="phone" value="${values.phone}">
-               <input type="text" data-recurly="vat_number" value="${values.vat_number}">
-               <input type="hidden" name="recurly-token" data-recurly="token">
-               <button>submit</button>
-             </form>
-             `
-          );
-
           runner(testbed.querySelector('#test-form'));
           done();
         });
+        done();
       });
     });
 
