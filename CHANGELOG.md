@@ -1,5 +1,13 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.0.0 (Jan 13, 2016)
+
+* Adds support for hosted fields for card transactions: recurly-hosted iframes
+  are injected in place of card fields
+* Adds recurly.ready
+* Adds eventing to main recurly instance
+* Adds 'ready', 'change', and 'field:submit' events
+
 ### Version 3.1.1 (June 11, 2015)
 
 * Adds single use coupon support to discount calculations [#204][204]

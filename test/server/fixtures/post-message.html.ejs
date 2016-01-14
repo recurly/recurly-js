@@ -3,7 +3,7 @@
   <script>
     (function (window) {
       try {
-        post(<%= JSON.stringify(message) %>);
+        post(<%- JSON.stringify(message) %>);
       } catch (err) {
         report(err);
       } finally {

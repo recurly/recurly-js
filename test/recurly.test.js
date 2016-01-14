@@ -1,53 +1,42 @@
-var assert = require('component/assert');
-var noop = require('chrissrogers/noop');
+import assert from 'assert';
+import {Recurly} from '../lib/recurly';
 
-describe('Recurly', function () {
-  var Recurly = window.recurly.Recurly;
-  var recurly;
+describe('Recurly', () => {
+  let recurly;
 
-  beforeEach(function () {
-    recurly = new Recurly();
+  beforeEach(() => recurly = new Recurly);
+
+  it('should have a version', () => assert(typeof recurly.version === 'string'));
+  it('should be an event emitter', () => assert(recurly.on && recurly.emit));
+  it('should be exposed as a global singleton', () => {
+    assert(window.recurly instanceof window.recurly.Recurly)
   });
 
-  it('should have a version', function () {
-    assert('string' === typeof recurly.version);
-  });
+  describe('Recurly.request', () => {
+    let cors = false;
 
-  it('should be an event emitter', function () {
-    assert(recurly.on && recurly.emit);
-  });
-
-  it('should be exposed as a global singleton', function () {
-    assert(window.recurly instanceof Recurly);
-  });
-
-  describe('Recurly.request', function () {
-    var cors = false;
-
-    beforeEach(function () {
+    beforeEach(() => {
       recurly.configure({
         publicKey: 'test',
-        api: '//' + window.location.host,
+        api: `//${global.location.host}/api`,
         cors: cors
       });
     });
 
-    describe('when configured for jsonp requests', function () {
-      it('invokes recurly.jsonp', function () {
+    describe('when configured for jsonp requests', () => {
+      it('invokes recurly.jsonp', () => {
         sinon.stub(recurly, 'jsonp');
-        recurly.request('get', 'test', noop);
+        recurly.request('get', 'test', () => {});
         assert(recurly.jsonp.calledOnce);
       });
     });
 
-    describe('when configured for cors requests', function () {
-      before(function () {
-        cors = true;
-      });
+    describe('when configured for cors requests', () => {
+      before(() => cors = true);
 
-      it('invokes recurly.xhr', function () {
+      it('invokes recurly.xhr', () => {
         sinon.stub(recurly, 'xhr');
-        recurly.request('get', 'test', noop);
+        recurly.request('get', 'test', () => {});
         assert(recurly.xhr.calledOnce);
       });
     });

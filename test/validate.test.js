@@ -1,28 +1,34 @@
-var assert = require('component/assert');
+import assert from 'assert';
+import {Recurly} from '../lib/recurly';
 
 describe('Recurly.validate', function () {
-  var Recurly = window.recurly.Recurly;
-  var recurly;
+  let recurly;
 
-  beforeEach(function () {
-     recurly = new Recurly();
-  });
+  beforeEach(() => recurly = new Recurly);
 
   describe('cardNumber', function () {
-    it('should return true for valid card numbers', function() {
+    it('returns true for valid card numbers', function() {
       assert(true === recurly.validate.cardNumber('4111111111111111'));
     });
 
-    it('should return false for invalid card numbers', function() {
+    it('returns false for non-numbers', () => {
+      assert(false === recurly.validate.cardNumber(''));
+      assert(false === recurly.validate.cardNumber());
+      assert(false === recurly.validate.cardNumber(null));
+    });
+
+    it('returns false for luhn-invalid card numbers', function() {
       assert(false === recurly.validate.cardNumber('4111-1111-1111-1112'));
       assert(false === recurly.validate.cardNumber('1234'));
       assert(false === recurly.validate.cardNumber(1234));
       assert(false === recurly.validate.cardNumber('0'));
       assert(false === recurly.validate.cardNumber(0));
       assert(false === recurly.validate.cardNumber('abcxyz'));
-      assert(false === recurly.validate.cardNumber(''));
-      assert(false === recurly.validate.cardNumber());
-      assert(false === recurly.validate.cardNumber(null));
+    });
+
+    it('returns false for short luhn-valid numbers', () => {
+      assert(false === recurly.validate.cardNumber('42'));
+      assert(false === recurly.validate.cardNumber('41111'));
     });
   });
 

@@ -1,15 +1,15 @@
-var assert = require('component/assert');
+import assert from 'assert';
+import {Recurly} from '../lib/recurly';
 
 describe('Recurly.Pricing', function () {
-  var Recurly = window.recurly.Recurly;
-  var recurly;
-  var pricing;
+  let recurly;
+  let pricing;
 
   beforeEach(function () {
-    recurly = new Recurly();
+    recurly = new Recurly;
     recurly.configure({
       publicKey: 'test',
-      api: '//' + window.location.host
+      api: `//${window.location.host}/api`
     });
     pricing = recurly.Pricing();
   });

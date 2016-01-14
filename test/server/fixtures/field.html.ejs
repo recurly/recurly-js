@@ -1,0 +1,57 @@
+
+<html>
+  <head></head>
+  <body>
+    <input>
+  </body>
+  <script>
+    // Hosted field stub. This listens for window events and passes back
+    window.name = 'recurlyHostedField:stub';
+    window.inputValue = '';
+
+    if (config().type === 'number') {
+      window.addEventListener('message', receive, false);
+    }
+
+    message('hostedField:ready', { type: config().type });
+
+    function receive (event) {
+      if (event.data.event === 'token:init') token(event.data.body);
+    }
+
+    function token (body) {
+      var recurly = new parent.recurly.Recurly(recurlyConfig());
+      var inputs = body.inputs;
+      var id = body.id;
+
+      for (var i = 0; i < window.parent.frames.length; i++) {
+        var frame = window.parent.frames[i].contentWindow || window.parent.frames[i];
+        inputs[frame.config().type] = frame.value();
+      }
+
+      recurly.token(inputs, function send (err, token) {
+        message('token:done:' + id, { err: err, token: token });
+      });
+    }
+
+    function message (name, body) {
+      if (window.parent) window.parent.postMessage({ event: name, body: body }, '*');
+    }
+
+    function recurlyConfig() {
+      var queryConfig = config().recurly;
+      queryConfig.parent = false;
+      return queryConfig;
+    }
+
+    function config () {
+      var query = window.location.search;
+      return JSON.parse(decodeURIComponent(query.substring(query.indexOf('config=') + 7)) || {});
+    }
+
+    function value (newValue) {
+      if (typeof newValue !== 'undefined') window.inputValue = newValue + '';
+      return window.inputValue;
+    }
+  </script>
+</html>

@@ -1,25 +1,18 @@
-var assert = require('component/assert');
-var clone = require('component/clone');
-var each = require('component/each');
-var noop = require('chrissrogers/noop');
-var after = require('segmentio/after');
-var merge = require('yields/merge');
-var helpers = require('./support/helpers');
+import assert from 'assert';
+import clone from 'component-clone';
+import after from 'lodash.after';
+import merge from 'lodash.merge';
+import {Recurly} from '../lib/recurly';
+import {fixture} from './support/fixtures';
+import {initRecurly, apiTest, domTest} from './support/helpers';
 
-helpers.apiTest(function (requestMethod) {
-  var Recurly = window.recurly.Recurly;
-  var recurly;
-
-  beforeEach(function () {
-    recurly = new Recurly();
-    recurly.configure({
-      publicKey: 'test',
-      api: '//' + window.location.host,
-      cors: requestMethod === 'cors'
-    });
+apiTest(function (requestMethod) {
+  beforeEach(function (done) {
+    this.recurly = initRecurly({ cors: requestMethod === 'cors' });
+    this.recurly.ready(done);
   });
 
-  describe('Recurly.bankAccount.token (' + requestMethod + ')', function () {
+  describe(`Recurly.bankAccount.token (${requestMethod})`, function () {
     var valid = {
       routing_number: '123456780',
       account_number: '1987649876',
@@ -31,7 +24,7 @@ helpers.apiTest(function (requestMethod) {
 
     it('requires a callback', function () {
       try {
-        recurly.bankAccount.token(valid);
+        this.recurly.bankAccount.token(valid);
       } catch (e) {
         assert(~e.message.indexOf('callback'));
       }
@@ -39,45 +32,21 @@ helpers.apiTest(function (requestMethod) {
 
     it('requires Recurly.configure', function () {
       try {
-        recurly = new Recurly();
-        recurly.bankAccount.token(valid, noop);
+        let recurly = new Recurly();
+        recurly.bankAccount.token(valid, function () {});
       } catch (e) {
         assert(~e.message.indexOf('configure'));
       }
     });
 
     describe('when called with a plain object', function () {
-      tokenSuite(function (values, runner) {
-        return runner(values);
-      });
+      tokenSuite(values => values);
     });
 
     describe('when called with an HTMLFormElement', function () {
-      tokenSuite(function (values, runner) {
-        helpers.domTest(function (testbed, done) {
-          testbed.insertAdjacentHTML('beforeend',
-            ' <form id="test-form"> ' +
-            '   <input type="text" data-recurly="name_on_account" value="' + values.name_on_account + '"> ' +
-            '   <input type="text" data-recurly="routing_number" value="' + values.routing_number + '"> ' +
-            '   <input type="text" data-recurly="account_number" value="' + values.account_number + '"> ' +
-            '   <input type="text" data-recurly="account_number_confirmation" value="' + values.account_number_confirmation + '"> ' +
-            '   <input type="text" data-recurly="account_type" value="' + values.account_type + '"> ' +
-            '   <input type="text" data-recurly="address1" value="' + values.address1 + '"> ' +
-            '   <input type="text" data-recurly="address2" value="' + values.address2 + '"> ' +
-            '   <input type="text" data-recurly="city" value="' + values.city + '"> ' +
-            '   <input type="text" data-recurly="state" value="' + values.state + '"> ' +
-            '   <input type="text" data-recurly="postal_code" value="' + values.postal_code + '"> ' +
-            '   <input type="text" data-recurly="country" value="' + values.country + '"> ' +
-            '   <input type="text" data-recurly="phone" value="' + values.phone + '"> ' +
-            '   <input type="text" data-recurly="vat_number" value="' + values.vat_number + '"> ' +
-            '   <input type="hidden" name="recurly-token" data-recurly="token"> ' +
-            '   <button>submit</button> ' +
-            ' </form> '
-          );
-
-          runner(testbed.querySelector('#test-form'));
-          done();
-        });
+      tokenSuite(example => {
+        fixture('bank', example);
+        return window.document.querySelector('#test-form');
       });
     });
 
@@ -88,14 +57,13 @@ helpers.apiTest(function (requestMethod) {
         });
 
         it('produces a validation error', function (done) {
-          builder(example, function (example) {
-            recurly.bankAccount.token(example, function (err, token) {
-              assert(err.code === 'validation');
-              assert(err.fields.length === 1);
-              assert(err.fields[0] === 'name_on_account');
-              assert(!token);
-              done();
-            });
+
+          this.recurly.bankAccount.token(builder(example), (err, token) => {
+            assert(err.code === 'validation');
+            assert(err.fields.length === 1);
+            assert(err.fields[0] === 'name_on_account');
+            assert(!token);
+            done();
           });
         });
       });
@@ -116,13 +84,11 @@ helpers.apiTest(function (requestMethod) {
         it('yields a token', function (done) {
           var part = after(examples.length, done);
 
-          each(examples, function (example) {
-            builder(example, function (example) {
-              recurly.bankAccount.token(example, function (err, token) {
-                assert(!err);
-                assert(token.id);
-                part();
-              });
+          examples.forEach(example => {
+            this.recurly.bankAccount.token(builder(example), (err, token) => {
+              assert(!err);
+              assert(token.id);
+              part();
             });
           });
         });
@@ -130,16 +96,14 @@ helpers.apiTest(function (requestMethod) {
         it('sets the value of a data-recurly="token" field', function (done) {
           var part = after(examples.length, done);
 
-          each(examples, function (example) {
-            builder(example, function (example) {
-              recurly.bankAccount.token(example, function (err, token) {
-                assert(!err);
-                assert(token.id);
-                if (example && example.nodeType === 3) {
-                  assert(example.querySelector('[data-recurly=token]').value === token.id);
-                }
-                part();
-              });
+          examples.forEach(example => {
+            this.recurly.bankAccount.token(builder(example), (err, token) => {
+              assert(!err);
+              assert(token.id);
+              if (example && example.nodeType === 3) {
+                assert(example.querySelector('[data-recurly=token]').value === token.id);
+              }
+              part();
             });
           });
         });
@@ -154,14 +118,14 @@ helpers.apiTest(function (requestMethod) {
 
     it('requires a callback', function () {
       try {
-        recurly.bankAccount.bankInfo(valid);
+        this.recurly.bankAccount.bankInfo(valid);
       } catch (e) {
         assert(~e.message.indexOf('callback'));
       }
     });
 
     it('requires a routingNumber', function () {
-      recurly.bankAccount.bankInfo({}, function(err, bankInfo) {
+      recurly.bankAccount.bankInfo({}, (err, bankInfo) => {
         assert(err.code === 'validation');
         assert(err.fields.length === 1);
         assert(err.fields[0] === 'routingNumber');

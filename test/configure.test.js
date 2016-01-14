@@ -1,14 +1,11 @@
-var assert = require('component/assert');
-var each = require('component/each');
-var bind = require('component/bind');
+import each from 'lodash.foreach';
+import assert from 'assert';
+import {Recurly} from '../lib/recurly';
 
 describe('Recurly.configure', function () {
-  var Recurly = window.recurly.Recurly;
-  var recurly;
+  let recurly;
 
-  beforeEach(function () {
-    recurly = new Recurly();
-  });
+  beforeEach(() => recurly = new Recurly);
 
   describe('when options.publicKey is not given', function () {
     var examples = [
@@ -20,13 +17,13 @@ describe('Recurly.configure', function () {
     ];
 
     it('throws', function () {
-      each(examples, function (opts) {
-        assert.throws(bind(recurly, recurly.configure, opts));
+      examples.forEach((opts) => {
+        assert.throws(recurly.configure.bind(recurly, opts));
       });
     });
 
     it('Recurly.configured remains false', function () {
-      each(examples, function (opts) {
+      examples.forEach((opts) => {
         try {
           recurly.configure(opts);
         } catch (e) {
@@ -47,25 +44,23 @@ describe('Recurly.configure', function () {
     ];
 
     it('sets Recurly.config to the options given', function () {
-      each(examples, function (opts) {
-        var recurly = new Recurly();
+      examples.forEach((opts) => {
+        var recurly = new Recurly;
         recurly.configure(opts);
-        each(opts, function (opt, val) {
-          assert(recurly.config[opt] === val);
-        });
+        each(opts, (val, opt) => assert(recurly.config[opt] === val));
       });
     });
 
     it('sets default values for options not given', function () {
-      each(examples, function (opts) {
+      examples.forEach(function (opts) {
         var recurly = new Recurly();
         recurly.configure(opts);
-        each(recurly.config, function (option, val) {
-          if (opts[option]) {
-            assert(opts[option] === val);
+        each(recurly.config, (val, opt) => {
+          if (opts[opt]) {
+            assert(opts[opt] === val);
           } else {
             assert(val !== undefined);
-            assert(val !== opts[option]);
+            assert(val !== opts[opt]);
           }
         });
       });
@@ -90,7 +85,7 @@ describe('Recurly.configure', function () {
     var examples = [0, '', null, false, undefined];
 
     it('sets default values instead', function () {
-      each(examples, function (falsey) {
+      examples.forEach(function (falsey) {
         var recurly = new Recurly();
 
         recurly.configure({

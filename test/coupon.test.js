@@ -1,21 +1,20 @@
-var assert = require('component/assert');
-var each = require('component/each');
-var noop = require('chrissrogers/noop');
-var helpers = require('./support/helpers');
+import each from 'lodash.foreach';
+import assert from 'assert';
+import {Recurly} from '../lib/recurly';
+import {apiTest} from './support/helpers';
 
-helpers.apiTest(function (requestMethod) {
+apiTest(function (requestMethod) {
   describe('Recurly.coupon (' + requestMethod + ')', function () {
-    var Recurly = window.recurly.Recurly;
-    var valid = { plan: 'basic', coupon: 'coop' };
-    var invalidPlan = { plan: 'invalid', coupon: 'coop' };
-    var invalidCoupon = { plan: 'basic', coupon: 'coop-invalid' };
-    var recurly;
+    const valid = { plan: 'basic', coupon: 'coop' };
+    const invalidPlan = { plan: 'invalid', coupon: 'coop' };
+    const invalidCoupon = { plan: 'basic', coupon: 'coop-invalid' };
+    let recurly;
 
     beforeEach(function () {
-      recurly = new Recurly();
+      recurly = new Recurly;
       recurly.configure({
         publicKey: 'test',
-        api: '//' + window.location.host,
+        api: `//${window.location.host}/api`,
         cors: requestMethod === 'cors'
       });
     });
@@ -31,7 +30,7 @@ helpers.apiTest(function (requestMethod) {
     it('requires Recurly.configure', function () {
       try {
         recurly = new Recurly();
-        recurly.coupon(valid, noop);
+        recurly.coupon(valid, () => {});
       } catch (e) {
         assert(~e.message.indexOf('configure'));
       }
@@ -62,7 +61,7 @@ helpers.apiTest(function (requestMethod) {
         it('contains a discount amount', function (done) {
           assertValidCoupon('coop', function (coupon) {
             assert(!coupon.discount.rate);
-            each(coupon.discount.amount, function (currency, amount) {
+            each(coupon.discount.amount, (amount, currency) => {
               assert(currency.length === 3);
               assert(typeof amount === 'number');
             });
