@@ -5,6 +5,8 @@ Simple subscription billing in the browser
 [![build status][travis-image]][travis-url]
 [![code quality][climate-image]][climate-url]
 
+[![Browser test status][sauce-image]][sauce-url]
+
 ## Documentation
 
 [Getting Started & API Documentation][docs]
@@ -82,9 +84,11 @@ in IE9.
 [*aurea mediocritas*][aristotle]
 
 [travis-url]: https://travis-ci.org/recurly/recurly-js/builds
-[travis-image]: http://img.shields.io/travis/recurly/recurly-js.svg?style=flat
+[travis-image]: http://img.shields.io/travis/recurly/recurly-js.svg?style=flat-square
 [climate-url]: https://codeclimate.com/github/recurly/recurly-js
-[climate-image]: http://img.shields.io/codeclimate/github/recurly/recurly-js.svg?style=flat
+[climate-image]: http://img.shields.io/codeclimate/github/recurly/recurly-js.svg?style=flat-square
+[sauce-url]: https://saucelabs.com/u/recurly-js
+[sauce-image]: https://saucelabs.com/browser-matrix/recurly-js.svg
 
 [docs]: https://docs.recurly.com/js
 [examples]: https://github.com/recurly/recurly-js-examples
