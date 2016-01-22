@@ -7,7 +7,7 @@ describe('Recurly.validate', function () {
   beforeEach(() => recurly = new Recurly);
 
   describe('cardNumber', function () {
-    it('returns true for valid card numbers', function() {
+    it('returns true for valid card numbers', function () {
       assert(true === recurly.validate.cardNumber('4111111111111111'));
     });
 
@@ -17,7 +17,7 @@ describe('Recurly.validate', function () {
       assert(false === recurly.validate.cardNumber(null));
     });
 
-    it('returns false for luhn-invalid card numbers', function() {
+    it('returns false for luhn-invalid card numbers', function () {
       assert(false === recurly.validate.cardNumber('4111-1111-1111-1112'));
       assert(false === recurly.validate.cardNumber('1234'));
       assert(false === recurly.validate.cardNumber(1234));
@@ -32,18 +32,26 @@ describe('Recurly.validate', function () {
     });
   });
 
-  describe('cardType', function() {
-    it('should parse visa', function() {
+  describe('cardType', function () {
+    it('should parse visa', function () {
       var type = recurly.validate.cardType('4111-1111-1111-1111');
       assert(type === 'visa');
     });
 
-    it('should parse american_express', function() {
+    it('should parse mastercard', function () {
+      assert(recurly.validate.cardType('5454545454545454') === 'master');
+      assert(recurly.validate.cardType('5555555555554444') === 'master');
+      assert(recurly.validate.cardType('5555555555554444') === 'master');
+      assert(recurly.validate.cardType('2222000222222224') === 'master');
+      assert(recurly.validate.cardType('2720989999999955') === 'master');
+    });
+
+    it('should parse american_express', function () {
       var type = recurly.validate.cardType('372546612345678');
       assert(type === 'american_express');
     });
 
-    it('should parse unknown', function() {
+    it('should parse unknown', function () {
       var type = recurly.validate.cardType('867-5309-jenny');
       assert(type === 'unknown');
     });
@@ -59,22 +67,22 @@ describe('Recurly.validate', function () {
     });
   });
 
-  describe('expiry', function() {
-    it('should return true without leading zeros', function() {
+  describe('expiry', function () {
+    it('should return true without leading zeros', function () {
       assert(true === recurly.validate.expiry(1, 2020));
     });
 
-    it('should return true for leading zeros', function() {
+    it('should return true for leading zeros', function () {
       assert(true === recurly.validate.expiry('01', '19'));
     });
 
-    it('should return false for invalid dates', function() {
+    it('should return false for invalid dates', function () {
       assert(false === recurly.validate.expiry('12', '2013'));
     });
   });
 
-  describe('cvv', function() {
-    it('should return true for a valid CVV String or Number', function() {
+  describe('cvv', function () {
+    it('should return true for a valid CVV String or Number', function () {
       assert(true === recurly.validate.cvv(123));
       assert(true === recurly.validate.cvv(1234));
       assert(true === recurly.validate.cvv('123'));
@@ -87,7 +95,7 @@ describe('Recurly.validate', function () {
       assert(true === recurly.validate.cvv('   1234  '));
     });
 
-    it('should return false for an invalid CVV String or Number', function() {
+    it('should return false for an invalid CVV String or Number', function () {
       assert(false === recurly.validate.cvv(1));
       assert(false === recurly.validate.cvv(123456));
       assert(false === recurly.validate.cvv('1'));
