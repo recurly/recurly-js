@@ -16,44 +16,28 @@ implementations.
 
 ## Installation
 
-### Standard
 ```html
-<script src="https://js.recurly.com/v3/recurly.js"></script>
+<script src="https://js.recurly.com/v4/recurly.js"></script>
 ```
-
-### Component
-**component.json**
-
-```json
-{
-  "dependencies": {
-    "recurly/recurly-js": "*"
-  }
-}
-```
-**index.html**
-
-```html
-<script>
-  var recurly = require('recurly');
-</script>
-```
-
-[Learn more about component][component]
 
 ## Build
+Development build server
+```bash
+make
+```
+Build to the file system
 ```bash
 $ make build
 ```
 
-If you are having issues with the build, try `make clean`
+If you are having issues with the build, try `make clean`.
 
 ## Test
 ```bash
-$ make
+$ make test
 ```
 
-## Beta Features
+## Additional Features
 
 ### XHR+CORS
 
@@ -72,7 +56,7 @@ recurly.configure({
 ```
 
 Please note that in order to use this feature in IE9, you must serve your
-payment page over HTTPS. This is a known limitation in the CORS implementation
+payment page over HTTPS. This is a known limitation of the CORS implementation
 in IE9.
 
 ## License
