@@ -8,7 +8,7 @@ cache:
   directories:
   - $HOME/travis-phantomjs
 script:
-  - make test
+  - make test-sauce
 addons:
   artifacts:
     paths:

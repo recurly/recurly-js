@@ -25,19 +25,8 @@ build/test.js: $(SRC) $(TESTS)
 test: build build/test.js
 	@$(KARMA) start karma.conf.js
 
-test-sauce:
-
-# test: test-phantomjs
-
-# test-phantomjs: build build/test.js
-# 	@$(T) phantomjs
-
-# test-browser: build build/test.js
-# 	@$(T) browser
-
-# test-sauce: BROWSER ?= ie:9
-# test-sauce: build build/test.js
-# 	@$(T) saucelabs -b $(BROWSER)
+test-sauce: build build/test.js
+	@$(KARMA) start karma.sauce.conf.js
 
 node_modules: package.json
 	@npm install --silent
