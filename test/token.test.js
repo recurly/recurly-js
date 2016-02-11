@@ -208,6 +208,56 @@ apiTest(requestMethod => {
         });
       });
 
+      describe('when cvv is specifically required', function () {
+        beforeEach(function (done) {
+          this.recurly = initRecurly({
+            cors: requestMethod === 'cors',
+            required: ['cvv']
+          });
+          this.recurly.ready(done);
+        });
+
+        describe('when cvv is blank', function () {
+          it('produces a validation error', function (done) {
+            const example = merge(clone(valid), { cvv: '' });
+
+            this.recurly.token(builder(example), (err, token) => {
+              assert(err.code === 'validation');
+              assert(err.fields.length === 1);
+              assert(~err.fields.indexOf('cvv'));
+              assert(!token);
+              done();
+            });
+          });
+        });
+
+        describe('when cvv is invalid', function () {
+          it('produces a validation error', function (done) {
+            const example = merge(clone(valid), { cvv: '23783564' });
+
+            this.recurly.token(builder(example), (err, token) => {
+              assert(err.code === 'validation');
+              assert(err.fields.length === 1);
+              assert(~err.fields.indexOf('cvv'));
+              assert(!token);
+              done();
+            });
+          });
+        });
+
+        describe('when cvv is valid', function () {
+          it('produces a validation error', function (done) {
+            const example = merge(clone(valid), { cvv: '123' });
+
+            this.recurly.token(builder(example), (err, token) => {
+              assert(!err);
+              assert(token);
+              done();
+            });
+          });
+        });
+      });
+
       describe('when given additional required fields', function () {
         beforeEach(function (done) {
           this.recurly = initRecurly({
