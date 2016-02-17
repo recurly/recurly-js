@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.0.1 (Feb 16, 2016)
+
+* Fixes cvv requirement enforcement [#231][231]
+* Misc. code cleanup and test infrastructure changes [#234][234] [#233][233] [#230][230]
+
 ### Version 4.0.0 (Jan 13, 2016)
 
 * Adds support for hosted fields for card transactions: recurly-hosted iframes
@@ -81,6 +86,10 @@
 
 * Full rewrite for Billing Info tokenization
 
+[230]: https://github.com/recurly/recurly-js/commit/137e1ba91610bfe7fdaf9f5ba0974a9018f914d7
+[233]: https://github.com/recurly/recurly-js/commit/c2a7a19801d28e1058e414c475755880c227af0c
+[234]: https://github.com/recurly/recurly-js/commit/3b3249c914b324945c0884b96d4ccab8d61ae3bf
+[231]: https://github.com/recurly/recurly-js/commit/8d1db92efa11d8e6363046cdc0dd83926a8b61bb
 [204]: https://github.com/recurly/recurly-js/commit/6623b0a1d55384b3c03b2918b4ba94a0a34238b5
 [207]: https://github.com/recurly/recurly-js/commit/0ecc549acc218176db72578747c07288578db027
 [202]: https://github.com/recurly/recurly-js/commit/684119566898568f9947210b26cb794f0823e28e
