@@ -24,7 +24,7 @@
     "map-component": "0.0.1",
     "jsonp": "0.0.4",
     "debug": "2.2.0",
-    "promise": "6.0.0",
+    "promise": "7.1.1",
     "mixin": "https://github.com/kewah/mixin#0.1.0",
     "par": "0.3.0",
     "to-slug-case": "0.1.2",
