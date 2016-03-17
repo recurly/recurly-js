@@ -20,7 +20,6 @@
     "debug": "2.2.0",
     "json-component": "0.0.1",
     "jsonp": "0.0.4",
-    "lodash.filter": "^4.4.0",
     "lodash.merge": "*",
     "lodash.omit": "*",
     "lodash.partial": "*",
@@ -29,6 +28,7 @@
     "object-component": "0.0.3",
     "par": "0.3.0",
     "promise": "7.1.1",
+    "mutation-observer": "^1.0.2",
     "qs": "0.6.6",
     "to-slug-case": "0.1.2",
     "trim": "0.0.1"

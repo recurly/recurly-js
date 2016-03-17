@@ -82,6 +82,13 @@ describe('Recurly.configure', function () {
         assert(recurly.config.cors === true);
       });
     });
+
+    describe('as a string parameter', function () {
+      it('sets the publicKey', function () {
+        recurly.configure('bar');
+        assert(recurly.config.publicKey === 'bar');
+      });
+    });
   });
 
   describe('when options.style is given (deprecated)', function () {
@@ -218,5 +225,9 @@ describe('Recurly.configure', function () {
         assert(recurly.config.api === 'https://api.recurly.com/js/v1');
       });
     });
+  });
+
+  describe('when reconfiguring', function () {
+    let opts = 'foo';
   });
 });
