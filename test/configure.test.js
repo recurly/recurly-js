@@ -1,11 +1,16 @@
-import each from 'lodash.foreach';
 import assert from 'assert';
+import each from 'lodash.foreach';
+import after from 'lodash.after';
+import {fixture} from './support/fixtures';
 import {Recurly} from '../lib/recurly';
 
 describe('Recurly.configure', function () {
   let recurly;
 
-  beforeEach(() => recurly = new Recurly);
+  beforeEach(function () {
+    if (this.currentTest.ctx.fixture) fixture(this.currentTest.ctx.fixture);
+    recurly = new Recurly;
+  });
 
   describe('when options.publicKey is not given', function () {
     var examples = [
@@ -111,6 +116,53 @@ describe('Recurly.configure', function () {
   });
 
   describe('when reconfiguring', function () {
-    let opts = 'foo';
+    this.ctx.fixture = 'multipleForms';
+
+    it('resets and reinstantiates', function (done) {
+      let party = after(4, done);;
+      let part = function (log) {
+        party();
+        console.log(log)
+      }
+
+      recurly.configure({
+        publicKey: 'foo',
+        fields: {
+          number: '#number-1',
+          month: '#month-1',
+          year: '#year-1',
+          cvv: '#cvv-1'
+        }
+      });
+      assert(recurly.configured === true);
+      recurly.ready(() => {
+        assert(document.querySelector('#number-1 iframe') instanceof HTMLElement);
+        part('1');
+      });
+      recurly.ready(() => {
+        assert(document.querySelector('#number-2 iframe') === null);
+        part('2');
+      });
+
+      recurly.configure({
+        publicKey: 'bar',
+        fields: {
+          number: '#number-2',
+          month: '#month-2',
+          year: '#year-2',
+          cvv: '#cvv-2'
+        }
+      });
+      assert(recurly.configured === true);
+      console.log(`my readyState: ${recurly.readyState}`);
+      recurly.ready(() => {
+        assert(document.querySelector('#number-1 iframe') === null);
+        part('3');
+      });
+      recurly.ready(() => {
+        assert(document.querySelector('#number-2 iframe') instanceof HTMLElement);
+        part('4');
+      });
+    });
   });
 });
