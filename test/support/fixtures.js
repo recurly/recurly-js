@@ -52,7 +52,25 @@ const bank = opts => `
   </form>
 `;
 
-const fixtures = {blank, minimal, all, bank};
+const multipleForms = `
+  <form action="#" id="test-form-1">
+    <div id="number-1"></div>
+    <div id="month-1"></div>
+    <div id="year-1"></div>
+    <div id="cvv-1"></div>
+    <input type="hidden" data-recurly="token" name="recurly-token">
+  </form>
+
+  <form action="#" id="test-form-2">
+    <div id="number-2"></div>
+    <div id="month-2"></div>
+    <div id="year-2"></div>
+    <div id="cvv-2"></div>
+    <input type="hidden" data-recurly="token" name="recurly-token">
+  </form>
+`;
+
+const fixtures = {blank, minimal, all, bank, multipleForms};
 
 export function fixture (name = 'blank', opts = {}) {
   const tpl = fixtures[name] || '';
