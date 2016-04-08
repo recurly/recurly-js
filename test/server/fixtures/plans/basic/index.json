@@ -5,10 +5,6 @@
     "interval": "months",
     "length": 1
   },
-  "trial": {
-    "interval": "days",
-    "length": 7
-  },
   "price": {
     "USD": {
       "setup_fee": 2.0,
