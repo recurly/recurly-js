@@ -54,7 +54,7 @@ describe('Recurly.Pricing', function () {
         assert.equal(price.taxes.length, 1);
         assert.equal(price.taxes[0].type, 'us');
         assert.equal(price.taxes[0].rate, '0.0875');
-        assert.equal(price.now.tax, '0.18');
+        assert.equal(price.now.tax, '1.93');
         assert.equal(price.next.tax, '1.75');
         done();
       });
@@ -70,7 +70,7 @@ describe('Recurly.Pricing', function () {
         assert.equal(price.taxes.length, 1);
         assert.equal(price.taxes[0].type, 'vat');
         assert.equal(price.taxes[0].rate, '0.015');
-        assert.equal(price.now.tax, '0.03');
+        assert.equal(price.now.tax, '0.33');
         assert.equal(price.next.tax, '0.30');
         done();
       });
@@ -88,7 +88,7 @@ describe('Recurly.Pricing', function () {
         assert.equal(price.taxes[0].type, 'us');
         assert.equal(price.taxes[0].rate, '0.0875');
         assert.equal(price.taxes[0].region, 'CA');
-        assert.equal(price.now.tax, '0.18');
+        assert.equal(price.now.tax, '1.93');
         assert.equal(price.next.tax, '1.75');
         done();
       });
@@ -105,7 +105,7 @@ describe('Recurly.Pricing', function () {
         assert.equal(price.taxes[0].type, 'vat');
         assert.equal(price.taxes[0].region, 'GB');
         assert.equal(price.taxes[0].rate, '0.2');
-        assert.equal(price.now.tax, '0.40');
+        assert.equal(price.now.tax, '4.40');
         assert.equal(price.next.tax, '4.00');
         done();
       });
@@ -129,7 +129,7 @@ describe('Recurly.Pricing', function () {
   });
 
   describe('with applied coupon', function () {
-    it('should apply multi-use coupon correctly', function (done) {
+    it('should apply a multi-use coupon correctly', function (done) {
       pricing
         .plan('basic', { quantity: 1 })
         .address({
@@ -144,7 +144,7 @@ describe('Recurly.Pricing', function () {
         });
     });
 
-    it('should apply single-use coupon correctly', function (done) {
+    it('should apply a single-use coupon correctly', function (done) {
       pricing
         .plan('basic', { quantity: 1 })
         .address({
@@ -154,6 +154,41 @@ describe('Recurly.Pricing', function () {
         .coupon('coop-single-use')
         .done(function (price) {
           assert.equal(price.now.discount, '20.00');
+          assert.equal(price.next.discount, '0.00');
+          done();
+        });
+    });
+
+    it('should apply a trial extension coupon to a plan with a trial period', function (done) {
+      pricing
+        .plan('intermediate', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .coupon('coop-trial-ext')
+        .done(function (price) {
+          assert.equal(price.now.plan, '0.00');
+          assert.equal(price.now.addons, '0.00');
+          assert.equal(price.now.discount, '0.00');
+          assert.equal(price.next.discount, '0.00');
+          done();
+        });
+    });
+
+    it(`should apply a trial period when a trial extension coupon
+        is applied to a plan without a trial period`, function (done) {
+      pricing
+        .plan('basic', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .coupon('coop-trial-ext')
+        .done(function (price) {
+          assert.equal(price.now.plan, '0.00');
+          assert.equal(price.now.addons, '0.00');
+          assert.equal(price.now.discount, '0.00');
           assert.equal(price.next.discount, '0.00');
           done();
         });

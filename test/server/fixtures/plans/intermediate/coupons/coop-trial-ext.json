@@ -1,0 +1,11 @@
+{
+  "code": "coop-trial-ext",
+  "name": "Test coupon which applies a trial extension",
+  "discount": {
+    "type": "trial_extension",
+    "amount": {}
+  },
+  "single_use": false,
+  "trial_extension_unit": 3,
+  "trial_extension_amount": "week"
+}
