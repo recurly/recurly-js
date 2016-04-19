@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.0.2 (Apr 20, 2016)
+
+* Adds detection of new Mastercard BIN ranges [#229][229]
+* Adds pricing case for trial extension coupons [#246][246]
+
 ### Version 4.0.1 (Feb 16, 2016)
 
 * Fixes cvv requirement enforcement [#231][231]
@@ -86,6 +91,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[246]: https://github.com/recurly/recurly-js/commit/1bed75dca6f68036fc7d1c0be9d3dadb9dcfb67a
+[229]: https://github.com/recurly/recurly-js/commit/8e073b10dd8db163162579b67b7263d39ce0b2e4
 [230]: https://github.com/recurly/recurly-js/commit/137e1ba91610bfe7fdaf9f5ba0974a9018f914d7
 [233]: https://github.com/recurly/recurly-js/commit/c2a7a19801d28e1058e414c475755880c227af0c
 [234]: https://github.com/recurly/recurly-js/commit/3b3249c914b324945c0884b96d4ccab8d61ae3bf
