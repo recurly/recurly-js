@@ -1,0 +1,9 @@
+{
+  "code": "coop-free-trial",
+  "name": "Test coupon which applies a trial extension",
+  "discount": {
+    "type": "free_trial",
+    "amount": {}
+  },
+  "single_use": false
+}

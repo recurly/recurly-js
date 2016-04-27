@@ -166,7 +166,7 @@ describe('Recurly.Pricing', function () {
           country: 'US',
           postal_code: 'NoTax'
         })
-        .coupon('coop-trial-ext')
+        .coupon('coop-free-trial')
         .done(function (price) {
           assert.equal(price.now.plan, '0.00');
           assert.equal(price.now.addons, '0.00');
@@ -184,7 +184,7 @@ describe('Recurly.Pricing', function () {
           country: 'US',
           postal_code: 'NoTax'
         })
-        .coupon('coop-trial-ext')
+        .coupon('coop-free-trial')
         .done(function (price) {
           assert.equal(price.now.plan, '0.00');
           assert.equal(price.now.addons, '0.00');
