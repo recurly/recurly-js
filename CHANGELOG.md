@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.0.3 (Apr 28, 2016)
+
+* Updates discount type indication [#250][250]
+
 ### Version 4.0.2 (Apr 20, 2016)
 
 * Adds detection of new Mastercard BIN ranges [#229][229]
@@ -91,6 +95,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[250]: https://github.com/recurly/recurly-js/commit/436c6b8ac165f1acc5e41288591f8d7f1e84e23e
 [246]: https://github.com/recurly/recurly-js/commit/1bed75dca6f68036fc7d1c0be9d3dadb9dcfb67a
 [229]: https://github.com/recurly/recurly-js/commit/8e073b10dd8db163162579b67b7263d39ce0b2e4
 [230]: https://github.com/recurly/recurly-js/commit/137e1ba91610bfe7fdaf9f5ba0974a9018f914d7
