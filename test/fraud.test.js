@@ -14,8 +14,8 @@ describe('Fraud', () => {
 
     it('inserts both fraud processor session ids when configured', () => {
       let fraudParams = initRecurly({ fraud: {
-        dataCollector: true,
-        litleSessionId: litleSessionId
+        kount: { dataCollector: true },
+        litle: { sessionId: litleSessionId }
       }}).fraud.params(data);
       assert(fraudParams.length == 2);
       assert(fraudParams[0].processor == 'kount');
@@ -26,7 +26,7 @@ describe('Fraud', () => {
 
     it('inserts only kount processor when litle not configured', () => {
       let fraudParams = initRecurly({ fraud: {
-        dataCollector: true
+        kount: { dataCollector: true }
       }}).fraud.params(data);
       assert(fraudParams.length == 1);
       assert(fraudParams[0].processor == 'kount');
@@ -35,7 +35,7 @@ describe('Fraud', () => {
 
     it('inserts only litle processor when only litle and not kount configured', () => {
       let fraudParams = initRecurly({ fraud: {
-        litleSessionId: litleSessionId
+        litle: { sessionId: litleSessionId }
       }}).fraud.params(data);
       assert(fraudParams.length == 1);
       assert(fraudParams[0].processor == 'litle_threat_metrix');
@@ -52,8 +52,8 @@ describe('Fraud', () => {
   describe('dataCollector', () => {
     const defaultConfig = {
       fraud: {
-        dataCollector: true,
-        litleSessionId: '98as6d09df907asd'
+        kount: { dataCollector: true },
+        litle: { sessionId: '98as6d09df907asd' }
       }
     };
     let testId = 'testDataCollector';
@@ -84,7 +84,7 @@ describe('Fraud', () => {
     });
 
     it("doesn't run unless set to true in config", () => {
-      config.fraud.dataCollector = false;
+      config.fraud.kount.dataCollector = false;
       initializeRecurlyWith('serverError');
       assert(!recurly.request.calledOnce);
     });
