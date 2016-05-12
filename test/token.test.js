@@ -221,7 +221,7 @@ apiTest(requestMethod => {
           this.recurly.ready(done);
         });
 
-        it('yeilds a token', function (done) {
+        it('yields a token', function (done) {
           const example = merge(clone(valid), { fraud_session_id: '9a87s6dfaso978ljk' });
           this.recurly.token(builder(example), (err, token) => {
             assert(!err);
@@ -269,7 +269,7 @@ apiTest(requestMethod => {
         });
 
         describe('when cvv is valid', function () {
-          it('yeilds a token', function (done) {
+          it('yields a token', function (done) {
             const example = merge(clone(valid), { cvv: '123' });
 
             this.recurly.token(builder(example), (err, token) => {
