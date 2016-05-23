@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Unreleased
+
+* adds functionality for running fraud data collector
+
 ### Version 4.0.3 (Apr 28, 2016)
 
 * Updates discount type indication [#250][250]

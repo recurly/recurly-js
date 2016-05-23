@@ -208,6 +208,29 @@ apiTest(requestMethod => {
         });
       });
 
+      describe('when fraud options are enabled', function() {
+        beforeEach(function (done) {
+          this.recurly = initRecurly({
+            cors: requestMethod === 'cors',
+            fraud: {
+              dataCollector: true,
+              litleSessionId: 'a0sd8f70a8s7df'
+            }
+          });
+          this.recurly.fraud.dataCollectorInitiated = true;
+          this.recurly.ready(done);
+        });
+
+        it('yields a token', function (done) {
+          const example = merge(clone(valid), { fraud_session_id: '9a87s6dfaso978ljk' });
+          this.recurly.token(builder(example), (err, token) => {
+            assert(!err);
+            assert(token);
+            done();
+          });
+        });
+      });
+
       describe('when cvv is specifically required', function () {
         beforeEach(function (done) {
           this.recurly = initRecurly({
@@ -246,7 +269,7 @@ apiTest(requestMethod => {
         });
 
         describe('when cvv is valid', function () {
-          it('produces a validation error', function (done) {
+          it('yields a token', function (done) {
             const example = merge(clone(valid), { cvv: '123' });
 
             this.recurly.token(builder(example), (err, token) => {
