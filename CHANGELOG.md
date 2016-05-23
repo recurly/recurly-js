@@ -1,8 +1,8 @@
 ## Recurly.js CHANGELOG
 
-### Unreleased
+### Version 4.0.4 (May 23, 2016)
 
-* adds functionality for running fraud data collector
+* adds functionality for running fraud data collector[#254]
 
 ### Version 4.0.3 (Apr 28, 2016)
 
@@ -99,6 +99,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[254]: https://github.com/recurly/recurly-js/commit/44bfc4f8d6cb9fef81b2335cc609a5b2ef8165b2
 [250]: https://github.com/recurly/recurly-js/commit/436c6b8ac165f1acc5e41288591f8d7f1e84e23e
 [246]: https://github.com/recurly/recurly-js/commit/1bed75dca6f68036fc7d1c0be9d3dadb9dcfb67a
 [229]: https://github.com/recurly/recurly-js/commit/8e073b10dd8db163162579b67b7263d39ce0b2e4
