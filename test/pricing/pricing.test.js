@@ -189,5 +189,19 @@ describe('Recurly.Pricing', function () {
           done();
         });
     });
+
+    it('emits an error event when a coupon is not found', function (done) {
+      this.pricing
+        .on('error.coupon', function (err) {
+          assert(err.code === 'not-found');
+          done();
+        })
+        .plan('basic', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .coupon('coop-invalid');
+    });
   });
 });
