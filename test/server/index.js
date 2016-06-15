@@ -33,6 +33,7 @@ app.use(route.get('/tax', json));
 app.use(route.get('/paypal/start', postMessage));
 app.use(route.get('/relay', render('relay')));
 app.use(route.get('/field', render('field')));
+app.use(route.get('/fraud_data_collector', json));
 
 app.listen(port, () => {
   fs.writeFileSync(`${__dirname}/pid.txt`, process.pid, 'utf-8');
