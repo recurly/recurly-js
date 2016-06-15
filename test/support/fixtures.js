@@ -52,7 +52,38 @@ const bank = opts => `
   </form>
 `;
 
-const fixtures = {blank, minimal, all, bank};
+const pricing = opts => `
+  <div id="test-pricing">
+    <input type="text" data-recurly="plan" value="${fetch(opts, 'plan', '')}">
+    <input type="text" data-recurly="plan_quantity" value="${fetch(opts, 'plan_quantity', '')}">
+    <input type="text" data-recurly="coupon" value="${fetch(opts, 'coupon', '')}">
+    ${opts.addon ? `<input type="text" data-recurly="addon" data-recurly-addon="${fetch(opts.addon, 'code')}" value="${fetch(opts.addon, 'quantity')}">` : ''}
+    <input type="text" data-recurly="currency" value="${fetch(opts, 'currency', 'USD')}">
+    <input type="text" data-recurly="country" value="${fetch(opts, 'country', 'US')}">
+    <input type="text" data-recurly="postal_code" value="${fetch(opts, 'postal_code', '')}">
+    <input type="text" data-recurly="tax_code" value="${fetch(opts, 'tax_code', '')}">
+    <input type="text" data-recurly="vat_number" value="${fetch(opts, 'vat_number', '')}">
+
+    <span data-recurly="total_now"></span>
+    <span data-recurly="subtotal_now"></span>
+    <span data-recurly="addons_now"></span>
+    <span data-recurly="discount_now"></span>
+    <span data-recurly="setup_fee_now"></span>
+    <span data-recurly="tax_now"></span>
+
+    <span data-recurly="total_next"></span>
+    <span data-recurly="subtotal_next"></span>
+    <span data-recurly="addons_next"></span>
+    <span data-recurly="discount_next"></span>
+    <span data-recurly="setup_fee_next"></span>
+    <span data-recurly="tax_next"></span>
+
+    <span data-recurly="currency_code"></span>
+    <span data-recurly="currency_symbol"></span>
+  </div>
+`;
+
+const FIXTURES = {blank, minimal, all, bank, pricing};
 
 export function applyFixtures () {
   beforeEach(function () {
@@ -66,7 +97,7 @@ export function applyFixtures () {
 }
 
 export function fixture (name = 'blank', opts = {}) {
-  const tpl = fixtures[name] || '';
+  const tpl = FIXTURES[name] || '';
   const html = typeof tpl === 'function' ? tpl(opts) : tpl;
   testBed().innerHTML = html;
 }
@@ -74,10 +105,10 @@ export function fixture (name = 'blank', opts = {}) {
 
 /**
  * fetches a value on an object or returns an alternative
- * @param  {[type]} object [description]
- * @param  {[type]} prop   [description]
- * @param  {[type]} def    [description]
- * @return {[type]}        [description]
+ * @param  {Object} object
+ * @param  {String} prop
+ * @param  {[Mixed]} def default value
+ * @return {Mixed} value of property on object or default if none found
  */
 function fetch (object, prop, def = '') {
   return object.hasOwnProperty(prop) ? object[prop] : def;
