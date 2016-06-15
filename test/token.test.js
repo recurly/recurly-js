@@ -4,7 +4,7 @@ import merge from 'lodash.merge';
 import each from 'lodash.foreach';
 import clone from 'component-clone';
 import {Recurly} from '../lib/recurly';
-import {fixture} from './support/fixtures';
+import {applyFixtures} from './support/fixtures';
 import {initRecurly, apiTest, domTest} from './support/helpers';
 
 apiTest(requestMethod => {
@@ -17,14 +17,11 @@ apiTest(requestMethod => {
       last_name: 'bar'
     };
 
+    applyFixtures();
+
     beforeEach(function (done) {
-      if (this.currentTest.ctx.fixture) fixture(this.currentTest.ctx.fixture);
       this.recurly = initRecurly({ cors: requestMethod === 'cors' });
       this.recurly.ready(done);
-    });
-
-    afterEach(function () {
-      if (this.currentTest.ctx.fixture) fixture();
     });
 
     describe('without markup', function () {
