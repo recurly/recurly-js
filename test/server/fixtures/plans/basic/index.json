@@ -12,6 +12,7 @@
     }
   },
   "addons": [{
+    "add_on_type": "fixed",
     "name": "Snarf",
     "code": "snarf",
     "quantity": 1,
@@ -19,7 +20,29 @@
       "USD": {
         "unit_amount": 1.0
       }
+    },
+    "usage_percentage": null,
+    "usage_type": null
+  },{
+    "add_on_type": "usage",
+    "code": "with_usage",
+    "name": "WithUsage",
+    "quantity": 2,
+    "usage_percentage": null,
+    "usage_type": "price",
+    "price": {
+      "USD": {
+        "unit_amount": 10
+      }
     }
+  },{
+    "add_on_type": "usage",
+    "code": "with_usage_percentage",
+    "name": "withUsagePercentage",
+    "quantity": 3,
+    "usage_percentage": 10,
+    "usage_type": "percentage",
+    "price": {}
   }],
   "accepted_card_types": [{
     "USD": {
