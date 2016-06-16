@@ -2,15 +2,14 @@ import each from 'lodash.foreach';
 import after from 'lodash.after';
 import clone from 'component-clone';
 import assert from 'assert';
+import {initRecurly} from './support/helpers';
 import {fixture} from './support/fixtures';
 import {Recurly} from '../lib/recurly';
 
 describe('Recurly.configure', function () {
-  let recurly;
-
   beforeEach(function () {
     if (this.currentTest.ctx.fixture) fixture(this.currentTest.ctx.fixture);
-    recurly = new Recurly;
+    this.recurly = new Recurly;
   });
 
   describe('when options.publicKey is not given', function () {
@@ -23,17 +22,17 @@ describe('Recurly.configure', function () {
     ];
 
     it('throws', function () {
-      examples.forEach((opts) => {
-        assert.throws(recurly.configure.bind(recurly, opts));
+      examples.forEach(opts => {
+        assert.throws(this.recurly.configure.bind(this.recurly, opts));
       });
     });
 
     it('Recurly.configured remains false', function () {
-      examples.forEach((opts) => {
+      examples.forEach(opts => {
         try {
-          recurly.configure(opts);
+          this.recurly.configure(opts);
         } catch (e) {
-          assert(recurly.configured === false);
+          assert(this.recurly.configured === false);
         }
       });
     });
@@ -60,10 +59,9 @@ describe('Recurly.configure', function () {
     });
 
     it('sets default values for options not given', function () {
-      examples.forEach(function (opts) {
-        var recurly = new Recurly();
-        recurly.configure(opts);
-        each(recurly.config, (val, opt) => {
+      examples.forEach(opts => {
+        this.recurly.configure(opts);
+        each(this.recurly.config, (val, opt) => {
           if (opts[opt]) {
             assert.equal(JSON.stringify(opts[opt]), JSON.stringify(val));
           } else {
@@ -76,22 +74,22 @@ describe('Recurly.configure', function () {
 
     describe('when options.api is given', function () {
       it('sets Recurly.config.api to the given api', function () {
-        recurly.configure({ publicKey: 'foo', api: 'http://localhost' });
-        assert(recurly.config.api === 'http://localhost');
+        this.recurly.configure({ publicKey: 'foo', api: 'http://localhost' });
+        assert(this.recurly.config.api === 'http://localhost');
       });
     });
 
     describe('when options.cors is given', function () {
       it('sets Recurly.config.cors to the given value', function () {
-        recurly.configure({ publicKey: 'foo', cors: true });
-        assert(recurly.config.cors === true);
+        this.recurly.configure({ publicKey: 'foo', cors: true });
+        assert(this.recurly.config.cors === true);
       });
     });
 
     describe('as a string parameter', function () {
       it('sets the publicKey', function () {
-        recurly.configure('bar');
-        assert(recurly.config.publicKey === 'bar');
+        this.recurly.configure('bar');
+        assert(this.recurly.config.publicKey === 'bar');
       });
     });
   });
@@ -215,9 +213,7 @@ describe('Recurly.configure', function () {
 
     it('sets default values instead', function () {
       examples.forEach(function (falsey) {
-        var recurly = new Recurly();
-
-        recurly.configure({
+        this.recurly.configure({
           publicKey: 'foo',
           currency: falsey,
           api: falsey,
@@ -225,9 +221,9 @@ describe('Recurly.configure', function () {
           cors: falsey
         });
 
-        assert(recurly.config.currency === 'USD');
-        assert(recurly.config.timeout === 60000);
-        assert(recurly.config.api === 'https://api.recurly.com/js/v1');
+        assert(this.recurly.config.currency === 'USD');
+        assert(this.recurly.config.timeout === 60000);
+        assert(this.recurly.config.api === 'https://api.recurly.com/js/v1');
       });
     });
   });
@@ -236,50 +232,30 @@ describe('Recurly.configure', function () {
     this.ctx.fixture = 'multipleForms';
 
     it('resets and reinstantiates', function (done) {
-      let party = after(4, done);;
-      let part = function (log) {
-        party();
-        console.log(log)
-      }
-
-      recurly.configure({
-        publicKey: 'foo',
-        fields: {
-          number: '#number-1',
-          month: '#month-1',
-          year: '#year-1',
-          cvv: '#cvv-1'
-        }
-      });
-      assert(recurly.configured === true);
-      recurly.ready(() => {
-        assert(document.querySelector('#number-1 iframe') instanceof HTMLElement);
-        part('1');
-      });
-      recurly.ready(() => {
+      configureRecurly(this.recurly, 1, () => {
+        assert(document.querySelector('#number-1 iframe') instanceof HTMLIFrameElement);
         assert(document.querySelector('#number-2 iframe') === null);
-        part('2');
-      });
-
-      recurly.configure({
-        publicKey: 'bar',
-        fields: {
-          number: '#number-2',
-          month: '#month-2',
-          year: '#year-2',
-          cvv: '#cvv-2'
-        }
-      });
-      assert(recurly.configured === true);
-      console.log(`my readyState: ${recurly.readyState}`);
-      recurly.ready(() => {
-        assert(document.querySelector('#number-1 iframe') === null);
-        part('3');
-      });
-      recurly.ready(() => {
-        assert(document.querySelector('#number-2 iframe') instanceof HTMLElement);
-        part('4');
+        configureRecurly(this.recurly, 2, () => {
+          // console.log(global.document.querySelector('#dom-testbed'));
+          assert(document.querySelector('#number-1 iframe') === null);
+          assert(document.querySelector('#number-2 iframe') instanceof HTMLIFrameElement);
+          done();
+        });
       });
     });
+
+    function configureRecurly (recurly, index, done) {
+      initRecurly(recurly, {
+        fields: {
+          number: `#number-${index}`,
+          month: `#month-${index}`,
+          year: `#year-${index}`,
+          cvv: `#cvv-${index}`
+        }
+      });
+      console.log(recurly.config.fields);
+      assert(recurly.configured === true);
+      recurly.ready(done);
+    }
   });
 });
