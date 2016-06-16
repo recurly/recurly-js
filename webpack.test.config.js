@@ -1,8 +1,13 @@
 var glob = require('glob');
 var path = require('path');
 
+const entry = [].concat(
+  glob.sync('./test/*.test.js'),
+  glob.sync('./test/**/*.test.js')
+);
+
 module.exports = {
-  entry: glob.sync('./test/*.test.js'),
+  entry,
   output: {
     path: path.join(__dirname, 'build'),
     publicPath: '/build/',
