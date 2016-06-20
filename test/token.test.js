@@ -19,6 +19,8 @@ apiTest(requestMethod => {
 
     applyFixtures();
 
+    this.timeout(5000);
+
     beforeEach(function (done) {
       this.recurly = initRecurly({ cors: requestMethod === 'cors' });
       this.recurly.ready(done);
@@ -45,39 +47,25 @@ apiTest(requestMethod => {
 
     describe('when using minimal markup', function () {
       this.ctx.fixture = 'minimal';
+
       describe('when called with a plain object', function () {
-        // For each example, updates corresponding input fields or hosted fields
-        tokenSuite(example => {
-          example = clone(example);
-          const form = global.document.querySelector('#test-form');
-          each(example, (val, key) => {
-            let el = form.querySelector(`[data-recurly=${key}]`);
-            if (el instanceof HTMLDivElement) {
-              el.querySelector('iframe').contentWindow.value(val);
-              delete example[key];
-            }
-          });
-          return example;
-        });
+        tokenSuite(plainObjectBuilder);
+      });
+      describe('when called with an HTMLFormElement', function () {
+        tokenSuite(formBuilder);
       });
     });
 
     describe('when using all markup', function () {
       this.ctx.fixture = 'all';
+
+      describe('when called with a plain object', function () {
+        tokenSuite(plainObjectBuilder);
+        tokenAllMarkupSuite(plainObjectBuilder);
+      });
       describe('when called with an HTMLFormElement', function () {
-        // For each example, updates corresponding input fields or hosted fields
-        tokenSuite(example => {
-          const form = global.document.querySelector('#test-form');
-          each(example, (val, key) => {
-            let el = form.querySelector(`[data-recurly=${key}]`);
-            if (el instanceof HTMLDivElement) {
-              el.querySelector('iframe').contentWindow.value(val);
-            } else if (el && 'value' in el) {
-              el.value = val;
-            }
-          });
-          return form;
-        });
+        tokenSuite(formBuilder);
+        tokenAllMarkupSuite(formBuilder);
       });
     });
 
@@ -205,22 +193,61 @@ apiTest(requestMethod => {
         });
       });
 
-      describe('when fraud options are enabled', function() {
+      describe('when kount fraud options are enabled', function () {
         beforeEach(function (done) {
           this.recurly = initRecurly({
             cors: requestMethod === 'cors',
             fraud: {
-              dataCollector: true,
-              litleSessionId: 'a0sd8f70a8s7df'
+              kount: { dataCollector: true }
             }
           });
-          this.recurly.fraud.dataCollectorInitiated = true;
-          this.recurly.ready(done);
+          this.recurly.ready(() => {
+            sinon.spy(this.recurly.bus, 'send');
+            done();
+          });
         });
 
-        it('yields a token', function (done) {
+        it('sends a fraud session id and yields a token', function (done) {
           const example = merge(clone(valid), { fraud_session_id: '9a87s6dfaso978ljk' });
+          // HACK: This gives the fraud data collector time to inject.
+          // SOLUTION: recurly.readyState needs to be replaced with an init registry
+          setTimeout(() => {
+            this.recurly.token(builder(example), (err, token) => {
+              const spy = this.recurly.bus.send.withArgs('token:init');
+              assert(spy.calledOnce);
+              assert(spy.firstCall.args[1].inputs.fraud.length === 1);
+              assert(spy.firstCall.args[1].inputs.fraud[0].processor === 'kount');
+              assert(spy.firstCall.args[1].inputs.fraud[0].session_id === '9a87s6dfaso978ljk');
+              assert(!err);
+              assert(token);
+              done();
+            });
+          }, 500);
+        });
+      });
+
+      describe('when litle fraud options are enabled', function () {
+        beforeEach(function (done) {
+          this.recurly = initRecurly({
+            cors: requestMethod === 'cors',
+            fraud: {
+              litle: { sessionId: '123456' }
+            }
+          });
+          this.recurly.ready(() => {
+            sinon.spy(this.recurly.bus, 'send');
+            done();
+          });
+        });
+
+        it('sends a fraud session id and yields a token', function (done) {
+          const example = merge(clone(valid), { fraud_session_id: '123456' });
           this.recurly.token(builder(example), (err, token) => {
+            const spy = this.recurly.bus.send.withArgs('token:init');
+            assert(spy.calledOnce);
+            assert(spy.firstCall.args[1].inputs.fraud.length === 1);
+            assert(spy.firstCall.args[1].inputs.fraud[0].processor === 'litle_threat_metrix');
+            assert(spy.firstCall.args[1].inputs.fraud[0].session_id === '123456');
             assert(!err);
             assert(token);
             done();
@@ -277,7 +304,9 @@ apiTest(requestMethod => {
           });
         });
       });
+    }
 
+    function tokenAllMarkupSuite (builder) {
       describe('when given additional required fields', function () {
         beforeEach(function (done) {
           this.recurly = initRecurly({
@@ -333,7 +362,34 @@ apiTest(requestMethod => {
           });
         });
       });
+    }
 
-    };
+    // For each example, updates corresponding hosted fields and returns all others
+    function plainObjectBuilder (example) {
+      example = clone(example);
+      const form = global.document.querySelector('#test-form');
+      each(example, (val, key) => {
+        let el = form.querySelector(`[data-recurly=${key}]`);
+        if (el instanceof HTMLDivElement) {
+          el.querySelector('iframe').contentWindow.value(val);
+          delete example[key];
+        }
+      });
+      return example;
+    }
+
+    // For each example, updates corresponding input filds or hosted fields
+    function formBuilder (example) {
+      const form = global.document.querySelector('#test-form');
+      each(example, (val, key) => {
+        let el = form.querySelector(`[data-recurly=${key}]`);
+        if (el instanceof HTMLDivElement) {
+          el.querySelector('iframe').contentWindow.value(val);
+        } else if (el && 'value' in el) {
+          el.value = val;
+        }
+      });
+      return form;
+    }
   });
 });

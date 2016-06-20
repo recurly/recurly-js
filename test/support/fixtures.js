@@ -1,13 +1,13 @@
 import {testBed} from './helpers';
 
-const blank = '';
-
-const minimal = `
+const minimal = opts => `
   <form action="#" id="test-form">
     <div data-recurly="number"></div>
     <div data-recurly="month"></div>
     <div data-recurly="year"></div>
     <div data-recurly="cvv"></div>
+    <input type="text" data-recurly="first_name" value="${opts.first_name || ''}">
+    <input type="text" data-recurly="last_name" value="${opts.last_name || ''}">
     <input type="hidden" data-recurly="token" name="recurly-token">
   </form>
 `;
@@ -83,7 +83,7 @@ const pricing = opts => `
   </div>
 `;
 
-const FIXTURES = {blank, minimal, all, bank, pricing};
+const FIXTURES = {minimal, all, bank, pricing};
 
 export function applyFixtures () {
   beforeEach(function () {
@@ -96,12 +96,10 @@ export function applyFixtures () {
   });
 }
 
-export function fixture (name = 'blank', opts = {}) {
-  const tpl = FIXTURES[name] || '';
-  const html = typeof tpl === 'function' ? tpl(opts) : tpl;
-  testBed().innerHTML = html;
+export function fixture (name, opts = {}) {
+  const tpl = FIXTURES[name] || (() => {});
+  testBed().innerHTML = tpl(opts);
 }
-
 
 /**
  * fetches a value on an object or returns an alternative
