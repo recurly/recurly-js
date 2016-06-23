@@ -1,8 +1,14 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.0.5 (July 6, 2016)
+
+* Adds a pricing error when a coupon is not found [263][#263]
+* Removes ussageAddons from pricing calculations [268][#268]
+* Fixes bug around initial pricing not respecting coupons [264][#264]
+
 ### Version 4.0.4 (May 23, 2016)
 
-* adds functionality for running fraud data collector[#254]
+* Adds functionality for running fraud data collector [254][#254]
 
 ### Version 4.0.3 (Apr 28, 2016)
 
@@ -99,6 +105,9 @@
 
 * Full rewrite for Billing Info tokenization
 
+[263]: https://github.com/recurly/recurly-js/commit/313c143d20813b029f9831a4446857083252ef6e
+[268]: https://github.com/recurly/recurly-js/commit/bd70dd34bef3ece01b50ed9f461104209571e9b7
+[264]: https://github.com/recurly/recurly-js/commit/a84da7b2f0f40d9ff9d959e6a10e07de8dd10923
 [254]: https://github.com/recurly/recurly-js/commit/44bfc4f8d6cb9fef81b2335cc609a5b2ef8165b2
 [250]: https://github.com/recurly/recurly-js/commit/436c6b8ac165f1acc5e41288591f8d7f1e84e23e
 [246]: https://github.com/recurly/recurly-js/commit/1bed75dca6f68036fc7d1c0be9d3dadb9dcfb67a
