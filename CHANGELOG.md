@@ -2,13 +2,13 @@
 
 ### Version 4.0.5 (July 6, 2016)
 
-* Adds a pricing error when a coupon is not found [263][#263]
-* Removes ussageAddons from pricing calculations [268][#268]
-* Fixes bug around initial pricing not respecting coupons [264][#264]
+* Adds a pricing error when a coupon is not found [#263][263]
+* Removes ussageAddons from pricing calculations [#268][268]
+* Fixes bug around initial pricing not respecting coupons [#264][264]
 
 ### Version 4.0.4 (May 23, 2016)
 
-* Adds functionality for running fraud data collector [254][#254]
+* Adds functionality for running fraud data collector [#254][254]
 
 ### Version 4.0.3 (Apr 28, 2016)
 
