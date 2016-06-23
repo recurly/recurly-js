@@ -209,5 +209,39 @@ describe('Recurly.Pricing', function () {
           done();
         });
     });
+
+    it('emits an error event when a coupon is not found', function (done) {
+      this.pricing
+        .on('error.coupon', function (err) {
+          assert(err.code === 'not-found');
+          done();
+        })
+        .plan('basic', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .coupon('coop-invalid');
+    });
+
+    it('emits an unset event when a coupon is cleared', function (done) {
+      let emitted = false;
+      this.pricing
+        .on('unset.coupon', () => emitted = true)
+        .plan('basic', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .coupon('coop')
+        .then((coupon) => assert(coupon.code === 'coop'))
+        .coupon('')
+        .then((coupon) => assert(!coupon))
+        .done(function (price) {
+          assert.equal(price.now.discount, '0.00');
+          assert(emitted, true);
+          done();
+        });
+    });
   });
 });

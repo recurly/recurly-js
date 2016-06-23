@@ -23,7 +23,18 @@ var staticConfig = {
   concurrency: Infinity,
   browserDisconnectTimeout: 300000, // 5 minutes
   browserNoActivityTimeout: 300000,
-  captureTimeout: 300000
+  captureTimeout: 300000,
+  customLaunchers: {
+    PhantomJSDebug: {
+      base: 'PhantomJS',
+      debug: true
+    }
+  },
+  client: {
+    mocha: {
+      grep: ''
+    }
+  }
 };
 
 var runner = function (config) {
