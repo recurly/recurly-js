@@ -124,6 +124,26 @@ describe('Recurly.Pricing', function () {
     });
   });
 
+  describe('with usage addons', function() {
+    it('shouldnt apply the usage cost to the price', function (done) {
+      this.pricing
+        .plan('basic', {quantity: 1})
+        .addon('snarf')
+        .addon('with_usage')
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .done(function (price) {
+          assert.equal(price.now.addons,"1.00")
+          assert.equal(price.next.addons,"1.00")
+          assert.equal(price.now.total,"22.99")
+          assert.equal(price.next.total,"20.99")
+          done();
+        });
+    });
+  });
+
   describe('with coupons', function () {
     it('should apply a multi-use coupon correctly', function (done) {
       this.pricing
