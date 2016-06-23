@@ -1,4 +1,4 @@
-![Recurly.js](http://docs.recurly.com/js/images/recurly-js-black.png "Recurly.js")
+![Recurly.js](https://www.filepicker.io/api/file/g4uPIoMbQR6VlTF7JHyD "Recurly.js")
 
 Simple subscription billing in the browser
 
