@@ -1,6 +1,7 @@
 import assert from 'assert';
 import {applyFixtures} from '../support/fixtures';
 import {initRecurly} from '../support/helpers';
+import PricingAttachment from '../../lib/recurly/pricing/attachment'
 
 const container = () => global.document.querySelector('#test-pricing');
 
@@ -23,12 +24,14 @@ describe('Recurly.Pricing.attach', function () {
     this.ctx.fixture = 'pricing';
 
     beforeEach(function () {
-      assert(typeof this.pricing.detach === 'undefined');
+      assert(typeof this.pricing.attachment === 'undefined');
       this.pricing.attach(container());
     });
 
     it('attaches to the given container', function () {
-      assert(typeof this.pricing.detach === 'function');
+      const attachment = this.pricing.attachment;
+      assert(attachment instanceof PricingAttachment);
+      assert(attachment.container === container())
     });
 
     describe('when pre-populated with a valid coupon code', function () {
