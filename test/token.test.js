@@ -209,9 +209,7 @@ apiTest(requestMethod => {
 
         it('sends a fraud session id and yields a token', function (done) {
           const example = merge(clone(valid), { fraud_session_id: '9a87s6dfaso978ljk' });
-          // HACK: This gives the fraud data collector time to inject.
-          // SOLUTION: recurly.readyState needs to be replaced with an init registry
-          setTimeout(() => {
+          this.recurly.fraud.on('ready', () => {
             this.recurly.token(builder(example), (err, token) => {
               const spy = this.recurly.bus.send.withArgs('token:init');
               assert(spy.calledOnce);
@@ -222,7 +220,7 @@ apiTest(requestMethod => {
               assert(token);
               done();
             });
-          }, 500);
+          });
         });
       });
 
