@@ -48,5 +48,21 @@ describe('Recurly.Pricing.attach', function () {
         });
       });
     });
+
+    describe('when pre-populated with a valid giftcard redemption code', function(){
+      this.ctx.fixtureOpts = {
+        plan: 'basic',
+        giftcard: 'superGiftcardForMe'
+      };
+
+      it('applies the giftcard to the pricing instance', function(done) {
+        assert(typeof this.pricing.items.gift_card === 'undefined');
+        this.pricing.on('set.gift_card', () => {
+          assert(this.pricing.items.gift_card.currency === 'USD');
+          assert(this.pricing.items.gift_card.unit_amount === 20);
+          done();
+        });
+      });
+    });
   });
 });

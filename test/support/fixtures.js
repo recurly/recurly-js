@@ -57,6 +57,7 @@ const pricing = opts => `
     <input type="text" data-recurly="plan" value="${fetch(opts, 'plan', '')}">
     <input type="text" data-recurly="plan_quantity" value="${fetch(opts, 'plan_quantity', '')}">
     <input type="text" data-recurly="coupon" value="${fetch(opts, 'coupon', '')}">
+    <input type="text" data-recurly="gift_card" value="${fetch(opts, 'giftcard', '')}">
     ${opts.addon ? `<input type="text" data-recurly="addon" data-recurly-addon="${fetch(opts.addon, 'code')}" value="${fetch(opts.addon, 'quantity')}">` : ''}
     <input type="text" data-recurly="currency" value="${fetch(opts, 'currency', 'USD')}">
     <input type="text" data-recurly="country" value="${fetch(opts, 'country', 'US')}">
