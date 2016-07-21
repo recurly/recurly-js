@@ -25,8 +25,8 @@ build/test.js: $(SRC) $(TESTS)
 test: build build/test.js
 	@$(KARMA) start karma.conf.js
 
-test-sauce: build build/test.js
-	@$(KARMA) start karma.sauce.conf.js
+test-ci: build build/test.js
+	@$(KARMA) start karma.ci.conf.js
 
 node_modules: package.json
 	@npm install --silent
