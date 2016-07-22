@@ -68,16 +68,25 @@ describe('Recurly.validate', function () {
   });
 
   describe('expiry', function () {
-    it('should return true without leading zeros', function () {
-      assert(true === recurly.validate.expiry(1, 2020));
+    const futureYear = new Date().getFullYear() + 1;
+
+    it('should return true for valid dates without leading zeros', function () {
+      assert(true === recurly.validate.expiry(1, futureYear));
     });
 
-    it('should return true for leading zeros', function () {
-      assert(true === recurly.validate.expiry('01', '19'));
+    it('should return true for valid dates with leading zeros', function () {
+      assert(true === recurly.validate.expiry('01', futureYear.toString().substr(2, 2)));
     });
 
-    it('should return false for invalid dates', function () {
+    it('should return false for past dates', function () {
       assert(false === recurly.validate.expiry('12', '2013'));
+      assert(false === recurly.validate.expiry(12, 2013));
+      assert(false === recurly.validate.expiry(12, 13));
+    });
+
+    it('should return false for invalid input', function () {
+      assert(false === recurly.validate.expiry('10gibberish', futureYear));
+      assert(false === recurly.validate.expiry('10', `${futureYear}gibberish`));
     });
   });
 
