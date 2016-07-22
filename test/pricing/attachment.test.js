@@ -22,6 +22,7 @@ describe('Recurly.Pricing.attach', function () {
 
   describe('when given a container', function () {
     this.ctx.fixture = 'pricing';
+    this.ctx.fixtureOpts = { plan: 'basic' };
 
     beforeEach(function () {
       assert(typeof this.pricing.attachment === 'undefined');
@@ -35,10 +36,7 @@ describe('Recurly.Pricing.attach', function () {
     });
 
     describe('when pre-populated with a valid coupon code', function () {
-      this.ctx.fixtureOpts = {
-        plan: 'basic',
-        coupon: 'coop'
-      };
+      this.ctx.fixtureOpts = { plan: 'basic', coupon: 'coop' };
 
       it('applies the coupon to the pricing instance', function (done) {
         assert(typeof this.pricing.items.coupon === 'undefined');
