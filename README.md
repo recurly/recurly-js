@@ -1,4 +1,4 @@
-![Recurly.js](http://i.imgur.com/k6FARJX.png "Recurly.js")
+![Recurly.js](http://i.imgur.com/7s94rRK.png "Recurly.js")
 
 Simple subscription billing in the browser
 
