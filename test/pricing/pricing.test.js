@@ -38,6 +38,23 @@ describe('Recurly.Pricing', function () {
         });
     });
 
+    it('should apply a giftcard discount to the post tax price', function(done) {
+      this.pricing
+        .plan('basic', {quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: '94110' // tax literal for test
+        })
+        .giftcard("hundredDollarCard")
+        .done(function (price) {
+          assert.equal(price.now.gift_card, '23.92');
+          assert.equal(price.next.gift_card, '21.74');
+          assert.equal(price.now.total, '0.00');
+          assert.equal(price.next.total, '0.00');
+          done();
+        });
+    });
+
     it('should append US tax elements in the US', function (done) {
       this.pricing
         .plan('basic', { quantity: 1 })
@@ -139,6 +156,141 @@ describe('Recurly.Pricing', function () {
           assert.equal(price.next.addons,"1.00")
           assert.equal(price.now.total,"22.99")
           assert.equal(price.next.total,"20.99")
+          done();
+        });
+    });
+  });
+
+  describe('with giftcards', function(){
+    it('should apply a valid giftcard correctly to price.now', function(done) {
+      this.pricing
+      .plan('basic', {quantity: 1 })
+      .address({
+        country: 'US'
+      })
+      .giftcard("superGiftcardForMe")
+      .done(function (price) {
+        assert.equal(price.now.total, '1.99');
+        assert.equal(price.next.total, '19.99');
+        done();
+      });
+    });
+
+    it('should return the value of giftcard used in price.now and price.next', function(done) {
+      this.pricing
+      .plan('basic', {quantity: 1 })
+      .address({
+        country: 'US'
+      })
+      .giftcard("superGiftcardForMe")
+      .done(function (price) {
+        assert.equal(price.now.gift_card, '20.00');
+        assert.equal(price.next.gift_card, '0.00');
+        done();
+      });
+    });
+
+    it('should use leftover giftcard balance in price.next', function(done) {
+      this.pricing
+      .plan('basic', {quantity: 4 })
+      .address({
+        country: 'US'
+      })
+      .giftcard("hundredDollarCard")
+      .done(function (price) {
+        assert.equal(price.now.gift_card, '81.96');
+        assert.equal(price.next.gift_card, '18.04');
+        assert.equal(price.now.total, '0.00');
+        assert.equal(price.next.total, '61.92');
+        done();
+      });
+    });
+
+    it('should never set a total lower than 0.00', function(done) {
+      this.pricing
+      .plan('basic', {quantity: 1 })
+      .address({
+        country: 'US'
+      })
+      .giftcard("hundredDollarCard")
+      .done(function (price) {
+        assert.equal(price.now.gift_card, '21.99');
+        assert.equal(price.next.gift_card, '19.99');
+        assert.equal(price.now.total, '0.00');
+        assert.equal(price.next.total, '0.00');
+        done();
+      });
+    });
+
+    it('emits an error event when a giftcard is not found', function (done) {
+      this.pricing
+      .on('error.gift_card', function (err) {
+        assert(err.code === 'not-found');
+        done();
+      })
+      .plan('basic', {quantity: 1 })
+      .address({
+        country: 'US'
+      })
+      .giftcard("invalidCard");
+    });
+
+    it('emits an event when the coupon is set', function (done) {
+      this.pricing
+      .on('set.gift_card', function (giftcard) {
+        assert(giftcard.currency === "USD");
+        assert(giftcard.unit_amount === 20);
+        done();
+      })
+      .plan('basic', {quantity: 1 })
+      .address({
+        country: 'US'
+      })
+      .giftcard("superGiftcardForMe");
+    });
+
+    it('emits an event when the coupon is unset', function (done) {
+      this.pricing
+      .on('unset.gift_card', function () {
+        done();
+      })
+      .plan('basic', {quantity: 1 })
+      .address({
+        country: 'US'
+      })
+      .giftcard("australianCard");
+    });
+
+    it('emits an error event when the giftcard currency doesnt match the config currency', function (done) {
+      this.pricing
+      .on('error.gift_card', function (err) {
+        assert(err.code === 'gift-card-currency-mismatch');
+        done();
+      })
+      .plan('basic', {quantity: 1 })
+      .address({
+        country: 'AUD' // I set AUD here because it's the config currency not address currency that matters. config currency is USD.
+      })
+      .giftcard("australianCard");
+    });
+
+    it('emits an unset event when a giftcard is cleared and removes giftcard from the pricing', function (done) {
+      let emitted = false;
+      this.pricing
+        .on('unset.gift_card', () => emitted = true)
+        .plan('basic', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .giftcard('superGiftcardForMe')
+        .then((giftcard) => assert(giftcard.unit_amount === 20))
+        .giftcard('')
+        .then((giftcard) => assert(!giftcard))
+        .done(function (price) {
+          assert.equal(price.now.gift_card, undefined);
+          assert.equal(price.now.total,"21.99");
+          assert(emitted, true);
           done();
         });
     });

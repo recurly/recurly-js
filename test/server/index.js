@@ -27,6 +27,7 @@ ejs(app, { root: __dirname, layout: false, viewExt: 'html.ejs' });
 
 app.use(route.get('/plans/:plan_code', json));
 app.use(route.get('/plans/:plan_code/coupons/:coupon_code', json));
+app.use(route.get('/gift_cards/:id', json));
 app.use(route.get('/token', json));
 app.use(route.post('/token', json));
 app.use(route.get('/tax', json));
