@@ -1,5 +1,13 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.1.0 (July 29, 2016)
+
+* Adds Gift card support [#275][275]
+* Adds click event binding to label tags referenced to hosted field containers [#279][279]
+* Enables CORS-XHR API client by default [#269][269]
+* Fixes expiry validation of invalid inputs [#278][278]
+* Fixes dom value reader for empty selects [#282][282]
+
 ### Version 4.0.5 (July 6, 2016)
 
 * Adds a pricing error when a coupon is not found [#263][263]
@@ -105,6 +113,12 @@
 
 * Full rewrite for Billing Info tokenization
 
+[276]: https://github.com/recurly/recurly-js/commit/a4059994b2ed864ef6820f7e6e544db48eac52ff
+[269]: https://github.com/recurly/recurly-js/commit/d035eee4ec6fd420aeb30d70ed2b6c05a2cdb8e0
+[278]: https://github.com/recurly/recurly-js/commit/cbc650d5b9a9836d7391e8abb285a1bd219af4a3
+[275]: https://github.com/recurly/recurly-js/commit/92256e4cb070696f972c88442f98a05e9bc4602c
+[282]: https://github.com/recurly/recurly-js/commit/b301f028dbef0b9a601118bec675fc41e4a07f4d
+[279]: https://github.com/recurly/recurly-js/commit/29d9f7d42a7d5d30da2f049b3da373002a932157
 [263]: https://github.com/recurly/recurly-js/commit/313c143d20813b029f9831a4446857083252ef6e
 [268]: https://github.com/recurly/recurly-js/commit/bd70dd34bef3ece01b50ed9f461104209571e9b7
 [264]: https://github.com/recurly/recurly-js/commit/a84da7b2f0f40d9ff9d959e6a10e07de8dd10923
