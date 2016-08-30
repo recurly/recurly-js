@@ -45,7 +45,7 @@
     }
 
     function config () {
-      var query = window.location.search;
+      var query = window.location.hash;
       return JSON.parse(decodeURIComponent(query.substring(query.indexOf('config=') + 7)) || {});
     }
 
