@@ -34,6 +34,7 @@ app.use(route.get('/tax', json));
 app.use(route.get('/paypal/start', postMessage));
 app.use(route.get('/relay', render('relay')));
 app.use(route.get('/field', render('field')));
+app.use(route.get('/field.html', render('field')));
 app.use(route.get('/fraud_data_collector', json));
 
 app.listen(port, () => {
