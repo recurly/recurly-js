@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.1.1 (August 30, 2016)
+
+* Improves cacheing by initially sending field config over hash [#295][295]
+
 ### Version 4.1.0 (July 29, 2016)
 
 * Adds Gift card support [#275][275]
@@ -113,6 +117,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[295]: https://github.com/recurly/recurly-js/commit/70d314fbb443de13377a1addded5fcd1079bb6de
 [276]: https://github.com/recurly/recurly-js/commit/a4059994b2ed864ef6820f7e6e544db48eac52ff
 [269]: https://github.com/recurly/recurly-js/commit/d035eee4ec6fd420aeb30d70ed2b6c05a2cdb8e0
 [278]: https://github.com/recurly/recurly-js/commit/cbc650d5b9a9836d7391e8abb285a1bd219af4a3
