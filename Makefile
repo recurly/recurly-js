@@ -1,5 +1,3 @@
-# T = $(BIN)/duo-test -m test/api.js -R spec -P 8378
-
 BIN = node_modules/.bin
 WEBPACK = $(BIN)/webpack
 KARMA = $(BIN)/karma
