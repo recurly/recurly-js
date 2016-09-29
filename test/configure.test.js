@@ -1,4 +1,5 @@
 import each from 'lodash.foreach';
+import clone from 'component-clone';
 import assert from 'assert';
 import {Recurly} from '../lib/recurly';
 
@@ -9,11 +10,11 @@ describe('Recurly.configure', function () {
 
   describe('when options.publicKey is not given', function () {
     var examples = [
-        {}
-      , { invalid: 'parameter' }
-      , { currency: 'USD' }
-      , { currency: 'AUD', api: 'https://localhost' }
-      , { currency: 'USD', api: 'https://localhost', required: ['postal_code'] }
+      {},
+      { invalid: 'parameter' },
+      { currency: 'USD' },
+      { currency: 'AUD', api: 'https://localhost' },
+      { currency: 'USD', api: 'https://localhost', required: ['postal_code'] }
     ];
 
     it('throws', function () {
@@ -35,19 +36,21 @@ describe('Recurly.configure', function () {
 
   describe('when options.publicKey is given', function () {
     var examples = [
-        { publicKey: 'foo' }
-      , { publicKey: 'foo', currency: 'USD' }
-      , { publicKey: 'foo', currency: 'AUD', api: 'https://localhost' }
-      , { publicKey: 'foo', currency: 'AUD', api: 'https://localhost', cors: true }
-      , { publicKey: 'foo', currency: 'USD', api: 'https://localhost', required: ['country'] }
-      , { publicKey: 'foo', currency: 'USD', api: 'https://localhost', required: ['postal_code', 'country'] }
+      { publicKey: 'foo' },
+      { publicKey: 'foo', currency: 'USD' },
+      { publicKey: 'foo', currency: 'AUD', api: 'https://localhost' },
+      { publicKey: 'foo', currency: 'AUD', api: 'https://localhost', cors: true },
+      { publicKey: 'foo', currency: 'USD', api: 'https://localhost', required: ['country'] },
+      { publicKey: 'foo', currency: 'USD', api: 'https://localhost', required: ['postal_code', 'country'] }
     ];
 
     it('sets Recurly.config to the options given', function () {
       examples.forEach((opts) => {
         var recurly = new Recurly;
         recurly.configure(opts);
-        each(opts, (val, opt) => assert(recurly.config[opt] === val));
+        each(opts, (val, opt) => {
+          if (opts[opt]) assert.equal(JSON.stringify(recurly.config[opt]), JSON.stringify(val));
+        });
       });
     });
 
@@ -57,7 +60,7 @@ describe('Recurly.configure', function () {
         recurly.configure(opts);
         each(recurly.config, (val, opt) => {
           if (opts[opt]) {
-            assert(opts[opt] === val);
+            assert.equal(JSON.stringify(opts[opt]), JSON.stringify(val));
           } else {
             assert(val !== undefined);
             assert(val !== opts[opt]);
@@ -77,6 +80,111 @@ describe('Recurly.configure', function () {
       it('sets Recurly.config.cors to the given value', function () {
         recurly.configure({ publicKey: 'foo', cors: true });
         assert(recurly.config.cors === true);
+      });
+    });
+  });
+
+  describe('when options.style is given (deprecated)', function () {
+    const example = {
+      publicKey: 'foo',
+      style: {
+        all: {
+          fontFamily: '"Droid Sans", Helvetica, sans-serif',
+          fontSize: '20px',
+          fontColor: 'green',
+          fontWeight: 'bold',
+          fontVariant: 'small-caps',
+          lineHeight: '1em',
+          padding: '5px 8px',
+          placeholder: { fontStyle: 'italic' }
+        },
+        number: {
+          color: 'green',
+          fontWeight: 'normal',
+          placeholder: {
+            content: 'Credit Card Number'
+          }
+        },
+        month: {
+          placeholder: {
+            content: 'Month (mm)'
+          }
+        },
+        year: {
+          color: 'persimmon',
+          placeholder: {
+            content: 'Year (yy)'
+          }
+        },
+        cvv: {
+          placeholder: {
+            content: 'Security Code',
+            color: 'orange !important'
+          }
+        }
+      }
+    };
+
+    it('is absent on final configuration', function () {
+      assert.equal(recurly.config.style, undefined);
+    });
+
+    describe('when options.fields is not given', function () {
+      it('coerces the given styles into options.fields', function () {
+        recurly.configure(example);
+        assert.equal(JSON.stringify(recurly.config.fields.number.style), JSON.stringify(example.style.number));
+        assert.equal(JSON.stringify(recurly.config.fields.month.style), JSON.stringify(example.style.month));
+        assert.equal(JSON.stringify(recurly.config.fields.year.style), JSON.stringify(example.style.year));
+        assert.equal(JSON.stringify(recurly.config.fields.cvv.style), JSON.stringify(example.style.cvv));
+        assert.equal(JSON.stringify(recurly.config.fields.all.style), JSON.stringify(example.style.all));
+      });
+    });
+
+    describe('when options.fields is given', function () {
+      describe('with string values', function () {
+        it('coerces the given styles and selectors into options.fields', function () {
+          let opts = clone(example);
+          opts.fields = {
+            number: '#custom-number-selector',
+            cvv: '#custom-cvv-selector'
+          };
+          recurly.configure(opts);
+          assert.equal(JSON.stringify(recurly.config.fields.number.style), JSON.stringify(example.style.number));
+          assert.equal(recurly.config.fields.number.selector, '#custom-number-selector');
+          assert.equal(recurly.config.fields.cvv.selector, '#custom-cvv-selector');
+        });
+      });
+
+      describe('with object values', function () {
+        let objectExample = clone(example);
+        objectExample.fields = {
+          number: {
+            selector: '#custom-number-selector',
+            style: {
+              color: 'orangutan',
+              placeholder: { content: 'test placeholder content', color: 'plum' }
+            },
+          }
+        };
+
+        it('merges with the object values', function () {
+          recurly.configure(objectExample);
+          assert.equal(recurly.config.fields.number.style.fontWeight, 'normal');
+          assert.equal(recurly.config.fields.month.style.placeholder.content, 'Month (mm)');
+          assert.equal(recurly.config.fields.year.style.placeholder.content, 'Year (yy)');
+          assert.equal(recurly.config.fields.year.style.color, 'persimmon');
+          assert.equal(recurly.config.fields.cvv.style.placeholder.content, 'Security Code');
+          assert.equal(recurly.config.fields.cvv.style.placeholder.color, 'orange !important');
+        });
+
+        it('does not override the object values', function () {
+          recurly.configure(objectExample);
+          assert.equal(recurly.config.fields.number.selector, '#custom-number-selector');
+          assert.equal(recurly.config.fields.number.style.color, 'orangutan');
+          assert.equal(recurly.config.fields.number.style.fontWeight, 'normal');
+          assert.equal(recurly.config.fields.number.style.placeholder.content, 'test placeholder content');
+          assert.equal(recurly.config.fields.number.style.placeholder.color, 'plum');
+        });
       });
     });
   });
