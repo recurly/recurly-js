@@ -139,6 +139,46 @@ describe('Recurly.Pricing', function () {
           done();
         });
     });
+
+    describe('with a shipping address', function () {
+      it('calculates tax from the shipping address', function (done) {
+        this.pricing
+          .plan('basic', { quantity: 1 })
+          .shippingAddress({
+            country: 'US',
+            postal_code: '94129'
+          })
+          .done(function (price) {
+            assert.equal(price.taxes.length, 1);
+            assert.equal(price.taxes[0].type, 'us');
+            assert.equal(price.taxes[0].rate, '0.0875');
+            assert.equal(price.now.tax, '1.93');
+            assert.equal(price.next.tax, '1.75');
+            done();
+          });
+      });
+
+      it('calculates tax from the shipping address when a billing address is given', function (done) {
+        this.pricing
+          .plan('basic', { quantity: 1 })
+          .address({
+            country: 'DE',
+            postal_code: 'XXX-XXX'
+          })
+          .shippingAddress({
+            country: 'US',
+            postal_code: '94129'
+          })
+          .done(function (price) {
+            assert.equal(price.taxes.length, 1);
+            assert.equal(price.taxes[0].type, 'us');
+            assert.equal(price.taxes[0].rate, '0.0875');
+            assert.equal(price.now.tax, '1.93');
+            assert.equal(price.next.tax, '1.75');
+            done();
+          });
+      })
+    });
   });
 
   describe('with usage addons', function() {
