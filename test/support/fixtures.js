@@ -65,6 +65,9 @@ const pricing = opts => `
     <input type="text" data-recurly="tax_code" value="${fetch(opts, 'tax_code', '')}">
     <input type="text" data-recurly="vat_number" value="${fetch(opts, 'vat_number', '')}">
 
+    <input type="text" data-recurly="shipping_address.country" value="${fetch(opts, 'shipping_address.country', '')}">
+    <input type="text" data-recurly="shipping_address.postal_code" value="${fetch(opts, 'shipping_address.postal_code', '')}">
+
     <span data-recurly="total_now"></span>
     <span data-recurly="subtotal_now"></span>
     <span data-recurly="addons_now"></span>
