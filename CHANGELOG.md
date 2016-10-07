@@ -1,6 +1,11 @@
 ## Recurly.js CHANGELOG
 
-### Version 4.1.1 (August 30, 2016)
+### Version 4.2.0 (Oct 7, 2016)
+
+* Adds shipping address support [#300][300]
+* Restructures config object to nest fields more logically [#297][297]
+
+### Version 4.1.1 (Aug 30, 2016)
 
 * Improves cacheing by initially sending field config over hash [#295][295]
 
@@ -117,6 +122,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[300]: https://github.com/recurly/recurly-js/commit/cd1ccacaa01f79bbc5b886d4f8d6ae7c281955ba
+[297]: https://github.com/recurly/recurly-js/commit/27b90787d2f3e8fbb1daf27700d7fb7fd9955373
 [295]: https://github.com/recurly/recurly-js/commit/70d314fbb443de13377a1addded5fcd1079bb6de
 [276]: https://github.com/recurly/recurly-js/commit/a4059994b2ed864ef6820f7e6e544db48eac52ff
 [269]: https://github.com/recurly/recurly-js/commit/d035eee4ec6fd420aeb30d70ed2b6c05a2cdb8e0
