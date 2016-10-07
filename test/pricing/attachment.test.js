@@ -47,13 +47,47 @@ describe('Recurly.Pricing.attach', function () {
       });
     });
 
-    describe('when pre-populated with a valid giftcard redemption code', function(){
+    describe('when given an address', function () {
+      this.ctx.fixtureOpts = {
+        plan: 'basic',
+        country: 'US',
+        postal_code: '94129'
+      };
+
+      it('sets the address', function (done) {
+        assert(typeof this.pricing.items.address === 'undefined');
+        this.pricing.on('set.address', () => {
+          assert(this.pricing.items.address.country === 'US');
+          assert(this.pricing.items.address.postal_code === '94129');
+          done();
+        });
+      });
+    });
+
+    describe('when given a shipping address', function () {
+      this.ctx.fixtureOpts = {
+        plan: 'basic',
+        'shipping_address.country': 'US',
+        'shipping_address.postal_code': '94129'
+      };
+
+      it('sets the shipping address', function (done) {
+        assert(typeof this.pricing.items.shipping_address === 'undefined');
+        this.pricing.on('set.shipping_address', () => {
+          assert(this.pricing.items.shipping_address.country === 'US');
+          assert(this.pricing.items.shipping_address.postal_code === '94129');
+          done();
+        });
+      });
+    });
+
+    describe('when pre-populated with a valid giftcard redemption code', function () {
       this.ctx.fixtureOpts = {
         plan: 'basic',
         giftcard: 'superGiftcardForMe'
       };
 
-      it('applies the giftcard to the pricing instance', function(done) {
+      it('applies the giftcard to the pricing instance', function (done) {
         assert(typeof this.pricing.items.gift_card === 'undefined');
         this.pricing.on('set.gift_card', () => {
           assert(this.pricing.items.gift_card.currency === 'USD');
