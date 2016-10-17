@@ -132,11 +132,20 @@ describe('Recurly.configure', function () {
     describe('when options.fields is not given', function () {
       it('coerces the given styles into options.fields', function () {
         recurly.configure(example);
-        assert.equal(JSON.stringify(recurly.config.fields.number.style), JSON.stringify(example.style.number));
-        assert.equal(JSON.stringify(recurly.config.fields.month.style), JSON.stringify(example.style.month));
-        assert.equal(JSON.stringify(recurly.config.fields.year.style), JSON.stringify(example.style.year));
-        assert.equal(JSON.stringify(recurly.config.fields.cvv.style), JSON.stringify(example.style.cvv));
-        assert.equal(JSON.stringify(recurly.config.fields.all.style), JSON.stringify(example.style.all));
+        assert.deepStrictEqual(recurly.config.fields.number.style, example.style.number);
+        assert.deepStrictEqual(recurly.config.fields.month.style, example.style.month);
+        assert.deepStrictEqual(recurly.config.fields.year.style, example.style.year);
+        assert.deepStrictEqual(recurly.config.fields.cvv.style, example.style.cvv);
+        assert.deepStrictEqual(recurly.config.fields.all.style, example.style.all);
+      });
+
+      describe('when only options.style.all is set', function () {
+        it('sets options.fields.all.style', function () {
+          let ex = clone(example);
+          ex.style = { all: example.style.all };
+          recurly.configure(ex);
+          assert.deepStrictEqual(recurly.config.fields.all.style, example.style.all);
+        });
       });
     });
 
@@ -149,7 +158,7 @@ describe('Recurly.configure', function () {
             cvv: '#custom-cvv-selector'
           };
           recurly.configure(opts);
-          assert.equal(JSON.stringify(recurly.config.fields.number.style), JSON.stringify(example.style.number));
+          assert.deepStrictEqual(recurly.config.fields.number.style, example.style.number);
           assert.equal(recurly.config.fields.number.selector, '#custom-number-selector');
           assert.equal(recurly.config.fields.cvv.selector, '#custom-cvv-selector');
         });
