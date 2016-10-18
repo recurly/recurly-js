@@ -74,11 +74,31 @@ describe('Recurly.Pricing.attach', function () {
       it('sets the shipping address', function (done) {
         assert(typeof this.pricing.items.shipping_address === 'undefined');
         this.pricing.on('set.shipping_address', () => {
-          assert(this.pricing.items.shipping_address.country === 'US');
-          assert(this.pricing.items.shipping_address.postal_code === '94129');
+          assert.equal(this.pricing.items.shipping_address.country, 'US');
+          assert.equal(this.pricing.items.shipping_address.postal_code, '94129');
           done();
         });
       });
+
+      describe('when shipping address is blank and billing address is present', function () {
+        this.ctx.fixtureOpts = {
+          plan: 'basic',
+          country: 'US',
+          postal_code: '94129',
+          'shipping_address.country': '',
+          'shipping_address.postal_code': ''
+        };
+
+        it('does not set the shipping address', function (done) {
+          assert(typeof this.pricing.items.shipping_address === 'undefined');
+          this.pricing.on('set.address', () => {
+            assert.equal(this.pricing.items.address.country, 'US');
+            assert.equal(this.pricing.items.address.postal_code, '94129');
+            assert.equal(this.pricing.items.shipping_address, undefined);
+            done();
+          });
+        });
+      })
     });
 
     describe('when pre-populated with a valid giftcard redemption code', function () {
