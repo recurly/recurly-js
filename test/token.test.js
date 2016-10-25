@@ -181,7 +181,6 @@ apiTest(requestMethod => {
 
           examples.forEach(example => {
             this.recurly.token(builder(example), (err, token) => {
-              // if (err) console.log(examples)
               assert(!err);
               assert(token.id);
               if (example && example.nodeType === 3) {

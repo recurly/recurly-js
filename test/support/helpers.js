@@ -1,8 +1,17 @@
 import merge from 'lodash.merge';
 import {Recurly} from '../../lib/recurly';
 
-export function initRecurly (opts) {
-  let recurly = new Recurly;
+/**
+ * initializes a Recurly instance designed for testing
+ * @param  {[Recurly]} recurly
+ * @param  {Object} opts
+ * @return {Recurly}
+ */
+export function initRecurly (recurly, opts) {
+  if (!(recurly instanceof Recurly)) {
+    if (!opts) opts = recurly;
+    recurly = new Recurly;
+  }
   recurly.configure(merge({
     publicKey: 'test',
     api: `//${global.location.host}/api`

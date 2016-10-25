@@ -1,12 +1,17 @@
 import each from 'lodash.foreach';
+import after from 'lodash.after';
 import clone from 'component-clone';
 import assert from 'assert';
+import combinations from 'combinations';
+import {initRecurly} from './support/helpers';
+import {fixture} from './support/fixtures';
 import {Recurly} from '../lib/recurly';
 
 describe('Recurly.configure', function () {
-  let recurly;
-
-  beforeEach(() => recurly = new Recurly);
+  beforeEach(function () {
+    if (this.currentTest.ctx.fixture) fixture(this.currentTest.ctx.fixture);
+    this.recurly = new Recurly;
+  });
 
   describe('when options.publicKey is not given', function () {
     var examples = [
@@ -18,17 +23,17 @@ describe('Recurly.configure', function () {
     ];
 
     it('throws', function () {
-      examples.forEach((opts) => {
-        assert.throws(recurly.configure.bind(recurly, opts));
+      examples.forEach(opts => {
+        assert.throws(this.recurly.configure.bind(this.recurly, opts));
       });
     });
 
     it('Recurly.configured remains false', function () {
-      examples.forEach((opts) => {
+      examples.forEach(opts => {
         try {
-          recurly.configure(opts);
+          this.recurly.configure(opts);
         } catch (e) {
-          assert(recurly.configured === false);
+          assert(this.recurly.configured === false);
         }
       });
     });
@@ -46,7 +51,7 @@ describe('Recurly.configure', function () {
 
     it('sets Recurly.config to the options given', function () {
       examples.forEach((opts) => {
-        var recurly = new Recurly;
+        let recurly = new Recurly;
         recurly.configure(opts);
         each(opts, (val, opt) => {
           if (opts[opt]) assert.equal(JSON.stringify(recurly.config[opt]), JSON.stringify(val));
@@ -55,10 +60,9 @@ describe('Recurly.configure', function () {
     });
 
     it('sets default values for options not given', function () {
-      examples.forEach(function (opts) {
-        var recurly = new Recurly();
-        recurly.configure(opts);
-        each(recurly.config, (val, opt) => {
+      examples.forEach(opts => {
+        this.recurly.configure(opts);
+        each(this.recurly.config, (val, opt) => {
           if (opts[opt]) {
             assert.equal(JSON.stringify(opts[opt]), JSON.stringify(val));
           } else {
@@ -71,15 +75,22 @@ describe('Recurly.configure', function () {
 
     describe('when options.api is given', function () {
       it('sets Recurly.config.api to the given api', function () {
-        recurly.configure({ publicKey: 'foo', api: 'http://localhost' });
-        assert(recurly.config.api === 'http://localhost');
+        this.recurly.configure({ publicKey: 'foo', api: 'http://localhost' });
+        assert(this.recurly.config.api === 'http://localhost');
       });
     });
 
     describe('when options.cors is given', function () {
       it('sets Recurly.config.cors to the given value', function () {
-        recurly.configure({ publicKey: 'foo', cors: true });
-        assert(recurly.config.cors === true);
+        this.recurly.configure({ publicKey: 'foo', cors: true });
+        assert(this.recurly.config.cors === true);
+      });
+    });
+
+    describe('as a string parameter', function () {
+      it('sets the publicKey', function () {
+        this.recurly.configure('bar');
+        assert(this.recurly.config.publicKey === 'bar');
       });
     });
   });
@@ -126,7 +137,7 @@ describe('Recurly.configure', function () {
     };
 
     it('is absent on final configuration', function () {
-      assert.equal(recurly.config.style, undefined);
+      assert.equal(this.recurly.config.style, undefined);
     });
 
     describe('when options.fields is not given', function () {
@@ -177,22 +188,22 @@ describe('Recurly.configure', function () {
         };
 
         it('merges with the object values', function () {
-          recurly.configure(objectExample);
-          assert.equal(recurly.config.fields.number.style.fontWeight, 'normal');
-          assert.equal(recurly.config.fields.month.style.placeholder.content, 'Month (mm)');
-          assert.equal(recurly.config.fields.year.style.placeholder.content, 'Year (yy)');
-          assert.equal(recurly.config.fields.year.style.color, 'persimmon');
-          assert.equal(recurly.config.fields.cvv.style.placeholder.content, 'Security Code');
-          assert.equal(recurly.config.fields.cvv.style.placeholder.color, 'orange !important');
+          this.recurly.configure(objectExample);
+          assert.equal(this.recurly.config.fields.number.style.fontWeight, 'normal');
+          assert.equal(this.recurly.config.fields.month.style.placeholder.content, 'Month (mm)');
+          assert.equal(this.recurly.config.fields.year.style.placeholder.content, 'Year (yy)');
+          assert.equal(this.recurly.config.fields.year.style.color, 'persimmon');
+          assert.equal(this.recurly.config.fields.cvv.style.placeholder.content, 'Security Code');
+          assert.equal(this.recurly.config.fields.cvv.style.placeholder.color, 'orange !important');
         });
 
         it('does not override the object values', function () {
-          recurly.configure(objectExample);
-          assert.equal(recurly.config.fields.number.selector, '#custom-number-selector');
-          assert.equal(recurly.config.fields.number.style.color, 'orangutan');
-          assert.equal(recurly.config.fields.number.style.fontWeight, 'normal');
-          assert.equal(recurly.config.fields.number.style.placeholder.content, 'test placeholder content');
-          assert.equal(recurly.config.fields.number.style.placeholder.color, 'plum');
+          this.recurly.configure(objectExample);
+          assert.equal(this.recurly.config.fields.number.selector, '#custom-number-selector');
+          assert.equal(this.recurly.config.fields.number.style.color, 'orangutan');
+          assert.equal(this.recurly.config.fields.number.style.fontWeight, 'normal');
+          assert.equal(this.recurly.config.fields.number.style.placeholder.content, 'test placeholder content');
+          assert.equal(this.recurly.config.fields.number.style.placeholder.color, 'plum');
         });
       });
     });
@@ -202,21 +213,49 @@ describe('Recurly.configure', function () {
     var examples = [0, '', null, false, undefined];
 
     it('sets default values instead', function () {
-      examples.forEach(function (falsey) {
-        var recurly = new Recurly();
-
-        recurly.configure({
+      combinations(examples, examples.length).forEach(falsey => {
+        this.recurly.configure({
           publicKey: 'foo',
-          currency: falsey,
-          api: falsey,
-          timeout: falsey,
-          cors: falsey
+          currency: falsey[0],
+          api: falsey[1],
+          timeout: falsey[2],
+          cors: falsey[3],
+          fraud: falsey[4]
         });
 
-        assert(recurly.config.currency === 'USD');
-        assert(recurly.config.timeout === 60000);
-        assert(recurly.config.api === 'https://api.recurly.com/js/v1');
+        assert(this.recurly.config.currency === 'USD');
+        assert(this.recurly.config.timeout === 60000);
+        assert(this.recurly.config.api === 'https://api.recurly.com/js/v1');
       });
     });
+  });
+
+  describe('when reconfiguring field selectors', function () {
+    this.ctx.fixture = 'multipleForms';
+
+    it('resets and reinitializes fields on the new targets', function (done) {
+      configureRecurly(this.recurly, 1, () => {
+        assert(document.querySelector('#number-1 iframe') instanceof HTMLIFrameElement);
+        assert.equal(document.querySelector('#number-2 iframe'), null);
+        configureRecurly(this.recurly, 2, () => {
+          assert(document.querySelector('#number-2 iframe') instanceof HTMLIFrameElement);
+          assert.equal(document.querySelector('#number-1 iframe'), null);
+          done();
+        });
+      });
+    });
+
+    function configureRecurly (recurly, index, done) {
+      initRecurly(recurly, {
+        fields: {
+          number: `#number-${index}`,
+          month: `#month-${index}`,
+          year: `#year-${index}`,
+          cvv: `#cvv-${index}`
+        }
+      });
+      assert.equal(recurly.configured, true);
+      recurly.ready(done);
+    }
   });
 });
