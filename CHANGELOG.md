@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.3.0 (Oct 7, 2016)
+
+* Adds field reinstantiation support [#267][267]
+
 ### Version 4.2.0 (Oct 7, 2016)
 
 * Adds shipping address support [#300][300]
@@ -122,6 +126,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[267]: https://github.com/recurly/recurly-js/commit/f3d30c92ac79fece0d574ab814ae29f3d346ad5d
 [300]: https://github.com/recurly/recurly-js/commit/cd1ccacaa01f79bbc5b886d4f8d6ae7c281955ba
 [297]: https://github.com/recurly/recurly-js/commit/27b90787d2f3e8fbb1daf27700d7fb7fd9955373
 [295]: https://github.com/recurly/recurly-js/commit/70d314fbb443de13377a1addded5fcd1079bb6de
