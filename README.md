@@ -21,7 +21,7 @@ implementations.
 <script src="https://js.recurly.com/v4/recurly.js"></script>
 ```
 
-Please do not host recurly.js or bundle it using a package manager. In order to ensure you always run the most stable and secure version possible, you must load recurly.js from our CDN.
+**Important:** Please do not host recurly.js or bundle it using a package manager. In order to ensure you always run the most stable and secure version possible, you must load recurly.js from our CDN.
 
 ## Build
 Development build server
