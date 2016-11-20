@@ -99,7 +99,7 @@ http://docs.recurly.com/api/coupons
     recurly.coupons.deactivate(couponcode, callback)
 	
 
-Coupon Redemtion
+Coupon Redemption
 =================
 http://docs.recurly.com/api/coupons/coupon-redemption
   
