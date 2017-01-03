@@ -126,7 +126,7 @@ apiTest(requestMethod => {
 
         it('produces a validation error', function (done) {
           this.recurly.token(builder(example), (err, token) => {
-            assert(err.code === 'declined')
+            assert(err.code === 'declined');
             assert(err.message.indexOf('card was declined'));
             assert(err.fields.length === 1);
             assert(err.fields[0] === 'number');
@@ -135,6 +135,24 @@ apiTest(requestMethod => {
           });
         });
       });
+
+      if(requestMethod === 'cors') {
+        describe('when given an invalid json response', function () {
+          let example = merge(clone(valid), {
+            number: '5454545454545454'
+          });
+
+          it('produces an api-error with the raw responseText', function (done) {
+            this.recurly.token(builder(example), (err, token) => {
+              console.log(token, err);
+              assert(!token);
+              assert(err.code === 'api-error');
+              assert(err.message.indexOf('problem parsing the API response with: some json that cannot be parsed'));
+              done();
+            });
+          });
+        });
+      }
 
       describe('when given an invalid cvv', function () {
         let example = merge(clone(valid), { cvv: 'blah' });
