@@ -32,5 +32,5 @@ env:
     - BROWSER=ie_10
     - BROWSER=ie_11
     - BROWSER=opera
-    - BROWSER=ios_9_2
-    - BROWSER=android_5_1
+    - BROWSER=ios_9_3
+    - BROWSER=android

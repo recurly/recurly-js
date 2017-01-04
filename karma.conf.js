@@ -21,9 +21,9 @@ var staticConfig = {
   browsers: ['PhantomJS'],
   singleRun: true,
   concurrency: Infinity,
-  browserDisconnectTimeout: 300000, // 5 minutes
-  browserNoActivityTimeout: 300000,
-  captureTimeout: 300000,
+  browserDisconnectTimeout: 450000, // 5 minutes
+  browserNoActivityTimeout: 450000,
+  captureTimeout: 450000,
   customLaunchers: {
     PhantomJSDebug: {
       base: 'PhantomJS',

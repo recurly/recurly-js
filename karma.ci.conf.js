@@ -34,12 +34,12 @@ var sauceBrowsers = {
     base: 'SauceLabs',
     browserName: 'opera'
   },
-  sl_ios_9_2: {
+  sl_ios_9_3: {
     base: 'SauceLabs',
     browserName: 'iphone',
-    version: '9.2'
+    version: '9.3'
   },
-  sl_android_5_1: {
+  sl_android: {
     base: 'SauceLabs',
     browserName: 'android',
     version: '5.1'
@@ -53,7 +53,12 @@ module.exports = function (config) {
     browsers: browsers(),
     sauceLabs: {
       testName: 'Recurly.js tests',
-      recordVideo: true
+      recordVideo: true,
+      connectOptions: {
+        port: 5757,
+        logfile: 'sauce_connect.log'
+      },
+      public: 'public'
     },
     customLaunchers: sauceBrowsers,
   }));
