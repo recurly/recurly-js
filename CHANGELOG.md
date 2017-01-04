@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.3.1 (Jan 4, 2017)
+
+* Adds mobile tabbing support [#267][267]
+* Adds json response logging on invalid responses [#307][307]
+
 ### Version 4.3.0 (Oct 7, 2016)
 
 * Adds field reinstantiation support [#267][267]
@@ -102,7 +107,7 @@
 
 ### Version 3.0.4 (July 24, 2014)
 
-* Fixed issue with addons and pricing module [#137][137]
+* Fixed issue with addons and pricing module [#293][293]
 
 ### Version 3.0.3 (June 10, 2014)
 
@@ -126,6 +131,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[307]: https://github.com/recurly/recurly-js/commit/228a76368159bb4eca484200d3d1b2ef670a676b
+[293]: https://github.com/recurly/recurly-js/commit/f370db6a2f53c77438a43b7e9107b3480215ef75
 [267]: https://github.com/recurly/recurly-js/commit/f3d30c92ac79fece0d574ab814ae29f3d346ad5d
 [300]: https://github.com/recurly/recurly-js/commit/cd1ccacaa01f79bbc5b886d4f8d6ae7c281955ba
 [297]: https://github.com/recurly/recurly-js/commit/27b90787d2f3e8fbb1daf27700d7fb7fd9955373
