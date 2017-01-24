@@ -6,7 +6,7 @@ SRC = index.js $(shell find lib -type f -name '*.js')
 TESTS = $(shell find test -type f -name '*.js')
 
 server: build
-	@$(SERVER) --inline --hot --port 8020
+	@$(SERVER) --inline --hot --port 8020 --https
 
 build: build/recurly.min.js
 
