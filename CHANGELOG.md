@@ -1,9 +1,9 @@
 ## Recurly.js CHANGELOG
 
-### Version 4.3.1 (Jan 4, 2017)
+### Version 4.4.0 (Jan 25, 2017)
 
-* Adds mobile tabbing support [#267][267]
-* Adds json response logging on invalid responses [#307][307]
+* Adds Apple Pay support [#313][313]
+* Logs API response when json is invalid [#307][307]
 
 ### Version 4.3.0 (Oct 7, 2016)
 
@@ -131,6 +131,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[313]: https://github.com/recurly/recurly-js/commit/19575a5d4a8439646de6d7ca838544167712c7f0
 [307]: https://github.com/recurly/recurly-js/commit/228a76368159bb4eca484200d3d1b2ef670a676b
 [293]: https://github.com/recurly/recurly-js/commit/f370db6a2f53c77438a43b7e9107b3480215ef75
 [267]: https://github.com/recurly/recurly-js/commit/f3d30c92ac79fece0d574ab814ae29f3d346ad5d
