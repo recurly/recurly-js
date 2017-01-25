@@ -25,17 +25,25 @@ app.use(cors({
 
 ejs(app, { root: __dirname, layout: false, viewExt: 'html.ejs' });
 
+app.use(route.get('/fraud_data_collector', json));
+app.use(route.get('/gift_cards/:id', json));
 app.use(route.get('/plans/:plan_code', json));
 app.use(route.get('/plans/:plan_code/coupons/:coupon_code', json));
-app.use(route.get('/gift_cards/:id', json));
+app.use(route.get('/tax', json));
+
 app.use(route.get('/token', json));
 app.use(route.post('/token', json));
-app.use(route.get('/tax', json));
+
 app.use(route.get('/paypal/start', postMessage));
+app.use(route.get('/apple_pay/info', json));
+app.use(route.get('/apple_pay/start', json));
+app.use(route.get('/apple_pay/token', json));
+app.use(route.post('/apple_pay/start', json));
+app.use(route.post('/apple_pay/token', json));
+
 app.use(route.get('/relay', render('relay')));
 app.use(route.get('/field', render('field')));
 app.use(route.get('/field.html', render('field')));
-app.use(route.get('/fraud_data_collector', json));
 
 app.listen(port, () => {
   fs.writeFileSync(`${__dirname}/pid.txt`, process.pid, 'utf-8');

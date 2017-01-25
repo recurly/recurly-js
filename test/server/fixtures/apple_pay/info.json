@@ -1,0 +1,6 @@
+{
+  "countries": ["US", "CA"],
+  "currencies": ["USD", "CAD"],
+  "merchantCapabilities": ["supportsCredit", "supports3DS", "supportsDebit"],
+  "supportedNetworks": ["visa", "amex"]
+}

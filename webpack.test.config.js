@@ -23,12 +23,16 @@ module.exports = {
           cacheDirectory: true,
           presets: ['es2015']
         }
+      },
+      {
+        test: /\.json$/,
+        loader: 'json-loader'
       }
     ]
   },
   resolve: {
     root: [path.join(__dirname, 'test')],
-    extensions: ['', '.js']
+    extensions: ['', '.js', '.json']
   },
   devtool: 'inline-source-map'
 };
