@@ -37,3 +37,7 @@ export function testBed () {
   }
   return el;
 }
+
+export function nextTick (cb) {
+  setTimeout(cb, 0);
+}
