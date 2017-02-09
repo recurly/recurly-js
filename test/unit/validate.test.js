@@ -60,7 +60,7 @@ describe('Recurly.validate', function () {
     });
 
     it('should return true for leading zeros', function() {
-      assert(true === recurly.validate.expiry('01', '16'));
+      assert(true === recurly.validate.expiry('01', '20'));
     });
 
     it('should return false for invalid dates', function() {
