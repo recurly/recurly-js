@@ -4,6 +4,7 @@ import merge from 'lodash.merge';
 import omit from 'lodash.omit';
 import Emitter from 'component-emitter';
 import {Recurly} from '../lib/recurly';
+import {applyFixtures} from './support/fixtures';
 import {initRecurly, apiTest, nextTick} from './support/helpers';
 
 import infoFixture from './server/fixtures/apple_pay/info';
@@ -34,11 +35,16 @@ ApplePaySessionStub.canMakePayments = () => true;
 
 apiTest(function (requestMethod) {
   describe(`Recurly.ApplePay (${requestMethod})`, function () {
+    applyFixtures();
+    this.ctx.fixture = 'minimal';
+    this.timeout(5000);
+
     let validOpts = {
       country: 'US',
       currency: 'USD',
       label: 'Apple Pay test',
-      total: '3.49'
+      total: '3.49',
+      form: global.document.querySelector('#fixture_container')
     };
 
     beforeEach(function () {
@@ -89,6 +95,11 @@ apiTest(function (requestMethod) {
             assert.equal(result.err.code, 'apple-pay-not-available');
           });
         });
+      });
+
+      it('requires options.form', function () {
+        let applePay = this.recurly.ApplePay(omit(validOpts, 'form'));
+        assertInitError(applePay, 'apple-pay-config-missing', {opt: 'form' });
       });
 
       it('requires options.label', function () {
@@ -220,7 +231,8 @@ apiTest(function (requestMethod) {
 
     describe('internal event handlers', function () {
       beforeEach(function (done) {
-        this.applePay = this.recurly.ApplePay(validOpts);
+        let form = global.document.querySelector('#test-form');
+        this.applePay = this.recurly.ApplePay(merge({}, validOpts, {form: form}));
         this.applePay.ready(() => {
           this.applePay.begin();
           done();
