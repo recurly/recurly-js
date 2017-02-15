@@ -144,7 +144,6 @@ apiTest(requestMethod => {
 
           it('produces an api-error with the raw responseText', function (done) {
             this.recurly.token(builder(example), (err, token) => {
-              console.log(token, err);
               assert(!token);
               assert(err.code === 'api-error');
               assert(err.message.indexOf('problem parsing the API response with: some json that cannot be parsed'));
