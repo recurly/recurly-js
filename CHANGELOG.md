@@ -1,9 +1,9 @@
 ## Recurly.js CHANGELOG
 
-### Version 4.4.1 (Feb 9, 2017)
+### Version 4.4.1 (Feb 15, 2017)
 
-* Also send name, address, etc fields for apple pay token creation [#320]
-* Update Apple Pay init to receive payment form [#322]
+* Also send name, address, etc fields for apple pay token creation [#320][320]
+* Update Apple Pay init to receive payment form [#322][322]
 
 ### Version 4.4.0 (Jan 25, 2017)
 
@@ -136,6 +136,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[322]: https://github.com/recurly/recurly-js/commit/085ddf71b9a92785de6cfe8cbe4b4a34b1154d48
+[320]: https://github.com/recurly/recurly-js/commit/6c629181215c1cd9673b69530cac8b33551d3b97
 [313]: https://github.com/recurly/recurly-js/commit/19575a5d4a8439646de6d7ca838544167712c7f0
 [307]: https://github.com/recurly/recurly-js/commit/228a76368159bb4eca484200d3d1b2ef670a676b
 [293]: https://github.com/recurly/recurly-js/commit/f370db6a2f53c77438a43b7e9107b3480215ef75
