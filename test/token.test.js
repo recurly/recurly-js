@@ -19,8 +19,6 @@ apiTest(requestMethod => {
 
     applyFixtures();
 
-    this.timeout(5000);
-
     beforeEach(function (done) {
       this.recurly = initRecurly({ cors: requestMethod === 'cors' });
       this.recurly.ready(done);
