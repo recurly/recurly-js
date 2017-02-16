@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.4.1 (Feb 9, 2017)
+
+* Also send name, address, etc fields for apple pay token creation [#320]
+* Update Apple Pay init to receive payment form [#322]
+
 ### Version 4.4.0 (Jan 25, 2017)
 
 * Adds Apple Pay support [#313][313]

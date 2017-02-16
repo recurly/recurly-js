@@ -38,7 +38,8 @@ apiTest(function (requestMethod) {
       country: 'US',
       currency: 'USD',
       label: 'Apple Pay test',
-      total: '3.49'
+      total: '3.49',
+      form: {}
     };
 
     beforeEach(function () {
@@ -91,9 +92,14 @@ apiTest(function (requestMethod) {
         });
       });
 
+      it('requires options.form', function () {
+        let applePay = this.recurly.ApplePay(omit(validOpts, 'form'));
+        assertInitError(applePay, 'apple-pay-config-missing', { opt: 'form' });
+      });
+
       it('requires options.label', function () {
         let applePay = this.recurly.ApplePay(omit(validOpts, 'label'));
-        assertInitError(applePay, 'apple-pay-config-missing', {opt: 'label' });
+        assertInitError(applePay, 'apple-pay-config-missing', { opt: 'label' });
       });
 
       describe('when not given options.pricing', function () {
