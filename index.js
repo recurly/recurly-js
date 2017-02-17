@@ -1,8 +1,4 @@
-/*!
- * Module dependencies.
- */
-
-const Recurly = require('./lib/recurly').Recurly;
+import {Recurly} from 'lib/recurly';
 
 /**
  * Export a single instance.
