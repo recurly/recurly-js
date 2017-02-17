@@ -21,9 +21,10 @@ var staticConfig = {
   browsers: ['PhantomJS'],
   singleRun: true,
   concurrency: Infinity,
-  browserDisconnectTimeout: 450000, // 5 minutes
-  browserNoActivityTimeout: 450000,
-  captureTimeout: 450000,
+  browserDisconnectTimeout: 90000, // 1 minute
+  browserDisconnectTolerance : 1,
+  browserNoActivityTimeout: 90000,
+  captureTimeout: 90000,
   customLaunchers: {
     PhantomJSDebug: {
       base: 'PhantomJS',
@@ -32,6 +33,7 @@ var staticConfig = {
   },
   client: {
     mocha: {
+      timeout : 20000, // 20 seconds
       grep: ''
     }
   }
