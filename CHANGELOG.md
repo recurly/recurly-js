@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.5.0 (Feb 20, 2017)
+
+* Adds new PayPal class [#317][317]
+
 ### Version 4.4.1 (Feb 15, 2017)
 
 * Also send name, address, etc fields for apple pay token creation [#320][320]
@@ -136,6 +140,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[317]: https://github.com/recurly/recurly-js/commit/20ae37b8dc3df36f899be5922e8cfbdf68242b00
 [322]: https://github.com/recurly/recurly-js/commit/085ddf71b9a92785de6cfe8cbe4b4a34b1154d48
 [320]: https://github.com/recurly/recurly-js/commit/6c629181215c1cd9673b69530cac8b33551d3b97
 [313]: https://github.com/recurly/recurly-js/commit/19575a5d4a8439646de6d7ca838544167712c7f0
