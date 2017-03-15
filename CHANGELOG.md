@@ -2,7 +2,7 @@
 
 ### Version 4.5.2 (Mar 14, 2017)
 
-* Adds device data collection to Braintree PayPal integration [#332][332]
+* Adds device data collection to Braintree PayPal integration [#333][333]
 * Fixes bug in window relay for IE11 [#341][341]
 
 ### Version 4.5.1 (Feb 20, 2017)
@@ -152,7 +152,7 @@
 
 [341]: https://github.com/recurly/recurly-js/commit/35a43c5d8102a1eac60d25f0ec30d736524e8229
 [340]: https://github.com/recurly/recurly-js/commit/7b462bb7a8d39624ad0b7750a8510679eb26cd68
-[332]: https://github.com/recurly/recurly-js/commit/8edc0cab8faf7e20695c164979a5864cfac70ba0
+[333]: https://github.com/recurly/recurly-js/commit/ac55ac8d95c2aaf982483511fe6b0e29600e5704
 [330]: https://github.com/recurly/recurly-js/commit/9a1b476cd7bc85c6d8522f81b88b4441543e3e6a
 [325]: https://github.com/recurly/recurly-js/commit/b6412fd859958b2760185d6af6c883f88a777613
 [317]: https://github.com/recurly/recurly-js/commit/20ae37b8dc3df36f899be5922e8cfbdf68242b00
