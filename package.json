@@ -26,6 +26,7 @@
     "lodash.merge": "*",
     "lodash.omit": "*",
     "lodash.partial": "*",
+    "lodash.pick": "^4.4.0",
     "map-component": "0.0.1",
     "mixin": "https://github.com/kewah/mixin#0.1.0",
     "mutation-observer": "^1.0.2",
