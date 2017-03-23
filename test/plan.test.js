@@ -1,6 +1,5 @@
 import assert from 'assert';
 import {Recurly} from '../lib/recurly';
-import helpers from './support/helpers';
 import {initRecurly, apiTest} from './support/helpers';
 
 apiTest(function (requestMethod) {

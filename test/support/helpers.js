@@ -1,5 +1,6 @@
 import merge from 'lodash.merge';
 import {Recurly} from '../../lib/recurly';
+import {BRAINTREE_CLIENT_VERSION} from '../../lib/recurly/paypal/braintree';
 
 /**
  * initializes a Recurly instance designed for testing
@@ -40,4 +41,20 @@ export function testBed () {
 
 export function nextTick (cb) {
   setTimeout(cb, 0);
+}
+
+export function braintreeStub () {
+  beforeEach(() => {
+    const create = (opt, cb) => cb(null, {});
+    global.braintree = {
+      client: {
+        VERSION: BRAINTREE_CLIENT_VERSION,
+        create
+      },
+      paypal: { create },
+      dataCollector: { create }
+    };
+  });
+
+  afterEach(() => delete global.braintree);
 }

@@ -18,7 +18,7 @@ $ make test-browser
 **to run tests on Sauce Labs**
 
 ```bash
-$ SAUCE_USERNAME=user SAUCE_ACCESS_KEY=key make test-sauce
+$ SAUCE_USERNAME=user SAUCE_ACCESS_KEY=key make test-ci
 ```
 
 ## Coding Standards
