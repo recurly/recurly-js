@@ -1,14 +1,12 @@
 import assert from 'assert';
 import each from 'component-each';
 import merge from 'lodash.merge';
-import {Recurly} from '../../lib/recurly';
-import {initRecurly, apiTest, braintreeStub} from '../support/helpers';
-
-const sinon = window.sinon;
+import {Recurly} from '../../../lib/recurly';
+import {initRecurly, apiTest, braintreeStub} from '../../support/helpers';
 
 apiTest(function (requestMethod) {
-  describe(`Recurly.BraintreePayPal (${requestMethod})`, function () {
-    const validOpts = { braintree: { clientAuthorization: 'valid' } };
+  describe(`PayPalStrategy (${requestMethod})`, function () {
+    const validOpts = {};
 
     braintreeStub();
 
@@ -19,7 +17,6 @@ apiTest(function (requestMethod) {
 
     describe('when given custom display options', function () {
       const validDisplayOptions = {
-        useraction: 'commit',
         amount: '100.0',
         currency: 'EUR',
         displayName: 'Test item',
@@ -38,15 +35,15 @@ apiTest(function (requestMethod) {
       });
 
       it('stores valid display options', function () {
-        assert.equal(typeof this.paypal.config.display, 'object');
+        assert.equal(typeof this.paypal.strategy.config.display, 'object');
         each(validDisplayOptions, (opt, val) => {
-          assert.equal(opt in this.paypal.config.display, true);
-          assert.equal(this.paypal.config.display[opt], val);
+          assert.equal(opt in this.paypal.strategy.config.display, true);
+          assert.equal(this.paypal.strategy.config.display[opt], val);
         });
       });
 
       it('Does not store invalid display options', function () {
-        assert.equal('invalidOption' in this.paypal.config.display, false);
+        assert.equal('invalidOption' in this.paypal.strategy.config.display, false);
       });
     });
 
@@ -57,31 +54,12 @@ apiTest(function (requestMethod) {
       });
 
       it('updates display properties when pricing changes', function (done) {
-        assert.equal(typeof this.paypal.config.display.amount, 'undefined');
+        assert.equal(typeof this.paypal.strategy.config.display.amount, 'undefined');
         this.pricing.plan('basic').done(price => {
-          assert.equal(this.paypal.config.display.amount, price.now.total);
-          assert.equal(this.paypal.config.display.currency, price.currency.code);
+          assert.equal(this.paypal.strategy.config.display.amount, price.now.total);
+          assert.equal(this.paypal.strategy.config.display.currency, price.currency.code);
           done();
         });
-      });
-    });
-
-    describe('when the braintree client fails to initialize', function () {
-      beforeEach(function () {
-        global.braintree.client.create = (opt, cb) => cb({ error: 'test' });
-        sinon.stub(this.recurly, 'open');
-        this.paypal = this.recurly.PayPal(validOpts);
-      });
-
-      afterEach(function () {
-        this.recurly.open.restore();
-      });
-
-      it('registers a failure and falls back to direct PayPal flow', function () {
-        this.paypal.start();
-        assert('failure' in this.paypal);
-        assert(this.recurly.open.calledOnce);
-        assert(this.recurly.open.calledWith('/paypal/start'));
       });
     });
   });
