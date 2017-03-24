@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.5.3 (Mar 24, 2017)
+
+* Adds Braintree PayPal failure fallback [336][336]
+* Size reduced by pruning some old shim dependencies [344][344]
+
 ### Version 4.5.2 (Mar 14, 2017)
 
 * Adds device data collection to Braintree PayPal integration [#333][333]
@@ -150,6 +155,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[344]: https://github.com/recurly/recurly-js/commit/611fbdeba93fe5d86057aa427963508f8188463d
+[336]: https://github.com/recurly/recurly-js/commit/76b34d12054a46751a5882e50a3e56e0429fc8aa
 [341]: https://github.com/recurly/recurly-js/commit/35a43c5d8102a1eac60d25f0ec30d736524e8229
 [340]: https://github.com/recurly/recurly-js/commit/7b462bb7a8d39624ad0b7750a8510679eb26cd68
 [333]: https://github.com/recurly/recurly-js/commit/ac55ac8d95c2aaf982483511fe6b0e29600e5704
