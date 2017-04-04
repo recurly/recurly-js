@@ -1,12 +1,16 @@
 BIN = node_modules/.bin
 WEBPACK = $(BIN)/webpack
 KARMA = $(BIN)/karma
-SERVER = $(BIN)/webpack-dev-server
+SERVER = $(BIN)/webpack-dev-server --inline --hot --port 8020 --https
 SRC = index.js $(shell find lib -type f -name '*.js')
 TESTS = $(shell find test -type f -name '*.js')
 
 server: build
-	@$(SERVER) --inline --hot --port 8020 --https
+ifdef RECURLY_JS_CERT
+	@$(SERVER) --cert $(RECURLY_JS_CERT) --key $(RECURLY_JS_KEY)
+else
+	@$(SERVER)
+endif
 
 build: build/recurly.min.js
 
