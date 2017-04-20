@@ -76,21 +76,4 @@ describe('Recurly.Frame', function () {
       }));
     });
   });
-
-  describe('when listening for completion', function () {
-    let listener = sinon.stub();
-
-    it('is called when the event is emitted', function () {
-      let eventName;
-      window.open = sinon.spy(function (url) {
-        console.info('url call!', url)
-        eventName = url.match(/(recurly-frame-\w+-\w+)/)[0];
-      });
-      let frame = this.recurly.Frame({ path });
-      frame.on('done', listener);
-      frame.emit(eventName, payload);
-      assert(listener.calledOnce);
-      assert(listener.calledWith(payload));
-    });
-  });
 });
