@@ -1,6 +1,6 @@
 import merge from 'lodash.merge';
 import {Recurly} from '../../lib/recurly';
-import {BRAINTREE_CLIENT_VERSION} from '../../lib/recurly/paypal/braintree';
+import {BRAINTREE_CLIENT_VERSION} from '../../lib/recurly/paypal/strategy/braintree';
 
 /**
  * initializes a Recurly instance designed for testing
@@ -15,7 +15,7 @@ export function initRecurly (recurly, opts) {
   }
   recurly.configure(merge({
     publicKey: 'test',
-    api: `//${global.location.host}/api`
+    api: `${global.location.protocol}//${global.location.host}/api`
   }, opts));
   return recurly;
 }

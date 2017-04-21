@@ -8,6 +8,8 @@ import {fixture} from './support/fixtures';
 import {Recurly} from '../lib/recurly';
 
 describe('Recurly.configure', function () {
+  let api = `${global.location.protocol}//${global.location.host}/api`;
+
   beforeEach(function () {
     if (this.currentTest.ctx.fixture) fixture(this.currentTest.ctx.fixture);
     this.recurly = new Recurly;
@@ -18,8 +20,8 @@ describe('Recurly.configure', function () {
       {},
       { invalid: 'parameter' },
       { currency: 'USD' },
-      { currency: 'AUD', api: 'https://localhost' },
-      { currency: 'USD', api: 'https://localhost', required: ['postal_code'] }
+      { currency: 'AUD', api },
+      { currency: 'USD', api, required: ['postal_code'] }
     ];
 
     it('throws', function () {
@@ -43,10 +45,10 @@ describe('Recurly.configure', function () {
     var examples = [
       { publicKey: 'foo' },
       { publicKey: 'foo', currency: 'USD' },
-      { publicKey: 'foo', currency: 'AUD', api: 'https://localhost' },
-      { publicKey: 'foo', currency: 'AUD', api: 'https://localhost', cors: true },
-      { publicKey: 'foo', currency: 'USD', api: 'https://localhost', required: ['country'] },
-      { publicKey: 'foo', currency: 'USD', api: 'https://localhost', required: ['postal_code', 'country'] }
+      { publicKey: 'foo', currency: 'AUD', api },
+      { publicKey: 'foo', currency: 'AUD', api, cors: true },
+      { publicKey: 'foo', currency: 'USD', api, required: ['country'] },
+      { publicKey: 'foo', currency: 'USD', api, required: ['postal_code', 'country'] }
     ];
 
     it('sets Recurly.config to the options given', function () {
@@ -97,6 +99,7 @@ describe('Recurly.configure', function () {
 
   describe('when options.style is given (deprecated)', function () {
     const example = {
+      api,
       publicKey: 'foo',
       style: {
         all: {
