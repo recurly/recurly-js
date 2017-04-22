@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.6.0 (Apr 21, 2017)
+
+* Adds support for new PayPal Express Checkout flow [348][348]
+
 ### Version 4.5.3 (Mar 24, 2017)
 
 * Adds Braintree PayPal failure fallback [336][336]
@@ -155,6 +159,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[348]: https://github.com/recurly/recurly-js/commit/da67a8e040615980d4569ac7c09b5c0e9fc262c2
 [344]: https://github.com/recurly/recurly-js/commit/611fbdeba93fe5d86057aa427963508f8188463d
 [336]: https://github.com/recurly/recurly-js/commit/76b34d12054a46751a5882e50a3e56e0429fc8aa
 [341]: https://github.com/recurly/recurly-js/commit/35a43c5d8102a1eac60d25f0ec30d736524e8229
