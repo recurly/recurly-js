@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.6.1 (Apr 21, 2017)
+
+* Fixes compatibility issue with Internet Explorer [352][352]
+
 ### Version 4.6.0 (Apr 21, 2017)
 
 * Adds support for new PayPal Express Checkout flow [348][348]
@@ -159,6 +163,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[352]: https://github.com/recurly/recurly-js/commit/d061f5c8e4f31d620c432c964c19ba96c505a8f8
 [348]: https://github.com/recurly/recurly-js/commit/da67a8e040615980d4569ac7c09b5c0e9fc262c2
 [344]: https://github.com/recurly/recurly-js/commit/611fbdeba93fe5d86057aa427963508f8188463d
 [336]: https://github.com/recurly/recurly-js/commit/76b34d12054a46751a5882e50a3e56e0429fc8aa
