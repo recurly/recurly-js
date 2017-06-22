@@ -1,17 +1,22 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.6.2 (Jun 22, 2017)
+
+* Clicking on a hosted field container will cause the field to focus [#356][356]
+* Adds 'company' to accepted tokenization fields [#358][358]
+
 ### Version 4.6.1 (Apr 21, 2017)
 
-* Fixes compatibility issue with Internet Explorer [352][352]
+* Fixes compatibility issue with Internet Explorer [#352][352]
 
 ### Version 4.6.0 (Apr 21, 2017)
 
-* Adds support for new PayPal Express Checkout flow [348][348]
+* Adds support for new PayPal Express Checkout flow [#348][348]
 
 ### Version 4.5.3 (Mar 24, 2017)
 
-* Adds Braintree PayPal failure fallback [336][336]
-* Size reduced by pruning some old shim dependencies [344][344]
+* Adds Braintree PayPal failure fallback [#336][336]
+* Size reduced by pruning some old shim dependencies [#344][344]
 
 ### Version 4.5.2 (Mar 14, 2017)
 
@@ -163,6 +168,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[358]: https://github.com/recurly/recurly-js/commit/711355a8f976f32e37e0d007e485084e5d60ac33
+[356]: https://github.com/recurly/recurly-js/commit/aceab969a1229e2b3da48f9a9d03ea2025e82585
 [352]: https://github.com/recurly/recurly-js/commit/d061f5c8e4f31d620c432c964c19ba96c505a8f8
 [348]: https://github.com/recurly/recurly-js/commit/da67a8e040615980d4569ac7c09b5c0e9fc262c2
 [344]: https://github.com/recurly/recurly-js/commit/611fbdeba93fe5d86057aa427963508f8188463d
