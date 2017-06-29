@@ -1,5 +1,6 @@
 Node-Recurly
 ===============
+[![npm](https://img.shields.io/npm/dm/recurly-js.svg)](https://www.npmjs.com/package/recurly-js)  
 
 This is a fork of original `node-recurly` library by [Rob Righter](https://github.com/robrighter) for the recurly recurring billing service. 
 
