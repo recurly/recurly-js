@@ -1,9 +1,10 @@
 ## Recurly.js CHANGELOG
 
-### Version 4.6.2 (Jun 22, 2017)
+### Version 4.6.2 (Jul 6, 2017)
 
 * Clicking on a hosted field container will cause the field to focus [#356][356]
 * Adds 'company' to accepted tokenization fields [#358][358]
+* Adds support for Braintree fraud data collection [#363][363]
 
 ### Version 4.6.1 (Apr 21, 2017)
 
@@ -168,6 +169,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[363]: https://github.com/recurly/recurly-js/commit/1d0e8fa7340db908411174327e9f7b29803de495
 [358]: https://github.com/recurly/recurly-js/commit/711355a8f976f32e37e0d007e485084e5d60ac33
 [356]: https://github.com/recurly/recurly-js/commit/aceab969a1229e2b3da48f9a9d03ea2025e82585
 [352]: https://github.com/recurly/recurly-js/commit/d061f5c8e4f31d620c432c964c19ba96c505a8f8
