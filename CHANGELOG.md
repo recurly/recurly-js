@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.6.3 (Aug 10, 2017)
+
+* Sends transaction amount to PayPal Express Checkout initialization endpoint [#369][369]
+* Fixes an issue with Braintree misconfiguration error reporting [#367][367]
+
 ### Version 4.6.2 (Jul 6, 2017)
 
 * Clicking on a hosted field container will cause the field to focus [#356][356]
@@ -169,6 +174,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[369]: https://github.com/recurly/recurly-js/commit/06ec82f7814d457e10f8733d954c85303ec46bf1
+[367]: https://github.com/recurly/recurly-js/commit/8cd68b8e1f3e685e8eb238d02794ad0e95f45d09
 [363]: https://github.com/recurly/recurly-js/commit/1d0e8fa7340db908411174327e9f7b29803de495
 [358]: https://github.com/recurly/recurly-js/commit/711355a8f976f32e37e0d007e485084e5d60ac33
 [356]: https://github.com/recurly/recurly-js/commit/aceab969a1229e2b3da48f9a9d03ea2025e82585
