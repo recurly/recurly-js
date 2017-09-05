@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.6.4 (Sep 5, 2017)
+
+* Fixes an issue with Apple Pay pricing initialization [#374][374]
+
 ### Version 4.6.3 (Aug 10, 2017)
 
 * Sends transaction amount to PayPal Express Checkout initialization endpoint [#369][369]
@@ -174,6 +178,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[374]: https://github.com/recurly/recurly-js/commit/3f4415778b5c9c92a18d229c8b8660aaeee8379a
 [369]: https://github.com/recurly/recurly-js/commit/06ec82f7814d457e10f8733d954c85303ec46bf1
 [367]: https://github.com/recurly/recurly-js/commit/8cd68b8e1f3e685e8eb238d02794ad0e95f45d09
 [363]: https://github.com/recurly/recurly-js/commit/1d0e8fa7340db908411174327e9f7b29803de495
