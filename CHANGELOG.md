@@ -1,5 +1,11 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.7.0 (Sep 15, 2017)
+
+* Adds 'attached' event to announce completion of pricing attachment [#377][377]
+* Adds `fields[field].inputType` option to configuration -- 'mobileSelect' to enable select fields for expiry fields on mobile [#375][375]
+* Fixes an issue with field font color propagation [#378][378]
+
 ### Version 4.6.4 (Sep 5, 2017)
 
 * Fixes an issue with Apple Pay pricing initialization [#374][374]
@@ -178,6 +184,9 @@
 
 * Full rewrite for Billing Info tokenization
 
+[377]: https://github.com/recurly/recurly-js/commit/81d69db3e141bf01721e2de4ab43a29d1ff9b066
+[375]: https://github.com/recurly/recurly-js/commit/9a7b59adbf72746baaf5d639b9301da7dd088fb6
+[378]: https://github.com/recurly/recurly-js/commit/3ebe6fbb5709c94901b62137404fb348b4f1cb92
 [374]: https://github.com/recurly/recurly-js/commit/3f4415778b5c9c92a18d229c8b8660aaeee8379a
 [369]: https://github.com/recurly/recurly-js/commit/06ec82f7814d457e10f8733d954c85303ec46bf1
 [367]: https://github.com/recurly/recurly-js/commit/8cd68b8e1f3e685e8eb238d02794ad0e95f45d09
