@@ -1,4 +1,4 @@
-import {Recurly} from './lib/recurly';
+import Recurly from './lib/recurly';
 
 /**
  * Export a single instance.
