@@ -31,10 +31,6 @@ var sauceBrowsers = {
     platform: 'Windows 7',
     version: '11'
   },
-  sl_opera: {
-    base: 'SauceLabs',
-    browserName: 'opera'
-  },
   sl_ios_9_3: {
     base: 'SauceLabs',
     browserName: 'iphone',

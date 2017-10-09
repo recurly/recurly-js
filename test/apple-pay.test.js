@@ -224,6 +224,70 @@ apiTest(function (requestMethod) {
       });
     });
 
+    describe('mapPaymentData', function () {
+      let applePayData = {
+        token: {
+          paymentData: 'apple pay token',
+          paymentMethod: 'card info'
+        },
+        billingContact: {
+          givenName: 'Emmet',
+          familyName: 'Brown',
+          addressLines: ['1640 Riverside Drive', 'Suite 1'],
+          locality: 'Hill Valley',
+          administrativeArea: 'CA',
+          postalCode: '91103',
+          countryCode: 'us'
+        }
+      };
+      let inputsDefault = {
+        first_name: '',
+        last_name: '',
+        address1: '',
+        address2: '',
+        city: '',
+        state: '',
+        postal_code: '',
+        country: ''
+      };
+
+      it('maps the apple pay token and address info into the inputs', function () {
+        let applePay = this.recurly.ApplePay();
+        let data = clone(applePayData);
+        let inputs = clone(inputsDefault);
+        applePay.mapPaymentData(inputs, data);
+        assert.equal('apple pay token', inputs.paymentData);
+        assert.equal('card info', inputs.paymentMethod);
+        assert.equal('Emmet', inputs.first_name);
+        assert.equal('Brown', inputs.last_name);
+        assert.equal('1640 Riverside Drive', inputs.address1);
+        assert.equal('Suite 1', inputs.address2);
+        assert.equal('Hill Valley', inputs.city);
+        assert.equal('CA', inputs.state);
+        assert.equal('91103', inputs.postal_code);
+        assert.equal('us', inputs.country);
+      });
+
+      it('prioritizes existing input data from the payment form', function () {
+        let applePay = this.recurly.ApplePay();
+        let data = clone(applePayData);
+        let inputs = clone(inputsDefault);
+        inputs.first_name = 'Marty';
+        inputs.last_name = 'McFly';
+        applePay.mapPaymentData(inputs, data);
+        assert.equal('apple pay token', inputs.paymentData);
+        assert.equal('card info', inputs.paymentMethod);
+        assert.equal('Marty', inputs.first_name);
+        assert.equal('McFly', inputs.last_name);
+        assert.equal('', inputs.address1);
+        assert.equal('', inputs.address2);
+        assert.equal('', inputs.city);
+        assert.equal('', inputs.state);
+        assert.equal('', inputs.postal_code);
+        assert.equal('', inputs.country);
+      });
+    });
+
     describe('internal event handlers', function () {
       beforeEach(function (done) {
         this.applePay = this.recurly.ApplePay(validOpts);
