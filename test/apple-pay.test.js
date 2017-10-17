@@ -92,11 +92,6 @@ apiTest(function (requestMethod) {
         });
       });
 
-      it('requires options.form', function () {
-        let applePay = this.recurly.ApplePay(omit(validOpts, 'form'));
-        assertInitError(applePay, 'apple-pay-config-missing', { opt: 'form' });
-      });
-
       it('requires options.label', function () {
         let applePay = this.recurly.ApplePay(omit(validOpts, 'label'));
         assertInitError(applePay, 'apple-pay-config-missing', { opt: 'label' });
@@ -203,6 +198,12 @@ apiTest(function (requestMethod) {
 
       it('establishes a session and initiates it', function () {
         let applePay = this.recurly.ApplePay(validOpts);
+        applePay.begin();
+        assert(applePay.session instanceof ApplePaySessionStub);
+      });
+
+      it('establishes a session and initiates it without options.form', function () {
+        let applePay = this.recurly.ApplePay(omit(validOpts, 'form'));
         applePay.begin();
         assert(applePay.session instanceof ApplePaySessionStub);
       });
