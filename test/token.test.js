@@ -3,7 +3,7 @@ import after from 'lodash.after';
 import merge from 'lodash.merge';
 import each from 'lodash.foreach';
 import clone from 'component-clone';
-import {Recurly} from '../lib/recurly';
+import Recurly from '../lib/recurly';
 import {applyFixtures} from './support/fixtures';
 import {initRecurly, apiTest, domTest} from './support/helpers';
 

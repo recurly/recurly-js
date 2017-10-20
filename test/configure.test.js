@@ -5,7 +5,7 @@ import assert from 'assert';
 import combinations from 'combinations';
 import {initRecurly} from './support/helpers';
 import {fixture} from './support/fixtures';
-import {Recurly} from '../lib/recurly';
+import Recurly from '../lib/recurly';
 
 describe('Recurly.configure', function () {
   let api = `${global.location.protocol}//${global.location.host}/api`;
