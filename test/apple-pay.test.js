@@ -3,7 +3,7 @@ import clone from 'component-clone';
 import merge from 'lodash.merge';
 import omit from 'lodash.omit';
 import Emitter from 'component-emitter';
-import {Recurly} from '../lib/recurly';
+import Recurly from '../lib/recurly';
 import {initRecurly, apiTest, nextTick} from './support/helpers';
 
 import infoFixture from './server/fixtures/apple_pay/info';

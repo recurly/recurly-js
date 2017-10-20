@@ -1,6 +1,6 @@
 import assert from 'assert';
 import clone from 'component-clone';
-import {Recurly} from '../lib/recurly';
+import Recurly from '../lib/recurly';
 import {fixture} from './support/fixtures';
 import {initRecurly} from './support/helpers';
 
