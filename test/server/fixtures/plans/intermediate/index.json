@@ -25,10 +25,5 @@
       }
     }
   }],
-  "accepted_card_types": [{
-    "USD": {
-      "card_types": ["visa", "master", "american_express", "discover", "diners_club", "jcb"]
-    }
-  }],
   "tax_exempt": false
 }

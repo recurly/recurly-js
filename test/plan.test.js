@@ -1,5 +1,5 @@
 import assert from 'assert';
-import Recurly from '../lib/recurly';
+import {Recurly} from '../lib/recurly';
 import {initRecurly, apiTest} from './support/helpers';
 
 apiTest(function (requestMethod) {
@@ -46,7 +46,6 @@ apiTest(function (requestMethod) {
           assert(plan.name === 'Basic');
           assert(plan.period);
           assert(plan.price);
-          assert(plan.accepted_card_types);
           assert(typeof plan.tax_exempt === 'boolean');
           done();
         });

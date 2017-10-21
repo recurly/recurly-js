@@ -1,7 +1,7 @@
 import assert from 'assert';
 import each from 'component-each';
 import merge from 'lodash.merge';
-import Recurly from '../../../lib/recurly';
+import {Recurly} from '../../../lib/recurly';
 import {initRecurly, apiTest, braintreeStub} from '../../support/helpers';
 
 apiTest(function (requestMethod) {

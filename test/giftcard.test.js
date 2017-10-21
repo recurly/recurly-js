@@ -1,6 +1,6 @@
 import each from 'lodash.foreach';
 import assert from 'assert';
-import Recurly from '../lib/recurly';
+import {Recurly} from '../lib/recurly';
 import {apiTest} from './support/helpers';
 
 apiTest(function (requestMethod) {

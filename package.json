@@ -69,6 +69,7 @@
     "koa-route": "^2.4.2",
     "lodash.after": "^4.0.4",
     "lodash.foreach": "^4.5.0",
+    "lodash.isequal": "^4.5.0",
     "mocha": "^3.2.0",
     "phantomjs-prebuilt": "^2.1.14",
     "sinon": "^2.1.0",
