@@ -1,5 +1,5 @@
 import assert from 'assert';
-import Recurly from '../lib/recurly';
+import {Recurly} from '../lib/recurly';
 import CheckoutPricing from '../lib/recurly/pricing/checkout';
 import SubscriptionPricing from '../lib/recurly/pricing/subscription';
 

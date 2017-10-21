@@ -1,5 +1,5 @@
 import assert from 'assert';
-import Recurly from '../lib/recurly';
+import {Recurly} from '../lib/recurly';
 
 describe('Recurly.validate', function () {
   let recurly;

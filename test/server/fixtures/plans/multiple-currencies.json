@@ -1,0 +1,20 @@
+{
+  "code": "multiple-currencies",
+  "name": "Multiple currencies",
+  "period": {
+    "interval": "months",
+    "length": 1
+  },
+  "price": {
+    "USD": {
+      "setup_fee": 2.0,
+      "unit_amount": 19.99
+    },
+    "EUR": {
+      "setup_fee": 2.0,
+      "unit_amount": 19.99
+    }
+  },
+  "addons": [],
+  "tax_exempt": false
+}
