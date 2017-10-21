@@ -1,5 +1,5 @@
 import assert from 'assert';
-import Recurly from '../lib/recurly';
+import {Recurly} from '../lib/recurly';
 
 const sinon = window.sinon;
 

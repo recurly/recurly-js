@@ -1,6 +1,5 @@
 import assert from 'assert';
-import Recurly from '../../lib/recurly';
-import {initRecurly} from '../support/helpers';
+import {initRecurly} from '../../support/helpers';
 
 describe('Recurly.Pricing.Subscription', function () {
   beforeEach(function () {
