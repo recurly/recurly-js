@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.7.2 (Oct 23, 2017)
+
+* Removes the requirement to pass in a form to Apple Pay [#381][381]
+
 ### Version 4.7.1 (Oct 9, 2017)
 
 * Adds customer address collection from device in Apple Pay transactions [#380][380]
