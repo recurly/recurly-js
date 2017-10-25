@@ -1,7 +1,7 @@
 import assert from 'assert';
-import {applyFixtures} from '../support/fixtures';
-import {initRecurly} from '../support/helpers';
-import PricingAttachment from '../../lib/recurly/pricing/attachment'
+import {applyFixtures} from '../../support/fixtures';
+import {initRecurly} from '../../support/helpers';
+import PricingAttachment from '../../../lib/recurly/pricing/subscription/attachment'
 
 const container = () => global.document.querySelector('#test-pricing');
 
