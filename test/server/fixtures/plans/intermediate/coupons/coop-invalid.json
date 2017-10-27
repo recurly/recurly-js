@@ -1,6 +1,0 @@
-{
-  "error": {
-    "code": "not-found",
-    "message": "Couldn't find Coupon with coupon_code = invalid"
-  }
-}
