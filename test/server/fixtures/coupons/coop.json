@@ -7,5 +7,9 @@
       "USD": 20.0
     }
   },
-  "single_use": false
+  "single_use": false,
+  "applies_to_non_plan_charges": false,
+  "applies_to_plans": false,
+  "applies_to_all_plans": false,
+  "redemption_resource": "account"
 }
