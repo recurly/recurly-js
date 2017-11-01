@@ -31,12 +31,36 @@ var sauceBrowsers = {
     platform: 'Windows 7',
     version: '11'
   },
-  sl_ios_9_3: {
+  sl_ios_11: {
+    base: 'SauceLabs',
+    browserName: 'iphone',
+    platform: 'iOS',
+    version: '11.0'
+  },
+  sl_ios_10: {
+    base: 'SauceLabs',
+    browserName: 'iphone',
+    platform: 'iOS',
+    version: '10.3'
+  },
+  sl_ios_9: {
     base: 'SauceLabs',
     browserName: 'iphone',
     version: '9.3'
   },
-  sl_android: {
+  sl_android_7: {
+    base: 'SauceLabs',
+    browserName: 'Chrome',
+    deviceName: 'Android GoogleAPI Emulator',
+    platform: 'Android',
+    version: '7'
+  },
+  sl_android_6: {
+    base: 'SauceLabs',
+    browserName: 'android',
+    version: '6'
+  },
+  sl_android_5: {
     base: 'SauceLabs',
     browserName: 'android',
     version: '5.1'

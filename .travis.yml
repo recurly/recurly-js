@@ -29,7 +29,11 @@ env:
     - BROWSER=chrome
     - BROWSER=firefox
     - BROWSER=safari
-    - BROWSER=ie_10
     - BROWSER=ie_11
-    - BROWSER=ios_9_3
-    - BROWSER=android
+    - BROWSER=ie_10
+    - BROWSER=ios_11
+    - BROWSER=ios_10
+    - BROWSER=ios_9
+    - BROWSER=android_7
+    - BROWSER=android_6
+    - BROWSER=android_5
