@@ -190,7 +190,21 @@ describe('CheckoutPricing', function () {
    * Coupons - TODO
    */
 
-  describe('CheckoutPricing#coupon', () => {});
+  describe('CheckoutPricing#coupon', () => {
+    // invalid coupon
+    // coupon applying only to adjustments
+    // coupon applying only to plans
+    //  - all plans
+    //  - specific plans
+    //    - on checkout
+    //    - not on checkout
+    // coupon applying to adjustments and plans
+    //  - all plans
+    //  - specific plan not not checkout
+    // subscription-level coupon
+    //  - percent, fixed, free trial
+    //  - applies to adjustments, plans, both
+  });
 
   /**
    * address - TODO
