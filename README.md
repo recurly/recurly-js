@@ -3,8 +3,8 @@
 Simple subscription billing in the browser
 
 [![build status][travis-image]][travis-url]
-[![code quality][climate-image]][climate-url]
 [![Browser test status][sauce-image]][sauce-url]
+[![code quality][climate-image]][climate-url]
 
 ## Documentation
 
@@ -51,7 +51,7 @@ $ make test
 [climate-url]: https://codeclimate.com/github/recurly/recurly-js
 [climate-image]: http://img.shields.io/codeclimate/github/recurly/recurly-js.svg?style=flat-square
 [sauce-url]: https://saucelabs.com/u/recurly-js
-[sauce-image]: https://badges.herokuapp.com/sauce/recurly-js?logos=none
+[sauce-image]: https://badges.herokuapp.com/travis/recurly/recurly-js/sauce/recurly-js?logos=none
 
 [docs]: https://docs.recurly.com/js
 [examples]: https://github.com/recurly/recurly-js-examples
