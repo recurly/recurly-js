@@ -1,8 +1,0 @@
-{
-  "name": "assert",
-  "private": true,
-  "dependencies": {
-    "express": "^4.4.5",
-    "hbs": "^2.7.0"
-  }
-}
