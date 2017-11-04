@@ -75,10 +75,6 @@ module.exports = function (config) {
     sauceLabs: {
       testName: 'Recurly.js tests',
       recordVideo: true,
-      connectOptions: {
-        port: 5757,
-        logfile: 'sauce_connect.log'
-      },
       public: 'public'
     },
     customLaunchers: sauceBrowsers,
