@@ -5,5 +5,10 @@
     "type": "free_trial",
     "amount": {}
   },
-  "single_use": false
+  "plans": [],
+  "single_use": false,
+  "applies_to_non_plan_charges": false,
+  "applies_to_plans": true,
+  "applies_to_all_plans": true,
+  "redemption_resource": "subscription"
 }
