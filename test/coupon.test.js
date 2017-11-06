@@ -35,10 +35,12 @@ apiTest(requestMethod => {
       const invalidCoupon = { plan: 'basic', coupon: 'coop-invalid' };
 
       describe('when given an invalid plan', function () {
-        it('produces an error', function (done) {
+        it('responds with a coupon', function (done) {
           this.recurly.coupon(invalidPlan, function (err, coupon) {
-            assert(err);
-            assert(!coupon);
+            assert(!err);
+            assert(coupon);
+            assert(coupon.code);
+            assert(coupon.name);
             done();
           });
         });

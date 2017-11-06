@@ -7,10 +7,12 @@ const jsonp = require('koa-jsonp');
 const route = require('koa-route');
 const logger = require('koa-logger');
 const bodyParser = require('koa-body-parser');
+const koaQs = require('koa-qs');
 
 const app = koa();
 const port = process.env.PORT || 9877;
 
+koaQs(app);
 app.use(bodyParser());
 app.use(jsonp());
 app.use(cors({
@@ -25,7 +27,7 @@ app.use(cors({
 
 ejs(app, { root: __dirname, layout: false, viewExt: 'html.ejs' });
 
-app.use(route.get('/coupon/:id', json));
+app.use(route.get('/coupons/:id', json));
 app.use(route.get('/fraud_data_collector', json));
 app.use(route.get('/gift_cards/:id', json));
 app.use(route.get('/plans/:plan_id', json));
