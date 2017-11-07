@@ -1,6 +1,6 @@
 {
   "code": "coop-single-use",
-  "name": "Test coupon with a long and silly name",
+  "name": "Test coupon: $20 off subscriptions, single use only",
   "discount": {
     "type":"dollars",
     "amount": {

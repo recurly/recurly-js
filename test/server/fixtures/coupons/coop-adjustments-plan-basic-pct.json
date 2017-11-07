@@ -1,0 +1,13 @@
+{
+  "code": "coop-adjustments-plan-basic-pct",
+  "name": "Test coupon: 15% off adjustments and subscriptions to the 'basic' plan",
+  "discount": {
+    "rate": 0.15
+  },
+  "plans": ["basic"],
+  "single_use": false,
+  "applies_to_non_plan_charges": true,
+  "applies_to_plans": true,
+  "applies_to_all_plans": false,
+  "redemption_resource": "account"
+}
