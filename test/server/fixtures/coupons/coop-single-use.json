@@ -2,7 +2,7 @@
   "code": "coop-single-use",
   "name": "Test coupon: $20 off subscriptions, single use only",
   "discount": {
-    "type":"dollars",
+    "type": "dollars",
     "amount": {
       "USD": 20.0
     }

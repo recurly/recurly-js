@@ -1,11 +1,8 @@
 {
-  "code": "coop",
-  "name": "Test coupon: $20 off subscriptions",
+  "code": "coop-pct-subscriptions",
+  "name": "Test coupon: 15% off for subscriptions only",
   "discount": {
-    "type": "dollars",
-    "amount": {
-      "USD": 20.0
-    }
+    "rate": 0.15
   },
   "plans": [],
   "single_use": false,

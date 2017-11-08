@@ -254,7 +254,7 @@ describe('CheckoutPricing', function () {
 
         describe('given a rate coupon which', () => {
           describe('only applies to adjustments', () => {
-            beforeEach(applyCoupon('coop-adjustments-pct'));
+            beforeEach(applyCoupon('coop-pct-adjustments'));
             it('discounts the adjustments only', function () {
               assert.equal(this.price.now.subscriptions, 43.98);
               assert.equal(this.price.now.adjustments, 32.44);
@@ -267,7 +267,7 @@ describe('CheckoutPricing', function () {
           });
 
           describe('only applies to subscriptions', () => {
-            beforeEach(applyCoupon('coop-subscriptions-pct'));
+            beforeEach(applyCoupon('coop-pct-subscriptions'));
             it('discounts the subscriptions only', function () {
               assert.equal(this.price.now.subscriptions, 43.98);
               assert.equal(this.price.now.adjustments, 32.44);
@@ -279,7 +279,7 @@ describe('CheckoutPricing', function () {
           });
 
           describe('applies to subscriptions and adjustments', () => {
-            beforeEach(applyCoupon('coop-all-pct'));
+            beforeEach(applyCoupon('coop-pct-all'));
             it('discounts the subscriptions and adjustments', function () {
               assert.equal(this.price.now.subscriptions, 43.98);
               assert.equal(this.price.now.adjustments, 32.44);
@@ -291,7 +291,7 @@ describe('CheckoutPricing', function () {
           });
 
           describe('is single-use and applies to subscriptions and adjustments', () => {
-            beforeEach(applyCoupon('coop-all-pct-single'));
+            beforeEach(applyCoupon('coop-pct-all-single'));
             it('discounts only the subscriptions now, and applies no discounts next cycle', function () {
               assert.equal(this.price.now.subscriptions, 43.98);
               assert.equal(this.price.now.adjustments, 32.44);
@@ -303,7 +303,7 @@ describe('CheckoutPricing', function () {
           });
 
           describe('applies only to specific plans', () => {
-            beforeEach(applyCoupon('coop-plan-basic-pct'));
+            beforeEach(applyCoupon('coop-pct-plan-basic'));
             it('discounts only the subscriptions on compatible plans', function () {
               assert.equal(this.price.now.subscriptions, 43.98);
               assert.equal(this.price.now.adjustments, 32.44);
@@ -315,7 +315,7 @@ describe('CheckoutPricing', function () {
           });
 
           describe('applies to adjustments and specific plans', () => {
-            beforeEach(applyCoupon('coop-adjustments-plan-basic-pct'));
+            beforeEach(applyCoupon('coop-pct-adjustments-plan-basic'));
             it('discounts the adjustments and subscriptions on compatible plans', function () {
               assert.equal(this.price.now.subscriptions, 43.98);
               assert.equal(this.price.now.adjustments, 32.44);
@@ -327,7 +327,7 @@ describe('CheckoutPricing', function () {
           });
 
           describe('applies to adjustments and specific plans not on the CheckoutPricing instance', () => {
-            beforeEach(applyCoupon('coop-adjustments-plan-notbasic-pct'));
+            beforeEach(applyCoupon('coop-pct-adjustments-plan-notbasic'));
             it('discounts only the adjustments', function () {
               assert.equal(this.price.now.subscriptions, 43.98);
               assert.equal(this.price.now.adjustments, 32.44);
@@ -339,7 +339,7 @@ describe('CheckoutPricing', function () {
           });
 
           describe('applies only to specific plans not on the CheckoutPricing instance', () => {
-            beforeEach(applyCoupon('coop-plan-notbasic-pct'));
+            beforeEach(applyCoupon('coop-pct-plan-notbasic'));
             it('does not discount', function () {
               assert.equal(this.price.now.subscriptions, 43.98);
               assert.equal(this.price.now.adjustments, 32.44);
@@ -347,6 +347,20 @@ describe('CheckoutPricing', function () {
               assert.equal(this.price.next.subscriptions, 39.98);
               assert.equal(this.price.next.adjustments, 0);
               assert.equal(this.price.next.discount, 0);
+            });
+          });
+        });
+
+        describe('given a fixed amount coupon which', () => {
+          describe('applies to adjustments and subscriptions, and is greater than the total charges', () => {
+            beforeEach(applyCoupon('coop-fixed-all-large'));
+            it('discounts the entire purchase', function () {
+              assert.equal(this.price.now.subscriptions, 43.98);
+              assert.equal(this.price.now.adjustments, 32.44);
+              assert.equal(this.price.now.discount, 76.42);
+              assert.equal(this.price.next.subscriptions, 39.98);
+              assert.equal(this.price.next.adjustments, 0);
+              assert.equal(this.price.next.discount, 39.98);
             });
           });
         });

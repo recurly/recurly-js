@@ -1,5 +1,5 @@
 {
-  "code": "coop-plan-basic-pct",
+  "code": "coop-pct-plan-basic",
   "name": "Test coupon: 15% off subscriptions to the 'basic' plan",
   "discount": {
     "rate": 0.15

@@ -1,8 +1,11 @@
 {
-  "code": "coop-adjustments-pct",
-  "name": "Test coupon: 15% off for adjustments only",
+  "code": "coop-fixed-adjustments",
+  "name": "Test coupon: $5 off adjustments only",
   "discount": {
-    "rate": 0.15
+    "type": "dollars",
+    "amount": {
+      "USD": 5
+    }
   },
   "plans": [],
   "single_use": false,

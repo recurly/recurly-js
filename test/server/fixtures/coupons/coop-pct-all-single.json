@@ -1,5 +1,5 @@
 {
-  "code": "coop-all-pct-single",
+  "code": "coop-pct-all-single",
   "name": "Test coupon: 15% off for subscriptions and adjustments, single use only",
   "discount": {
     "rate": 0.15

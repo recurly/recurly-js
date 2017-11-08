@@ -1,13 +1,13 @@
 {
-  "code": "coop-all-pct",
-  "name": "Test coupon: 15% off for subscriptions and adjustments",
+  "code": "coop-pct-adjustments",
+  "name": "Test coupon: 15% off for adjustments only",
   "discount": {
     "rate": 0.15
   },
   "plans": [],
   "single_use": false,
   "applies_to_non_plan_charges": true,
-  "applies_to_plans": true,
-  "applies_to_all_plans": true,
+  "applies_to_plans": false,
+  "applies_to_all_plans": false,
   "redemption_resource": "account"
 }

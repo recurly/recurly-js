@@ -1,8 +1,8 @@
 {
-  "code": "coop-adjustments",
-  "name": "Test coupon: $500 off adjustments only",
+  "code": "coop-fixed-all-large",
+  "name": "Test coupon: $500 off all charges",
   "discount": {
-    "type":"dollars",
+    "type": "dollars",
     "amount": {
       "USD": 500
     }
@@ -10,7 +10,7 @@
   "plans": [],
   "single_use": false,
   "applies_to_non_plan_charges": true,
-  "applies_to_plans": false,
-  "applies_to_all_plans": false,
+  "applies_to_plans": true,
+  "applies_to_all_plans": true,
   "redemption_resource": "account"
 }
