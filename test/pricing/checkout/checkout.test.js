@@ -722,7 +722,90 @@ describe('CheckoutPricing', function () {
   });
 
   /**
-   * Currency
+   * Subscriptions
+   */
+
+  describe('CheckoutPricing#giftCard', () => {
+    beforeEach(function (done) {
+      this.pricing.adjustment({ amount: 50 }).done(() => done());
+    });
+
+    describe('when given an invalid gift card', () => {
+      it('throws an error', function (done) {
+        this.pricing.giftCard('invalid').catch(err => {
+          assert(err.code === 'not-found');
+          done();
+        });
+      });
+
+      it('emits an error', function (done) {
+        this.pricing.on('error.giftCard', err => {
+          assert(err.code === 'not-found');
+          done();
+        });
+        this.pricing.giftCard('invalid');
+      });
+    });
+
+    describe('when given an valid gift card', () => {
+      it('applies the gift card to the total', function (done) {
+        assert.equal(this.pricing.price.now.total, 50);
+        this.pricing.giftCard('super-gift-card').done(price => {
+          assert.equal(price.now.giftCard, 20);
+          assert.equal(price.now.total, 30);
+          done();
+        });
+      });
+
+      it('emits set.giftCard', function (done) {
+        this.pricing.on('set.giftCard', giftCard => {
+          assert.equal(giftCard.unit_amount, 20);
+          done();
+        });
+        this.pricing.giftCard('super-gift-card');
+      });
+
+      describe('when applying a gift card when one is already present', function (done) {
+        beforeEach(applyGiftCard('hundred-dollar-card'));
+
+        it('replaces the gift card', function (done) {
+          assert.equal(this.pricing.price.now.giftCard, 50);
+          assert.equal(this.pricing.price.now.total, 0);
+          this.pricing.giftCard('super-gift-card').done(price => {
+            assert.equal(price.now.giftCard, 20);
+            assert.equal(price.now.total, 30);
+            done();
+          });
+        });
+
+        it('emits unset.giftCard', function (done) {
+          this.pricing.on('unset.giftCard', () => {
+            assert.equal(this.pricing.items.giftCard, undefined);
+            done();
+          });
+          this.pricing.giftCard('super-gift-card');
+        });
+      });
+
+      describe('when the gift card amount is greater than the first cycle total', () => {
+        beforeEach(function (done) {
+          this.pricing.subscription(this.subscriptionPricingExample).done(() => done());
+        });
+
+        beforeEach(applyGiftCard('hundred-dollar-card'));
+
+        it('carries the remaining gift card amount to the next cycle', function () {
+          assert.equal(this.pricing.price.now.giftCard, 71.99);
+          assert.equal(this.pricing.price.now.total, 0);
+          assert.equal(this.pricing.price.next.giftCard, 19.99);
+          assert.equal(this.pricing.price.now.total, 0);
+        });
+      });
+    });
+  });
+
+  /**
+   * address - TODO
    */
 
   describe('CheckoutPricing#currency', () => {
@@ -1059,5 +1142,11 @@ function applyGiftCard (code) {
     return this.pricing.giftCard(code).reprice().then(price => {
       this.price = price;
     });
+  }
+}
+
+function applyGiftCard (code) {
+  return function (done) {
+    this.pricing.giftCard(code).done(() => done());
   }
 }
