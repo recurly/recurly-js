@@ -1001,3 +1001,9 @@ function applyGiftCard (code) {
     });
   }
 }
+
+function applyGiftCard (code) {
+  return function (done) {
+    this.pricing.giftCard(code).done(() => done());
+  }
+}
