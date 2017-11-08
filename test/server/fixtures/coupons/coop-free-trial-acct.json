@@ -1,0 +1,14 @@
+{
+  "code": "coop-free-trial-acct",
+  "name": "Test coupon: Free trial on all subscriptions",
+  "discount": {
+    "type": "free_trial",
+    "amount": {}
+  },
+  "plans": [],
+  "single_use": false,
+  "applies_to_non_plan_charges": false,
+  "applies_to_plans": true,
+  "applies_to_all_plans": true,
+  "redemption_resource": "account"
+}
