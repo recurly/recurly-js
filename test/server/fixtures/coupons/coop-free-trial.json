@@ -1,6 +1,6 @@
 {
   "code": "coop-free-trial",
-  "name": "Test coupon: Free trial",
+  "name": "Test coupon: Free trial on one subscription",
   "discount": {
     "type": "free_trial",
     "amount": {}
