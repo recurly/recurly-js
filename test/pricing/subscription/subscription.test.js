@@ -346,7 +346,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .coupon('coop')
         .done(function (price) {
           assert.equal(price.now.discount, '20.00');
-          assert.equal(price.next.discount, '20.00');
+          assert.equal(price.next.discount, '19.99');
           done();
         });
     });
