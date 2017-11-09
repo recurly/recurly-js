@@ -585,10 +585,7 @@ function subscriptionPricingFactory (planCode = 'basic', recurly, done) {
 }
 
 function applyCoupon (code) {
-  return function (done) {
-    this.pricing.coupon(code).done(price => {
-      this.price = price;
-      done();
-    });
+  return function () {
+    return this.pricing.coupon(code).reprice().then(price => this.price = price);
   };
 }
