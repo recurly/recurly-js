@@ -586,6 +586,63 @@ describe('CheckoutPricing', function () {
   });
 
   /**
+   * Currency
+   */
+
+  describe('CheckoutPricing#currency', () => {
+    it('Updates the CheckoutPricing and constituent subscription currencies', function (done) {
+      this.pricing
+        .subscription(this.subscriptionPricingExample)
+        .reprice()
+        .then(price => {
+          assert.equal(price.currency.code, 'USD');
+          assert.equal(this.subscriptionPricingExample.price.currency.code, 'USD');
+        })
+        .currency('EUR')
+        .done(price => {
+          assert.equal(price.currency.code, 'EUR');
+          assert.equal(this.subscriptionPricingExample.price.currency.code, 'EUR');
+          done();
+        });
+    });
+
+    it('throws an error when given a currency not supported by the subscriptions', function (done) {
+      this.pricing
+        .subscription(this.subscriptionPricingExample)
+        .currency('GBP')
+        .catch(err => {
+          assert.equal(err.code, 'invalid-currency');
+          assert.equal(this.pricing.price.currency.code, 'USD');
+          done();
+        })
+        .done();
+    });
+
+    it('emits set.currency if the currency changes', function () {
+      assert.equal(this.pricing.price.currency.code, 'USD');
+      this.pricing.on('set.currency', code => {
+        assert.equal(code, 'EUR');
+        assert.equal(this.pricing.price.currency.code, 'EUR');
+        done();
+      });
+      this.pricing.currency('EUR');
+    });
+
+    it('removes a gift card if the currency changes', function () {
+      this.pricing
+        .giftCard('super-gift-card')
+        .then(() => {
+          assert.equal(typeof this.pricing.giftCard, 'object');
+        })
+        .currency('EUR')
+        .done(() => {
+          assert.equal(this.pricing.giftCard, undefined);
+          done();
+        });
+    });
+  });
+
+  /**
    * Gift cards
    */
 
