@@ -168,6 +168,24 @@ describe('CheckoutPricing', function () {
       });
     });
 
+    it('sets the currency from the CheckoutPricing currency', function (done) {
+      this.pricing
+        .adjustment({ amount: 3.99 })
+        .then(() => {
+          assert.equal(this.pricing.items.currency, 'USD');
+          assert.equal(this.pricing.items.adjustments[0].amount, 3.99);
+          assert.equal(this.pricing.items.adjustments[0].currency, 'USD');
+        })
+        .currency('EUR')
+        .adjustment({ amount: 5.99 })
+        .then(() => {
+          assert.equal(this.pricing.items.currency, 'EUR');
+          assert.equal(this.pricing.items.adjustments[1].amount, 5.99);
+          assert.equal(this.pricing.items.adjustments[1].currency, 'EUR');
+          done();
+        });
+    });
+
     it('adds the adjustment to price itemization and total', function (done) {
       assert.equal(this.pricing.price.now.items.length, 0);
       this.pricing.adjustment({ amount: 6.99 }).done(price => {
@@ -183,6 +201,49 @@ describe('CheckoutPricing', function () {
         done();
       });
       this.pricing.adjustment({ amount: 7.59 });
+    });
+
+    describe('given multiple currencies', () => {
+      beforeEach(function () {
+        return this.pricing
+          .adjustment({ amount: 10, currency: 'USD' })
+          .adjustment({ amount: 20, currency: 'USD' })
+          .adjustment({ amount: 50, currency: 'EUR' })
+          .adjustment({ amount: 100, currency: 'GBP' })
+          .reprice();
+      });
+
+      it(`calculates subtotals only from adjustments matching
+          the checkout currency`, function (done) {
+        this.pricing
+          .reprice()
+          .then(price => {
+            // all adjustments are present
+            assert.equal(this.pricing.items.adjustments.length, 4);
+            assert.equal(price.currency.code, 'USD');
+            // only the USD adjustments factor into the price
+            assert.equal(price.now.items.length, 2);
+            assert.equal(price.now.adjustments, 30);
+          })
+          .currency('EUR')
+          .reprice()
+          .then(price => {
+            assert.equal(this.pricing.items.adjustments.length, 4);
+            assert.equal(price.currency.code, 'EUR');
+            assert.equal(price.now.items.length, 1);
+            assert.equal(price.now.adjustments, 50);
+          })
+          .currency('GBP')
+          .reprice()
+          .then(price => {
+            assert.equal(this.pricing.items.adjustments.length, 4);
+            assert.equal(price.currency.code, 'GBP');
+            assert.equal(price.now.items.length, 1);
+            assert.equal(price.now.adjustments, 100);
+            done();
+          })
+          .done();
+      });
     });
   });
 
