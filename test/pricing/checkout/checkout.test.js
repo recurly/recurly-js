@@ -702,25 +702,33 @@ describe('CheckoutPricing', function () {
         .done();
     });
 
-    it('emits set.currency if the currency changes', function () {
+    it('emits set.currency if the currency changes', function (done) {
       assert.equal(this.pricing.price.currency.code, 'USD');
       this.pricing.on('set.currency', code => {
         assert.equal(code, 'EUR');
-        assert.equal(this.pricing.price.currency.code, 'EUR');
+        assert.equal(this.pricing.items.currency, 'EUR');
         done();
       });
       this.pricing.currency('EUR');
     });
 
-    it('removes a gift card if the currency changes', function () {
+    it('removes a gift card if the currency changes', function (done) {
       this.pricing
+        .adjustment({ amount: 10, currency: 'USD' })
+        .adjustment({ amount: 20, currency: 'EUR' })
         .giftCard('super-gift-card')
-        .then(() => {
-          assert.equal(typeof this.pricing.giftCard, 'object');
+        .reprice()
+        .then(price => {
+          assert.equal(price.now.giftCard, 10);
+          assert.equal(price.now.total, 0);
+          assert.equal(typeof this.pricing.items.giftCard, 'object');
         })
         .currency('EUR')
-        .done(() => {
-          assert.equal(this.pricing.giftCard, undefined);
+        .reprice()
+        .done(price => {
+          assert.equal(price.now.giftCard, 0);
+          assert.equal(price.now.total, 20);
+          assert.equal(this.pricing.items.giftCard, undefined);
           done();
         });
     });
