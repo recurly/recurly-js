@@ -220,8 +220,8 @@ describe('CheckoutPricing', function () {
     });
 
     describe('with a coupon already set', () => {
-      beforeEach(function (done) {
-        this.pricing.coupon('coop').done(() => done());
+      beforeEach(function () {
+        return this.pricing.coupon('coop').reprice();
       });
 
       it('accepts a blank coupon code and unsets the existing coupon, firing the unset.coupon event', function (done) {
@@ -243,13 +243,13 @@ describe('CheckoutPricing', function () {
           });
         });
 
-        beforeEach(function (done) {
-          this.pricing
+        beforeEach(function () {
+          return this.pricing
             .subscription(this.subscriptionPricingExample)
             .subscription(this.subscriptionPricingExampleTwo)
             .adjustment({ amount: 10 })
             .adjustment({ amount: 22.44 })
-            .done(() => done());
+            .reprice();
         });
 
         /**
@@ -458,10 +458,10 @@ describe('CheckoutPricing', function () {
             });
           });
 
-          beforeEach(function (done) {
-            this.pricing
+          beforeEach(function () {
+            return this.pricing
               .subscription(this.subscriptionPricingExampleThree)
-              .done(() => done());
+              .reprice();
           });
 
           describe('is a fixed amount and applies to adjustments and subscriptions', () => {
@@ -511,11 +511,11 @@ describe('CheckoutPricing', function () {
             });
           });
 
-          beforeEach(function (done) {
-            this.pricing
+          beforeEach(function () {
+            return this.pricing
               .subscription(this.subscriptionPricingExampleThree)
               .subscription(this.subscriptionPricingExampleFour)
-              .done(() => done());
+              .reprice();
           });
 
           describe('applies to all plans on the account level', () => {
@@ -590,8 +590,8 @@ describe('CheckoutPricing', function () {
    */
 
   describe('CheckoutPricing#giftCard', () => {
-    beforeEach(function (done) {
-      this.pricing.adjustment({ amount: 50 }).done(() => done());
+    beforeEach(function () {
+      return this.pricing.adjustment({ amount: 50 }).reprice();
     });
 
     describe('when given an invalid gift card', () => {
@@ -652,8 +652,8 @@ describe('CheckoutPricing', function () {
       });
 
       describe('when the gift card amount is greater than the first cycle total', () => {
-        beforeEach(function (done) {
-          this.pricing.subscription(this.subscriptionPricingExample).done(() => done());
+        beforeEach(function () {
+          return this.pricing.subscription(this.subscriptionPricingExample);
         });
 
         beforeEach(applyGiftCard('hundred-dollar-card'));
@@ -672,13 +672,70 @@ describe('CheckoutPricing', function () {
    * Address
    */
 
-  describe('CheckoutPricing#address', () => {});
+  describe('CheckoutPricing#address', () => {
+    it('Assigns address properties', function (done) {
+      const address = { country: 'US', postalCode: '94117', vatNumber: 'arbitrary' };
+      this.pricing.address(address).done(() => {
+        assert.equal(this.pricing.items.address, address);
+        done();
+      });
+    });
+  });
 
   /**
    * Taxes
    */
 
-  describe('CheckoutPricing#tax', () => {});
+  describe('CheckoutPricing#tax', () => {
+    it('Assigns tax properties', function () {
+      const tax = { vatNumber: 'arbitrary' };
+      return this.pricing.tax(tax).then(() => {
+        assert.equal(this.pricing.items.tax, tax);
+      });
+    });
+
+    describe('Calculations', () => {
+      beforeEach(function () {
+        return this.pricing
+          .subscription(this.subscriptionPricingExample)
+          .adjustment({ amount: 20 })
+          .adjustment({ amount: 20, taxCode: 'test' });
+      });
+
+      describe('given no address information', () => {
+        it('applies no taxes', function (done) {
+          this.pricing.reprice().done(price => {
+            assert.equal(price.now.taxes, 0);
+            assert.equal(price.next.taxes, 0);
+            assert.equal(price.taxes.length, 0);
+            assert(Array.isArray(price.taxes));
+            done();
+          });
+        });
+      });
+
+      describe('given a taxable address', () => {
+        beforeEach(function () {
+          return this.pricing.address({ country: 'US', postalCode: '94110' });
+        });
+
+        it('applies taxes to the price', function (done) {
+          this.pricing.reprice().done(price => {
+            assert.equal(price.now.taxes, 5.43); // 8.75% of 61.99 (19.99 + 20 + 20)
+            assert.equal(price.next.taxes, 1.75); // 8.75% of 19.99
+            assert.equal(price.taxes.length, 1);
+            assert(Array.isArray(price.taxes));
+            done();
+          });
+        });
+
+        // tax exemption on adjustments, subscriptions
+        // varying tax codes on adjustments, subscriptions
+        // vat numbers and address info on CheckoutPricing
+        // eu taxes
+      });
+    });
+  });
 });
 
 function subscriptionPricingFactory (planCode = 'basic', recurly, done) {
@@ -695,7 +752,9 @@ function applyCoupon (code) {
 }
 
 function applyGiftCard (code) {
-  return function (done) {
-    this.pricing.giftCard(code).done(() => done());
+  return function () {
+    return this.pricing.giftCard(code).reprice().then(price => {
+      this.price = price;
+    });
   }
 }
