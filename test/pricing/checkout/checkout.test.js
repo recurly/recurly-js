@@ -83,6 +83,13 @@ describe('CheckoutPricing', function () {
             });
           });
 
+          beforeEach(function (done) {
+            subscriptionPricingFactory('basic-gbp', this.recurly, sub => {
+              this.subscriptionPricingExampleGBP = sub;
+              done();
+            });
+          });
+
           it('sets the first common currency if one exists between all subscriptions', function (done) {
             assert.equal(this.pricing.items.subscriptions.length, 0);
             this.pricing
@@ -97,8 +104,24 @@ describe('CheckoutPricing', function () {
               });
           });
 
-          // TODO
-          it('rejects a subscription if it does not support any existing subscription currencies');
+          it(`rejects a subscription if it does not support any
+              existing subscription currencies`, function (done) {
+            this.pricing
+              .subscription(this.subscriptionPricingExample)
+              .reprice()
+              .then(price => {
+                assert.equal(price.currency.code, 'USD')
+              })
+              .subscription(this.subscriptionPricingExampleGBP)
+              .catch(err => {
+                assert.equal(err.code, 'invalid-subscription-currency');
+                assert.equal(err.checkoutCurrency, 'USD');
+                assert(isEqual(err.checkoutSupportedCurrencies, ['USD', 'EUR']));
+                assert(isEqual(err.subscriptionPlanCurrencies, ['GBP']));
+                done();
+              })
+              .done();
+          });
         });
       });
     });

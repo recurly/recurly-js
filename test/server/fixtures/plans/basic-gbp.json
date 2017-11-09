@@ -1,0 +1,16 @@
+{
+  "code": "basic-gbp",
+  "name": "Basic GBP",
+  "period": {
+    "interval": "months",
+    "length": 1
+  },
+  "price": {
+    "GBP": {
+      "setup_fee": 0,
+      "unit_amount": 14.0
+    }
+  },
+  "addons": [],
+  "tax_exempt": false
+}
