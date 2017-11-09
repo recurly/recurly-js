@@ -876,6 +876,7 @@ describe('CheckoutPricing', function () {
             assert.equal(price.next.subtotal, 19.99);
             assert.equal(price.next.taxes, 1.75); // 8.75% of 19.99
             assert.equal(price.next.total, 21.74);
+
             assert.equal(price.taxes.length, 1);
             assert(Array.isArray(price.taxes));
             done();
@@ -1003,7 +1004,9 @@ function applyGiftCard (code) {
 }
 
 function applyGiftCard (code) {
-  return function (done) {
-    this.pricing.giftCard(code).done(() => done());
+  return function () {
+    return this.pricing.giftCard(code).reprice().then(price => {
+      this.price = price;
+    });
   }
 }
