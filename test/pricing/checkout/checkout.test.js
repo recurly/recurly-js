@@ -726,8 +726,8 @@ describe('CheckoutPricing', function () {
    */
 
   describe('CheckoutPricing#giftCard', () => {
-    beforeEach(function (done) {
-      this.pricing.adjustment({ amount: 50 }).done(() => done());
+    beforeEach(function () {
+      return this.pricing.adjustment({ amount: 50 }).reprice();
     });
 
     describe('when given an invalid gift card', () => {
@@ -788,8 +788,8 @@ describe('CheckoutPricing', function () {
       });
 
       describe('when the gift card amount is greater than the first cycle total', () => {
-        beforeEach(function (done) {
-          this.pricing.subscription(this.subscriptionPricingExample).done(() => done());
+        beforeEach(function () {
+          return this.pricing.subscription(this.subscriptionPricingExample);
         });
 
         beforeEach(applyGiftCard('hundred-dollar-card'));
@@ -1146,7 +1146,9 @@ function applyGiftCard (code) {
 }
 
 function applyGiftCard (code) {
-  return function (done) {
-    this.pricing.giftCard(code).done(() => done());
+  return function () {
+    return this.pricing.giftCard(code).reprice().then(price => {
+      this.price = price;
+    });
   }
 }
