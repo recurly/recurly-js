@@ -586,7 +586,7 @@ describe('CheckoutPricing', function () {
   });
 
   /**
-   * Subscriptions
+   * Gift cards
    */
 
   describe('CheckoutPricing#giftCard', () => {
@@ -669,10 +669,16 @@ describe('CheckoutPricing', function () {
   });
 
   /**
-   * address - TODO
+   * Address
    */
 
   describe('CheckoutPricing#address', () => {});
+
+  /**
+   * Taxes
+   */
+
+  describe('CheckoutPricing#tax', () => {});
 });
 
 function subscriptionPricingFactory (planCode = 'basic', recurly, done) {
