@@ -870,18 +870,112 @@ describe('CheckoutPricing', function () {
 
         it('applies taxes to the price', function (done) {
           this.pricing.reprice().done(price => {
-            assert.equal(price.now.taxes, 5.43); // 8.75% of 61.99 (19.99 + 20 + 20)
+            assert.equal(price.now.subtotal, 61.99); // 21.99 + 20 + 20
+            assert.equal(price.now.taxes, 5.43); // 8.75% of 61.99
+            assert.equal(price.now.total, 67.42);
+            assert.equal(price.next.subtotal, 19.99);
             assert.equal(price.next.taxes, 1.75); // 8.75% of 19.99
+            assert.equal(price.next.total, 21.74);
             assert.equal(price.taxes.length, 1);
             assert(Array.isArray(price.taxes));
             done();
           });
         });
 
-        // tax exemption on adjustments, subscriptions
-        // varying tax codes on adjustments, subscriptions
-        // vat numbers and address info on CheckoutPricing
-        // eu taxes
+        describe('given some tax exempt adjustments and subscriptions', () => {
+          beforeEach(function (done) {
+            subscriptionPricingFactory('tax_exempt', this.recurly, sub => {
+              this.subscriptionPricingExampleTaxExempt = sub;
+              done();
+            });
+          });
+
+          beforeEach(function () {
+            return this.pricing
+              .subscription(this.subscriptionPricingExampleTaxExempt) // $2 setup fee
+              .adjustment({ amount: 10, taxExempt: true })
+              .adjustment({ amount: 27.25, taxExempt: false })
+              .reprice();
+          });
+
+          it('only calculates tax on the tax eligible items', function (done) {
+            this.pricing
+              .reprice()
+              .done(price => {
+                assert.equal(price.now.subtotal, 101.24); // subs (21.99 + 2) + adj (20 + 20 + 10 + 27.25)
+                assert.equal(price.now.taxes, 7.81); // 8.75% of $89.24 taxable (21.99 + 20 + 20 + 27.25)
+                assert.equal(price.next.taxes, 1.75); // 8.75% of $19.99 tax eligible
+                done();
+              });
+          });
+        });
+
+        describe('given a variety of tax codes on adjustments and subscriptions', () => {
+          beforeEach(function () {
+            return this.subscriptionPricingExample
+              .tax({ taxCode: 'valid-tax-code' }) // 2%
+              .reprice();
+          });
+
+          beforeEach(function () {
+            return this.pricing
+              .address({ country: 'US', postalCode: '94110' })
+              .subscription(this.subscriptionPricingExample)
+              .adjustment({ amount: 10, taxCode: 'test-tax-code-adj-1' })
+              .adjustment({ amount: 27.25, taxCode: 'test-tax-code-adj-2' })
+              .reprice();
+          });
+
+          it('requests tax amounts for each code', function (done) {
+            sinon.spy(this.recurly, 'tax');
+            this.pricing
+              .reprice()
+              .then(price => {
+                assert(this.recurly.tax.calledWith(sinon.match({ taxCode: 'valid-tax-code' })));
+                assert(this.recurly.tax.calledWith(sinon.match({ taxCode: 'test-tax-code-adj-1' })));
+                assert(this.recurly.tax.calledWith(sinon.match({ taxCode: 'test-tax-code-adj-2' })));
+                done();
+              })
+              .done();
+          });
+
+          it('applies varied tax rates to their applicable items', function (done) {
+            this.pricing
+              .reprice()
+              .then(price => {
+                assert.equal(price.now.subtotal, 99.24);
+                assert.equal(price.now.taxes, 7.20); // (2% of 21.99) + (8.75% of 20 + 20 + 10 + 27.25)
+                assert.equal(price.now.total, 106.44);
+                assert.equal(price.next.subtotal, 19.99);
+                assert.equal(price.next.taxes, 0.40); // 2% of 19.99
+                assert.equal(price.next.total, 20.39);
+                assert.equal(price.taxes.length, 2);
+                assert.deepEqual(price.taxes.map(t => t.rate), ['0.0875', '0.02']);
+                done();
+              })
+              .done();
+          });
+        });
+
+        describe('given VAT numbers on address and tax info', () => {
+          it('takes the VAT number from the tax info', function (done) {
+            debugger;
+            sinon.spy(this.recurly, 'tax');
+            this.pricing
+              .subscription(this.subscriptionPricingExample)
+              .address({ vatNumber: 'on-address' })
+              .tax({ vatNumber: 'on-tax-info' })
+              .then(() => {
+                assert.equal(this.pricing.items.address.vatNumber, 'on-address');
+                assert.equal(this.pricing.items.tax.vatNumber, 'on-tax-info');
+              })
+              .reprice()
+              .done(price => {
+                assert(this.recurly.tax.lastCall.calledWith(sinon.match({ vatNumber: 'on-tax-info' })));
+                done();
+              });
+          });
+        });
       });
     });
   });
