@@ -21,7 +21,7 @@ apiTest(requestMethod => {
 
     beforeEach(function (done) {
       this.recurly = initRecurly({ cors: requestMethod === 'cors' });
-      this.recurly.ready(done);
+      this.recurly.ready(() => done());
     });
 
     describe('without markup', function () {

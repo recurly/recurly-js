@@ -1,7 +1,7 @@
 {
   "name": "recurly.js",
   "description": "Zen subscription billing in the browser",
-  "version": "4.7.0",
+  "version": "4.7.2",
   "license": "MIT",
   "main": "recurly.js",
   "repository": {
@@ -54,7 +54,7 @@
     "karma-mocha-reporter": "^2.2.2",
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-phantomjs-shim": "^1.4.0",
-    "karma-sauce-launcher": "^1.1.0",
+    "karma-sauce-launcher": "^1.2.0",
     "karma-sinon": "^1.0.5",
     "karma-source-map-support": "^1.2.0",
     "koa": "^1.1.2",

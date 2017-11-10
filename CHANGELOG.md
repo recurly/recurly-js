@@ -1,5 +1,13 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.7.2 (Oct 23, 2017)
+
+* Removes the requirement to pass in a form to Apple Pay [#381][381]
+
+### Version 4.7.1 (Oct 9, 2017)
+
+* Adds customer address collection from device in Apple Pay transactions [#380][380]
+
 ### Version 4.7.0 (Sep 15, 2017)
 
 * Adds 'attached' event to announce completion of pricing attachment [#377][377]
@@ -184,6 +192,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[380]: https://github.com/recurly/recurly-js/commit/8d1c246faf5a06e3a0a0d183d101f3d95808d284
 [377]: https://github.com/recurly/recurly-js/commit/81d69db3e141bf01721e2de4ab43a29d1ff9b066
 [375]: https://github.com/recurly/recurly-js/commit/9a7b59adbf72746baaf5d639b9301da7dd088fb6
 [378]: https://github.com/recurly/recurly-js/commit/3ebe6fbb5709c94901b62137404fb348b4f1cb92
