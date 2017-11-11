@@ -7,7 +7,6 @@ describe('CheckoutPricing', function () {
   beforeEach(function (done) {
     this.recurly = initRecurly();
     this.pricing = this.recurly.Pricing.Checkout();
-    this.pricing.reprice(); // should not be necessary once reprice is updated
 
     subscriptionPricingFactory('multiple-currencies', this.recurly, sub => {
       this.subscriptionPricingExample = sub;
@@ -39,9 +38,8 @@ describe('CheckoutPricing', function () {
         .subscription(this.subscriptionPricingExample)
         .done(price => {
           assert.equal(this.pricing.price.now.items.length, 1);
-          // TODO: This is not final. float parsing should not be necessary
-          assert.equal(price.now.total, parseFloat(subscriptionTotalNow));
-          assert.equal(price.next.total, parseFloat(subscriptionTotalNext));
+          assert.equal(price.now.total, subscriptionTotalNow);
+          assert.equal(price.next.total, subscriptionTotalNext);
           done();
         });
     });

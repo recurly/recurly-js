@@ -54,8 +54,9 @@ apiTest(function (requestMethod) {
       });
 
       it('updates display properties when pricing changes', function (done) {
-        assert.equal(typeof this.paypal.strategy.config.display.amount, 'undefined');
+        assert.equal(this.paypal.strategy.config.display.amount, 0);
         this.pricing.plan('basic').done(price => {
+          assert.notEqual(this.paypal.strategy.config.display.amount, 0);
           assert.equal(this.paypal.strategy.config.display.amount, price.now.total);
           assert.equal(this.paypal.strategy.config.display.currency, price.currency.code);
           done();
