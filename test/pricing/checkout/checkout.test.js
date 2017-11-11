@@ -122,6 +122,60 @@ describe('CheckoutPricing', function () {
           });
         });
       });
+
+      // test that a sole plan on a checkout can change its plan and update checkout currencies
+      describe('plan changes with currency mismatch', () => {
+        describe('when one subscription is present', () => {
+          beforeEach(function () {
+            return this.pricing.subscription(this.subscriptionPricingExample).reprice();
+          });
+
+          it('resolves the plan change and updates the checkout currency', function (done) {
+            this.subscriptionPricingExample
+              .plan('basic-gbp')
+              .done(price => {
+                assert.equal(price.currency.code, 'GBP');
+                assert.equal(this.pricing.currencyCode, 'GBP');
+                assert.deepEqual(this.pricing.subscriptionCurrencies, ['GBP']);
+                done();
+              });
+          });
+        });
+
+        describe('when multiple subscriptions are present', () => {
+          beforeEach(function (done) {
+            subscriptionPricingFactory('basic', this.recurly, sub => {
+              this.subscriptionPricingExampleTwo = sub;
+              done();
+            });
+          });
+
+          beforeEach(function () {
+            return this.pricing
+              .subscription(this.subscriptionPricingExample) // EUR, USD
+              .subscription(this.subscriptionPricingExampleTwo) // USD only
+              .reprice();
+          });
+
+          it('rejects the plan change when the new plan does not support the possible currencies', function (done) {
+            const part = after(2, done);
+            assert.equal(this.pricing.currencyCode, 'USD');
+            assert.deepEqual(this.pricing.subscriptionCurrencies, ['USD']);
+            this.subscriptionPricingExampleTwo
+              .plan('basic-gbp') // GBP only
+              .catch(err => {
+                assert.equal(err.code, 'invalid-plan-currency');
+                part();
+              })
+              .done(price => {
+                assert.equal(price.currency.code, 'USD');
+                assert.equal(this.pricing.currencyCode, 'USD');
+                assert.deepEqual(this.pricing.subscriptionCurrencies, ['USD']);
+                part();
+              });
+          });
+        });
+      });
     });
   });
 
@@ -958,7 +1012,6 @@ describe('CheckoutPricing', function () {
 
         describe('given VAT numbers on address and tax info', () => {
           it('takes the VAT number from the tax info', function (done) {
-            debugger;
             sinon.spy(this.recurly, 'tax');
             this.pricing
               .subscription(this.subscriptionPricingExample)
