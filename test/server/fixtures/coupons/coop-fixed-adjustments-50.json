@@ -1,0 +1,16 @@
+{
+  "code": "coop-fixed-adjustments-50",
+  "name": "Test coupon: $50 off adjustments only",
+  "discount": {
+    "type": "dollars",
+    "amount": {
+      "USD": 50
+    }
+  },
+  "plans": [],
+  "single_use": false,
+  "applies_to_non_plan_charges": true,
+  "applies_to_plans": false,
+  "applies_to_all_plans": false,
+  "redemption_resource": "account"
+}

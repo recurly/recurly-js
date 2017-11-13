@@ -1,0 +1,16 @@
+{
+  "code": "coop-fixed-adjustments-plan-notbasic-500",
+  "name": "Test coupon: $500 off all adjustments and 'notbasic' subscriptions",
+  "discount": {
+    "type": "dollars",
+    "amount": {
+      "USD": 500
+    }
+  },
+  "plans": ["notbasic"],
+  "single_use": false,
+  "applies_to_non_plan_charges": true,
+  "applies_to_plans": true,
+  "applies_to_all_plans": false,
+  "redemption_resource": "account"
+}

@@ -1,0 +1,13 @@
+{
+  "code": "coop-pct",
+  "name": "Test coupon: 100% off subscriptions only",
+  "discount": {
+    "rate": 1
+  },
+  "plans": [],
+  "single_use": false,
+  "applies_to_non_plan_charges": false,
+  "applies_to_plans": true,
+  "applies_to_all_plans": true,
+  "redemption_resource": "account"
+}

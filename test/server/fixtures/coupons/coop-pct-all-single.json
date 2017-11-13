@@ -1,0 +1,13 @@
+{
+  "code": "coop-pct-all-single",
+  "name": "Test coupon: 15% off for subscriptions and adjustments, single use only",
+  "discount": {
+    "rate": 0.15
+  },
+  "plans": [],
+  "single_use": true,
+  "applies_to_non_plan_charges": true,
+  "applies_to_plans": true,
+  "applies_to_all_plans": true,
+  "redemption_resource": "account"
+}

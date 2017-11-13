@@ -1,0 +1,16 @@
+{
+  "code": "coop-fixed-subscriptions-5",
+  "name": "Test coupon: $5 off subscriptions only",
+  "discount": {
+    "type": "dollars",
+    "amount": {
+      "USD": 5
+    }
+  },
+  "plans": [],
+  "single_use": false,
+  "applies_to_non_plan_charges": false,
+  "applies_to_plans": true,
+  "applies_to_all_plans": true,
+  "redemption_resource": "account"
+}

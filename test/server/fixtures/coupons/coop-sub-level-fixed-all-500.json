@@ -1,0 +1,16 @@
+{
+  "code": "coop-sub-level-fixed-all-500",
+  "name": "Test coupon: $500 off all adjustments and one subscription",
+  "discount": {
+    "type": "dollars",
+    "amount": {
+      "USD": 500
+    }
+  },
+  "plans": [],
+  "single_use": false,
+  "applies_to_non_plan_charges": true,
+  "applies_to_plans": true,
+  "applies_to_all_plans": true,
+  "redemption_resource": "subscription"
+}

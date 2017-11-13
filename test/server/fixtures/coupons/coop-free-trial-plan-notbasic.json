@@ -1,0 +1,14 @@
+{
+  "code": "coop-free-trial-plan-notbasic",
+  "name": "Test coupon: Free trial on one 'notbasic' subscription",
+  "discount": {
+    "type": "free_trial",
+    "amount": {}
+  },
+  "plans": ["notbasic"],
+  "single_use": false,
+  "applies_to_non_plan_charges": true,
+  "applies_to_plans": true,
+  "applies_to_all_plans": false,
+  "redemption_resource": "subscription"
+}
