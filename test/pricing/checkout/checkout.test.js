@@ -278,6 +278,145 @@ describe('CheckoutPricing', function () {
       this.pricing.adjustment({ amount: 7.59 });
     });
 
+    describe('updating an existing adjustment', () => {
+      beforeEach(function () {
+        this.adjustmentExampleOne = { amount: 20, code: 'adjustment-0' };
+        this.adjustmentExampleTwo = {
+          amount: 10,
+          code: 'adjustment-1',
+          currency: 'EUR',
+          quantity: 0,
+          taxExempt: true,
+          taxCode: 'tax-code-0'
+        };
+        return this.pricing
+          .adjustment(this.adjustmentExampleOne)
+          .adjustment(this.adjustmentExampleTwo)
+          .reprice();
+      });
+
+      it('only updates properties supplied', function (done) {
+        const part = after(8, done);
+        let firstAdjustment = this.pricing.items.adjustments[0]
+        let secondAdjustment = this.pricing.items.adjustments[1]
+
+        assert.equal(firstAdjustment.amount, 20);
+        assert.equal(firstAdjustment.code, 'adjustment-0');
+        assert.equal(firstAdjustment.quantity, 1);
+        assert.equal(firstAdjustment.currency, 'USD');
+        assert.equal(firstAdjustment.taxExempt, false);
+        assert.equal(firstAdjustment.taxCode, undefined);
+        assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+
+        this.pricing
+          .adjustment({ code: 'adjustment-0' })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 20);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 1);
+            assert.equal(firstAdjustment.currency, 'USD');
+            assert.equal(firstAdjustment.taxExempt, false);
+            assert.equal(firstAdjustment.taxCode, undefined);
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({ code: 'adjustment-0', amount: 400 })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 400);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 1);
+            assert.equal(firstAdjustment.currency, 'USD');
+            assert.equal(firstAdjustment.taxExempt, false);
+            assert.equal(firstAdjustment.taxCode, undefined);
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({ code: 'adjustment-0', quantity: 0 })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 400);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 0);
+            assert.equal(firstAdjustment.currency, 'USD');
+            assert.equal(firstAdjustment.taxExempt, false);
+            assert.equal(firstAdjustment.taxCode, undefined);
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({ code: 'adjustment-0', currency: 'GBP' })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 400);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 0);
+            assert.equal(firstAdjustment.currency, 'GBP');
+            assert.equal(firstAdjustment.taxExempt, false);
+            assert.equal(firstAdjustment.taxCode, undefined);
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({ code: 'adjustment-0', taxExempt: true })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 400);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 0);
+            assert.equal(firstAdjustment.currency, 'GBP');
+            assert.equal(firstAdjustment.taxExempt, true);
+            assert.equal(firstAdjustment.taxCode, undefined);
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({ code: 'adjustment-0', taxCode: 0 })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 400);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 0);
+            assert.equal(firstAdjustment.currency, 'GBP');
+            assert.equal(firstAdjustment.taxExempt, true);
+            assert.equal(firstAdjustment.taxCode, 0);
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({
+            code: 'adjustment-0',
+            amount: 25,
+            currency: 'USD',
+            quantity: 10,
+            taxExempt: true,
+            taxCode: 'tax-code-1'
+          })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 25);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 10);
+            assert.equal(firstAdjustment.currency, 'USD');
+            assert.equal(firstAdjustment.taxExempt, true);
+            assert.equal(firstAdjustment.taxCode, 'tax-code-1');
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({
+            code: 'adjustment-1',
+            amount: 0,
+            quantity: 1,
+          })
+          .done(price => {
+            assert.equal(firstAdjustment.amount, 25);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 10);
+            assert.equal(firstAdjustment.currency, 'USD');
+            assert.equal(firstAdjustment.taxExempt, true);
+            assert.equal(firstAdjustment.taxCode, 'tax-code-1');
+
+            assert.equal(secondAdjustment.amount, 0);
+            assert.equal(secondAdjustment.code, 'adjustment-1');
+            assert.equal(secondAdjustment.quantity, 1);
+            assert.equal(secondAdjustment.currency, 'EUR');
+            assert.equal(secondAdjustment.taxExempt, true);
+            assert.equal(secondAdjustment.taxCode, 'tax-code-0');
+            part();
+          });
+      });
+    });
+
     describe('given multiple currencies', () => {
       beforeEach(function () {
         return this.pricing
