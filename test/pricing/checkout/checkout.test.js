@@ -1103,6 +1103,56 @@ describe('CheckoutPricing', function () {
         done();
       });
     });
+
+    it('Overwrites an existing address', function (done) {
+      const part = after(2, done);
+      const address = { country: 'US', postalCode: '94117', vatNumber: 'arbitrary' };
+      this.pricing
+        .address(address)
+        .then(() => {
+          assert.equal(this.pricing.items.address, address);
+          part();
+        })
+        .address({ country: 'DE', postalCode: 'DE-code' })
+        .done(price => {
+          assert.equal(this.pricing.items.address.country, 'DE');
+          assert.equal(this.pricing.items.address.postalCode, 'DE-code');
+          assert.equal(this.pricing.items.address.vatNumber, undefined);
+          part();
+        });
+    });
+  });
+
+  /**
+   * Shipping address
+   */
+
+  describe('CheckoutPricing#shippingAddress', () => {
+    it('Assigns address properties', function (done) {
+      const address = { country: 'US', postalCode: '94110', vatNumber: 'arbitrary-0' };
+      this.pricing.shippingAddress(address).done(() => {
+        assert.equal(this.pricing.items.shippingAddress, address);
+        done();
+      });
+    });
+
+    it('Overwrites an existing shipping address', function (done) {
+      const part = after(2, done);
+      const address = { country: 'US', postalCode: '94117', vatNumber: 'arbitrary' };
+      this.pricing
+        .shippingAddress(address)
+        .then(() => {
+          assert.equal(this.pricing.items.shippingAddress, address);
+          part();
+        })
+        .shippingAddress({ country: 'DE', postalCode: 'DE-code' })
+        .done(price => {
+          assert.equal(this.pricing.items.shippingAddress.country, 'DE');
+          assert.equal(this.pricing.items.shippingAddress.postalCode, 'DE-code');
+          assert.equal(this.pricing.items.shippingAddress.vatNumber, undefined);
+          part();
+        });
+    });
   });
 
   /**
@@ -1243,9 +1293,25 @@ describe('CheckoutPricing', function () {
                 assert.equal(this.pricing.items.address.vatNumber, 'on-address');
                 assert.equal(this.pricing.items.tax.vatNumber, 'on-tax-info');
               })
-              .reprice()
               .done(price => {
                 assert(this.recurly.tax.lastCall.calledWith(sinon.match({ vatNumber: 'on-tax-info' })));
+                done();
+              });
+          });
+        });
+
+        describe('given a shipping address and billing address', () => {
+          it('taxes according to the shipping address', function (done) {
+            sinon.spy(this.recurly, 'tax');
+
+            const address = { country: 'DE', postalCode: 'DE-code', vatNumber: 'arbitrary' };
+            const shippingAddress = { country: 'US', postalCode: '94117' };
+            return this.pricing
+              .subscription(this.subscriptionPricingExample)
+              .address(address)
+              .shippingAddress(shippingAddress)
+              .done(price => {
+                assert(this.recurly.tax.lastCall.calledWith(sinon.match(shippingAddress)));
                 done();
               });
           });
