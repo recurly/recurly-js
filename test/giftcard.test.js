@@ -5,8 +5,8 @@ import {apiTest} from './support/helpers';
 
 apiTest(function (requestMethod) {
   describe('Recurly.giftcard (' + requestMethod + ')', function () {
-    const valid = { giftcard: 'superGiftcardForMe' };
-    const invalid = { giftcard: 'invalidCard' };
+    const valid = { giftcard: 'super-gift-card' };
+    const invalid = { giftcard: 'invalid' };
     let recurly;
 
     beforeEach(function () {

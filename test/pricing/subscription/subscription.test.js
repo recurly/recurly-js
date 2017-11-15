@@ -44,7 +44,7 @@ describe('Recurly.Pricing.Subscription', function () {
           country: 'US',
           postal_code: '94110' // tax literal for test
         })
-        .giftcard("hundredDollarCard")
+        .giftcard("hundred-dollar-card")
         .done(function (price) {
           assert.equal(price.now.gift_card, '23.92');
           assert.equal(price.next.gift_card, '21.74');
@@ -207,7 +207,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'US'
         })
-        .giftcard("superGiftcardForMe")
+        .giftcard("super-gift-card")
         .done(function (price) {
           assert.equal(price.now.total, '1.99');
           assert.equal(price.next.total, '19.99');
@@ -221,7 +221,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'US'
         })
-        .giftcard("superGiftcardForMe")
+        .giftcard("super-gift-card")
         .done(function (price) {
           assert.equal(price.now.gift_card, '20.00');
           assert.equal(price.next.gift_card, '0.00');
@@ -235,7 +235,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'US'
         })
-        .giftcard("hundredDollarCard")
+        .giftcard("hundred-dollar-card")
         .done(function (price) {
           assert.equal(price.now.gift_card, '81.96');
           assert.equal(price.next.gift_card, '18.04');
@@ -251,7 +251,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'US'
         })
-        .giftcard("hundredDollarCard")
+        .giftcard("hundred-dollar-card")
         .done(function (price) {
           assert.equal(price.now.gift_card, '21.99');
           assert.equal(price.next.gift_card, '19.99');
@@ -271,7 +271,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'US'
         })
-        .giftcard('invalidCard');
+        .giftcard('invalid');
     });
 
     it('emits an event when the coupon is set', function (done) {
@@ -285,7 +285,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'US'
         })
-        .giftcard('superGiftcardForMe');
+        .giftcard('super-gift-card');
     });
 
     it('emits an event when the coupon is unset', function (done) {
@@ -297,7 +297,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'US'
         })
-        .giftcard('australianCard');
+        .giftcard('australian-card');
     });
 
     it('emits an error event when the giftcard currency doesnt match the config currency', function (done) {
@@ -310,7 +310,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'AUD' // I set AUD here because it's the config currency not address currency that matters. config currency is USD.
         })
-        .giftcard('australianCard');
+        .giftcard('australian-card');
     });
 
     it('emits an unset event when a giftcard is cleared and removes giftcard from the pricing', function (done) {
@@ -322,7 +322,7 @@ describe('Recurly.Pricing.Subscription', function () {
           country: 'US',
           postal_code: 'NoTax'
         })
-        .giftcard('superGiftcardForMe')
+        .giftcard('super-gift-card')
         .then((giftcard) => assert(giftcard.unit_amount === 20))
         .giftcard('')
         .then((giftcard) => assert(!giftcard))

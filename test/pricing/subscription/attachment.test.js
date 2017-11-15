@@ -104,7 +104,7 @@ describe('Recurly.Pricing.attach', function () {
     describe('when pre-populated with a valid giftcard redemption code', function () {
       this.ctx.fixtureOpts = {
         plan: 'basic',
-        giftcard: 'superGiftcardForMe'
+        giftcard: 'super-gift-card'
       };
 
       it('applies the giftcard to the pricing instance', function (done) {
