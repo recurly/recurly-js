@@ -30,7 +30,9 @@
     "lodash.partialright": "^4.2.1",
     "lodash.pick": "^4.4.0",
     "lodash.uniq": "^4.5.0",
+    "lodash.uniqby": "^4.7.0",
     "mixin": "https://github.com/kewah/mixin#0.1.0",
+    "mutation-observer": "^1.0.3",
     "promise": "7.1.1",
     "qs": "0.6.6",
     "to-slug-case": "0.1.2"

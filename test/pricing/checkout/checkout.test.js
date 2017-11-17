@@ -7,7 +7,6 @@ describe('CheckoutPricing', function () {
   beforeEach(function (done) {
     this.recurly = initRecurly();
     this.pricing = this.recurly.Pricing.Checkout();
-    this.pricing.reprice(); // should not be necessary once reprice is updated
 
     subscriptionPricingFactory('multiple-currencies', this.recurly, sub => {
       this.subscriptionPricingExample = sub;
@@ -39,9 +38,8 @@ describe('CheckoutPricing', function () {
         .subscription(this.subscriptionPricingExample)
         .done(price => {
           assert.equal(this.pricing.price.now.items.length, 1);
-          // TODO: This is not final. float parsing should not be necessary
-          assert.equal(price.now.total, parseFloat(subscriptionTotalNow));
-          assert.equal(price.next.total, parseFloat(subscriptionTotalNext));
+          assert.equal(price.now.total, subscriptionTotalNow);
+          assert.equal(price.next.total, subscriptionTotalNext);
           done();
         });
     });
@@ -83,6 +81,13 @@ describe('CheckoutPricing', function () {
             });
           });
 
+          beforeEach(function (done) {
+            subscriptionPricingFactory('basic-gbp', this.recurly, sub => {
+              this.subscriptionPricingExampleGBP = sub;
+              done();
+            });
+          });
+
           it('sets the first common currency if one exists between all subscriptions', function (done) {
             assert.equal(this.pricing.items.subscriptions.length, 0);
             this.pricing
@@ -97,8 +102,78 @@ describe('CheckoutPricing', function () {
               });
           });
 
-          // TODO
-          it('rejects a subscription if it does not support any existing subscription currencies');
+          it(`rejects a subscription if it does not support any
+              existing subscription currencies`, function (done) {
+            this.pricing
+              .subscription(this.subscriptionPricingExample)
+              .reprice()
+              .then(price => {
+                assert.equal(price.currency.code, 'USD')
+              })
+              .subscription(this.subscriptionPricingExampleGBP)
+              .catch(err => {
+                assert.equal(err.code, 'invalid-subscription-currency');
+                assert.equal(err.checkoutCurrency, 'USD');
+                assert(isEqual(err.checkoutSupportedCurrencies, ['USD', 'EUR']));
+                assert(isEqual(err.subscriptionPlanCurrencies, ['GBP']));
+                done();
+              })
+              .done();
+          });
+        });
+      });
+
+      // test that a sole plan on a checkout can change its plan and update checkout currencies
+      describe('plan changes with currency mismatch', () => {
+        describe('when one subscription is present', () => {
+          beforeEach(function () {
+            return this.pricing.subscription(this.subscriptionPricingExample).reprice();
+          });
+
+          it('resolves the plan change and updates the checkout currency', function (done) {
+            this.subscriptionPricingExample
+              .plan('basic-gbp')
+              .done(price => {
+                assert.equal(price.currency.code, 'GBP');
+                assert.equal(this.pricing.currencyCode, 'GBP');
+                assert.deepEqual(this.pricing.subscriptionCurrencies, ['GBP']);
+                done();
+              });
+          });
+        });
+
+        describe('when multiple subscriptions are present', () => {
+          beforeEach(function (done) {
+            subscriptionPricingFactory('basic', this.recurly, sub => {
+              this.subscriptionPricingExampleTwo = sub;
+              done();
+            });
+          });
+
+          beforeEach(function () {
+            return this.pricing
+              .subscription(this.subscriptionPricingExample) // EUR, USD
+              .subscription(this.subscriptionPricingExampleTwo) // USD only
+              .reprice();
+          });
+
+          it('rejects the plan change when the new plan does not support the possible currencies', function (done) {
+            const part = after(2, done);
+            assert.equal(this.pricing.currencyCode, 'USD');
+            assert.deepEqual(this.pricing.subscriptionCurrencies, ['USD']);
+            this.subscriptionPricingExampleTwo
+              .plan('basic-gbp') // GBP only
+              .catch(err => {
+                assert.equal(err.code, 'invalid-plan-currency');
+                part();
+              })
+              .done(price => {
+                assert.equal(price.currency.code, 'USD');
+                assert.equal(this.pricing.currencyCode, 'USD');
+                assert.deepEqual(this.pricing.subscriptionCurrencies, ['USD']);
+                part();
+              });
+          });
         });
       });
     });
@@ -168,6 +243,24 @@ describe('CheckoutPricing', function () {
       });
     });
 
+    it('sets the currency from the CheckoutPricing currency', function (done) {
+      this.pricing
+        .adjustment({ amount: 3.99 })
+        .then(() => {
+          assert.equal(this.pricing.items.currency, 'USD');
+          assert.equal(this.pricing.items.adjustments[0].amount, 3.99);
+          assert.equal(this.pricing.items.adjustments[0].currency, 'USD');
+        })
+        .currency('EUR')
+        .adjustment({ amount: 5.99 })
+        .then(() => {
+          assert.equal(this.pricing.items.currency, 'EUR');
+          assert.equal(this.pricing.items.adjustments[1].amount, 5.99);
+          assert.equal(this.pricing.items.adjustments[1].currency, 'EUR');
+          done();
+        });
+    });
+
     it('adds the adjustment to price itemization and total', function (done) {
       assert.equal(this.pricing.price.now.items.length, 0);
       this.pricing.adjustment({ amount: 6.99 }).done(price => {
@@ -183,6 +276,188 @@ describe('CheckoutPricing', function () {
         done();
       });
       this.pricing.adjustment({ amount: 7.59 });
+    });
+
+    describe('updating an existing adjustment', () => {
+      beforeEach(function () {
+        this.adjustmentExampleOne = { amount: 20, code: 'adjustment-0' };
+        this.adjustmentExampleTwo = {
+          amount: 10,
+          code: 'adjustment-1',
+          currency: 'EUR',
+          quantity: 0,
+          taxExempt: true,
+          taxCode: 'tax-code-0'
+        };
+        return this.pricing
+          .adjustment(this.adjustmentExampleOne)
+          .adjustment(this.adjustmentExampleTwo)
+          .reprice();
+      });
+
+      it('only updates properties supplied', function (done) {
+        const part = after(8, done);
+        let firstAdjustment = this.pricing.items.adjustments[0]
+        let secondAdjustment = this.pricing.items.adjustments[1]
+
+        assert.equal(firstAdjustment.amount, 20);
+        assert.equal(firstAdjustment.code, 'adjustment-0');
+        assert.equal(firstAdjustment.quantity, 1);
+        assert.equal(firstAdjustment.currency, 'USD');
+        assert.equal(firstAdjustment.taxExempt, false);
+        assert.equal(firstAdjustment.taxCode, undefined);
+        assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+
+        this.pricing
+          .adjustment({ code: 'adjustment-0' })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 20);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 1);
+            assert.equal(firstAdjustment.currency, 'USD');
+            assert.equal(firstAdjustment.taxExempt, false);
+            assert.equal(firstAdjustment.taxCode, undefined);
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({ code: 'adjustment-0', amount: 400 })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 400);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 1);
+            assert.equal(firstAdjustment.currency, 'USD');
+            assert.equal(firstAdjustment.taxExempt, false);
+            assert.equal(firstAdjustment.taxCode, undefined);
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({ code: 'adjustment-0', quantity: 0 })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 400);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 0);
+            assert.equal(firstAdjustment.currency, 'USD');
+            assert.equal(firstAdjustment.taxExempt, false);
+            assert.equal(firstAdjustment.taxCode, undefined);
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({ code: 'adjustment-0', currency: 'GBP' })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 400);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 0);
+            assert.equal(firstAdjustment.currency, 'GBP');
+            assert.equal(firstAdjustment.taxExempt, false);
+            assert.equal(firstAdjustment.taxCode, undefined);
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({ code: 'adjustment-0', taxExempt: true })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 400);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 0);
+            assert.equal(firstAdjustment.currency, 'GBP');
+            assert.equal(firstAdjustment.taxExempt, true);
+            assert.equal(firstAdjustment.taxCode, undefined);
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({ code: 'adjustment-0', taxCode: 0 })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 400);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 0);
+            assert.equal(firstAdjustment.currency, 'GBP');
+            assert.equal(firstAdjustment.taxExempt, true);
+            assert.equal(firstAdjustment.taxCode, 0);
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({
+            code: 'adjustment-0',
+            amount: 25,
+            currency: 'USD',
+            quantity: 10,
+            taxExempt: true,
+            taxCode: 'tax-code-1'
+          })
+          .then(() => {
+            assert.equal(firstAdjustment.amount, 25);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 10);
+            assert.equal(firstAdjustment.currency, 'USD');
+            assert.equal(firstAdjustment.taxExempt, true);
+            assert.equal(firstAdjustment.taxCode, 'tax-code-1');
+            assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
+            part();
+          })
+          .adjustment({
+            code: 'adjustment-1',
+            amount: 0,
+            quantity: 1,
+          })
+          .done(price => {
+            assert.equal(firstAdjustment.amount, 25);
+            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.quantity, 10);
+            assert.equal(firstAdjustment.currency, 'USD');
+            assert.equal(firstAdjustment.taxExempt, true);
+            assert.equal(firstAdjustment.taxCode, 'tax-code-1');
+
+            assert.equal(secondAdjustment.amount, 0);
+            assert.equal(secondAdjustment.code, 'adjustment-1');
+            assert.equal(secondAdjustment.quantity, 1);
+            assert.equal(secondAdjustment.currency, 'EUR');
+            assert.equal(secondAdjustment.taxExempt, true);
+            assert.equal(secondAdjustment.taxCode, 'tax-code-0');
+            part();
+          });
+      });
+    });
+
+    describe('given multiple currencies', () => {
+      beforeEach(function () {
+        return this.pricing
+          .adjustment({ amount: 10, currency: 'USD' })
+          .adjustment({ amount: 20, currency: 'USD' })
+          .adjustment({ amount: 50, currency: 'EUR' })
+          .adjustment({ amount: 100, currency: 'GBP' })
+          .reprice();
+      });
+
+      it(`calculates subtotals only from adjustments matching
+          the checkout currency`, function (done) {
+        this.pricing
+          .reprice()
+          .then(price => {
+            // all adjustments are present
+            assert.equal(this.pricing.items.adjustments.length, 4);
+            assert.equal(price.currency.code, 'USD');
+            // only the USD adjustments factor into the price
+            assert.equal(price.now.items.length, 2);
+            assert.equal(price.now.adjustments, 30);
+          })
+          .currency('EUR')
+          .reprice()
+          .then(price => {
+            assert.equal(this.pricing.items.adjustments.length, 4);
+            assert.equal(price.currency.code, 'EUR');
+            assert.equal(price.now.items.length, 1);
+            assert.equal(price.now.adjustments, 50);
+          })
+          .currency('GBP')
+          .reprice()
+          .then(price => {
+            assert.equal(this.pricing.items.adjustments.length, 4);
+            assert.equal(price.currency.code, 'GBP');
+            assert.equal(price.now.items.length, 1);
+            assert.equal(price.now.adjustments, 100);
+            done();
+          })
+          .done();
+      });
     });
   });
 
@@ -220,8 +495,8 @@ describe('CheckoutPricing', function () {
     });
 
     describe('with a coupon already set', () => {
-      beforeEach(function (done) {
-        this.pricing.coupon('coop').done(() => done());
+      beforeEach(function () {
+        return this.pricing.coupon('coop').reprice();
       });
 
       it('accepts a blank coupon code and unsets the existing coupon, firing the unset.coupon event', function (done) {
@@ -243,13 +518,13 @@ describe('CheckoutPricing', function () {
           });
         });
 
-        beforeEach(function (done) {
-          this.pricing
+        beforeEach(function () {
+          return this.pricing
             .subscription(this.subscriptionPricingExample)
             .subscription(this.subscriptionPricingExampleTwo)
             .adjustment({ amount: 10 })
             .adjustment({ amount: 22.44 })
-            .done(() => done());
+            .reprice();
         });
 
         /**
@@ -458,10 +733,10 @@ describe('CheckoutPricing', function () {
             });
           });
 
-          beforeEach(function (done) {
-            this.pricing
+          beforeEach(function () {
+            return this.pricing
               .subscription(this.subscriptionPricingExampleThree)
-              .done(() => done());
+              .reprice();
           });
 
           describe('is a fixed amount and applies to adjustments and subscriptions', () => {
@@ -511,11 +786,11 @@ describe('CheckoutPricing', function () {
             });
           });
 
-          beforeEach(function (done) {
-            this.pricing
+          beforeEach(function () {
+            return this.pricing
               .subscription(this.subscriptionPricingExampleThree)
               .subscription(this.subscriptionPricingExampleFour)
-              .done(() => done());
+              .reprice();
           });
 
           describe('applies to all plans on the account level', () => {
@@ -590,8 +865,8 @@ describe('CheckoutPricing', function () {
    */
 
   describe('CheckoutPricing#giftCard', () => {
-    beforeEach(function (done) {
-      this.pricing.adjustment({ amount: 50 }).done(() => done());
+    beforeEach(function () {
+      return this.pricing.adjustment({ amount: 50 }).reprice();
     });
 
     describe('when given an invalid gift card', () => {
@@ -652,8 +927,8 @@ describe('CheckoutPricing', function () {
       });
 
       describe('when the gift card amount is greater than the first cycle total', () => {
-        beforeEach(function (done) {
-          this.pricing.subscription(this.subscriptionPricingExample).done(() => done());
+        beforeEach(function () {
+          return this.pricing.subscription(this.subscriptionPricingExample);
         });
 
         beforeEach(applyGiftCard('hundred-dollar-card'));
@@ -672,7 +947,378 @@ describe('CheckoutPricing', function () {
    * address - TODO
    */
 
-  describe('CheckoutPricing#address', () => {});
+  describe('CheckoutPricing#currency', () => {
+    it('Updates the CheckoutPricing and constituent subscription currencies', function (done) {
+      this.pricing
+        .subscription(this.subscriptionPricingExample)
+        .reprice()
+        .then(price => {
+          assert.equal(price.currency.code, 'USD');
+          assert.equal(this.subscriptionPricingExample.price.currency.code, 'USD');
+        })
+        .currency('EUR')
+        .done(price => {
+          assert.equal(price.currency.code, 'EUR');
+          assert.equal(this.subscriptionPricingExample.price.currency.code, 'EUR');
+          done();
+        });
+    });
+
+    it('throws an error when given a currency not supported by the subscriptions', function (done) {
+      this.pricing
+        .subscription(this.subscriptionPricingExample)
+        .currency('GBP')
+        .catch(err => {
+          assert.equal(err.code, 'invalid-currency');
+          assert.equal(this.pricing.price.currency.code, 'USD');
+          done();
+        })
+        .done();
+    });
+
+    it('emits set.currency if the currency changes', function (done) {
+      assert.equal(this.pricing.price.currency.code, 'USD');
+      this.pricing.on('set.currency', code => {
+        assert.equal(code, 'EUR');
+        assert.equal(this.pricing.items.currency, 'EUR');
+        done();
+      });
+      this.pricing.currency('EUR');
+    });
+
+    it('removes a gift card if the currency changes', function (done) {
+      this.pricing
+        .adjustment({ amount: 10, currency: 'USD' })
+        .adjustment({ amount: 20, currency: 'EUR' })
+        .giftCard('super-gift-card')
+        .reprice()
+        .then(price => {
+          assert.equal(price.now.giftCard, 10);
+          assert.equal(price.now.total, 0);
+          assert.equal(typeof this.pricing.items.giftCard, 'object');
+        })
+        .currency('EUR')
+        .reprice()
+        .done(price => {
+          assert.equal(price.now.giftCard, 0);
+          assert.equal(price.now.total, 20);
+          assert.equal(this.pricing.items.giftCard, undefined);
+          done();
+        });
+    });
+  });
+
+  /**
+   * Gift cards
+   */
+
+  describe('CheckoutPricing#giftCard', () => {
+    beforeEach(function () {
+      return this.pricing.adjustment({ amount: 50 }).reprice();
+    });
+
+    describe('when given an invalid gift card', () => {
+      it('throws an error', function (done) {
+        this.pricing.giftCard('invalid').catch(err => {
+          assert(err.code === 'not-found');
+          done();
+        });
+      });
+
+      it('emits an error', function (done) {
+        this.pricing.on('error.giftCard', err => {
+          assert(err.code === 'not-found');
+          done();
+        });
+        this.pricing.giftCard('invalid');
+      });
+    });
+
+    describe('when given an valid gift card', () => {
+      it('applies the gift card to the total', function (done) {
+        assert.equal(this.pricing.price.now.total, 50);
+        this.pricing.giftCard('super-gift-card').done(price => {
+          assert.equal(price.now.giftCard, 20);
+          assert.equal(price.now.total, 30);
+          done();
+        });
+      });
+
+      it('emits set.giftCard', function (done) {
+        this.pricing.on('set.giftCard', giftCard => {
+          assert.equal(giftCard.unit_amount, 20);
+          done();
+        });
+        this.pricing.giftCard('super-gift-card');
+      });
+
+      describe('when applying a gift card when one is already present', function (done) {
+        beforeEach(applyGiftCard('hundred-dollar-card'));
+
+        it('replaces the gift card', function (done) {
+          assert.equal(this.pricing.price.now.giftCard, 50);
+          assert.equal(this.pricing.price.now.total, 0);
+          this.pricing.giftCard('super-gift-card').done(price => {
+            assert.equal(price.now.giftCard, 20);
+            assert.equal(price.now.total, 30);
+            done();
+          });
+        });
+
+        it('emits unset.giftCard', function (done) {
+          this.pricing.on('unset.giftCard', () => {
+            assert.equal(this.pricing.items.giftCard, undefined);
+            done();
+          });
+          this.pricing.giftCard('super-gift-card');
+        });
+      });
+
+      describe('when the gift card amount is greater than the first cycle total', () => {
+        beforeEach(function () {
+          return this.pricing.subscription(this.subscriptionPricingExample);
+        });
+
+        beforeEach(applyGiftCard('hundred-dollar-card'));
+
+        it('carries the remaining gift card amount to the next cycle', function () {
+          assert.equal(this.pricing.price.now.giftCard, 71.99);
+          assert.equal(this.pricing.price.now.total, 0);
+          assert.equal(this.pricing.price.next.giftCard, 19.99);
+          assert.equal(this.pricing.price.now.total, 0);
+        });
+      });
+    });
+  });
+
+  /**
+   * Address
+   */
+
+  describe('CheckoutPricing#address', () => {
+    it('Assigns address properties', function (done) {
+      const address = { country: 'US', postalCode: '94117', vatNumber: 'arbitrary' };
+      this.pricing.address(address).done(() => {
+        assert.equal(this.pricing.items.address, address);
+        done();
+      });
+    });
+
+    it('Overwrites an existing address', function (done) {
+      const part = after(2, done);
+      const address = { country: 'US', postalCode: '94117', vatNumber: 'arbitrary' };
+      this.pricing
+        .address(address)
+        .then(() => {
+          assert.equal(this.pricing.items.address, address);
+          part();
+        })
+        .address({ country: 'DE', postalCode: 'DE-code' })
+        .done(price => {
+          assert.equal(this.pricing.items.address.country, 'DE');
+          assert.equal(this.pricing.items.address.postalCode, 'DE-code');
+          assert.equal(this.pricing.items.address.vatNumber, undefined);
+          part();
+        });
+    });
+  });
+
+  /**
+   * Shipping address
+   */
+
+  describe('CheckoutPricing#shippingAddress', () => {
+    it('Assigns address properties', function (done) {
+      const address = { country: 'US', postalCode: '94110', vatNumber: 'arbitrary-0' };
+      this.pricing.shippingAddress(address).done(() => {
+        assert.equal(this.pricing.items.shippingAddress, address);
+        done();
+      });
+    });
+
+    it('Overwrites an existing shipping address', function (done) {
+      const part = after(2, done);
+      const address = { country: 'US', postalCode: '94117', vatNumber: 'arbitrary' };
+      this.pricing
+        .shippingAddress(address)
+        .then(() => {
+          assert.equal(this.pricing.items.shippingAddress, address);
+          part();
+        })
+        .shippingAddress({ country: 'DE', postalCode: 'DE-code' })
+        .done(price => {
+          assert.equal(this.pricing.items.shippingAddress.country, 'DE');
+          assert.equal(this.pricing.items.shippingAddress.postalCode, 'DE-code');
+          assert.equal(this.pricing.items.shippingAddress.vatNumber, undefined);
+          part();
+        });
+    });
+  });
+
+  /**
+   * Taxes
+   */
+
+  describe('CheckoutPricing#tax', () => {
+    it('Assigns tax properties', function () {
+      const tax = { vatNumber: 'arbitrary' };
+      return this.pricing.tax(tax).then(() => {
+        assert.equal(this.pricing.items.tax, tax);
+      });
+    });
+
+    describe('Calculations', () => {
+      beforeEach(function () {
+        return this.pricing
+          .subscription(this.subscriptionPricingExample)
+          .adjustment({ amount: 20 })
+          .adjustment({ amount: 20, taxCode: 'test' });
+      });
+
+      describe('given no address information', () => {
+        it('applies no taxes', function (done) {
+          this.pricing.reprice().done(price => {
+            assert.equal(price.now.taxes, 0);
+            assert.equal(price.next.taxes, 0);
+            assert.equal(price.taxes.length, 0);
+            assert(Array.isArray(price.taxes));
+            done();
+          });
+        });
+      });
+
+      describe('given a taxable address', () => {
+        beforeEach(function () {
+          return this.pricing.address({ country: 'US', postalCode: '94110' });
+        });
+
+        it('applies taxes to the price', function (done) {
+          this.pricing.reprice().done(price => {
+            assert.equal(price.now.subtotal, 61.99); // 21.99 + 20 + 20
+            assert.equal(price.now.taxes, 5.43); // 8.75% of 61.99
+            assert.equal(price.now.total, 67.42);
+            assert.equal(price.next.subtotal, 19.99);
+            assert.equal(price.next.taxes, 1.75); // 8.75% of 19.99
+            assert.equal(price.next.total, 21.74);
+
+            assert.equal(price.taxes.length, 1);
+            assert(Array.isArray(price.taxes));
+            done();
+          });
+        });
+
+        describe('given some tax exempt adjustments and subscriptions', () => {
+          beforeEach(function (done) {
+            subscriptionPricingFactory('tax_exempt', this.recurly, sub => {
+              this.subscriptionPricingExampleTaxExempt = sub;
+              done();
+            });
+          });
+
+          beforeEach(function () {
+            return this.pricing
+              .subscription(this.subscriptionPricingExampleTaxExempt) // $2 setup fee
+              .adjustment({ amount: 10, taxExempt: true })
+              .adjustment({ amount: 27.25, taxExempt: false })
+              .reprice();
+          });
+
+          it('only calculates tax on the tax eligible items', function (done) {
+            this.pricing
+              .reprice()
+              .done(price => {
+                assert.equal(price.now.subtotal, 101.24); // subs (21.99 + 2) + adj (20 + 20 + 10 + 27.25)
+                assert.equal(price.now.taxes, 7.81); // 8.75% of $89.24 taxable (21.99 + 20 + 20 + 27.25)
+                assert.equal(price.next.taxes, 1.75); // 8.75% of $19.99 tax eligible
+                done();
+              });
+          });
+        });
+
+        describe('given a variety of tax codes on adjustments and subscriptions', () => {
+          beforeEach(function () {
+            return this.subscriptionPricingExample
+              .tax({ taxCode: 'valid-tax-code' }) // 2%
+              .reprice();
+          });
+
+          beforeEach(function () {
+            return this.pricing
+              .address({ country: 'US', postalCode: '94110' })
+              .subscription(this.subscriptionPricingExample)
+              .adjustment({ amount: 10, taxCode: 'test-tax-code-adj-1' })
+              .adjustment({ amount: 27.25, taxCode: 'test-tax-code-adj-2' })
+              .reprice();
+          });
+
+          it('requests tax amounts for each code', function (done) {
+            sinon.spy(this.recurly, 'tax');
+            this.pricing
+              .reprice()
+              .then(price => {
+                assert(this.recurly.tax.calledWith(sinon.match({ taxCode: 'valid-tax-code' })));
+                assert(this.recurly.tax.calledWith(sinon.match({ taxCode: 'test-tax-code-adj-1' })));
+                assert(this.recurly.tax.calledWith(sinon.match({ taxCode: 'test-tax-code-adj-2' })));
+                done();
+              })
+              .done();
+          });
+
+          it('applies varied tax rates to their applicable items', function (done) {
+            this.pricing
+              .reprice()
+              .then(price => {
+                assert.equal(price.now.subtotal, 99.24);
+                assert.equal(price.now.taxes, 7.20); // (2% of 21.99) + (8.75% of 20 + 20 + 10 + 27.25)
+                assert.equal(price.now.total, 106.44);
+                assert.equal(price.next.subtotal, 19.99);
+                assert.equal(price.next.taxes, 0.40); // 2% of 19.99
+                assert.equal(price.next.total, 20.39);
+                assert.equal(price.taxes.length, 2);
+                assert.deepEqual(price.taxes.map(t => t.rate), ['0.0875', '0.02']);
+                done();
+              })
+              .done();
+          });
+        });
+
+        describe('given VAT numbers on address and tax info', () => {
+          it('takes the VAT number from the tax info', function (done) {
+            sinon.spy(this.recurly, 'tax');
+            this.pricing
+              .subscription(this.subscriptionPricingExample)
+              .address({ vatNumber: 'on-address' })
+              .tax({ vatNumber: 'on-tax-info' })
+              .then(() => {
+                assert.equal(this.pricing.items.address.vatNumber, 'on-address');
+                assert.equal(this.pricing.items.tax.vatNumber, 'on-tax-info');
+              })
+              .done(price => {
+                assert(this.recurly.tax.lastCall.calledWith(sinon.match({ vatNumber: 'on-tax-info' })));
+                done();
+              });
+          });
+        });
+
+        describe('given a shipping address and billing address', () => {
+          it('taxes according to the shipping address', function (done) {
+            sinon.spy(this.recurly, 'tax');
+
+            const address = { country: 'DE', postalCode: 'DE-code', vatNumber: 'arbitrary' };
+            const shippingAddress = { country: 'US', postalCode: '94117' };
+            return this.pricing
+              .subscription(this.subscriptionPricingExample)
+              .address(address)
+              .shippingAddress(shippingAddress)
+              .done(price => {
+                assert(this.recurly.tax.lastCall.calledWith(sinon.match(shippingAddress)));
+                done();
+              });
+          });
+        });
+      });
+    });
+  });
 });
 
 function subscriptionPricingFactory (planCode = 'basic', recurly, done) {
@@ -689,7 +1335,25 @@ function applyCoupon (code) {
 }
 
 function applyGiftCard (code) {
-  return function (done) {
-    this.pricing.giftCard(code).done(() => done());
+  return function () {
+    return this.pricing.giftCard(code).reprice().then(price => {
+      this.price = price;
+    });
+  }
+}
+
+function applyGiftCard (code) {
+  return function () {
+    return this.pricing.giftCard(code).reprice().then(price => {
+      this.price = price;
+    });
+  }
+}
+
+function applyGiftCard (code) {
+  return function () {
+    return this.pricing.giftCard(code).reprice().then(price => {
+      this.price = price;
+    });
   }
 }

@@ -3,26 +3,32 @@
  * postal code to match for US sales tax
  */
 
-var USST_POSTAL_CODE = '94110';
+const USST_POSTAL_CODE = '94110';
 
 /**
  * postal code to match for US sales tax
  * with region data returned
  */
 
-var USST_POSTAL_CODE_WITH_REGION = '94129';
+const USST_POSTAL_CODE_WITH_REGION = '94129';
+
+/**
+ * tax code to match for code exception example
+ */
+
+const USST_TAX_CODE = 'valid-tax-code';
 
 /**
  * country code to match for VAT
  */
 
-var VAT_COUNTRY = 'DE';
+const VAT_COUNTRY = 'DE';
 
 /**
  * country code to match for VAT 2015
  */
 
-var VAT_2015_COUNTRY = 'GB';
+const VAT_2015_COUNTRY = 'GB';
 
 /**
  * US sales tax response
@@ -37,6 +43,7 @@ var VAT_2015_COUNTRY = 'GB';
  */
 
 module.exports = function tax () {
+  if (this.query.country === 'US' && this.query.postal_code === USST_POSTAL_CODE && this.query.tax_code === USST_TAX_CODE) return usstWithTaxCode;
   if (this.query.country === 'US' && this.query.postal_code === USST_POSTAL_CODE) return usst;
   if (this.query.country === 'US' && this.query.postal_code === USST_POSTAL_CODE_WITH_REGION) return usstWithRegion;
   if (this.query.country === VAT_COUNTRY) return vat;
@@ -44,23 +51,28 @@ module.exports = function tax () {
   return none;
 };
 
-var usst = [{
+const usst = [{
   type: 'us',
   rate: '0.0875'
 }];
 
-var usstWithRegion = [{
+const usstWithRegion = [{
   type: 'us',
   rate: '0.0875',
   region: 'CA'
 }];
 
-var vat = [{
+const usstWithTaxCode = [{
+  type: 'us',
+  rate: '0.02'
+}]
+
+const vat = [{
   type: 'vat',
   rate: '0.015'
 }];
 
-var vat2015 = [{
+const vat2015 = [{
   type: 'vat',
   rate: '0.2',
   region: 'GB'
