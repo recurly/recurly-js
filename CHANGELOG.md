@@ -197,6 +197,7 @@
 * Full rewrite for Billing Info tokenization
 
 [399]: https://github.com/recurly/recurly-js/commit/fd11df578e1bc36cd1a889964b1db6346c03aac0
+[381]: https://github.com/recurly/recurly-js/commit/ad1ec9f68479272143dcc0c8dad21150a0a7708c
 [380]: https://github.com/recurly/recurly-js/commit/8d1c246faf5a06e3a0a0d183d101f3d95808d284
 [377]: https://github.com/recurly/recurly-js/commit/81d69db3e141bf01721e2de4ab43a29d1ff9b066
 [375]: https://github.com/recurly/recurly-js/commit/9a7b59adbf72746baaf5d639b9301da7dd088fb6
