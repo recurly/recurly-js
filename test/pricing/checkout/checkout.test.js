@@ -789,18 +789,16 @@ describe('CheckoutPricing', function () {
           beforeEach(function () {
             return this.pricing
               .subscription(this.subscriptionPricingExampleThree)
-              .subscription(this.subscriptionPricingExampleFour)
               .reprice();
           });
 
           describe('applies to all plans on the account level', () => {
             beforeEach(applyCoupon('coop-free-trial-acct'));
             it(`applies the free trial to all subscriptions`, function () {
-              debugger;
-              assert.equal(this.price.now.subscriptions, 11); // setup fees
+              assert.equal(this.price.now.subscriptions, 9); // setup fees
               assert.equal(this.price.now.adjustments, 32.44);
               assert.equal(this.price.now.discount, 0);
-              assert.equal(this.price.next.subscriptions, 179.07); // 19.99 * 2 + 90.09 + 49
+              assert.equal(this.price.next.subscriptions, 130.07); // 19.99 * 2 + 90.09
               assert.equal(this.price.next.adjustments, 0);
               assert.equal(this.price.next.discount, 0);
               assert.equal(this.subscriptionPricingExampleThree.items.coupon.code, 'coop-free-trial-acct');
@@ -814,10 +812,10 @@ describe('CheckoutPricing', function () {
             });
             beforeEach(applyCoupon('coop-free-trial'));
             it(`applies the free trial to the most valuable subscription`, function () {
-              assert.equal(this.price.now.subscriptions, 50.98); // 21.99 * 2 + 5 (setup fee) + 2 (setup fee)
+              assert.equal(this.price.now.subscriptions, 48.98); // 21.99 * 2 + 5 (setup fee)
               assert.equal(this.price.now.adjustments, 32.44);
               assert.equal(this.price.now.discount, 0);
-              assert.equal(this.price.next.subscriptions, 179.07); // 19.99 * 2 + 90.09 + 49
+              assert.equal(this.price.next.subscriptions, 130.07); // 19.99 * 2 + 90.09
               assert.equal(this.price.next.adjustments, 0);
               assert.equal(this.price.next.discount, 0);
               assert.equal(this.subscriptionPricingExampleThree.items.coupon.code, 'coop-free-trial');
@@ -828,10 +826,10 @@ describe('CheckoutPricing', function () {
           describe('applies to specific plans on the checkout instance', () => {
             beforeEach(applyCoupon('coop-free-trial-plan-basic'));
             it(`applies the free trial to the specific subscription`, function () {
-              assert.equal(this.price.now.subscriptions, 121.08); // 21.99 + 2 (setup fee) + 95.09 + 2 (setup fee)
+              assert.equal(this.price.now.subscriptions, 119.08); // 21.99 + 2 (setup fee) + 95.09
               assert.equal(this.price.now.adjustments, 32.44);
               assert.equal(this.price.now.discount, 0);
-              assert.equal(this.price.next.subscriptions, 179.07); // 19.99 * 2 + 90.09 + 49
+              assert.equal(this.price.next.subscriptions, 130.07); // 19.99 * 2 + 90.09
               assert.equal(this.price.next.adjustments, 0);
               assert.equal(this.price.next.discount, 0);
               assert.equal(this.subscriptionPricingExampleTwo.items.plan.code, 'basic');
@@ -843,16 +841,40 @@ describe('CheckoutPricing', function () {
           describe('applies to specific plans not on the checkout instance', () => {
             beforeEach(applyCoupon('coop-free-trial-plan-notbasic'));
             it(`applies no free trial`, function () {
-              assert.equal(this.price.now.subscriptions, 141.07); // 21.99 * 2 + 95.09 + 2 (setup fee)
+              assert.equal(this.price.now.subscriptions, 139.07); // 21.99 * 2 + 95.09
               assert.equal(this.price.now.adjustments, 32.44);
               assert.equal(this.price.now.discount, 0);
-              assert.equal(this.price.next.subscriptions, 179.07); // 19.99 * 2 + 90.09 + 49
+              assert.equal(this.price.next.subscriptions, 130.07); // 19.99 * 2 + 90.09
               assert.equal(this.price.next.adjustments, 0);
               assert.equal(this.price.next.discount, 0);
               assert.equal(this.subscriptionPricingExample.items.coupon, undefined);
               assert.equal(this.subscriptionPricingExampleTwo.items.coupon, undefined);
               assert.equal(this.subscriptionPricingExampleThree.items.coupon, undefined);
-              assert.equal(this.subscriptionPricingExampleFour.items.coupon, undefined);
+            });
+          });
+
+          describe('when given a subscription with a free trial', () => {
+            beforeEach(function () {
+              return this.pricing
+                .subscription(this.subscriptionPricingExampleFour)
+                .reprice();
+            });
+
+            describe('applies to all plans', () => {
+              beforeEach(function () {
+                assert.equal(this.subscriptionPricingExampleFour.items.coupon, undefined);
+              });
+              beforeEach(applyCoupon('coop-free-trial'));
+              it(`applies the free trial to the subscription with a free trial`, function () {
+                assert.equal(this.price.now.subscriptions, 141.07); // 21.99 * 2 + 95.09 + 2 (setup fee)
+                assert.equal(this.price.now.adjustments, 32.44);
+                assert.equal(this.price.now.discount, 0);
+                assert.equal(this.price.next.subscriptions, 179.07); // 19.99 * 2 + 90.09 + 49
+                assert.equal(this.price.next.adjustments, 0);
+                assert.equal(this.price.next.discount, 0);
+                assert.equal(this.subscriptionPricingExampleFour.items.coupon.code, 'coop-free-trial');
+                assert.equal(this.subscriptionPricingExampleFour.price.now.total, 2); // setup fee
+              });
             });
           });
         });
