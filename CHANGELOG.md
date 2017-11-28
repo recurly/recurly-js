@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.8.0 (Nov 28, 2017)
+
+* Adds Checkout Pricing class [#399][399]
+
 ### Version 4.7.2 (Oct 23, 2017)
 
 * Removes the requirement to pass in a form to Apple Pay [#381][381]
@@ -192,6 +196,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[399]: https://github.com/recurly/recurly-js/commit/fd11df578e1bc36cd1a889964b1db6346c03aac0
 [380]: https://github.com/recurly/recurly-js/commit/8d1c246faf5a06e3a0a0d183d101f3d95808d284
 [377]: https://github.com/recurly/recurly-js/commit/81d69db3e141bf01721e2de4ab43a29d1ff9b066
 [375]: https://github.com/recurly/recurly-js/commit/9a7b59adbf72746baaf5d639b9301da7dd088fb6
