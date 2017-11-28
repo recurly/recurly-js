@@ -30,7 +30,6 @@ env:
     - BROWSER=firefox
     - BROWSER=safari
     - BROWSER=ie_11
-    - BROWSER=ie_10
     - BROWSER=ios_11
     - BROWSER=ios_10
     - BROWSER=ios_9
