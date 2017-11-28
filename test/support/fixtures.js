@@ -89,7 +89,6 @@ const pricing = opts => `
 
 const checkoutPricing = opts => `
   <div id="test-pricing">
-
     <input type="text" data-recurly-subscription="sub-0" data-recurly="plan" value="${fetch(opts, 'sub_0_plan', '')}">
     <input type="text" data-recurly-subscription="sub-0" data-recurly="plan_quantity" value="${fetch(opts, 'sub_0_plan_quantity', '')}">
     <input type="text" data-recurly-subscription="sub-0" data-recurly="tax_code" value="${fetch(opts, 'sub_0_tax_code', '')}">
