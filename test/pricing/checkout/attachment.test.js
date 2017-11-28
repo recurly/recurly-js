@@ -116,13 +116,64 @@ describe('CheckoutPricing#attach', function () {
         });
       });
     });
+  });
 
-    // describe('when given multiple subscriptions and adjustments', () => {
-    //   this.ctx.fixture = 'checkoutPricing';
-    //   this.ctx.fixtureOpts = {
-    //     plan: 'basic',
-    //     giftcard: 'super-gift-card'
-    //   };
-    // });
+  describe('when given multiple subscriptions and adjustments', () => {
+    beforeEach(function () {
+      this.currentTest.ctx.fixture = 'checkoutPricing';
+      this.currentTest.ctx.fixtureOpts = {
+        sub_0_plan: 'basic',
+        sub_1_plan: 'basic-2',
+        adj_0: '1',
+        adj_1: '3',
+        giftcard: 'super-gift-card'
+      };
+    });
+
+    applyFixtures();
+
+    beforeEach(function () {
+      assert(typeof this.pricing.attachment === 'undefined');
+      this.pricing.attach(container());
+    });
+
+    it('Applies the subscriptions and adjustments accordingly', function (done) {
+      this.pricing.on('attached', () => {
+        assert.equal(this.pricing.items.subscriptions.length, 2);
+        assert.equal(this.pricing.validSubscriptions.length, 2);
+
+        assert.equal(this.pricing.items.adjustments.length, 2);
+        assert.equal(this.pricing.validAdjustments.length, 2);
+
+        assert.equal(this.pricing.items.giftCard.currency, 'USD');
+        assert.equal(this.pricing.items.giftCard.unit_amount, 20);
+
+        assert.equal(this.pricing.price.now.total, '167.08');
+        assert.equal(this.pricing.price.next.total, '110.08');
+        assert.equal(this.pricing.price.now.subtotal, '187.08');
+        assert.equal(this.pricing.price.next.subtotal, '110.08');
+        assert.equal(this.pricing.price.now.adjustments, '70.00');
+        assert.equal(this.pricing.price.next.adjustments, '0.00');
+        assert.equal(this.pricing.price.now.subscriptions, '117.08');
+        assert.equal(this.pricing.price.next.subscriptions, '110.08');
+        assert.equal(this.pricing.price.now.giftCard, '20.00');
+        assert.equal(this.pricing.price.next.giftCard, '0.00');
+        assert.equal(this.pricing.price.now.taxes, '0.00');
+        assert.equal(this.pricing.price.next.taxes, '0.00');
+        assert.equal(container().querySelector('[data-recurly="currency_code"]').innerHTML, 'USD');
+        assert.equal(container().querySelector('[data-recurly="currency_symbol"]').innerHTML, '$');
+        assert.equal(container().querySelector('[data-recurly="total_now"]').innerHTML, this.pricing.price.now.total);
+        assert.equal(container().querySelector('[data-recurly="total_next"]').innerHTML, this.pricing.price.next.total);
+        assert.equal(container().querySelector('[data-recurly="subtotal_now"]').innerHTML, this.pricing.price.now.subtotal);
+        assert.equal(container().querySelector('[data-recurly="subtotal_next"]').innerHTML, this.pricing.price.next.subtotal);
+        assert.equal(container().querySelector('[data-recurly="subscriptions_now"]').innerHTML, this.pricing.price.now.subscriptions);
+        assert.equal(container().querySelector('[data-recurly="subscriptions_next"]').innerHTML, this.pricing.price.next.subscriptions);
+        assert.equal(container().querySelector('[data-recurly="adjustments_now"]').innerHTML, this.pricing.price.now.adjustments);
+        assert.equal(container().querySelector('[data-recurly="adjustments_next"]').innerHTML, this.pricing.price.next.adjustments);
+        assert.equal(container().querySelector('[data-recurly="taxes_now"]').innerHTML, this.pricing.price.now.taxes);
+        assert.equal(container().querySelector('[data-recurly="taxes_next"]').innerHTML, this.pricing.price.next.taxes);
+        done();
+      });
+    });
   });
 });

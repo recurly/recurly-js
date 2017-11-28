@@ -123,16 +123,16 @@ const checkoutPricing = opts => `
     <span data-recurly="subscriptions_now"></span>
     <span data-recurly="adjustments_now"></span>
     <span data-recurly="discount_now"></span>
-    <span data-recurly="setup_fee_now"></span>
-    <span data-recurly="tax_now"></span>
+    <span data-recurly="gift_card_now"></span>
+    <span data-recurly="taxes_now"></span>
 
     <span data-recurly="total_next"></span>
     <span data-recurly="subtotal_next"></span>
     <span data-recurly="subscriptions_next"></span>
     <span data-recurly="adjustments_next"></span>
     <span data-recurly="discount_next"></span>
-    <span data-recurly="setup_fee_next"></span>
-    <span data-recurly="tax_next"></span>
+    <span data-recurly="gift_card_next"></span>
+    <span data-recurly="taxes_next"></span>
 
     <span data-recurly="currency_code"></span>
     <span data-recurly="currency_symbol"></span>
