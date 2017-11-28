@@ -29,6 +29,10 @@ var staticConfig = {
     PhantomJSDebug: {
       base: 'PhantomJS',
       debug: true
+    },
+    ChromeDebug: {
+      base: 'Chrome',
+      flags: ['--auto-open-devtools-for-tabs']
     }
   },
   client: {

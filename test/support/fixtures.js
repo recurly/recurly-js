@@ -87,6 +87,57 @@ const pricing = opts => `
   </div>
 `;
 
+const checkoutPricing = opts => `
+  <div id="test-pricing">
+    <input type="text" data-recurly-subscription="sub-0" data-recurly="plan" value="${fetch(opts, 'sub_0_plan', '')}">
+    <input type="text" data-recurly-subscription="sub-0" data-recurly="plan_quantity" value="${fetch(opts, 'sub_0_plan_quantity', '')}">
+    <input type="text" data-recurly-subscription="sub-0" data-recurly="tax_code" value="${fetch(opts, 'sub_0_tax_code', '')}">
+
+    <input type="text" data-recurly-subscription="sub-1" data-recurly="plan" value="${fetch(opts, 'sub_1_plan', '')}">
+    <input type="text" data-recurly-subscription="sub-1" data-recurly="plan_quantity" value="${fetch(opts, 'sub_1_plan_quantity', '')}">
+    <input type="text" data-recurly-subscription="sub-1" data-recurly="tax_code" value="${fetch(opts, 'sub_1_tax_code', '')}">
+
+    <input type="text" value="${fetch(opts, 'adj_0')}"
+      data-recurly="adjustment"
+      data-recurly-adjustment="adj-0"
+      data-recurly-adjustment-amount="10"
+      data-recurly-adjustment-tax-code="adj-tax-code-0"
+    >
+
+    <input type="text" value="${fetch(opts, 'adj_1')}"
+      data-recurly="adjustment"
+      data-recurly-adjustment="adj-1"
+      data-recurly-adjustment-amount="20"
+      data-recurly-adjustment-tax-code="adj-tax-code-1"
+    >
+
+    <input type="text" data-recurly="coupon" value="${fetch(opts, 'coupon', '')}">
+    <input type="text" data-recurly="gift_card" value="${fetch(opts, 'giftcard', '')}">
+    <input type="text" data-recurly="currency" value="${fetch(opts, 'currency', 'USD')}">
+    <input type="text" data-recurly="country" value="${fetch(opts, 'country', 'US')}">
+    <input type="text" data-recurly="postal_code" value="${fetch(opts, 'postal_code', '')}">
+    <input type="text" data-recurly="vat_number" value="${fetch(opts, 'vat_number', '')}">
+
+    <span data-recurly="total_now"></span>
+    <span data-recurly="subtotal_now"></span>
+    <span data-recurly="subscriptions_now"></span>
+    <span data-recurly="adjustments_now"></span>
+    <span data-recurly="discount_now"></span>
+    <span data-recurly="gift_card_now"></span>
+    <span data-recurly="taxes_now"></span>
+
+    <span data-recurly="total_next"></span>
+    <span data-recurly="subtotal_next"></span>
+    <span data-recurly="subscriptions_next"></span>
+    <span data-recurly="adjustments_next"></span>
+    <span data-recurly="discount_next"></span>
+    <span data-recurly="gift_card_next"></span>
+    <span data-recurly="taxes_next"></span>
+
+    <span data-recurly="currency_code"></span>
+    <span data-recurly="currency_symbol"></span>
+  </div>
+`;
 
 const multipleForms = opts => `
   <form action="#" id="test-form-1">
@@ -106,7 +157,7 @@ const multipleForms = opts => `
   </form>
 `;
 
-const FIXTURES = {minimal, all, bank, pricing, multipleForms};
+const FIXTURES = { minimal, all, bank, pricing, checkoutPricing, multipleForms };
 
 export function applyFixtures () {
   beforeEach(function () {

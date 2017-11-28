@@ -115,7 +115,7 @@ apiTest(function (requestMethod) {
       describe('when given options.pricing', function () {
         beforeEach(function () {
           let pricing = this.pricing = this.recurly.Pricing();
-          this.applePay = this.recurly.ApplePay(merge(omit(validOpts, 'total'), { pricing }))
+          this.applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing }))
         });
 
         it('binds a pricing instance', function (done) {
@@ -127,7 +127,7 @@ apiTest(function (requestMethod) {
 
         it('ignores options.total', function (done) {
           this.applePay.ready(() => {
-            assert(!('total' in this.applePay.config));
+            assert.notEqual(this.applePay.config.total, validOpts.total);
             done();
           });
         });

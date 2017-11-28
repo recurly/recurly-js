@@ -1,0 +1,16 @@
+{
+  "code": "basic-2",
+  "name": "Basic 2",
+  "period": {
+    "interval": "months",
+    "length": 1
+  },
+  "price": {
+    "USD": {
+      "setup_fee": 5.0,
+      "unit_amount": 90.09
+    }
+  },
+  "addons": [],
+  "tax_exempt": false
+}
