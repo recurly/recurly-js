@@ -475,11 +475,19 @@ describe('CheckoutPricing', function () {
 
     describe('when given an invalid coupon code', () => {
       const invalid = 'coop-invalid';
-      it('does not assign a coupon', function (done) {
-        this.pricing.coupon(invalid).done(price => {
-          assert.equal(this.pricing.items.coupon, undefined);
-          done();
-        });
+      it('emits an error and does not assign the coupon', function (done) {
+        const part = after(2, done);
+        assert.equal(this.pricing.items.coupon, undefined);
+        this.pricing
+          .on('error.coupon', function (err) {
+            assert(err.code === 'not-found');
+            part();
+          })
+          .coupon(invalid)
+          .catch(() => {
+            assert.equal(this.pricing.items.coupon, undefined);
+            part();
+          });
       });
     });
 
