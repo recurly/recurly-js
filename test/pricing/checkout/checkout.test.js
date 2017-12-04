@@ -278,6 +278,24 @@ describe('CheckoutPricing', function () {
       this.pricing.adjustment({ amount: 7.59 });
     });
 
+    describe('credit adjustments', () => {
+      it('properly accounts for negative amounts', function (done) {
+        this.pricing
+          .adjustment({ amount: 100 })
+          .adjustment({ amount: -10, quantity: 2 })
+          .then(() => {
+            assert.equal(this.pricing.items.adjustments[0].amount, 100);
+            assert.equal(this.pricing.items.adjustments[1].amount, -10);
+          })
+          .done(price => {
+            assert.equal(price.now.items[0].amount, '100.00');
+            assert.equal(price.now.items[1].amount, '-20.00');
+            assert.equal(price.now.items[1].unitAmount, '-10.00');
+            done();
+          });
+      });
+    });
+
     describe('updating an existing adjustment', () => {
       beforeEach(function () {
         this.adjustmentExampleOne = { amount: 20, code: 'adjustment-0' };
