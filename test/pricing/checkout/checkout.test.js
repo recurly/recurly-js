@@ -1364,6 +1364,25 @@ describe('CheckoutPricing', function () {
               });
           });
         });
+
+        describe('when a coupon is applied', () => {
+          beforeEach(function () {
+            return this.pricing.coupon('coop-pct-all');
+          });
+
+          it('taxes the discounted subtotal', function (done) {
+            this.pricing
+              .reprice()
+              .done(price => {
+                this.pricing;
+                // 8.75% of taxable amount: 21.99 (sub) + 40 (adj) - 9 (discount) = 52.99
+                assert.equal(price.now.taxes, '4.64');
+                // 8.75% of taxable amount: 19.99 (sub) - 3 (discount) = 16.99
+                assert.equal(price.next.taxes, '1.49');
+                done();
+              });
+          });
+        });
       });
     });
   });
