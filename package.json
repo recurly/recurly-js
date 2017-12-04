@@ -35,10 +35,12 @@
   "devDependencies": {
     "assert": "^1.4.1",
     "babel-core": "^6.23.1",
-    "babel-loader": "^6.3.1",
+    "babel-loader": "^7.1.2",
     "babel-plugin-transform-object-assign": "^6.22.0",
-    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-es2015": "^6.24.0",
     "combinations": "^0.1.1",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.2",
     "glob": "^7.1.1",
     "json-loader": "^0.5.4",
     "karma": "^1.4.1",
@@ -47,6 +49,7 @@
     "karma-fixture": "^0.2.6",
     "karma-html2js-preprocessor": "^1.1.0",
     "karma-ie-launcher": "^0.2.0",
+    "karma-ievms": "git+https://github.com/niksy/karma-ievms.git#browser-decorator",
     "karma-json-fixtures-preprocessor": "0.0.5",
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.2",
@@ -73,7 +76,8 @@
     "mocha": "^3.2.0",
     "phantomjs-prebuilt": "^2.1.14",
     "sinon": "^2.1.0",
-    "webpack": "1.12.2",
-    "webpack-dev-server": "1.12.1"
+    "style-loader": "^0.19.0",
+    "webpack": "^3.9.1",
+    "webpack-dev-server": "^2.9.5"
   }
 }

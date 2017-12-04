@@ -1,38 +1,52 @@
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var glob = require('glob');
 var path = require('path');
 
-const entry = [].concat(
-  glob.sync('./test/*.test.js'),
-  glob.sync('./test/**/*.test.js')
-);
-
 module.exports = {
-  entry,
+  entry: glob.sync('./test/**/*.test.js'),
   output: {
     path: path.join(__dirname, 'build'),
     publicPath: '/build/',
     filename: 'test.js'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel',
-        query: {
-          cacheDirectory: true,
-          presets: ['es2015']
-        }
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true,
+              presets: ['es2015'],
+              plugins: ['transform-object-assign']
+            }
+          }
+        ]
       },
       {
         test: /\.json$/,
-        loader: 'json-loader'
+        use: 'json-loader'
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        })
       }
     ]
   },
   resolve: {
-    root: [path.join(__dirname, 'test')],
-    extensions: ['', '.js', '.json']
+    extensions: ['.js', '.json'],
+    modules: [
+      path.join(__dirname, 'test'),
+      'node_modules'
+    ]
   },
+  plugins: [
+    new ExtractTextPlugin('recurly.css')
+  ],
   devtool: 'inline-source-map'
 };
