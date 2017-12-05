@@ -16,7 +16,7 @@
           if (!relay) throw new Error('relay not found');
           relay.send(JSON.stringify(msg), '*');
         } else {
-          window.opener.postMessage(msg, '*');
+          window.opener.postMessage(JSON.stringify(msg), '*');
         }
       }
 
