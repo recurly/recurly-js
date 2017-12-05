@@ -12,27 +12,6 @@
 }
 
 .recurly-hosted-field-focus {
-
-}
-
-/* Chrome */
-@media (-webkit-min-device-pixel-ratio: 0) {
-  .recurly-hosted-field-focus {
-    outline: -webkit-focus-ring-color auto 5px;
-    outline-offset: -2px;
-  }
-}
-
-/* Firefox */
-@-moz-document url-prefix() {
-  .recurly-hosted-field-focus {
-    outline: -moz-mac-focusring auto 2px;
-  }
-}
-
-/* IE 10, IE 11 */
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-  .recurly-hosted-field {
-    border-color: gray;
-  }
+  outline: -webkit-focus-ring-color auto 5px;
+  outline-offset: -2px;
 }
