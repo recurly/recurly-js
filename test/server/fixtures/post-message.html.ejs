@@ -12,11 +12,11 @@
 
       function post (msg) {
         if (isIE()) {
-          var relay = findRelay('recurly_relay');
+          var relay = findRelay();
           if (!relay) throw new Error('relay not found');
-          relay.send(msg, '*');
+          relay.send(JSON.stringify(msg), '*');
         } else {
-          window.opener.postMessage(msg, '*');
+          window.opener.postMessage(JSON.stringify(msg), '*');
         }
       }
 
@@ -26,7 +26,7 @@
           || nav.userAgent.indexOf('Trident') > -1;
       }
 
-      function findRelay (name) {
+      function findRelay () {
         var loc = window.location;
         var origin = loc.protocol + '//' + loc.host;
         var frames = window.opener.frames;
@@ -34,10 +34,8 @@
         for (var i = 0; i < frames.length; i++) {
           try {
             var frame = frames[i];
-            if (0 === frame.location.href.indexOf(origin)) {
-              if (name === frame.name) {
-                return frame;
-              }
+            if (frame.location.href.indexOf(origin) === 0 && frame.name.indexOf('recurly-relay-') === 0) {
+              return frame;
             }
           } catch (e) {
             // missing location, cross-origin

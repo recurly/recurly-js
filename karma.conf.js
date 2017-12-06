@@ -18,13 +18,16 @@ var staticConfig = {
   port: 9876,
   colors: true,
   autoWatch: true,
-  browsers: ['PhantomJS'],
+  browsers: [
+    'PhantomJS'
+    // 'IE11 - Win7'
+  ],
   singleRun: true,
   concurrency: Infinity,
-  browserDisconnectTimeout: 180000,
+  browserDisconnectTimeout: 240000,
   browserDisconnectTolerance : 1,
-  browserNoActivityTimeout: 180000,
-  captureTimeout: 180000,
+  browserNoActivityTimeout: 240000,
+  captureTimeout: 240000,
   customLaunchers: {
     PhantomJSDebug: {
       base: 'PhantomJS',

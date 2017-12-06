@@ -1,4 +1,5 @@
 import assert from 'assert';
+import after from 'lodash.after';
 import {PayPal} from '../../lib/recurly/paypal';
 import {DirectStrategy} from '../../lib/recurly/paypal/strategy/direct';
 import {BraintreeStrategy} from '../../lib/recurly/paypal/strategy/braintree';

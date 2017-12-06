@@ -1,0 +1,17 @@
+.recurly-hosted-field {
+  appearance: textfield;
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+  background-color: white;
+  background-color: -moz-field;
+  border: 1px solid lightgray;
+  margin-top: 5px;
+  width: 200px;
+  height: 1.5em;
+  box-sizing: border-box;
+}
+
+.recurly-hosted-field-focus {
+  outline: -webkit-focus-ring-color auto 5px;
+  outline-offset: -2px;
+}

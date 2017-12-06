@@ -1,3 +1,4 @@
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var path = require('path');
 var minify = ~process.argv.indexOf('-p');
 
@@ -11,21 +12,38 @@ module.exports = {
     library: 'recurly'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel',
-        query: {
-          cacheDirectory: true,
-          presets: ['es2015'],
-          plugins: ['transform-object-assign']
-        }
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true,
+              presets: ['es2015'],
+              plugins: ['transform-object-assign']
+            }
+          }
+        ]
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        })
       }
     ]
   },
   resolve: {
-    root: [__dirname],
-    extensions: ['', '.js']
-  }
+    extensions: ['.js'],
+    modules: [
+      path.join(__dirname),
+      'node_modules'
+    ]
+  },
+  plugins: [
+    new ExtractTextPlugin('recurly.css')
+  ]
 };
