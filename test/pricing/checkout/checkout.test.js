@@ -298,10 +298,10 @@ describe('CheckoutPricing', function () {
 
     describe('updating an existing adjustment', () => {
       beforeEach(function () {
-        this.adjustmentExampleOne = { amount: 20, code: 'adjustment-0' };
+        this.adjustmentExampleOne = { amount: 20, id: 'adjustment-0' };
         this.adjustmentExampleTwo = {
           amount: 10,
-          code: 'adjustment-1',
+          id: 'adjustment-1',
           currency: 'EUR',
           quantity: 0,
           taxExempt: true,
@@ -319,7 +319,7 @@ describe('CheckoutPricing', function () {
         let secondAdjustment = this.pricing.items.adjustments[1]
 
         assert.equal(firstAdjustment.amount, 20);
-        assert.equal(firstAdjustment.code, 'adjustment-0');
+        assert.equal(firstAdjustment.id, 'adjustment-0');
         assert.equal(firstAdjustment.quantity, 1);
         assert.equal(firstAdjustment.currency, 'USD');
         assert.equal(firstAdjustment.taxExempt, false);
@@ -327,10 +327,10 @@ describe('CheckoutPricing', function () {
         assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
 
         this.pricing
-          .adjustment({ code: 'adjustment-0' })
+          .adjustment({ id: 'adjustment-0' })
           .then(() => {
             assert.equal(firstAdjustment.amount, 20);
-            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.id, 'adjustment-0');
             assert.equal(firstAdjustment.quantity, 1);
             assert.equal(firstAdjustment.currency, 'USD');
             assert.equal(firstAdjustment.taxExempt, false);
@@ -338,10 +338,10 @@ describe('CheckoutPricing', function () {
             assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
             part();
           })
-          .adjustment({ code: 'adjustment-0', amount: 400 })
+          .adjustment({ id: 'adjustment-0', amount: 400 })
           .then(() => {
             assert.equal(firstAdjustment.amount, 400);
-            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.id, 'adjustment-0');
             assert.equal(firstAdjustment.quantity, 1);
             assert.equal(firstAdjustment.currency, 'USD');
             assert.equal(firstAdjustment.taxExempt, false);
@@ -349,10 +349,10 @@ describe('CheckoutPricing', function () {
             assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
             part();
           })
-          .adjustment({ code: 'adjustment-0', quantity: 0 })
+          .adjustment({ id: 'adjustment-0', quantity: 0 })
           .then(() => {
             assert.equal(firstAdjustment.amount, 400);
-            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.id, 'adjustment-0');
             assert.equal(firstAdjustment.quantity, 0);
             assert.equal(firstAdjustment.currency, 'USD');
             assert.equal(firstAdjustment.taxExempt, false);
@@ -360,10 +360,10 @@ describe('CheckoutPricing', function () {
             assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
             part();
           })
-          .adjustment({ code: 'adjustment-0', currency: 'GBP' })
+          .adjustment({ id: 'adjustment-0', currency: 'GBP' })
           .then(() => {
             assert.equal(firstAdjustment.amount, 400);
-            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.id, 'adjustment-0');
             assert.equal(firstAdjustment.quantity, 0);
             assert.equal(firstAdjustment.currency, 'GBP');
             assert.equal(firstAdjustment.taxExempt, false);
@@ -371,10 +371,10 @@ describe('CheckoutPricing', function () {
             assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
             part();
           })
-          .adjustment({ code: 'adjustment-0', taxExempt: true })
+          .adjustment({ id: 'adjustment-0', taxExempt: true })
           .then(() => {
             assert.equal(firstAdjustment.amount, 400);
-            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.id, 'adjustment-0');
             assert.equal(firstAdjustment.quantity, 0);
             assert.equal(firstAdjustment.currency, 'GBP');
             assert.equal(firstAdjustment.taxExempt, true);
@@ -382,10 +382,10 @@ describe('CheckoutPricing', function () {
             assert.deepEqual(secondAdjustment, this.adjustmentExampleTwo);
             part();
           })
-          .adjustment({ code: 'adjustment-0', taxCode: 0 })
+          .adjustment({ id: 'adjustment-0', taxCode: 0 })
           .then(() => {
             assert.equal(firstAdjustment.amount, 400);
-            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.id, 'adjustment-0');
             assert.equal(firstAdjustment.quantity, 0);
             assert.equal(firstAdjustment.currency, 'GBP');
             assert.equal(firstAdjustment.taxExempt, true);
@@ -394,7 +394,7 @@ describe('CheckoutPricing', function () {
             part();
           })
           .adjustment({
-            code: 'adjustment-0',
+            id: 'adjustment-0',
             amount: 25,
             currency: 'USD',
             quantity: 10,
@@ -403,7 +403,7 @@ describe('CheckoutPricing', function () {
           })
           .then(() => {
             assert.equal(firstAdjustment.amount, 25);
-            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.id, 'adjustment-0');
             assert.equal(firstAdjustment.quantity, 10);
             assert.equal(firstAdjustment.currency, 'USD');
             assert.equal(firstAdjustment.taxExempt, true);
@@ -412,20 +412,20 @@ describe('CheckoutPricing', function () {
             part();
           })
           .adjustment({
-            code: 'adjustment-1',
+            id: 'adjustment-1',
             amount: 0,
             quantity: 1,
           })
           .done(price => {
             assert.equal(firstAdjustment.amount, 25);
-            assert.equal(firstAdjustment.code, 'adjustment-0');
+            assert.equal(firstAdjustment.id, 'adjustment-0');
             assert.equal(firstAdjustment.quantity, 10);
             assert.equal(firstAdjustment.currency, 'USD');
             assert.equal(firstAdjustment.taxExempt, true);
             assert.equal(firstAdjustment.taxCode, 'tax-code-1');
 
             assert.equal(secondAdjustment.amount, 0);
-            assert.equal(secondAdjustment.code, 'adjustment-1');
+            assert.equal(secondAdjustment.id, 'adjustment-1');
             assert.equal(secondAdjustment.quantity, 1);
             assert.equal(secondAdjustment.currency, 'EUR');
             assert.equal(secondAdjustment.taxExempt, true);
