@@ -1,17 +1,27 @@
 .recurly-hosted-field {
-  appearance: textfield;
-  -moz-appearance: textfield;
-  -webkit-appearance: textfield;
   background-color: white;
-  background-color: -moz-field;
-  border: 1px solid lightgray;
-  margin-top: 5px;
-  width: 200px;
-  height: 1.5em;
+  border: 1px solid #D7D7D9;
+  border-radius: 3px;
+  margin-top: 10px;
+  height: 2em;
   box-sizing: border-box;
+  padding: 0 8px 0 8px;
 }
 
 .recurly-hosted-field-focus {
-  outline: -webkit-focus-ring-color auto 5px;
-  outline-offset: -2px;
+  border: 1px solid #8C8C91;
+}
+
+.recurly-hosted-field-invalid {
+  border: 1px solid #E35256;
+}
+
+.recurly-hosted-field-number {
+  width: 12em;
+}
+
+.recurly-hosted-field-month,
+.recurly-hosted-field-year,
+.recurly-hosted-field-cvv {
+  width: 4em;
 }
