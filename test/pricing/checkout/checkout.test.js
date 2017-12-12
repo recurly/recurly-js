@@ -1328,6 +1328,23 @@ describe('CheckoutPricing', function () {
               })
               .done();
           });
+
+          describe('given a free trial coupon', () => {
+            beforeEach(function () {
+              return this.pricing.coupon('coop-free-trial');
+            });
+
+            it('calculates the discount amount and taxes appropriately', function (done) {
+              this.pricing
+                .reprice()
+                .then(price => {
+                  assert.equal(price.now.taxes, 6.80);
+                  assert.equal(price.now.discount, 0);
+                  done();
+                })
+                .done();
+            });
+          });
         });
 
         describe('given VAT numbers on address and tax info', () => {
