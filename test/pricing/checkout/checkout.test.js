@@ -522,16 +522,46 @@ describe('CheckoutPricing', function () {
 
     describe('with a coupon already set', () => {
       beforeEach(function () {
-        return this.pricing.coupon('coop').reprice();
+        return this.pricing.coupon('coop');
       });
 
-      it('accepts a blank coupon code and unsets the existing coupon, firing the unset.coupon event', function (done) {
+      it(`accepts a blank coupon code and unsets the existing coupon,
+          firing the unset.coupon event`, function (done) {
         assert.equal(this.pricing.items.coupon.code, 'coop');
         this.pricing.on('unset.coupon', () => {
           assert.equal(this.pricing.items.coupon, undefined);
           done();
         });
-        this.pricing.coupon(null).done();
+        this.pricing.coupon().done();
+      });
+    });
+
+    describe('with a free trial coupon already set', () => {
+      beforeEach(function () {
+        return this.pricing
+          .subscription(this.subscriptionPricingExample)
+          .coupon('coop-free-trial')
+          .reprice();
+      });
+
+      it(`accepts a blank coupon code and unsets the existing coupon,
+          updating the price`, function (done) {
+        assert.equal(this.pricing.items.coupon.code, 'coop-free-trial');
+        assert.equal(this.pricing.price.now.discount, 0);
+        assert.equal(this.pricing.price.now.subscriptions, 2);
+        assert.equal(this.pricing.price.now.total, 2); // setup fee
+        assert.equal(this.pricing.price.next.discount, 0);
+        assert.equal(this.pricing.price.next.subscriptions, 19.99);
+        assert.equal(this.pricing.price.next.total, 19.99);
+        this.pricing.coupon().done(price => {
+          assert.equal(price.now.discount, 0);
+          assert.equal(price.now.subscriptions, 21.99);
+          assert.equal(price.now.total, 21.99);
+          assert.equal(price.next.discount, 0);
+          assert.equal(price.next.subscriptions, 19.99);
+          assert.equal(price.next.total, 19.99);
+          done();
+        });
       });
     });
 
