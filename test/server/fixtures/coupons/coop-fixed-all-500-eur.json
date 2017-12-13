@@ -1,0 +1,16 @@
+{
+  "code": "coop-fixed-all-500-eur",
+  "name": "Test coupon: EUR 500 off all charges",
+  "discount": {
+    "type": "dollars",
+    "amount": {
+      "EUR": 500
+    }
+  },
+  "plans": [],
+  "single_use": false,
+  "applies_to_non_plan_charges": true,
+  "applies_to_plans": true,
+  "applies_to_all_plans": true,
+  "redemption_resource": "account"
+}
