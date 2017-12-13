@@ -516,7 +516,24 @@ describe('CheckoutPricing', function () {
           assert.equal(coupon.code, valid);
           done();
         });
-        this.pricing.coupon('coop').done();
+        this.pricing.coupon(valid).done();
+      });
+    });
+
+    describe('when given a valid coupon code that does not support the checkout currency', () => {
+      const incompatible = 'coop-fixed-all-500-eur';
+      it('does not discount the checkout', function (done) {
+        this.pricing
+          .coupon(incompatible)
+          .done(price => {
+            assert.equal(this.pricing.items.coupon.code, incompatible);
+            assert.equal(this.pricing.items.currency, 'USD');
+            assert.equal('USD' in this.pricing.items.coupon.discount.amount, false);
+            assert.equal('EUR' in this.pricing.items.coupon.discount.amount, true);
+            assert.equal(price.now.discount, 0);
+            assert.equal(price.next.discount, 0);
+            done();
+          });
       });
     });
 
@@ -527,12 +544,18 @@ describe('CheckoutPricing', function () {
 
       it(`accepts a blank coupon code and unsets the existing coupon,
           firing the unset.coupon event`, function (done) {
+        const part = after(2, done);
+        const errorSpy = sinon.spy();
         assert.equal(this.pricing.items.coupon.code, 'coop');
         this.pricing.on('unset.coupon', () => {
           assert.equal(this.pricing.items.coupon, undefined);
-          done();
+          part();
         });
-        this.pricing.coupon().done();
+        this.pricing.on('error', errorSpy);
+        this.pricing.coupon().done(price => {
+          assert.equal(errorSpy.callCount, 0);
+          part();
+        });
       });
     });
 
