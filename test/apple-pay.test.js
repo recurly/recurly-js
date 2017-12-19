@@ -216,9 +216,9 @@ apiTest(function (requestMethod) {
 
       it('updates the total to reflect Pricing changes', function (done) {
         let applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing: this.pricing }));
-        let originalTotal = clone(applePay.total);
+        let originalTotal = clone(applePay.totalLineItem);
         this.pricing.on('change', () => {
-          assert.notDeepEqual(originalTotal, applePay.total);
+          assert.notDeepEqual(originalTotal, applePay.totalLineItem);
           done();
         });
         this.pricing.plan('basic', { quantity: 1 }).done();
