@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.8.1 (Jan 5,2018)
+
+* Adds support for tabbing between hosted fields on mobile devices [#396][396]
+
 ### Version 4.8.0 (Nov 28, 2017)
 
 * Adds Checkout Pricing class [#399][399]
@@ -204,6 +208,7 @@
 [409]: https://github.com/recurly/recurly-js/commit/67d1bd09dc74162eff143755c74b53cc8ea551fc
 [404]: https://github.com/recurly/recurly-js/commit/b4c54b41cf4b8992e81c226d3e7b4fb98656d616
 [399]: https://github.com/recurly/recurly-js/commit/fd11df578e1bc36cd1a889964b1db6346c03aac0
+[396]: https://github.com/recurly/recurly-js/commit/e76f33021c07773e7c2a13ada6cfb215f779d122
 [392]: https://github.com/recurly/recurly-js/commit/b714a6d3c4b2220aa8c3f71f910d904558bd67c1
 [381]: https://github.com/recurly/recurly-js/commit/ad1ec9f68479272143dcc0c8dad21150a0a7708c
 [380]: https://github.com/recurly/recurly-js/commit/8d1c246faf5a06e3a0a0d183d101f3d95808d284
