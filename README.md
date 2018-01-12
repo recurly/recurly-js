@@ -1,6 +1,8 @@
-![Recurly.js](http://i.imgur.com/7s94rRK.png "Recurly.js")
-
-Simple subscription billing in the browser
+<p align="center">
+  <img src="http://i.imgur.com/7s94rRK.png">
+  <br>
+  <img src="https://i.imgur.com/2APg6q6.gif">
+</p>
 
 [![build status][travis-image]][travis-url]
 [![Browser test status][sauce-image]][sauce-url]
