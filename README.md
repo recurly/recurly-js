@@ -1,7 +1,7 @@
 <p align="center">
   <img src="http://i.imgur.com/7s94rRK.png">
   <br>
-  <img src="https://i.imgur.com/2APg6q6.gif">
+  <img src="https://i.imgur.com/XVddeln.gif">
 </p>
 
 [![build status][travis-image]][travis-url]
