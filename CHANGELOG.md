@@ -1,8 +1,8 @@
 ## Recurly.js CHANGELOG
 
-### Version 4.8.1 (Jan 5,2018)
+### Version 4.8.1 (Jan 16,2018)
 
-* Adds support for tabbing between hosted fields on mobile devices [#396][396]
+* Adds support for setting PayPal logo in Express Checkout flow [#418][418]
 
 ### Version 4.8.0 (Nov 28, 2017)
 
@@ -204,6 +204,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[418]: https://github.com/recurly/recurly-js/commit/617e326976255277d68b479ad29f564ee2dae766
 [412]: https://github.com/recurly/recurly-js/commit/22ae5fec78a8d45586f170b28eef59593fcd883d
 [409]: https://github.com/recurly/recurly-js/commit/67d1bd09dc74162eff143755c74b53cc8ea551fc
 [404]: https://github.com/recurly/recurly-js/commit/b4c54b41cf4b8992e81c226d3e7b4fb98656d616
