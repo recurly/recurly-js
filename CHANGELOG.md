@@ -1,6 +1,6 @@
 ## Recurly.js CHANGELOG
 
-### Version 4.8.2 (Feb 15,2018)
+### Version 4.8.2 (Feb 15, 2018)
 
 * Adds support for Apple pay zero amount authorizations [#426][426]
 
