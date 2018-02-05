@@ -373,6 +373,49 @@ apiTest(function (requestMethod) {
         });
       });
     });
+
+    describe('Authorization line item', () => {
+      it('has a customizable label', function () {
+        const example = 'Test auth label';
+        const applePay = this.recurly.ApplePay(Object.assign({}, validOpts, {
+          i18n: { authorizationLineItemLabel: example }
+        }));
+        applePay.authorizationLineItem.label === example;
+      });
+
+      describe('when the total price is greater than zero', function () {
+        beforeEach(function (done) {
+          this.applePay = this.recurly.ApplePay(validOpts);
+          this.applePay.ready(() => {
+            this.applePay.begin();
+            done();
+          });
+        });
+
+        it('is not present', function () {
+          assert.equal(this.applePay.config.total, 3.49);
+          assert.equal(this.applePay.lineItems.length, 0);
+        });
+      });
+
+      describe('when the total price is zero', function () {
+        beforeEach(function (done) {
+          this.applePay = this.recurly.ApplePay(Object.assign({}, validOpts, {
+            total: 0
+          }));
+          this.applePay.ready(() => {
+            this.applePay.begin();
+            done();
+          });
+        });
+
+        it('is present', function () {
+          assert.equal(this.applePay.config.total, 1);
+          assert.equal(this.applePay.lineItems.length, 1);
+          assert.deepEqual(this.applePay.lineItems[0], this.applePay.authorizationLineItem);
+        });
+      });
+    });
   });
 });
 
