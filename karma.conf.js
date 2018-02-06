@@ -20,6 +20,7 @@ var staticConfig = {
   autoWatch: true,
   browsers: [
     'PhantomJS'
+    // 'ChromeDebug'
     // 'IE11 - Win7'
   ],
   singleRun: true,
