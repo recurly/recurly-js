@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.8.2 (Feb 15,2018)
+
+* Adds support for Apple pay zero amount authorizations [#426][426]
+
 ### Version 4.8.1 (Jan 16,2018)
 
 * Adds support for setting PayPal logo in Express Checkout flow [#418][418]
@@ -204,6 +208,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[426]: https://github.com/recurly/recurly-js/commit/74cbea1723b9238e76460b4c6477a0ecd26c75ab
 [418]: https://github.com/recurly/recurly-js/commit/617e326976255277d68b479ad29f564ee2dae766
 [412]: https://github.com/recurly/recurly-js/commit/22ae5fec78a8d45586f170b28eef59593fcd883d
 [409]: https://github.com/recurly/recurly-js/commit/67d1bd09dc74162eff143755c74b53cc8ea551fc
