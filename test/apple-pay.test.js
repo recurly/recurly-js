@@ -114,8 +114,8 @@ apiTest(function (requestMethod) {
 
       describe('when given options.pricing', function () {
         beforeEach(function () {
-          let pricing = this.pricing = this.recurly.Pricing();
-          this.applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing }))
+          let pricing = this.pricing = this.recurly.Pricing.Checkout();
+          this.applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing }));
         });
 
         it('binds a pricing instance', function (done) {
@@ -129,6 +129,75 @@ apiTest(function (requestMethod) {
           this.applePay.ready(() => {
             assert.notEqual(this.applePay.config.total, validOpts.total);
             done();
+          });
+        });
+
+        describe('when the pricing instance includes several items', () => {
+          beforeEach(function (done) {
+            this.subscription = this.recurly.Pricing.Subscription()
+              .plan('basic')
+              .address({ country: 'US', postalCode: '94117' })
+              .done(() => {
+                this.pricing
+                  .subscription(this.subscription)
+                  .adjustment({ amount: 100 })
+                  .coupon('coop')
+                  .giftCard('super-gift-card')
+                  .done(() => done());
+              });
+          });
+
+          it('includes relevant line items', function () {
+            const subtotal = this.applePay.lineItems[0];
+            const discount = this.applePay.lineItems[1];
+            const giftCard = this.applePay.lineItems[2];
+            const total = this.applePay.totalLineItem;
+            assert.equal(this.applePay.lineItems.length, 3);
+            assert.strictEqual(subtotal.label, this.applePay.config.i18n.subtotalLineItemLabel);
+            assert.strictEqual(discount.label, this.applePay.config.i18n.discountLineItemLabel);
+            assert.strictEqual(giftCard.label, this.applePay.config.i18n.giftCardLineItemLabel);
+            assert.strictEqual(subtotal.amount, '121.99');
+            assert.strictEqual(discount.amount, '-20.00');
+            assert.strictEqual(giftCard.amount, '-20.00');
+            assert.strictEqual(total.amount, '81.99');
+          });
+
+          describe('when the line item labels are customized', () => {
+            beforeEach(function () {
+              const pricing = this.pricing;
+              const i18n = this.exampleI18n = {
+                authorizationLineItemLabel: 'Custom card authorization label',
+                subtotalLineItemLabel: 'Custom subtotal label',
+                discountLineItemLabel: 'Custom discount label',
+                taxLineItemLabel: 'Custom tax label',
+                giftCardLineItemLabel: 'Custom Gift card label'
+              };
+              this.applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing, i18n }));
+            });
+
+            it('displays those labels', function () {
+              const subtotal = this.applePay.lineItems[0];
+              const discount = this.applePay.lineItems[1];
+              const giftCard = this.applePay.lineItems[2];
+              assert.equal(subtotal.label, this.exampleI18n.subtotalLineItemLabel);
+              assert.equal(discount.label, this.exampleI18n.discountLineItemLabel);
+              assert.equal(giftCard.label, this.exampleI18n.giftCardLineItemLabel);
+            });
+          });
+
+          describe('when the total price is zero', () => {
+            beforeEach(function (done) {
+              this.pricing.coupon('coop-fixed-all-500').done(() => done());
+            });
+
+            it('adds an authorization line item', function () {
+              assert.strictEqual(this.applePay.totalLineItem.amount, '0.00');
+              this.applePay.begin();
+              const authorization = this.applePay.lineItems[2];
+              assert.strictEqual(authorization.label, this.applePay.config.i18n.authorizationLineItemLabel);
+              assert.strictEqual(authorization.amount, '1.00');
+              assert.strictEqual(this.applePay.totalLineItem.amount, '1.00');
+            });
           });
         });
       });
@@ -216,9 +285,9 @@ apiTest(function (requestMethod) {
 
       it('updates the total to reflect Pricing changes', function (done) {
         let applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing: this.pricing }));
-        let originalTotal = clone(applePay.total);
+        let originalTotal = clone(applePay.totalLineItem);
         this.pricing.on('change', () => {
-          assert.notDeepEqual(originalTotal, applePay.total);
+          assert.notDeepEqual(originalTotal, applePay.totalLineItem);
           done();
         });
         this.pricing.plan('basic', { quantity: 1 }).done();
@@ -370,6 +439,49 @@ apiTest(function (requestMethod) {
               done();
             });
           });
+        });
+      });
+    });
+
+    describe('Authorization line item', () => {
+      it('has a customizable label', function () {
+        const example = 'Test auth label';
+        const applePay = this.recurly.ApplePay(Object.assign({}, validOpts, {
+          i18n: { authorizationLineItemLabel: example }
+        }));
+        applePay.authorizationLineItem.label === example;
+      });
+
+      describe('when the total price is greater than zero', function () {
+        beforeEach(function (done) {
+          this.applePay = this.recurly.ApplePay(validOpts);
+          this.applePay.ready(() => {
+            this.applePay.begin();
+            done();
+          });
+        });
+
+        it('is not present', function () {
+          assert.equal(this.applePay.config.total, 3.49);
+          assert.equal(this.applePay.lineItems.length, 0);
+        });
+      });
+
+      describe('when the total price is zero', function () {
+        beforeEach(function (done) {
+          this.applePay = this.recurly.ApplePay(Object.assign({}, validOpts, {
+            total: 0
+          }));
+          this.applePay.ready(() => {
+            this.applePay.begin();
+            done();
+          });
+        });
+
+        it('is present', function () {
+          assert.equal(this.applePay.config.total, 1);
+          assert.equal(this.applePay.lineItems.length, 1);
+          assert.deepEqual(this.applePay.lineItems[0], this.applePay.authorizationLineItem);
         });
       });
     });
