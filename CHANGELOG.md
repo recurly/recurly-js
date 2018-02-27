@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.8.3 (Feb 27, 2018)
+
+* Adds support for mobile tabbing between hosted fields [#421][421]
+
 ### Version 4.8.2 (Feb 15, 2018)
 
 * Adds support for Apple pay zero amount authorizations [#426][426]
@@ -209,6 +213,7 @@
 * Full rewrite for Billing Info tokenization
 
 [426]: https://github.com/recurly/recurly-js/commit/74cbea1723b9238e76460b4c6477a0ecd26c75ab
+[421]: https://github.com/recurly/recurly-js/commit/f9c46b15da5bd5b0ed4278060fa53d47407437bd
 [418]: https://github.com/recurly/recurly-js/commit/617e326976255277d68b479ad29f564ee2dae766
 [412]: https://github.com/recurly/recurly-js/commit/22ae5fec78a8d45586f170b28eef59593fcd883d
 [409]: https://github.com/recurly/recurly-js/commit/67d1bd09dc74162eff143755c74b53cc8ea551fc
