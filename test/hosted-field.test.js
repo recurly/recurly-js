@@ -7,53 +7,44 @@ import {HostedField} from '../lib/recurly/hosted-field';
 import {Recurly} from '../lib/recurly';
 
 describe('HostedFields', function () {
+  applyFixtures();
+
   beforeEach(function (done) {
-    this.fieldType = 'number';
     this.recurly = initRecurly();
     this.recurly.ready(done);
-    this.fieldConfig = {
-      type: this.fieldType,
-      selector: `[data-recurly=${this.fieldType}]`,
-      recurly: this.recurly.config
-    };
-    sinon.stub(bowser, 'mobile').value(true);
-    this.hostedField = new HostedField(this.fieldConfig);
   });
 
-  applyFixtures();
+  this.ctx.fixture = 'minimal';
 
   describe('on mobile', function () {
-    this.ctx.fixture = 'minimal';
+    beforeEach(() => sinon.stub(bowser, 'mobile').value(true));
+
+    beforeEach(buildHostedFieldExample);
 
     it('injects mobile specific html', function () {
-      assert(this.hostedField.tabbingProxy);
-      assert.equal('function', typeof this.hostedField.tabbingProxy.focus);
+      assert(this.hostedField.tabbingProxy instanceof HTMLElement);
+      assert.equal(typeof this.hostedField.tabbingProxy.focus, 'function');
     });
   });
-});
-
-describe('HostedFields', function () {
-  beforeEach(function (done) {
-    this.fieldType = 'number';
-    this.recurly = initRecurly();
-    this.recurly.ready(done);
-    this.fieldConfig = {
-      type: this.fieldType,
-      selector: `[data-recurly=${this.fieldType}]`,
-      recurly: this.recurly.config
-    };
-    sinon.stub(bowser, 'mobile').value(false);
-    sinon.stub(bowser, 'tablet').value(false);
-    this.hostedField = new HostedField(this.fieldConfig);
-  });
-
-  applyFixtures();
 
   describe('on non-mobile', function () {
-    this.ctx.fixture = 'minimal';
+    beforeEach(() => {
+      sinon.stub(bowser, 'mobile').value(false);
+      sinon.stub(bowser, 'tablet').value(false);
+    });
+
+    beforeEach(buildHostedFieldExample);
 
     it('does not inject mobile specific html', function () {
-      assert.equal(null, this.hostedField.tabbingProxy);
+      assert.strictEqual(this.hostedField.tabbingProxy, undefined);
     });
   });
 });
+
+function buildHostedFieldExample () {
+  this.hostedField = new HostedField({
+    type: 'number',
+    selector: `[data-recurly=number]`,
+    recurly: this.recurly.config
+  });
+}
