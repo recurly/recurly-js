@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.8.4 (Mar 16, 2018)
+
+* Adds option to hide the card hosted field card brand icon [#433][433]
+
 ### Version 4.8.3 (Feb 27, 2018)
 
 * Adds support for mobile tabbing between hosted fields [#421][421]
@@ -212,6 +216,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[433]: https://github.com/recurly/recurly-js/commit/b22e51ad18e159b74dd73604b5218a10ff702098
 [426]: https://github.com/recurly/recurly-js/commit/74cbea1723b9238e76460b4c6477a0ecd26c75ab
 [421]: https://github.com/recurly/recurly-js/commit/f9c46b15da5bd5b0ed4278060fa53d47407437bd
 [418]: https://github.com/recurly/recurly-js/commit/617e326976255277d68b479ad29f564ee2dae766
