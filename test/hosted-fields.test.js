@@ -1,6 +1,5 @@
 import assert from 'assert';
 import bowser from 'bowser';
-import tabbable from 'tabbable';
 
 import {applyFixtures} from './support/fixtures';
 import {initRecurly, nextTick} from './support/helpers';
