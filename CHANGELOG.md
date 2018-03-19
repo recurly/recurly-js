@@ -1,22 +1,22 @@
 ## Recurly.js CHANGELOG
 
-### Version 4.8.4 (Mar 16, 2018)
+### Version 4.8.4
 
 * Adds option to hide the card hosted field card brand icon [#433][433]
 
-### Version 4.8.3 (Feb 27, 2018)
+### Version 4.8.3
 
 * Adds support for mobile tabbing between hosted fields [#421][421]
 
-### Version 4.8.2 (Feb 15, 2018)
+### Version 4.8.2
 
 * Adds support for Apple pay zero amount authorizations [#426][426]
 
-### Version 4.8.1 (Jan 16,2018)
+### Version 4.8.1
 
 * Adds support for setting PayPal logo in Express Checkout flow [#418][418]
 
-### Version 4.8.0 (Nov 28, 2017)
+### Version 4.8.0
 
 * Adds Checkout Pricing class [#399][399]
 * Adds Card Hosted Field [#404][404]
@@ -24,86 +24,86 @@
 * Adds recurly.css [#409][409]
 * Fixes Braintree PayPal cancel event [#412][412]
 
-### Version 4.7.2 (Oct 23, 2017)
+### Version 4.7.2
 
 * Removes the requirement to pass in a form to Apple Pay [#381][381]
 
-### Version 4.7.1 (Oct 9, 2017)
+### Version 4.7.1
 
 * Adds customer address collection from device in Apple Pay transactions [#380][380]
 
-### Version 4.7.0 (Sep 15, 2017)
+### Version 4.7.0
 
 * Adds 'attached' event to announce completion of pricing attachment [#377][377]
 * Adds `fields[field].inputType` option to configuration -- 'mobileSelect' to enable select fields for expiry fields on mobile [#375][375]
 * Fixes an issue with field font color propagation [#378][378]
 
-### Version 4.6.4 (Sep 5, 2017)
+### Version 4.6.4
 
 * Fixes an issue with Apple Pay pricing initialization [#374][374]
 
-### Version 4.6.3 (Aug 10, 2017)
+### Version 4.6.3
 
 * Sends transaction amount to PayPal Express Checkout initialization endpoint [#369][369]
 * Fixes an issue with Braintree misconfiguration error reporting [#367][367]
 
-### Version 4.6.2 (Jul 6, 2017)
+### Version 4.6.2
 
 * Clicking on a hosted field container will cause the field to focus [#356][356]
 * Adds 'company' to accepted tokenization fields [#358][358]
 * Adds support for Braintree fraud data collection [#363][363]
 
-### Version 4.6.1 (Apr 21, 2017)
+### Version 4.6.1
 
 * Fixes compatibility issue with Internet Explorer [#352][352]
 
-### Version 4.6.0 (Apr 21, 2017)
+### Version 4.6.0
 
 * Adds support for new PayPal Express Checkout flow [#348][348]
 
-### Version 4.5.3 (Mar 24, 2017)
+### Version 4.5.3
 
 * Adds Braintree PayPal failure fallback [#336][336]
 * Size reduced by pruning some old shim dependencies [#344][344]
 
-### Version 4.5.2 (Mar 14, 2017)
+### Version 4.5.2
 
 * Adds device data collection to Braintree PayPal integration [#333][333]
 * Fixes bug in window relay for IE11 [#341][341]
 
-### Version 4.5.1 (Feb 20, 2017)
+### Version 4.5.1
 
 * Fixes message collision in relay [#330][330]
 * Fixes version reporting [#325][325]
 
-### Version 4.5.0 (Feb 20, 2017)
+### Version 4.5.0
 
 * Adds new PayPal class [#317][317]
 
-### Version 4.4.1 (Feb 15, 2017)
+### Version 4.4.1
 
 * Also send name, address, etc fields for apple pay token creation [#320][320]
 * Update Apple Pay init to receive payment form [#322][322]
 
-### Version 4.4.0 (Jan 25, 2017)
+### Version 4.4.0
 
 * Adds Apple Pay support [#313][313]
 * Logs API response when json is invalid [#307][307]
 
-### Version 4.3.0 (Oct 7, 2016)
+### Version 4.3.0
 
 * Adds field reinstantiation support [#267][267]
 
-### Version 4.2.0 (Oct 7, 2016)
+### Version 4.2.0
 
 * Adds shipping address support [#300][300]
 * Restructures config object to nest fields more logically [#297][297]
 
-### Version 4.1.1 (Aug 30, 2016)
+### Version 4.1.1
 
 * Improves cacheing by initially sending field config over hash [#295][295]
 
-### Version 4.1.0 (July 29, 2016)
+### Version 4.1.0
 
 * Adds Gift card support [#275][275]
 * Adds click event binding to label tags referenced to hosted field containers [#279][279]
@@ -111,31 +111,31 @@
 * Fixes expiry validation of invalid inputs [#278][278]
 * Fixes dom value reader for empty selects [#282][282]
 
-### Version 4.0.5 (July 6, 2016)
+### Version 4.0.5
 
 * Adds a pricing error when a coupon is not found [#263][263]
 * Removes ussageAddons from pricing calculations [#268][268]
 * Fixes bug around initial pricing not respecting coupons [#264][264]
 
-### Version 4.0.4 (May 23, 2016)
+### Version 4.0.4
 
 * Adds functionality for running fraud data collector [#254][254]
 
-### Version 4.0.3 (Apr 28, 2016)
+### Version 4.0.3
 
 * Updates discount type indication [#250][250]
 
-### Version 4.0.2 (Apr 20, 2016)
+### Version 4.0.2
 
 * Adds detection of new Mastercard BIN ranges [#229][229]
 * Adds pricing case for trial extension coupons [#246][246]
 
-### Version 4.0.1 (Feb 16, 2016)
+### Version 4.0.1
 
 * Fixes cvv requirement enforcement [#231][231]
 * Misc. code cleanup and test infrastructure changes [#234][234] [#233][233] [#230][230]
 
-### Version 4.0.0 (Jan 13, 2016)
+### Version 4.0.0
 
 * Adds support for hosted fields for card transactions: recurly-hosted iframes
   are injected in place of card fields
@@ -143,18 +143,18 @@
 * Adds eventing to main recurly instance
 * Adds 'ready', 'change', and 'field:submit' events
 
-### Version 3.1.1 (June 11, 2015)
+### Version 3.1.1
 
 * Adds single use coupon support to discount calculations [#204][204]
 * Fix issue where XDRs aborted unpredictably [#207][207]
 
-### Version 3.1.0 (May 7, 2015)
+### Version 3.1.0
 
 * Adds bank account tokenization [#202][202]
 * Adds optional additional field validations [#196][196]
 * Fixes tax rounding issue [#199][199]
 
-### Version 3.0.11 (March 17, 2015)
+### Version 3.0.11
 
 * Adds partial number detection to cardType method [#187][187]
 * Adds tax information to pricing object [#169][169]
@@ -163,38 +163,38 @@
 * Fixes issue with pricing coupon and plan mismatches [#177][177]
 * Fixes issue where Pricing detachment fails on multiple instances [#188][188]
 
-### Version 3.0.10 (December 18, 2014)
+### Version 3.0.10
 
 * Adds Pricing support for tax_code [#166][166]
 
-### Version 3.0.9 (November 12, 2014)
+### Version 3.0.9
 
 * Adds CORS support [#157][157]
 
-### Version 3.0.8 (November 6, 2014)
+### Version 3.0.8
 
 * Rejects falsey configuration values [#155][155]
 * Switches build from component to duo [#154][154]
 * Adds plan unit price and setup fee to pricing output [#150][150]
 
-### Version 3.0.7 (September 17, 2014)
+### Version 3.0.7
 
 * Fixes issue with IE PayPal communication [#152][152]
 
-### Version 3.0.6 (September 8, 2014)
+### Version 3.0.6
 
 * Fixes rounding issues around tax and floats [#147][147]
 * Correctly sets setup_fee on pricing output object [#144][144]
 
-### Version 3.0.5 (August 5, 2014)
+### Version 3.0.5
 
 * Fixed missing json module dependency [#138][138]
 
-### Version 3.0.4 (July 24, 2014)
+### Version 3.0.4
 
 * Fixed issue with addons and pricing module [#293][293]
 
-### Version 3.0.3 (June 10, 2014)
+### Version 3.0.3
 
 * Added 'phone' and 'vat_number' to list of tokenizable fields [#126][126]
 * Added checkbox support to Pricing.prototype.attach [#123][123]
@@ -203,16 +203,16 @@
 * Fixed coupon rounding behavior in Pricing.prototype.calculations [#125][125]
 * Updated testing dependencies [#121][121]
 
-### Version 3.0.2 (June 3, 2014)
+### Version 3.0.2
 
 * Fixed parse cardType bug [#120][120]
 * Fixed issue where publicKey was not sent to the PayPal flow initiation API [#117][117]
 
-### Version 3.0.1 (May 29, 2014)
+### Version 3.0.1
 
 * Added Plan quantity manipulation to recurly.Pricing [#115][115]
 
-### Version 3.0.0 (May 13, 2014)
+### Version 3.0.0
 
 * Full rewrite for Billing Info tokenization
 
