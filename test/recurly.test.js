@@ -1,5 +1,6 @@
 import assert from 'assert';
 import isEmpty from 'lodash.isempty';
+import jsonp from 'jsonp';
 import {Recurly} from '../lib/recurly';
 import CheckoutPricing from '../lib/recurly/pricing/checkout';
 import SubscriptionPricing from '../lib/recurly/pricing/subscription';
@@ -30,7 +31,7 @@ describe('Recurly', () => {
     });
   });
 
-  describe('Recurly.request', () => {
+  describe('Recurly.request, Recurly.xhr, and Recurly.jsonp', () => {
     beforeEach(() => recurly = initRecurly({ cors: false }));
 
     describe('when configured for jsonp requests', () => {
@@ -48,6 +49,73 @@ describe('Recurly', () => {
         sinon.stub(recurly, 'xhr');
         recurly.request('get', 'test', () => {});
         assert(recurly.xhr.calledOnce);
+      });
+
+      describe('network calls', () => {
+        const example = {
+          string: '789-xyz',
+          number: 1,
+          object: {
+            string: 'abc-xyz-123'
+          },
+          arrayOfObjects: [{ key: 'value', number: 0 }, { float: 1.23456, string: '123456' }],
+          arrayOfArrays: [[0, 1, 2, 3, 4],['a', 'b', 'c', 'd', 'e']]
+        };
+        const exampleEncoded = `
+          string=789-xyz
+          &number=1
+          &object[string]=abc-xyz-123
+          &arrayOfObjects[0][key]=value
+          &arrayOfObjects[0][number]=0
+          &arrayOfObjects[1][float]=1.23456
+          &arrayOfObjects[1][string]=123456
+          &arrayOfArrays[0][0]=0
+          &arrayOfArrays[0][1]=1
+          &arrayOfArrays[0][2]=2
+          &arrayOfArrays[0][3]=3
+          &arrayOfArrays[0][4]=4
+          &arrayOfArrays[1][0]=a
+          &arrayOfArrays[1][1]=b
+          &arrayOfArrays[1][2]=c
+          &arrayOfArrays[1][3]=d
+          &arrayOfArrays[1][4]=e
+          &version=4.8.4
+          &key=test`.replace(/\n|\s/g, '');
+        const XHR = (function () {
+          const XHR = window.XMLHttpRequest;
+          const XDM = window.XDomainRequest;
+          if (XHR && 'withCredentials' in new XHR) return XHR;
+          if (XDM) return XDM;
+        })();
+
+        beforeEach(() => {
+          sinon.spy(XHR.prototype, 'open');
+          sinon.spy(XHR.prototype, 'send');
+        });
+        afterEach(() => {
+          XHR.prototype.open.restore()
+          XHR.prototype.send.restore()
+        });
+
+        describe('when performing a POST request', () => {
+          beforeEach(done => recurly.request('post', '/test', example, () => done()));
+          it('sends properly-encoded data in the request body', () => {
+            const openCall = XHR.prototype.open.getCall(XHR.prototype.open.callCount - 1);
+            const sendCall = XHR.prototype.send.getCall(XHR.prototype.send.callCount - 1);
+            assert(openCall.calledWithExactly('post', `${recurly.config.api}/test`));
+            assert(sendCall.calledWithExactly(exampleEncoded));
+          });
+        });
+
+        describe('when performing a GET request', () => {
+          beforeEach(done => recurly.request('get', '/test', example, () => done()));
+          it('appends properly-encoded data to the url', () => {
+            const openCall = XHR.prototype.open.getCall(XHR.prototype.open.callCount - 1);
+            const sendCall = XHR.prototype.send.getCall(XHR.prototype.send.callCount - 1);
+            assert(openCall.calledWithExactly('get', `${recurly.config.api}/test?${exampleEncoded}`));
+            assert(sendCall.calledWith());
+          });
+        });
       });
     });
   });
