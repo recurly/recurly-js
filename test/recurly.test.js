@@ -61,7 +61,7 @@ describe('Recurly', () => {
           arrayOfObjects: [{ key: 'value', number: 0 }, { float: 1.23456, string: '123456' }],
           arrayOfArrays: [[0, 1, 2, 3, 4],['a', 'b', 'c', 'd', 'e']]
         };
-        const exampleEncoded = `
+        const exampleEncoded = () => `
           string=789-xyz
           &number=1
           &object[string]=abc-xyz-123
@@ -79,7 +79,7 @@ describe('Recurly', () => {
           &arrayOfArrays[1][2]=c
           &arrayOfArrays[1][3]=d
           &arrayOfArrays[1][4]=e
-          &version=4.8.4
+          &version=${recurly.version}
           &key=test`.replace(/\n|\s/g, '');
         const XHR = (function () {
           const XHR = window.XMLHttpRequest;
@@ -103,7 +103,7 @@ describe('Recurly', () => {
             const openCall = XHR.prototype.open.getCall(XHR.prototype.open.callCount - 1);
             const sendCall = XHR.prototype.send.getCall(XHR.prototype.send.callCount - 1);
             assert(openCall.calledWithExactly('post', `${recurly.config.api}/test`));
-            assert(sendCall.calledWithExactly(exampleEncoded));
+            assert(sendCall.calledWithExactly(exampleEncoded()));
           });
         });
 
@@ -112,7 +112,7 @@ describe('Recurly', () => {
           it('appends properly-encoded data to the url', () => {
             const openCall = XHR.prototype.open.getCall(XHR.prototype.open.callCount - 1);
             const sendCall = XHR.prototype.send.getCall(XHR.prototype.send.callCount - 1);
-            assert(openCall.calledWithExactly('get', `${recurly.config.api}/test?${exampleEncoded}`));
+            assert(openCall.calledWithExactly('get', `${recurly.config.api}/test?${exampleEncoded()}`));
             assert(sendCall.calledWith());
           });
         });
