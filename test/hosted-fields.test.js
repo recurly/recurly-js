@@ -1,13 +1,12 @@
 import assert from 'assert';
 import bowser from 'bowser';
-
 import {applyFixtures} from './support/fixtures';
 import {initRecurly, nextTick} from './support/helpers';
 import HostedField from '../lib/recurly/hosted-field';
 import {FIELD_TYPES, HostedFields} from '../lib/recurly/hosted-fields';
 import {Recurly} from '../lib/recurly';
 
-describe('HostedFields', function () {
+describe('Recurly.HostedFields', function () {
   beforeEach(function (done) {
     this.recurly = initRecurly();
     this.recurly.ready(done);
