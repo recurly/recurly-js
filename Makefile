@@ -1,6 +1,7 @@
 BIN = node_modules/.bin
 WEBPACK = $(BIN)/webpack
 KARMA = $(BIN)/karma
+COVERALLS = $(BIN)/coveralls
 SERVER = $(BIN)/webpack-dev-server --inline --hot --port 8020
 SRC = index.js $(shell find . -type f -name '*.js' ! -path './build/*' -o -name '*.css' ! -path './build/*')
 TESTS = $(shell find test -type f -name '*.js')
@@ -32,6 +33,9 @@ test: build build/test.js
 
 test-ci: build build/test.js
 	@$(KARMA) start karma.ci.conf.js
+ifdef REPORT_COVERAGE
+	@cat ./build/reports/coverage/lcov.info | $(COVERALLS)
+endif
 
 node_modules: package.json
 	@npm install --silent
