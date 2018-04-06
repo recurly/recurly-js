@@ -6,7 +6,7 @@ var staticConfig = {
     'build/test.js'
   ],
   proxies: { '/api': 'http://localhost:9877' },
-  reporters: ['mocha'],
+  reporters: ['mocha', 'coverage'],
   port: 9876,
   colors: true,
   autoWatch: true,
@@ -22,10 +22,6 @@ var staticConfig = {
   browserNoActivityTimeout: 800000,
   captureTimeout: 800000,
   customLaunchers: {
-    PhantomJSDebug: {
-      base: 'PhantomJS',
-      debug: true
-    },
     ChromeDebug: {
       base: 'Chrome',
       flags: ['--auto-open-devtools-for-tabs']
@@ -37,6 +33,10 @@ var staticConfig = {
       timeout : 800000, // 800 seconds
       grep: ''
     }
+  },
+  coverageReporter: {
+    type : 'html',
+    dir : 'build/reports/coverage/'
   }
 };
 

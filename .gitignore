@@ -1,9 +1,8 @@
 .DS_Store
 .sauce
 
-node_modules
-npm-debug.log
-
 build
+node_modules
 
+npm-debug.log
 test/server/pid.txt

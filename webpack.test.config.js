@@ -20,7 +20,10 @@ module.exports = {
             options: {
               cacheDirectory: true,
               presets: ['es2015'],
-              plugins: ['transform-object-assign']
+              plugins: [
+                'transform-object-assign',
+                ['istanbul', { 'exclude': ['test/*'] }]
+              ]
             }
           }
         ]
