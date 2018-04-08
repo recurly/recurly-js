@@ -35,6 +35,7 @@ test-ci: build build/test.js
 	@$(KARMA) start karma.ci.conf.js
 ifdef REPORT_COVERAGE
 	@cat ./build/reports/coverage/lcov.info | $(COVERALLS)
+	@rm -rf ./build/reports
 endif
 
 node_modules: package.json

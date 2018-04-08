@@ -18,7 +18,8 @@ var sauceBrowsers = {
   sl_safari: {
     base: 'SauceLabs',
     browserName: 'safari',
-    platform: 'OS X 10.10'
+    platform: 'OS X 10.12',
+    version: '11'
   },
   sl_ie_11: {
     base: 'SauceLabs',
