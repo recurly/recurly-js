@@ -168,6 +168,14 @@ http://docs.recurly.com/api/plans/add-ons
     recurly.planAddons.update(plancode, addoncode, details, callback)
     recurly.planAddons.remove(plancode, addoncode, callback)
 
+Purchases
+=========
+https://dev.recurly.com/docs/create-purchase
+
+    recurly.purchases.create(details, callback)
+
+  The purchase endpoint requires API version v2.6. Creating multiple subscriptions requires
+  API v2.8, and some extra feature flags enabled. Contact Recurly support for more details.
 
 Transactions
 ===============
