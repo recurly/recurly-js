@@ -1,20 +1,12 @@
 var staticConfig = {
   basePath: '',
-  frameworks: ['mocha', 'fixture', 'sinon', 'phantomjs-shim', 'source-map-support'],
+  frameworks: ['mocha', 'sinon', 'phantomjs-shim', 'source-map-support'],
   files: [
     'build/recurly.js',
-    'build/test.js',
-    { pattern: 'test/support/fixtures/*' },
+    'build/test.js'
   ],
   proxies: { '/api': 'http://localhost:9877' },
-  preprocessors: {
-    'test/support/fixtures/*.html': ['html2js'],
-    'test/support/fixtures/*.json': ['json_fixtures']
-  },
-  jsonFixturesPreprocessor: {
-    variableName: '__json__'
-  },
-  reporters: ['mocha'],
+  reporters: ['mocha', 'coverage'],
   port: 9876,
   colors: true,
   autoWatch: true,
@@ -30,10 +22,6 @@ var staticConfig = {
   browserNoActivityTimeout: 800000,
   captureTimeout: 800000,
   customLaunchers: {
-    PhantomJSDebug: {
-      base: 'PhantomJS',
-      debug: true
-    },
     ChromeDebug: {
       base: 'Chrome',
       flags: ['--auto-open-devtools-for-tabs']
@@ -45,6 +33,13 @@ var staticConfig = {
       timeout : 800000, // 800 seconds
       grep: ''
     }
+  },
+  coverageReporter: {
+    dir : 'build/reports/',
+    reporters: [
+      { type: 'html', subdir: 'coverage' },
+      { type: 'lcovonly', subdir: 'coverage', file: 'lcov.info' }
+    ]
   }
 };
 

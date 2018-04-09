@@ -2,6 +2,11 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var glob = require('glob');
 var path = require('path');
 
+var plugins = ['transform-object-assign'];
+if (shouldInstrument()) {
+  plugins.push(['istanbul', { 'exclude': ['test/*'] }]);
+}
+
 module.exports = {
   entry: glob.sync('./test/**/*.test.js'),
   output: {
@@ -20,7 +25,7 @@ module.exports = {
             options: {
               cacheDirectory: true,
               presets: ['es2015'],
-              plugins: ['transform-object-assign']
+              plugins: plugins
             }
           }
         ]
@@ -50,3 +55,11 @@ module.exports = {
   ],
   devtool: 'inline-source-map'
 };
+
+// Only instrument in CI if we're set to report coverage
+function shouldInstrument () {
+  if (process.env.TRAVIS_JOB_ID) {
+    return !!process.env.REPORT_COVERAGE;
+  }
+  return true;
+}

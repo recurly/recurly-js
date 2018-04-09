@@ -6,7 +6,7 @@
 
 [![build status][travis-image]][travis-url]
 [![Browser test status][sauce-image]][sauce-url]
-[![code quality][climate-image]][climate-url]
+[![coverage][coverage-image]][coverage-url]
 
 ## Documentation
 
@@ -48,12 +48,14 @@ $ make test
 
 [*aurea mediocritas*][aristotle]
 
-[travis-url]: https://travis-ci.org/recurly/recurly-js/builds
-[travis-image]: https://img.shields.io/travis/recurly/recurly-js/master.svg?style=flat-square
 [climate-url]: https://codeclimate.com/github/recurly/recurly-js
 [climate-image]: http://img.shields.io/codeclimate/github/recurly/recurly-js.svg?style=flat-square
+[coverage-url]: https://coveralls.io/github/recurly/recurly-js
+[coverage-image]: https://img.shields.io/coveralls/github/recurly/recurly-js.svg?style=flat-square
 [sauce-url]: https://saucelabs.com/u/recurly-js
-[sauce-image]: https://badges.herokuapp.com/travis/recurly/recurly-js/sauce/recurly-js?logos=none
+[sauce-image]: https://badges.herokuapp.com/travis/recurly/recurly-js/sauce/recurly-js?logos=none&style=flat-square
+[travis-url]: https://travis-ci.org/recurly/recurly-js/builds
+[travis-image]: https://img.shields.io/travis/recurly/recurly-js/master.svg?style=flat-square
 
 [docs]: https://docs.recurly.com/js
 [examples]: https://github.com/recurly/recurly-js-examples

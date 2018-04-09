@@ -1,4 +1,5 @@
 var BROWSER = process.env.BROWSER || 'all';
+var REPORT_COVERAGE = process.env.REPORT_COVERAGE || false;
 var staticConfig = require('./karma.conf').staticConfig;
 var sauceBrowsers = {
   sl_phantom: {
@@ -17,7 +18,8 @@ var sauceBrowsers = {
   sl_safari: {
     base: 'SauceLabs',
     browserName: 'safari',
-    platform: 'OS X 10.10'
+    platform: 'OS X 10.12',
+    version: '11'
   },
   sl_ie_11: {
     base: 'SauceLabs',
@@ -62,8 +64,10 @@ var sauceBrowsers = {
 };
 
 module.exports = function (config) {
+  var reporters = ['mocha', 'saucelabs'];
+  if (REPORT_COVERAGE) reporters.push('coverage');
   config.set(Object.assign({}, staticConfig, {
-    reporters: ['mocha', 'saucelabs'],
+    reporters: reporters,
     logLevel: config.LOG_INFO,
     browsers: browsers(),
     sauceLabs: {
