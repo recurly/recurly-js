@@ -498,7 +498,7 @@ describe('CheckoutPricing', function () {
         assert.equal(this.pricing.items.coupon, undefined);
         this.pricing
           .on('error.coupon', function (err) {
-            assert(err.code === 'not-found');
+            assert.equal(err.code, 'not-found');
             part();
           })
           .coupon(invalid)
