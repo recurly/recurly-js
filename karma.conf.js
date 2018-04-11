@@ -11,8 +11,9 @@ var staticConfig = {
   colors: true,
   autoWatch: true,
   browsers: [
-    'PhantomJS'
-    // 'ChromeDebug'
+    // 'PhantomJS'
+    'ChromeDebug'
+    // 'FirefoxDebug'
     // 'IE11 - Win7'
   ],
   singleRun: true,
@@ -25,6 +26,10 @@ var staticConfig = {
     ChromeDebug: {
       base: 'Chrome',
       flags: ['--auto-open-devtools-for-tabs']
+    },
+    FirefoxDebug: {
+      base: 'Firefox',
+      flags: ['-devtools']
     }
   },
   client: {

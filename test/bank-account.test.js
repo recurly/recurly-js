@@ -4,7 +4,7 @@ import after from 'lodash.after';
 import merge from 'lodash.merge';
 import {Recurly} from '../lib/recurly';
 import {fixture} from './support/fixtures';
-import {initRecurly, apiTest, domTest} from './support/helpers';
+import {initRecurly, apiTest} from './support/helpers';
 
 apiTest(function (requestMethod) {
   beforeEach(function (done) {

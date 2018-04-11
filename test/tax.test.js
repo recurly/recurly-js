@@ -1,6 +1,6 @@
 import assert from 'assert';
 import {Recurly} from '../lib/recurly';
-import {initRecurly, apiTest, domTest} from './support/helpers';
+import {initRecurly, apiTest} from './support/helpers';
 
 const sinon = window.sinon;
 
