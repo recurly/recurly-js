@@ -47,32 +47,71 @@ describe('Request', () => {
     });
   });
 
-  describe('Request.get', () => {
-    beforeEach(function () { sinon.spy(this.request, 'request'); });
-    afterEach(function () { this.request.request.restore(); });
+  describe('External API', () => {
+    beforeEach(function () {
+      sinon.spy(this.request, 'request');
+      sinon.spy(this.request, 'cached');
+    });
 
-    it('invokes Request.request with method = get and all passed parameters', function () {
-      const example = {
-        route: 'example',
-        data: { arbitrary: 'data', example: 2 },
-        done: () => {}
-      };
-      this.request.get(example);
-      assert(this.request.request.calledOnce);
-      assert(this.request.request.calledWithMatch({
+    afterEach(function () {
+      this.request.request.restore();
+      this.request.cached.restore();
+    });
+
+    const example = {
+      route: 'example',
+      data: { arbitrary: 'data', example: 2 },
+      done: () => {}
+    };
+
+    describe('Request.get', () => {
+      const exampleMatch = {
+        method: 'get',
         route: sinon.match(example.route),
         data: sinon.match(example.data)
-      }, sinon.match.func));
+      };
+
+      it('invokes Request.request with method = get and all passed parameters', function () {
+        this.request.get(example);
+        assert(this.request.request.calledOnce);
+        assert(this.request.request.calledWithMatch(exampleMatch, sinon.match.func));
+      });
+
+      it('performes a cached call when cached = true', function () {
+        this.request.get(Object.assign({}, example, { cached: true }));
+        assert(this.request.cached.calledOnce);
+        assert(this.request.cached.calledWithMatch(exampleMatch, sinon.match.func));
+      });
+    });
+
+    describe('Request.post', () => {
+      const exampleMatch = {
+        method: 'post',
+        route: sinon.match(example.route),
+        data: sinon.match(example.data)
+      };
+
+      it('invokes Request.request with method = post and all passed parameters', function () {
+        this.request.post(example);
+        assert(this.request.request.calledOnce);
+        assert(this.request.request.calledWithMatch(exampleMatch, sinon.match.func));
+      });
+
+      it('performes a cached call when cached = true', function () {
+        this.request.post(Object.assign({}, example, { cached: true }));
+        assert(this.request.cached.calledOnce);
+        assert(this.request.cached.calledWithMatch(exampleMatch, sinon.match.func));
+      });
     });
   });
 
   describe('Request.request', () => {
-    beforeEach(function () {
-      const recurly = this.recurly = initRecurly({ cors: false });
-      this.request = new Request({ recurly });
-    });
-
     describe('when configured for jsonp requests', () => {
+      beforeEach(function () {
+        const recurly = this.recurly = initRecurly({ cors: false });
+        this.request = new Request({ recurly });
+      });
+
       beforeEach(function () { sinon.spy(this.request, 'jsonp'); });
       afterEach(function () { this.request.jsonp.restore(); });
 
