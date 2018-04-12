@@ -8,7 +8,7 @@ cache:
   directories:
   - $HOME/travis-phantomjs
 script:
-  - make test-ci
+  - travis_wait make test-ci
 addons:
   artifacts:
     paths:
