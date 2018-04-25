@@ -8,7 +8,7 @@ import {fixture} from './support/fixtures';
 import {Recurly} from '../lib/recurly';
 
 describe('Recurly.configure', function () {
-  let api = `${global.location.protocol}//${global.location.host}/api`;
+  let api = `${window.location.protocol}//${window.location.host}/api`;
 
   beforeEach(function () {
     if (this.currentTest.ctx.fixture) fixture(this.currentTest.ctx.fixture);

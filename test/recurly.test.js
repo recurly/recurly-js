@@ -10,8 +10,8 @@ describe('Recurly', () => {
 
   it('should have a version', () => assert(typeof recurly.version === 'string'));
   it('should be an event emitter', () => assert(recurly.on && recurly.emit));
-  it('should be exposed as a global singleton', () => {
-    assert(global.recurly instanceof window.recurly.Recurly);
+  it('should be exposed as a window. singleton', () => {
+    assert(window.recurly instanceof window.recurly.Recurly);
   });
 
   describe('Pricing factories', () => {

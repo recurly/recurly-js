@@ -44,15 +44,15 @@ apiTest(function (requestMethod) {
 
     beforeEach(function () {
       this.recurly = initRecurly({ cors: requestMethod === 'cors' });
-      global.ApplePaySession = ApplePaySessionStub;
+      window.ApplePaySession = ApplePaySessionStub;
     });
 
-    afterEach(() => delete global.ApplePaySession);
+    afterEach(() => delete window.ApplePaySession);
 
     describe('Constructor', function () {
       describe('when Apple Pay is not supported', function () {
         beforeEach(function () {
-          delete global.ApplePaySession;
+          delete window.ApplePaySession;
           this.applePay = this.recurly.ApplePay(validOpts);
         });
 

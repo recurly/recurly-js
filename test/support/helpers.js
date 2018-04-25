@@ -15,7 +15,7 @@ export function initRecurly (recurly, opts) {
   }
   recurly.configure(merge({
     publicKey: 'test',
-    api: `${global.location.protocol}//${global.location.host}/api`
+    api: `${window.location.protocol}//${window.location.host}/api`
   }, opts));
   return recurly;
 }
@@ -30,11 +30,11 @@ export function domTest (suite) {
 }
 
 export function testBed () {
-  let el = global.document.getElementById('dom-testbed');
+  let el = window.document.getElementById('dom-testbed');
   if (!el) {
-    el = global.document.createElement('div')
+    el = window.document.createElement('div')
     el.id = 'dom-testbed';
-    global.document.body.appendChild(el);
+    window.document.body.appendChild(el);
   }
   return el;
 }
@@ -46,7 +46,7 @@ export function nextTick (cb) {
 export function braintreeStub () {
   beforeEach(() => {
     const create = (opt, cb) => cb(null, {});
-    global.braintree = {
+    window.braintree = {
       client: {
         VERSION: BRAINTREE_CLIENT_VERSION,
         create
@@ -56,5 +56,5 @@ export function braintreeStub () {
     };
   });
 
-  afterEach(() => delete global.braintree);
+  afterEach(() => delete window.braintree);
 }
