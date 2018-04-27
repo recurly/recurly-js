@@ -379,7 +379,7 @@ apiTest(requestMethod => {
     // For each example, updates corresponding hosted fields and returns all others
     function plainObjectBuilder (example) {
       example = clone(example);
-      const form = global.document.querySelector('#test-form');
+      const form = window.document.querySelector('#test-form');
       each(example, (val, key) => {
         let el = form.querySelector(`[data-recurly=${key}]`);
         if (el instanceof HTMLDivElement) {
@@ -392,7 +392,7 @@ apiTest(requestMethod => {
 
     // For each example, updates corresponding input filds or hosted fields
     function formBuilder (example) {
-      const form = global.document.querySelector('#test-form');
+      const form = window.document.querySelector('#test-form');
       each(example, (val, key) => {
         let el = form.querySelector(`[data-recurly=${key}]`);
         if (el instanceof HTMLDivElement) {

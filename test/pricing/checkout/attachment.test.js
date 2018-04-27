@@ -3,7 +3,7 @@ import {applyFixtures} from '../../support/fixtures';
 import {initRecurly} from '../../support/helpers';
 import CheckoutPricingAttachment from '../../../lib/recurly/pricing/checkout/attachment'
 
-const container = () => global.document.querySelector('#test-pricing');
+const container = () => window.document.querySelector('#test-pricing');
 
 describe('CheckoutPricing#attach', function () {
   beforeEach(function (done) {

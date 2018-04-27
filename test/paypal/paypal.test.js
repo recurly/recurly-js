@@ -33,7 +33,7 @@ apiTest(function (requestMethod) {
 
       describe('when the braintree client fails to initialize', function () {
         beforeEach(function () {
-          global.braintree.client.create = (opt, cb) => cb({ error: 'test' });
+          window.braintree.client.create = (opt, cb) => cb({ error: 'test' });
           sinon.spy(this.recurly, 'Frame');
           this.paypal = this.recurly.PayPal(validOpts);
         });

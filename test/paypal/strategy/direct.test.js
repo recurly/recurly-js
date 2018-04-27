@@ -1,7 +1,7 @@
 import assert from 'assert';
 import {initRecurly} from '../../support/helpers';
 
-const sinon = global.sinon;
+const sinon = window.sinon;
 
 describe('DirectStrategy', function () {
   const displayName = 'test';
