@@ -3,6 +3,9 @@ var path = require('path');
 var minify = ~process.argv.indexOf('-p');
 
 module.exports = {
+  node: {
+    global: false,
+  },
   entry: './index',
   output: {
     path: path.join(__dirname, 'build'),
