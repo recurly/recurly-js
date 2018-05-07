@@ -9,7 +9,7 @@
     "url": "git://github.com/recurly/recurly-js.git"
   },
   "dependencies": {
-    "array-uniq": "^1.0.3",
+    "array-unique": "^0.3.2",
     "component-clone": "0.2.2",
     "component-each": "0.2.6",
     "component-emitter": "1.1.2",
