@@ -5,7 +5,7 @@ import each from 'lodash.foreach';
 import clone from 'component-clone';
 import {Recurly} from '../lib/recurly';
 import {applyFixtures} from './support/fixtures';
-import {initRecurly, apiTest, domTest} from './support/helpers';
+import {initRecurly, apiTest} from './support/helpers';
 
 apiTest(requestMethod => {
   describe(`Recurly.token (${requestMethod})`, function () {

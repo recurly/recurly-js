@@ -28,7 +28,8 @@
     "promise": "7.1.1",
     "qs": "^6.5.1",
     "tabbable": "^1.1.2",
-    "to-slug-case": "0.1.2"
+    "to-slug-case": "0.1.2",
+    "uuid": "^3.2.1"
   },
   "engines": {
     "node": ">=0.11"

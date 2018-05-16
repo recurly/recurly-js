@@ -25,6 +25,18 @@ describe('Request', () => {
     });
   });
 
+  describe('Request.deviceId', () => {
+    it('defers to recurly.deviceId', function () {
+      assert.strictEqual(this.request.deviceId, this.recurly.deviceId);
+    });
+  });
+
+  describe('Request.sessionId', () => {
+    it('defers to recurly.sessionId', function () {
+      assert.strictEqual(this.request.sessionId, this.recurly.sessionId);
+    });
+  });
+
   describe('Request.version', () => {
     describe('when Recurly is configured as a parent', () => {
       it('returns recurly.version', function () {
@@ -106,6 +118,35 @@ describe('Request', () => {
   });
 
   describe('Request.request', () => {
+    describe('Additional parameters', () => {
+      beforeEach(function () { sinon.spy(this.request, 'xhr'); });
+      afterEach(function () { this.request.xhr.restore(); });
+
+      it('Applies Recurly.version to the request', function () {
+        let data = { example: 0 };
+        this.request.request({ method: 'get', route: 'test', data });
+        assert(this.request.xhr.calledWithMatch({ data: { example: 0, version: this.recurly.version } }));
+      });
+
+      it('Applies Recurly.key to the request', function () {
+        let data = { example: 0 };
+        this.request.request({ method: 'get', route: 'test', data });
+        assert(this.request.xhr.calledWithMatch({ data: { example: 0, key: this.recurly.config.publicKey } }));
+      });
+
+      it('Applies Recurly.deviceId to the request', function () {
+        let data = { example: 0 };
+        this.request.request({ method: 'get', route: 'test', data });
+        assert(this.request.xhr.calledWithMatch({ data: { example: 0, deviceId: this.recurly.deviceId } }));
+      });
+
+      it('Applies Recurly.sessionId to the request', function () {
+        let data = { example: 0 };
+        this.request.request({ method: 'get', route: 'test', data });
+        assert(this.request.xhr.calledWithMatch({ data: { example: 0, sessionId: this.recurly.sessionId } }));
+      });
+    });
+
     describe('when configured for jsonp requests', () => {
       beforeEach(function () {
         const recurly = this.recurly = initRecurly({ cors: false });
@@ -170,7 +211,10 @@ describe('Request', () => {
             &arrayOfArrays[1][3]=d
             &arrayOfArrays[1][4]=e
             &version=${this.recurly.version}
-            &key=test`.replace(/\n|\s/g, '');
+            &key=test
+            &deviceId=${this.recurly.deviceId}
+            &sessionId=${this.recurly.sessionId}
+            `.replace(/\n|\s/g, '');
 
           this.XHR = (function () {
             const XHR = window.XMLHttpRequest;
