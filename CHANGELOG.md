@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.8.6
+
+* Adds deviceId and sessionId [#454][454]
+* Adds support for sites using a more restrictive Content Security Policy [#455][455]
+
 ### Version 4.8.5
 
 * Adds hosted field tabIndex configuration [#448][448]
@@ -220,6 +225,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[455]: https://github.com/recurly/recurly-js/commit/016ed4da4ae1112fbc6f7d207eb3e1f04c4f4717
+[454]: https://github.com/recurly/recurly-js/commit/3265e595ef7dd2c1631e4e94e18161bfc15e8aa6
 [448]: https://github.com/recurly/recurly-js/commit/d5a342e0f7758a694462359c28f63a8411a722b7
 [433]: https://github.com/recurly/recurly-js/commit/b22e51ad18e159b74dd73604b5218a10ff702098
 [426]: https://github.com/recurly/recurly-js/commit/74cbea1723b9238e76460b4c6477a0ecd26c75ab
