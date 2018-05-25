@@ -1,5 +1,6 @@
 import assert from 'assert';
 import isEmpty from 'lodash.isempty';
+import {Recurly} from '../lib/recurly';
 import {initRecurly} from './support/helpers';
 import {Request, factory} from '../lib/recurly/request';
 
@@ -311,10 +312,48 @@ describe('Request', () => {
     });
   });
 
+  describe('Request.queued', () => {
+    const args = { method: 'get', route: 'test', data: { arbitrary: 'payload' } };
+
+    describe('when recurly is not configured', () => {
+      beforeEach(function () {
+        const recurly = this.recurly = new Recurly;
+        this.request = new Request({ recurly });
+      });
+
+      it('adds the request to the queue', function () {
+        assert.strictEqual(this.request.queue.length, 0);
+        this.request.queued(args);
+        assert.strictEqual(this.request.queue.length, 1);
+      });
+
+      it('executes the queue once configured', function (done) {
+        const step = res => {
+          assert.strictEqual(this.request.queue.length, 0);
+          done();
+        };
+        assert.strictEqual(this.request.queue.length, 0);
+        this.request.queued(args, step);
+        assert.strictEqual(this.request.queue.length, 1);
+        initRecurly(this.recurly);
+      });
+    });
+
+    it('executes immediately when recurly is configured', function () {
+      sinon.spy(this.request, 'request');
+      assert.strictEqual(this.request.queue.length, 0);
+      this.request.queued(args);
+      assert.strictEqual(this.request.queue.length, 0);
+      assert(this.request.request.calledOnce);
+      assert(this.request.request.calledWithMatch(args));
+      this.request.request.restore();
+    });
+  });
+
   describe('Request.piped', () => {
     let payload = {
       long: Array.apply(null, Array(200)).map(() => 1)
-    }
+    };
 
     describe('given all error responses', () => {
       beforeEach(function () {
