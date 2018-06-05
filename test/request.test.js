@@ -119,6 +119,14 @@ describe('Request', () => {
   });
 
   describe('Request.request', () => {
+    it('Handles an empty response', function (done) {
+      this.request.request({ method: 'post', route: '/events' }, (err, res) => {
+        assert.strictEqual(err, null);
+        assert.strictEqual(res, undefined);
+        done();
+      });
+    });
+
     describe('Additional parameters', () => {
       beforeEach(function () { sinon.spy(this.request, 'xhr'); });
       afterEach(function () { this.request.xhr.restore(); });
@@ -230,8 +238,8 @@ describe('Request', () => {
           sinon.spy(this.XHR.prototype, 'send');
         });
         afterEach(function () {
-          this.XHR.prototype.open.restore()
-          this.XHR.prototype.send.restore()
+          this.XHR.prototype.open.restore();
+          this.XHR.prototype.send.restore();
         });
 
         describe('when performing a POST request', () => {
@@ -240,10 +248,8 @@ describe('Request', () => {
           });
 
           it('sends properly-encoded data in the request body', function () {
-            const openCall = this.XHR.prototype.open.getCall(this.XHR.prototype.open.callCount - 1);
-            const sendCall = this.XHR.prototype.send.getCall(this.XHR.prototype.send.callCount - 1);
-            assert(openCall.calledWithExactly('post', `${this.recurly.config.api}/test`));
-            assert(sendCall.calledWithExactly(this.exampleEncoded()));
+            assert(this.XHR.prototype.open.calledWithExactly('post', `${this.recurly.config.api}/test`));
+            assert(this.XHR.prototype.send.calledWithExactly(this.exampleEncoded()));
           });
         });
 
@@ -253,10 +259,8 @@ describe('Request', () => {
           });
 
           it('appends properly-encoded data to the url', function () {
-            const openCall = this.XHR.prototype.open.getCall(this.XHR.prototype.open.callCount - 1);
-            const sendCall = this.XHR.prototype.send.getCall(this.XHR.prototype.send.callCount - 1);
-            assert(openCall.calledWithExactly('get', `${this.recurly.config.api}/test?${this.exampleEncoded()}`));
-            assert(sendCall.calledWith());
+            assert(this.XHR.prototype.open.calledWithExactly('get', `${this.recurly.config.api}/test?${this.exampleEncoded()}`));
+            assert(this.XHR.prototype.send.calledWith());
           });
         });
       });
@@ -275,7 +279,7 @@ describe('Request', () => {
     });
 
     it('returns and does not cache error responses', function (done) {
-      this.request.cached({ method: 'get', route: 'test', data: payload }, (err, res) => {
+      this.request.cached({ method: 'get', route: '/test', data: payload }, (err, res) => {
         assert(err);
         assert(isEmpty(this.request.cache));
         done();
