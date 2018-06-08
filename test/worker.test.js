@@ -10,7 +10,8 @@ describe('IntervalWorker', () => {
   });
 
   afterEach(function () {
-    if (this.worker) try { this.worker.destroy(); } catch (e) {}
+    // Destroy any workers that have not already been destroyed
+    if (this.worker && this.worker._intervalId) this.worker.destroy();
   })
 
   it('requires a perform function', function () {
@@ -87,7 +88,7 @@ describe('IntervalWorker', () => {
   });
 
   describe('#destroy', () => {
-    it('stops the worker', function () {
+    it('stops the worker', function (done) {
       const part = after(2, () => done());
       this.worker = new IntervalWorker(this.validShortPeriod);
       this.worker.start();
@@ -98,7 +99,7 @@ describe('IntervalWorker', () => {
         assert.strictEqual(this.worker.active, false);
         assert.strictEqual(this.worker._intervalId, undefined);
         part();
-      }, 5);
+      }, 8);
 
       setTimeout(() => {
         assert.strictEqual(this.perform.calledOnce, true);
@@ -110,9 +111,9 @@ describe('IntervalWorker', () => {
       this.worker = new IntervalWorker(this.validShortPeriod);
       this.worker.start();
       this.worker.destroy();
-      assert.throws(() => this.worker.start(), Error, 'destroyed');
-      assert.throws(() => this.worker.pause(), Error, 'destroyed');
-      assert.throws(() => this.worker.destroy(), Error, 'destroyed');
+      assert.throws(() => this.worker.start(), Error);
+      assert.throws(() => this.worker.pause(), Error);
+      assert.throws(() => this.worker.destroy(), Error);
     });
   });
 });
