@@ -20,7 +20,7 @@ describe('errors', () => {
   });
 
   it('will report an error if given a reporter', function () {
-    const reporter = this.recurly.event;
+    const reporter = this.recurly.reporter;
     sinon.spy(reporter, 'send');
     const err = errors(valid, { some: 'context' }, { reporter });
     assert(reporter.send.calledOnce);
