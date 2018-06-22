@@ -216,6 +216,16 @@ describe('CheckoutPricing', function () {
       });
     });
 
+    it('passes the new adjustment which does not mutate pricing', function (done) {
+      const amount = 3.99;
+      this.pricing.adjustment({ amount }).then(adjustment => {
+        assert.equal(this.pricing.items.adjustments[0].amount, adjustment.amount);
+        adjustment.amount = 'spoofed';
+        assert.equal(this.pricing.items.adjustments[0].amount, amount);
+        done();
+      });
+    });
+
     it('coerces quantity to an integer', function (done) {
       const examples = ['3', 3, 3.77, '3.97'];
       const part = after(examples.length, done);
@@ -1045,7 +1055,7 @@ describe('CheckoutPricing', function () {
   });
 
   /**
-   * address - TODO
+   * currency
    */
 
   describe('CheckoutPricing#currency', () => {
@@ -1145,6 +1155,16 @@ describe('CheckoutPricing', function () {
         });
       });
 
+      it('passes the new gift card which does not mutate pricing', function (done) {
+        this.pricing.giftCard('super-gift-card').then(giftCard => {
+          assert.equal(this.pricing.items.giftCard.unit_amount, 20);
+          assert.equal(this.pricing.items.giftCard.unit_amount, giftCard.unit_amount);
+          giftCard.unit_amount = 'spoofed';
+          assert.equal(this.pricing.items.giftCard.unit_amount, 20);
+          done();
+        });
+      });
+
       it('emits set.giftCard', function (done) {
         this.pricing.on('set.giftCard', giftCard => {
           assert.equal(giftCard.unit_amount, 20);
@@ -1197,21 +1217,30 @@ describe('CheckoutPricing', function () {
    */
 
   describe('CheckoutPricing#address', () => {
+    const valid = { country: 'US', postalCode: '94117', vatNumber: 'arbitrary' };
+
     it('Assigns address properties', function (done) {
-      const address = { country: 'US', postalCode: '94117', vatNumber: 'arbitrary' };
-      this.pricing.address(address).done(() => {
-        assert.equal(this.pricing.items.address, address);
+      this.pricing.address(valid).done(() => {
+        assert.equal(this.pricing.items.address, valid);
+        done();
+      });
+    });
+
+    it('passes the new address which does not mutate pricing', function (done) {
+      this.pricing.address(valid).then(address => {
+        assert.equal(JSON.stringify(this.pricing.items.address), JSON.stringify(address));
+        address.country = 'spoofed';
+        assert.equal(this.pricing.items.address.country, valid.country);
         done();
       });
     });
 
     it('Overwrites an existing address', function (done) {
       const part = after(2, done);
-      const address = { country: 'US', postalCode: '94117', vatNumber: 'arbitrary' };
       this.pricing
-        .address(address)
+        .address(valid)
         .then(() => {
-          assert.equal(this.pricing.items.address, address);
+          assert.equal(this.pricing.items.address, valid);
           part();
         })
         .address({ country: 'DE', postalCode: 'DE-code' })
@@ -1229,21 +1258,30 @@ describe('CheckoutPricing', function () {
    */
 
   describe('CheckoutPricing#shippingAddress', () => {
+    const valid = { country: 'US', postalCode: '94110', vatNumber: 'arbitrary-0' };
+
     it('Assigns address properties', function (done) {
-      const address = { country: 'US', postalCode: '94110', vatNumber: 'arbitrary-0' };
-      this.pricing.shippingAddress(address).done(() => {
-        assert.equal(this.pricing.items.shippingAddress, address);
+      this.pricing.shippingAddress(valid).done(() => {
+        assert.equal(this.pricing.items.shippingAddress, valid);
+        done();
+      });
+    });
+
+    it('passes the new address which does not mutate pricing', function (done) {
+      this.pricing.shippingAddress(valid).then(address => {
+        assert.equal(JSON.stringify(this.pricing.items.shippingAddress), JSON.stringify(address));
+        address.country = 'spoofed';
+        assert.equal(this.pricing.items.shippingAddress.country, valid.country)
         done();
       });
     });
 
     it('Overwrites an existing shipping address', function (done) {
       const part = after(2, done);
-      const address = { country: 'US', postalCode: '94117', vatNumber: 'arbitrary' };
       this.pricing
-        .shippingAddress(address)
+        .shippingAddress(valid)
         .then(() => {
-          assert.equal(this.pricing.items.shippingAddress, address);
+          assert.equal(this.pricing.items.shippingAddress, valid);
           part();
         })
         .shippingAddress({ country: 'DE', postalCode: 'DE-code' })
