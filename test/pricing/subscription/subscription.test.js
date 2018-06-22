@@ -274,7 +274,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .giftcard('invalid');
     });
 
-    it('emits an event when the coupon is set', function (done) {
+    it('emits an event when the gift card is set', function (done) {
       this.pricing
         .on('set.gift_card', function (giftcard) {
           assert(giftcard.currency === 'USD');
@@ -288,7 +288,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .giftcard('super-gift-card');
     });
 
-    it('emits an event when the coupon is unset', function (done) {
+    it('emits an event when the gift card is unset', function (done) {
       this.pricing
         .on('unset.gift_card', function () {
           done();
