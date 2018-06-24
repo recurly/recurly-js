@@ -28,13 +28,13 @@ app.use(cors({
 ejs(app, { root: __dirname, layout: false, viewExt: 'html.ejs' });
 
 app.use(route.get('/coupons/:id', json));
+app.use(route.get('/events', ok));
 app.use(route.post('/events', ok));
 app.use(route.get('/fraud_data_collector', json));
 app.use(route.get('/gift_cards/:id', json));
 app.use(route.get('/plans/:plan_id', json));
 app.use(route.get('/plans/:plan_id/coupons/:id', json));
 app.use(route.get('/tax', json));
-
 app.use(route.get('/token', json));
 app.use(route.post('/token', json));
 
