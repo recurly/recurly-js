@@ -434,5 +434,30 @@ describe('Recurly.Pricing.Subscription', function () {
           done();
         });
     });
+
+    it('does nothing when the same coupon is set again', function (done) {
+      const fail = event => {
+        assert.fail(`${event} emitted`, `${event} should not be emitted`);
+      };
+      this.pricing
+        .plan('basic', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .coupon('coop')
+        .then(() => {
+          this.pricing.on('error.coupon', () => fail('error.coupon'));
+          this.pricing.on('set.coupon', () => fail('set.coupon'));
+          this.pricing.on('unset.coupon', () => fail('unset.coupon'));
+        })
+        .coupon('coop')
+        .then(coupon => {
+          assert.equal(coupon.code, 'coop');
+          assert.equal(this.pricing.items.coupon.code, 'coop');
+          done();
+        })
+        .done();
+    });
   });
 });
