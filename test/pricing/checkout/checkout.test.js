@@ -521,12 +521,47 @@ describe('CheckoutPricing', function () {
 
     describe('when given a valid coupon code', () => {
       const valid = 'coop';
-      it('assigns the coupon and fires the set.coupon event', function (done) {
-        this.pricing.on('set.coupon', coupon => {
-          assert.equal(coupon.code, valid);
-          done();
+      it('assigns the coupon and returns a version that does not mutate pricing', function (done) {
+        this.pricing.coupon(valid)
+          .then(coupon => {
+            assert.equal(coupon.code, valid);
+            coupon.code = 'spoofed';
+            assert.equal(this.pricing.items.coupon.code, valid);
+            done();
+          })
+          .done();
+      });
+
+      it('does not emit unset.coupon', function (done) {
+        const fail = () => {
+          assert.fail('unset.coupon emitted', 'unset.coupon should not be emitted');
+        };
+        this.pricing.on('error.coupon', fail);
+        this.pricing.on('unset.coupon', fail);
+        this.pricing.coupon(valid)
+          .then(() => setTimeout(done, 100))
+          .done();
+      });
+
+      describe('set.coupon event', () => {
+        it('emits and passes the new coupon', function (done) {
+          this.pricing.on('set.coupon', coupon => {
+            assert.equal(coupon.code, valid);
+            assert.equal(coupon.discount.amount.USD, 20.0);
+            done();
+          });
+          this.pricing.coupon(valid).done();
         });
-        this.pricing.coupon(valid).done();
+
+        it('passes the new coupon which cannot mutate pricing', function (done) {
+          this.pricing.on('set.coupon', coupon => {
+            assert.equal(coupon.code, valid);
+            coupon.code = 'spoofed';
+            assert.equal(this.pricing.items.coupon.code, valid);
+            done();
+          });
+          this.pricing.coupon(valid).done();
+        });
       });
     });
 
@@ -548,23 +583,54 @@ describe('CheckoutPricing', function () {
     });
 
     describe('with a coupon already set', () => {
+      const valid = 'coop';
+
       beforeEach(function () {
-        return this.pricing.coupon('coop');
+        return this.pricing.coupon(valid);
       });
 
-      it(`accepts a blank coupon code and unsets the existing coupon,
-          firing the unset.coupon event`, function (done) {
+      it(`accepts a blank coupon code and unsets the existing coupon`, function (done) {
         const part = after(2, done);
         const errorSpy = sinon.spy();
-        assert.equal(this.pricing.items.coupon.code, 'coop');
-        this.pricing.on('unset.coupon', () => {
-          assert.equal(this.pricing.items.coupon, undefined);
-          part();
-        });
+        assert.equal(this.pricing.items.coupon.code, valid);
         this.pricing.on('error', errorSpy);
-        this.pricing.coupon().done(price => {
-          assert.equal(errorSpy.callCount, 0);
-          part();
+        this.pricing.coupon()
+          .then(coupon => {
+            assert.equal(this.pricing.items.coupon, undefined);
+            part();
+          })
+          .done(price => {
+            assert.equal(errorSpy.callCount, 0);
+            part();
+          });
+      });
+
+      it('does nothing when the same coupon is set again', function (done) {
+        const currentCoupon = this.pricing.items.coupon;
+        const fail = event => {
+          assert.fail(`${event} emitted`, `${event} should not be emitted`);
+        };
+        this.pricing.on('error.coupon', () => fail('error.coupon'));
+        this.pricing.on('set.coupon', () => fail('set.coupon'));
+        this.pricing.on('unset.coupon', () => fail('unset.coupon'));
+        this.pricing.coupon(valid)
+          .then(coupon => {
+            assert.equal(coupon.code, valid);
+            assert.equal(this.pricing.items.coupon.code, valid);
+            assert.equal(this.pricing.items.coupon, currentCoupon);
+            done();
+          })
+          .done();
+      });
+
+      describe('unset.coupon event', function (done) {
+        it('emits and pasaes the prior coupon', function (done) {
+          this.pricing.on('unset.coupon', priorCoupon => {
+            assert.equal(priorCoupon.code, valid);
+            assert.equal(this.pricing.items.coupon, undefined);
+            done();
+          });
+          this.pricing.coupon().done();
         });
       });
     });
