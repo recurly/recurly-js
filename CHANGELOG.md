@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.8.7
+
+* Fixes Kount fraud detection when using Card field [#470][470]
+
 ### Version 4.8.6
 
 * Adds deviceId and sessionId [#454][454]
@@ -225,6 +229,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[470]: https://github.com/recurly/recurly-js/commit/68424878dd97904617c0db3e74a80698996f712d
 [455]: https://github.com/recurly/recurly-js/commit/016ed4da4ae1112fbc6f7d207eb3e1f04c4f4717
 [454]: https://github.com/recurly/recurly-js/commit/3265e595ef7dd2c1631e4e94e18161bfc15e8aa6
 [448]: https://github.com/recurly/recurly-js/commit/d5a342e0f7758a694462359c28f63a8411a722b7
