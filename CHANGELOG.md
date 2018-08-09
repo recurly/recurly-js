@@ -1,5 +1,11 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.9.0
+
+* Adds event reporting [#459][459]
+* Fixes unset.coupon behavior [#467][467]
+* Fixes downstream mutation of pricing objects from listeners [#467][467]
+
 ### Version 4.8.7
 
 * Fixes Kount fraud detection when using Card field [#470][470]
@@ -229,6 +235,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[459]: https://github.com/recurly/recurly-js/commit/c6333a5445395f5eb79a377d29001a5ef1f3abbd
+[467]: https://github.com/recurly/recurly-js/commit/83e45d72eff7abe56741bfbdb1f5577283e65ac0
 [470]: https://github.com/recurly/recurly-js/commit/68424878dd97904617c0db3e74a80698996f712d
 [455]: https://github.com/recurly/recurly-js/commit/016ed4da4ae1112fbc6f7d207eb3e1f04c4f4717
 [454]: https://github.com/recurly/recurly-js/commit/3265e595ef7dd2c1631e4e94e18161bfc15e8aa6
