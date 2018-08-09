@@ -29,6 +29,20 @@ describe('Recurly', () => {
     });
   });
 
+  describe('Recurly.deviceId', () => {
+    it('is a uuid', () => assert(isUuidv4(recurly.deviceId)));
+    it('is set on localStorage', () => {
+      assert.strictEqual(recurly.deviceId, localStorage.getItem('__recurly__.deviceId'));
+    });
+  });
+
+  describe('Recurly.sessionId', () => {
+    it('is a uuid', () => assert(isUuidv4(recurly.sessionId)));
+    it('is set on sessionStorage', () => {
+      assert.strictEqual(recurly.sessionId, sessionStorage.getItem('__recurly__.sessionId'));
+    });
+  });
+
   describe('Pricing factories', () => {
     it('has a CheckoutPricing factory at recurly.Pricing.Checkout', function () {
       assert(recurly.Pricing.Checkout() instanceof CheckoutPricing);

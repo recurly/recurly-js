@@ -274,7 +274,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .giftcard('invalid');
     });
 
-    it('emits an event when the coupon is set', function (done) {
+    it('emits an event when the gift card is set', function (done) {
       this.pricing
         .on('set.gift_card', function (giftcard) {
           assert(giftcard.currency === 'USD');
@@ -288,7 +288,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .giftcard('super-gift-card');
     });
 
-    it('emits an event when the coupon is unset', function (done) {
+    it('emits an event when the gift card is unset', function (done) {
       this.pricing
         .on('unset.gift_card', function () {
           done();
@@ -433,6 +433,31 @@ describe('Recurly.Pricing.Subscription', function () {
           assert(emitted, true);
           done();
         });
+    });
+
+    it('does nothing when the same coupon is set again', function (done) {
+      const fail = event => {
+        assert.fail(`${event} emitted`, `${event} should not be emitted`);
+      };
+      this.pricing
+        .plan('basic', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .coupon('coop')
+        .then(() => {
+          this.pricing.on('error.coupon', () => fail('error.coupon'));
+          this.pricing.on('set.coupon', () => fail('set.coupon'));
+          this.pricing.on('unset.coupon', () => fail('unset.coupon'));
+        })
+        .coupon('coop')
+        .then(coupon => {
+          assert.equal(coupon.code, 'coop');
+          assert.equal(this.pricing.items.coupon.code, 'coop');
+          done();
+        })
+        .done();
     });
   });
 });

@@ -1,5 +1,6 @@
 import assert from 'assert';
 import isEmpty from 'lodash.isempty';
+import {Recurly} from '../lib/recurly';
 import {initRecurly} from './support/helpers';
 import {Request, factory} from '../lib/recurly/request';
 
@@ -118,6 +119,14 @@ describe('Request', () => {
   });
 
   describe('Request.request', () => {
+    it('Handles an empty response', function (done) {
+      this.request.request({ method: 'post', route: '/events' }, (err, res) => {
+        assert.strictEqual(err, null);
+        assert.strictEqual(res, undefined);
+        done();
+      });
+    });
+
     describe('Additional parameters', () => {
       beforeEach(function () { sinon.spy(this.request, 'xhr'); });
       afterEach(function () { this.request.xhr.restore(); });
@@ -229,8 +238,8 @@ describe('Request', () => {
           sinon.spy(this.XHR.prototype, 'send');
         });
         afterEach(function () {
-          this.XHR.prototype.open.restore()
-          this.XHR.prototype.send.restore()
+          this.XHR.prototype.open.restore();
+          this.XHR.prototype.send.restore();
         });
 
         describe('when performing a POST request', () => {
@@ -239,10 +248,8 @@ describe('Request', () => {
           });
 
           it('sends properly-encoded data in the request body', function () {
-            const openCall = this.XHR.prototype.open.getCall(this.XHR.prototype.open.callCount - 1);
-            const sendCall = this.XHR.prototype.send.getCall(this.XHR.prototype.send.callCount - 1);
-            assert(openCall.calledWithExactly('post', `${this.recurly.config.api}/test`));
-            assert(sendCall.calledWithExactly(this.exampleEncoded()));
+            assert(this.XHR.prototype.open.calledWithExactly('post', `${this.recurly.config.api}/test`));
+            assert(this.XHR.prototype.send.calledWithExactly(this.exampleEncoded()));
           });
         });
 
@@ -252,10 +259,8 @@ describe('Request', () => {
           });
 
           it('appends properly-encoded data to the url', function () {
-            const openCall = this.XHR.prototype.open.getCall(this.XHR.prototype.open.callCount - 1);
-            const sendCall = this.XHR.prototype.send.getCall(this.XHR.prototype.send.callCount - 1);
-            assert(openCall.calledWithExactly('get', `${this.recurly.config.api}/test?${this.exampleEncoded()}`));
-            assert(sendCall.calledWith());
+            assert(this.XHR.prototype.open.calledWithExactly('get', `${this.recurly.config.api}/test?${this.exampleEncoded()}`));
+            assert(this.XHR.prototype.send.calledWith());
           });
         });
       });
@@ -274,7 +279,7 @@ describe('Request', () => {
     });
 
     it('returns and does not cache error responses', function (done) {
-      this.request.cached({ method: 'get', route: 'test', data: payload }, (err, res) => {
+      this.request.cached({ method: 'get', route: '/test', data: payload }, (err, res) => {
         assert(err);
         assert(isEmpty(this.request.cache));
         done();
@@ -311,10 +316,48 @@ describe('Request', () => {
     });
   });
 
+  describe('Request.queued', () => {
+    const args = { method: 'get', route: 'test', data: { arbitrary: 'payload' } };
+
+    describe('when recurly is not configured', () => {
+      beforeEach(function () {
+        const recurly = this.recurly = new Recurly;
+        this.request = new Request({ recurly });
+      });
+
+      it('adds the request to the queue', function () {
+        assert.strictEqual(this.request.queue.length, 0);
+        this.request.queued(args);
+        assert.strictEqual(this.request.queue.length, 1);
+      });
+
+      it('executes the queue once configured', function (done) {
+        const step = res => {
+          assert.strictEqual(this.request.queue.length, 0);
+          done();
+        };
+        assert.strictEqual(this.request.queue.length, 0);
+        this.request.queued(args, step);
+        assert.strictEqual(this.request.queue.length, 1);
+        initRecurly(this.recurly);
+      });
+    });
+
+    it('executes immediately when recurly is configured', function () {
+      sinon.spy(this.request, 'request');
+      assert.strictEqual(this.request.queue.length, 0);
+      this.request.queued(args);
+      assert.strictEqual(this.request.queue.length, 0);
+      assert(this.request.request.calledOnce);
+      assert(this.request.request.calledWithMatch(args));
+      this.request.request.restore();
+    });
+  });
+
   describe('Request.piped', () => {
     let payload = {
       long: Array.apply(null, Array(200)).map(() => 1)
-    }
+    };
 
     describe('given all error responses', () => {
       beforeEach(function () {
