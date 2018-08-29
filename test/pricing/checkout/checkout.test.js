@@ -14,6 +14,13 @@ describe('CheckoutPricing', function () {
     });
   });
 
+  beforeEach(function (done) {
+    subscriptionPricingFactory('tax_exempt', this.recurly, sub => {
+      this.subscriptionPricingExampleTaxExempt = sub;
+      done();
+    });
+  })
+
   /**
    * Subscriptions
    */
@@ -1413,13 +1420,6 @@ describe('CheckoutPricing', function () {
         });
 
         describe('given some tax exempt adjustments and subscriptions', () => {
-          beforeEach(function (done) {
-            subscriptionPricingFactory('tax_exempt', this.recurly, sub => {
-              this.subscriptionPricingExampleTaxExempt = sub;
-              done();
-            });
-          });
-
           beforeEach(function () {
             return this.pricing
               .subscription(this.subscriptionPricingExampleTaxExempt) // $2 setup fee
@@ -1501,6 +1501,31 @@ describe('CheckoutPricing', function () {
                 })
                 .done();
             });
+          });
+        });
+
+        describe('given tax exempt items and a discount', () => {
+          beforeEach(function () {
+            // Reset to eliminate the pre-defined adjustments
+            this.pricing = this.recurly.Pricing.Checkout();
+            return this.pricing
+              .address({ country: 'US', postalCode: '94110' })
+              .subscription(this.subscriptionPricingExampleTaxExempt)
+              .adjustment({ amount: 10, taxExempt: true })
+              .adjustment({ amount: 27.25, taxExempt: true })
+              .coupon('coop-fixed-all-5')
+              .reprice();
+          });
+
+          it('does not discount negatively', function (done) {
+            this.pricing
+              .reprice()
+              .then(price => {
+                assert.equal(price.now.taxes, 0);
+                assert.equal(price.now.discount, 5);
+                done();
+              })
+              .done();
           });
         });
 

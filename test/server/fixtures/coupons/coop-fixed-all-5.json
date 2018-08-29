@@ -1,0 +1,21 @@
+{
+  "code": "coop-fixed-all-5",
+  "name": "Test coupon: $5 off all charges",
+  "discount": {
+    "type": "dollars",
+    "amount":
+      {
+        "USD": 5.0
+      }
+  },
+  "single_use": false,
+  "applies_for_months": null,
+  "duration": "forever",
+  "temporal_unit": null,
+  "temporal_amount": null,
+  "plans": [],
+  "applies_to_non_plan_charges": true,
+  "applies_to_plans": true,
+  "applies_to_all_plans": true,
+  "redemption_resource": "account"
+}
