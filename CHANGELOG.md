@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.9.1
+
+* Adds requiredShippingContactFields property to Apple Pay [#474][474]
+* Fixes issue where tax exemption results in negative taxes [#475][475]
+
 ### Version 4.9.0
 
 * Adds event reporting [#459][459]
@@ -235,6 +240,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[475]: https://github.com/recurly/recurly-js/commit/ec5ba946b53cc37954ac0d218d99276585c44aef
+[474]: https://github.com/recurly/recurly-js/commit/b2ca5800ee91654844025637813024ab03e8d6ba
 [459]: https://github.com/recurly/recurly-js/commit/c6333a5445395f5eb79a377d29001a5ef1f3abbd
 [467]: https://github.com/recurly/recurly-js/commit/83e45d72eff7abe56741bfbdb1f5577283e65ac0
 [470]: https://github.com/recurly/recurly-js/commit/68424878dd97904617c0db3e74a80698996f712d
