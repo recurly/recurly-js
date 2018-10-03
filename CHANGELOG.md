@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.9.2
+
+* Fixes errors presented in environments where Storage is not available [#478][478]
+* Fixes Worker error display [#477][477]
+
 ### Version 4.9.1
 
 * Adds requiredShippingContactFields property to Apple Pay [#474][474]
@@ -240,6 +245,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[478]: https://github.com/recurly/recurly-js/commit/773c757019a8b2e17bfa147237d21aa2fc2d9681
+[477]: https://github.com/recurly/recurly-js/commit/aa35435661a2f9507af73c2aacc380482d99e4e7
 [475]: https://github.com/recurly/recurly-js/commit/ec5ba946b53cc37954ac0d218d99276585c44aef
 [474]: https://github.com/recurly/recurly-js/commit/b2ca5800ee91654844025637813024ab03e8d6ba
 [459]: https://github.com/recurly/recurly-js/commit/c6333a5445395f5eb79a377d29001a5ef1f3abbd
