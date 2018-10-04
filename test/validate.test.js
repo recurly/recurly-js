@@ -87,6 +87,7 @@ describe('Recurly.validate', function () {
     it('should return false for invalid input', function () {
       assert(false === recurly.validate.expiry('10gibberish', futureYear));
       assert(false === recurly.validate.expiry('10', `${futureYear}gibberish`));
+      assert(false === recurly.validate.expiry('20', futureYear));
     });
   });
 

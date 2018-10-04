@@ -7,6 +7,7 @@
     // Hosted field stub. This listens for window events and passes back
     window.name = 'recurlyHostedField:stub';
     window.inputValue = '';
+    window._config = undefined;
 
     if (config().type === 'number') {
       window.addEventListener('message', receive, false);
@@ -16,6 +17,7 @@
 
     function receive (event) {
       if (event.data.event === 'token:init') token(event.data.body);
+      if (event.data.event === 'hostedField:configure') setConfig(event.data.body);
     }
 
     function token (body) {
@@ -44,8 +46,14 @@
     }
 
     function config () {
+      if (window._config) return window._config;
       var query = window.location.hash;
-      return JSON.parse(decodeURIComponent(query.substring(query.indexOf('config=') + 7)) || {});
+      return window._config = JSON.parse(decodeURIComponent(query.substring(query.indexOf('config=') + 7)) || {});
+    }
+
+    function setConfig (newConfig) {
+      if (newConfig.type !== config().type) return;
+      window._config = newConfig;
     }
 
     function value (newValue) {

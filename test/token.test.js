@@ -67,6 +67,16 @@ apiTest(requestMethod => {
       });
     });
 
+    describe('when behaving as a hosted field', function () {
+      this.ctx.fixture = 'minimal';
+
+      beforeEach(function () {
+        this.recurly.config.parent = false;
+      });
+
+      tokenSuite(example => example);
+    });
+
     function tokenSuite (builder) {
       describe('when given an invalid card number', function () {
         let example = merge(clone(valid), {
@@ -209,8 +219,10 @@ apiTest(requestMethod => {
 
       describe('when kount fraud options are enabled', function () {
         beforeEach(function (done) {
+          // This test is to be performed on parents only
+          if (!this.recurly.isParent) return done();
           this.recurly = initRecurly({
-            cors: requestMethod === 'cors',
+            cors: this.recurly.config.cors,
             fraud: {
               kount: { dataCollector: true }
             }
@@ -222,6 +234,8 @@ apiTest(requestMethod => {
         });
 
         it('sends a fraud session id and yields a token', function (done) {
+          // This test is to be performed on parents only
+          if (!this.recurly.isParent) return done();
           const example = merge(clone(valid), { fraud_session_id: '9a87s6dfaso978ljk' });
           this.recurly.fraud.on('ready', () => {
             this.recurly.token(builder(example), (err, token) => {
@@ -239,20 +253,18 @@ apiTest(requestMethod => {
       });
 
       describe('when litle fraud options are enabled', function () {
-        beforeEach(function (done) {
-          this.recurly = initRecurly({
-            cors: requestMethod === 'cors',
+        beforeEach(function () {
+          this.recurly.configure({
             fraud: {
               litle: { sessionId: '123456' }
             }
           });
-          this.recurly.ready(() => {
-            sinon.spy(this.recurly.bus, 'send');
-            done();
-          });
+          sinon.spy(this.recurly.bus, 'send');
         });
 
         it('sends a fraud session id and yields a token', function (done) {
+          // This test is to be performed on parents only
+          if (!this.recurly.isParent) return done();
           const example = merge(clone(valid), { fraud_session_id: '123456' });
           this.recurly.token(builder(example), (err, token) => {
             const spy = this.recurly.bus.send.withArgs('token:init');
@@ -268,12 +280,8 @@ apiTest(requestMethod => {
       });
 
       describe('when cvv is specifically required', function () {
-        beforeEach(function (done) {
-          this.recurly = initRecurly({
-            cors: requestMethod === 'cors',
-            required: ['cvv']
-          });
-          this.recurly.ready(done);
+        beforeEach(function () {
+          this.recurly.configure({ required: ['cvv'] });
         });
 
         describe('when cvv is blank', function () {
