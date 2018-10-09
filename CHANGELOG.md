@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.9.3
+
+* Fixes tokenization errors presented when customers disable third-party cookies in Chrome [#482][482]
+
 ### Version 4.9.2
 
 * Fixes errors presented in environments where Storage is not available [#478][478]
@@ -245,6 +249,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[482]: https://github.com/recurly/recurly-js/commit/2b6994d250731ece2b0499ac30c2783fe1761e75
 [478]: https://github.com/recurly/recurly-js/commit/773c757019a8b2e17bfa147237d21aa2fc2d9681
 [477]: https://github.com/recurly/recurly-js/commit/aa35435661a2f9507af73c2aacc380482d99e4e7
 [475]: https://github.com/recurly/recurly-js/commit/ec5ba946b53cc37954ac0d218d99276585c44aef
