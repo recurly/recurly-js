@@ -1,48 +1,23 @@
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var glob = require('glob');
-var path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const glob = require('glob');
+const path = require('path');
 
-var plugins = ['transform-object-assign'];
+const defaultModuleConfig = require('./webpack.config').module;
+
+let plugins = [];
 if (shouldInstrument()) {
   plugins.push(['istanbul', { 'exclude': ['test/*'] }]);
 }
 
 module.exports = {
   entry: glob.sync('./test/**/*.test.js'),
+  mode: 'development',
   output: {
     path: path.join(__dirname, 'build'),
     publicPath: '/build/',
     filename: 'test.js'
   },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              cacheDirectory: true,
-              presets: ['es2015'],
-              plugins: plugins
-            }
-          }
-        ]
-      },
-      {
-        test: /\.json$/,
-        use: 'json-loader'
-      },
-      {
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader'
-        })
-      }
-    ]
-  },
+  module: defaultModuleConfig,
   resolve: {
     extensions: ['.js', '.json'],
     modules: [
@@ -51,9 +26,9 @@ module.exports = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('recurly.css')
+    new MiniCssExtractPlugin({ filename: 'recurly.css' })
   ],
-  devtool: 'inline-source-map'
+  devtool: 'inline-source-map',
 };
 
 // Only instrument in CI if we're set to report coverage
