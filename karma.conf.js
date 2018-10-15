@@ -11,8 +11,8 @@ var staticConfig = {
   colors: true,
   autoWatch: true,
   browsers: [
-    'PhantomJS'
-    // 'ChromeDebug'
+    // 'PhantomJS'
+    'ChromeDebug'
     // 'FirefoxDebug'
     // 'IE11 - Win7'
   ],
