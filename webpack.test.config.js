@@ -2,11 +2,18 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const glob = require('glob');
 const path = require('path');
 
-const defaultModuleConfig = require('./webpack.config').module;
+let moduleConfig = require('./webpack.config').module;
 
-let plugins = [];
 if (shouldInstrument()) {
-  plugins.push(['istanbul', { 'exclude': ['test/*'] }]);
+  moduleConfig.rules.push({
+    test: /\.js$/,
+    use: {
+      loader: 'istanbul-instrumenter-loader',
+      options: { esModules: true }
+    },
+    enforce: 'post',
+    exclude: /node_modules|test/,
+  });
 }
 
 module.exports = {
@@ -17,7 +24,7 @@ module.exports = {
     publicPath: '/build/',
     filename: 'test.js'
   },
-  module: defaultModuleConfig,
+  module: moduleConfig,
   resolve: {
     extensions: ['.js', '.json'],
     modules: [

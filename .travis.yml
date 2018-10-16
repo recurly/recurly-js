@@ -26,13 +26,13 @@ env:
     - secure: yIrHdkLhWtO37N24cRU71PK80zvkPzlJ1Jm+1MS3C6/icgJ8At1N/UgpBdxuBs1tlJm1O7Ahk+/MhpGWlspx9tCF7Hzw9Rj0xpKhqsvM155zgH582xNPwNebiCr/tmsH2/ELgFBBgC9sCW5luzeKx9nyuedGA4fmD2fK5Phc5EE=
   matrix:
     - BROWSER=phantom ARTIFACTS_BUCKET=recurly-js REPORT_COVERAGE=true
-    # - BROWSER=chrome
-    # - BROWSER=firefox
-    # - BROWSER=safari
-    # - BROWSER=ie_11
-    # - BROWSER=ios_11
-    # - BROWSER=ios_10
-    # - BROWSER=ios_9
-    # - BROWSER=android_7
-    # - BROWSER=android_6
-    # - BROWSER=android_5
+    - BROWSER=chrome
+    - BROWSER=firefox
+    - BROWSER=safari
+    - BROWSER=ie_11
+    - BROWSER=ios_11
+    - BROWSER=ios_10
+    - BROWSER=ios_9
+    - BROWSER=android_7
+    - BROWSER=android_6
+    - BROWSER=android_5
