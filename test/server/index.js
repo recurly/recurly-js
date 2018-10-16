@@ -1,29 +1,21 @@
 const fs = require('fs');
 const path = require('path');
-const koa = require('koa');
+const Koa = require('koa');
 const ejs = require('koa-ejs');
-const cors = require('koa-cors');
+const cors = require('@koa/cors');
 const jsonp = require('koa-jsonp');
 const route = require('koa-route');
 const logger = require('koa-logger');
-const bodyParser = require('koa-body-parser');
+const bodyParser = require('koa-bodyparser');
 const koaQs = require('koa-qs');
 
-const app = koa();
+const app = new Koa();
 const port = process.env.PORT || 9877;
 
 koaQs(app);
 app.use(bodyParser());
 app.use(jsonp());
-app.use(cors({
-  credentials: true,
-  headers: [
-    'Accept', 'Accept-Encoding', 'Accept-Language',
-    'Content-Type', 'Origin', 'User-Agent',
-    'X-Requested-With'
-  ],
-  methods: ['GET', 'POST', 'OPTIONS']
-}));
+app.use(cors());
 
 ejs(app, { root: __dirname, layout: false, viewExt: 'html.ejs' });
 
@@ -45,40 +37,40 @@ app.use(route.get('/apple_pay/token', json));
 app.use(route.post('/apple_pay/start', json));
 app.use(route.post('/apple_pay/token', json));
 
-app.use(route.get('/relay', render('relay')));
-app.use(route.get('/field', render('field')));
-app.use(route.get('/field.html', render('field')));
+app.use(route.get('/relay', html('relay')));
+app.use(route.get('/field.html', html('field')));
 
 app.listen(port, () => {
   fs.writeFileSync(`${__dirname}/pid.txt`, process.pid, 'utf-8');
   console.log(`ready on ${port}`);
 });
 
-function render (view) {
-  return function *() {
-    yield this.render(`fixtures/${view}`);
+function html (view) {
+  return async ctx => {
+    await ctx.render(`fixtures/${view}`);
   };
 }
 
-function *json () {
-  this.body = fixture.apply(this);
+async function json (ctx) {
+  ctx.body = fixture(ctx);
 }
 
-function *postMessage () {
-  yield this.render('fixtures/post-message', {
+async function ok (ctx) {
+  ctx.body = '';
+}
+
+async function postMessage (ctx) {
+  await ctx.render('fixtures/post-message', {
     message: {
-      recurly_event: this.query.event,
-      recurly_message: fixture.apply(this)
+      recurly_event: ctx.query.event,
+      recurly_message: fixture(ctx)
     }
   });
 }
 
-function *ok () {
-  this.body = '';
-}
 
-function fixture () {
-  const f = require(`./fixtures${this.request.path}`);
-  if (typeof f === 'function') return f.apply(this)
+function fixture (ctx) {
+  const f = require(`./fixtures${ctx.request.path}`);
+  if (typeof f === 'function') return f.apply(ctx)
   return f;
 }

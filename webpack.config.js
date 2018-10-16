@@ -1,18 +1,21 @@
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var path = require('path');
-var minify = ~process.argv.indexOf('-p');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const path = require('path');
+const minify = ~process.argv.indexOf('-p');
 
 module.exports = {
   node: {
     global: false,
   },
   entry: './index',
+  mode: 'development',
   output: {
     path: path.join(__dirname, 'build'),
     publicPath: '/build/',
     filename: 'recurly' + (minify ? '.min.js' : '.js'),
-    libraryTarget: 'var',
-    library: 'recurly'
+    library: 'recurly',
+    libraryExport: 'default'
   },
   module: {
     rules: [
@@ -24,18 +27,23 @@ module.exports = {
             loader: 'babel-loader',
             options: {
               cacheDirectory: true,
-              presets: ['es2015'],
-              plugins: ['transform-object-assign']
+              presets: [
+                ['@babel/preset-env', {
+                  targets: {
+                    browsers: ['last 2 versions', 'IE >= 11']
+                  }
+                }]
+              ]
             }
           }
         ]
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader'
-        })
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader"
+        ]
       }
     ]
   },
@@ -47,6 +55,16 @@ module.exports = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('recurly.css')
-  ]
+    new MiniCssExtractPlugin({ filename: 'recurly.css' })
+  ],
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          output: { comments: false }
+        }
+      }),
+      new OptimizeCSSAssetsPlugin({})
+    ]
+  }
 };

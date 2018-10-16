@@ -1607,19 +1607,3 @@ function applyGiftCard (code) {
     });
   }
 }
-
-function applyGiftCard (code) {
-  return function () {
-    return this.pricing.giftCard(code).reprice().then(price => {
-      this.price = price;
-    });
-  }
-}
-
-function applyGiftCard (code) {
-  return function () {
-    return this.pricing.giftCard(code).reprice().then(price => {
-      this.price = price;
-    });
-  }
-}
