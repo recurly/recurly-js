@@ -1,5 +1,4 @@
 import assert from 'assert';
-import bowser from 'bowser';
 import {applyFixtures} from './support/fixtures';
 import {initRecurly, nextTick} from './support/helpers';
 import HostedField from '../lib/recurly/hosted-field';
