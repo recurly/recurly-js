@@ -180,23 +180,82 @@ describe('Recurly.Pricing.Subscription', function () {
     });
   });
 
-  describe('with usage addons', function () {
-    it('should not apply the usage cost to the price', function (done) {
-      this.pricing
-        .plan('basic', { quantity: 1})
-        .addon('snarf')
-        .addon('with_usage')
-        .address({
-          country: 'US',
-          postal_code: 'NoTax'
-        })
-        .done(function (price) {
-          assert.equal(price.now.addons,"1.00")
-          assert.equal(price.next.addons,"1.00")
-          assert.equal(price.now.total,"22.99")
-          assert.equal(price.next.total,"20.99")
-          done();
+  describe('with addons', () => {
+    describe('with fixed addons', () => {
+      it('updates the price accordingly', function (done) {
+        this.pricing
+          .plan('basic', { quantity: 1 })
+          .addon('snarf')
+          .done(price => {
+            assert.equal(price.now.addons, '1.00');
+            assert.equal(price.next.addons, '1.00');
+            assert.equal(price.now.total, '22.99');
+            assert.equal(price.next.total, '20.99');
+            done();
+          });
+      });
+
+      describe('when an addon quantity is updated', () => {
+        it('updates the quantity and price accordingly', function (done) {
+          this.pricing
+            .plan('basic', { quantity: 1 })
+            .addon('snarf', { quantity: 1 })
+            .then(() => {
+              assert.equal(this.pricing.items.addons.length, 1);
+              assert.equal(this.pricing.items.addons[0].code, 'snarf');
+              assert.equal(this.pricing.items.addons[0].quantity, 1);
+            })
+            .addon('snarf', { quantity: 2 })
+            .done(price => {
+              assert.equal(this.pricing.items.addons.length, 1);
+              assert.equal(this.pricing.items.addons[0].code, 'snarf');
+              assert.equal(this.pricing.items.addons[0].quantity, 2);
+              assert.equal(price.now.addons, '2.00');
+              assert.equal(price.next.addons, '2.00');
+              assert.equal(price.now.total, '23.99');
+              assert.equal(price.next.total, '21.99');
+              done();
+            });
         });
+      });
+
+      describe('when an addon quantity is updated to zero', () => {
+        it('removes the addon from the pricing instance', function (done) {
+          this.pricing
+            .plan('basic', { quantity: 1 })
+            .addon('snarf', { quantity: 2 })
+            .then(() => {
+              assert.equal(this.pricing.items.addons.length, 1);
+              assert.equal(this.pricing.items.addons[0].code, 'snarf');
+              assert.equal(this.pricing.items.addons[0].quantity, 2);
+            })
+            .addon('snarf', { quantity: 0 })
+            .done(price => {
+              assert.equal(this.pricing.items.addons.length, 0);
+              assert.equal(price.now.addons, '0.00');
+              assert.equal(price.next.addons, '0.00');
+              assert.equal(price.now.total, '21.99');
+              assert.equal(price.next.total, '19.99');
+              done();
+            });
+        });
+      });
+    });
+
+    describe('with usage addons', () => {
+      it('should not apply the usage cost to the price', function (done) {
+        this.pricing
+          .plan('basic', { quantity: 1 })
+          .addon('snarf')
+          .addon('with_usage')
+          .done(function (price) {
+            assert.equal(price.now.addons, '1.00');
+            assert.equal(price.next.addons, '1.00');
+            assert.equal(price.now.total, '22.99');
+            assert.equal(price.next.total, '20.99');
+            done();
+          });
+      });
     });
   });
 
