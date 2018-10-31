@@ -1,3 +1,4 @@
+import bowser from 'bowser';
 import merge from 'lodash.merge';
 import {Recurly} from '../../lib/recurly';
 import {BRAINTREE_CLIENT_VERSION} from '../../lib/recurly/paypal/strategy/braintree';
@@ -58,4 +59,29 @@ export function braintreeStub () {
 export function isUuidv4 (example) {
   const matcher = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
   return matcher.test(example);
+}
+
+export function stubAsMobileDevice () {
+  beforeEach(function () {
+    this.mobileStubSandbox = sinon.createSandbox();
+    if (bowser.mobile === true) return;
+    if (!bowser.hasOwnProperty('mobile')) bowser.mobile = undefined;
+    this.mobileStubSandbox.stub(bowser, 'mobile').value(true);
+  });
+
+  afterEach(function () {
+    this.mobileStubSandbox.restore();
+  });
+}
+
+export function stubAsNonMobileDevice () {
+  beforeEach(function () {
+    this.mobileStubSandbox = sinon.createSandbox();
+    if ('mobile' in bowser) this.mobileStubSandbox.stub(bowser, 'mobile').value(false);
+    if ('tablet' in bowser) this.mobileStubSandbox.stub(bowser, 'tablet').value(false);
+  });
+
+  afterEach(function () {
+    this.mobileStubSandbox.restore()
+  });
 }

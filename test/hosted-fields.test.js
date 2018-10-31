@@ -1,6 +1,6 @@
 import assert from 'assert';
 import {applyFixtures} from './support/fixtures';
-import {initRecurly, nextTick} from './support/helpers';
+import {initRecurly, stubAsMobileDevice} from './support/helpers';
 import HostedField from '../lib/recurly/hosted-field';
 import {FIELD_TYPES, HostedFields} from '../lib/recurly/hosted-fields';
 import {Recurly} from '../lib/recurly';
@@ -30,51 +30,47 @@ describe('Recurly.HostedFields', function () {
   });
 
   describe('tabbing', function () {
+    stubAsMobileDevice();
+
     beforeEach(function (done) {
       this.recurly = initRecurly();
-      this.recurly.ready(done);
       this.hostedFields = new HostedFields({ recurly: this.recurly.config });
       this.hostedField = this.hostedFields.fields[0];
+      sinon.spy(this.hostedFields, 'onTab');
+      sinon.spy(this.hostedFields, 'tabbableItems');
+      this.recurly.ready(done);
+    });
+
+    afterEach(function () {
+      this.hostedFields.onTab.restore();
+      this.hostedFields.tabbableItems.restore();
     });
 
     this.ctx.fixture = 'all';
 
     it('binds to specific events', function () {
-      const events = [
+      [
         'bus:added',
         'hostedField:state:change',
         'hostedField:tab:next',
         'hostedField:tab:previous'
-      ];
-
-      events.forEach((event) => {
-        assert(this.hostedFields.hasListeners(event));
+      ].forEach(event => {
+        assert.strictEqual(this.hostedFields.hasListeners(event), true);
       });
     });
 
-    it('calls bound function', function () {
-      sinon.spy(this.hostedFields, "onTab");
+    it('calls onTab when receiving a tab event', function (done) {
       this.recurly.emit('ready');
-
-      this.hostedFields.emit('hostedField:tab:previous', {
-        type: this.hostedField.type
-      });
-
-      nextTick(function () {
-        assert(this.hostedFields.onTab.called);
-      });
+      this.hostedFields.emit('hostedField:tab:next', { type: this.hostedField.type });
+      setTimeout(() => {
+        assert.strictEqual(this.hostedFields.onTab.called, true);
+        done();
+      }, 1);
     });
 
     it('fetches tabbable elements', function () {
-      sinon.spy(this.hostedFields, "tabbableItems");
-
-      this.hostedFields.onTab('previous', {
-        type: this.hostedField.type
-      });
-
-      nextTick(function () {
-        assert(this.hostedFields.tabbableItems.called);
-      });
+      this.hostedFields.onTab('next', { type: this.hostedField.type });
+      assert.strictEqual(this.hostedFields.tabbableItems.called, true);
     });
   });
 });

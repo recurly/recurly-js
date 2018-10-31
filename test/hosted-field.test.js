@@ -1,7 +1,6 @@
 import assert from 'assert';
-import bowser from 'bowser';
 import {applyFixtures} from './support/fixtures';
-import {initRecurly} from './support/helpers';
+import {initRecurly, stubAsMobileDevice, stubAsNonMobileDevice} from './support/helpers';
 import {HostedField} from '../lib/recurly/hosted-field';
 import {Recurly} from '../lib/recurly';
 
@@ -16,16 +15,8 @@ describe('Recurly.HostedField', function () {
   this.ctx.fixture = 'minimal';
 
   describe('when instantiated on a mobile device', function () {
-    beforeEach(function () {
-      this.sandbox = sinon.createSandbox();
-      if (bowser.mobile === true) return;
-      if (!bowser.hasOwnProperty('mobile')) bowser.mobile = undefined;
-      this.sandbox.stub(bowser, 'mobile').value(true);
-    });
+    stubAsMobileDevice();
     beforeEach(buildHostedFieldExample());
-    afterEach(function () {
-      this.sandbox.restore();
-    });
 
     it('injects mobile specific html', function () {
       assert(this.hostedField.tabbingProxy instanceof HTMLElement);
@@ -35,15 +26,8 @@ describe('Recurly.HostedField', function () {
   });
 
   describe('when instantiated on a non-mobile device', function () {
-    beforeEach(function () {
-      this.sandbox = sinon.createSandbox();
-      if ('mobile' in bowser) this.sandbox.stub(bowser, 'mobile').value(false);
-      if ('tablet' in bowser) this.sandbox.stub(bowser, 'tablet').value(false);
-    });
+    stubAsNonMobileDevice();
     beforeEach(buildHostedFieldExample());
-    afterEach(function () {
-      this.sandbox.restore()
-    });
 
     it('does not inject mobile specific html', function () {
       assert.strictEqual(this.hostedField.tabbingProxy, undefined);
