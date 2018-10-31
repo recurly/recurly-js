@@ -518,5 +518,33 @@ describe('Recurly.Pricing.Subscription', function () {
         })
         .done();
     });
+
+    describe('when the plan is changed', () => {
+      it('removes coupons which are incompatible with the new plan', function (done) {
+        this.pricing
+          .plan('basic', { quantity: 1 })
+          .coupon('coop-pct-plan-basic')
+          .then(coupon => {
+            assert.equal(coupon.code, 'coop-pct-plan-basic');
+            assert.equal(this.pricing.items.coupon.code, 'coop-pct-plan-basic');
+          })
+          .reprice()
+          .then(price => {
+            assert.equal(price.now.discount, '3.00');
+            assert.equal(price.next.discount, '3.00');
+            assert.equal(price.now.total, '18.99');
+            assert.equal(price.next.total, '16.99');
+          })
+          .plan('basic-2', { quantity: 1 })
+          .done(price => {
+            assert.equal(this.pricing.items.coupon, undefined);
+            assert.equal(price.now.discount, '0.00');
+            assert.equal(price.next.discount, '0.00');
+            assert.equal(price.now.total, '95.09');
+            assert.equal(price.next.total, '90.09');
+            done();
+          });
+      });
+    });
   });
 });
