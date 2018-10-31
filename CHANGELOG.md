@@ -1,5 +1,12 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.9.4
+
+* Fixes a bug in SubscriptionPricing where addon prices were not always calculated [#471][471]
+* Fixes a bug in SubscriptionPricing where a plan switch could retain an invalid coupon [#489][489]
+* Fixes removal of SubscriptionPricing addons [#487][487]
+* Upgrades build utilities [#483][483]
+
 ### Version 4.9.3
 
 * Fixes tokenization errors presented when customers disable third-party cookies in Chrome [#482][482]
@@ -249,6 +256,10 @@
 
 * Full rewrite for Billing Info tokenization
 
+[489]: https://github.com/recurly/recurly-js/commit/b82938c0835f70802a514c29851b2ef60a95f991
+[487]: https://github.com/recurly/recurly-js/commit/3d45b068e7dadbef4680aef5725f1567e9da317e
+[483]: https://github.com/recurly/recurly-js/commit/216b9095da55aa075ec0b408ef7736359b9acebf
+[471]: https://github.com/recurly/recurly-js/commit/c4ab27e9a4d06d0595612e57dabe1257938f778c
 [482]: https://github.com/recurly/recurly-js/commit/2b6994d250731ece2b0499ac30c2783fe1761e75
 [478]: https://github.com/recurly/recurly-js/commit/773c757019a8b2e17bfa147237d21aa2fc2d9681
 [477]: https://github.com/recurly/recurly-js/commit/aa35435661a2f9507af73c2aacc380482d99e4e7
