@@ -3,6 +3,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const path = require('path');
 const minify = ~process.argv.indexOf('-p');
+const manifest = require('./package.json');
 
 module.exports = {
   node: {
@@ -30,7 +31,7 @@ module.exports = {
               presets: [
                 ['@babel/preset-env', {
                   targets: {
-                    browsers: ['last 2 versions', 'IE >= 11']
+                    browsers: manifest.browserslist
                   }
                 }]
               ]
