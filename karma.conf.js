@@ -13,7 +13,7 @@ var staticConfig = {
   // Warning: If PhantomJS is included, its shim framework will load in all invoked browsers.
   //          In nearly all cases, these should be run one at a time.
   browsers: [
-    'PhantomJS'
+    'ChromeHeadless'
     // 'ChromeDebug'
     // 'FirefoxDebug'
     // 'VirtualBoxIE11Win7'
@@ -24,8 +24,7 @@ var staticConfig = {
   browserDisconnectTolerance : 4,
   browserNoActivityTimeout: 800000,
   captureTimeout: 800000,
-  customLaunchers: {
-    ChromeDebug: {
+  customLaunchers: {ChromeDebug: {
       base: 'Chrome',
       flags: ['--auto-open-devtools-for-tabs']
     },

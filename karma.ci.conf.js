@@ -2,8 +2,9 @@ var BROWSER = process.env.BROWSER;
 var REPORT_COVERAGE = process.env.REPORT_COVERAGE || false;
 var staticConfig = require('./karma.conf').staticConfig;
 var sauceBrowsers = {
-  sl_phantom: {
-    base: 'PhantomJS'
+  sl_chrome_headless: {
+    base: 'ChromeHeadless',
+    flags: ['--no-sandbox']
   },
   sl_chrome: {
     base: 'SauceLabs',
