@@ -18,8 +18,13 @@ var sauceBrowsers = {
   sl_safari: {
     base: 'SauceLabs',
     browserName: 'safari',
-    platform: 'OS X 10.12',
-    version: '11'
+    platform: 'OS X 10.13',
+    version: '12'
+  },
+  sl_edge: {
+    base: 'SauceLabs',
+    browserName: 'MicrosoftEdge',
+    platform: 'Windows 10'
   },
   sl_ie_11: {
     base: 'SauceLabs',
@@ -27,22 +32,17 @@ var sauceBrowsers = {
     platform: 'Windows 7',
     version: '11'
   },
+  sl_ios_12: {
+    base: 'SauceLabs',
+    browserName: 'iphone',
+    platform: 'iOS',
+    version: '12.0'
+  },
   sl_ios_11: {
     base: 'SauceLabs',
     browserName: 'iphone',
     platform: 'iOS',
     version: '11.0'
-  },
-  sl_ios_10: {
-    base: 'SauceLabs',
-    browserName: 'iphone',
-    platform: 'iOS',
-    version: '10.3'
-  },
-  sl_ios_9: {
-    base: 'SauceLabs',
-    browserName: 'iphone',
-    version: '9.3'
   },
   sl_android_7: {
     base: 'SauceLabs',
