@@ -24,7 +24,8 @@ var staticConfig = {
   browserDisconnectTolerance : 4,
   browserNoActivityTimeout: 800000,
   captureTimeout: 800000,
-  customLaunchers: {ChromeDebug: {
+  customLaunchers: {
+    ChromeDebug: {
       base: 'Chrome',
       flags: ['--auto-open-devtools-for-tabs']
     },
