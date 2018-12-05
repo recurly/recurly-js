@@ -14,7 +14,7 @@ var staticConfig = {
     'PhantomJS'
     // 'ChromeDebug'
     // 'FirefoxDebug'
-    // 'IE11 - Win7'
+    // 'VirtualBoxIE11Win7'
   ],
   singleRun: true,
   concurrency: Infinity,
@@ -30,6 +30,11 @@ var staticConfig = {
     FirefoxDebug: {
       base: 'Firefox',
       flags: ['-devtools']
+    },
+    VirtualBoxIE11Win7: {
+      base: 'VirtualBoxIE11',
+      keepAlive: true,
+      vmName: 'IE11 - Win7'
     }
   },
   client: {
