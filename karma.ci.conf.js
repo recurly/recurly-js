@@ -1,4 +1,4 @@
-var BROWSER = process.env.BROWSER || 'all';
+var BROWSER = process.env.BROWSER;
 var REPORT_COVERAGE = process.env.REPORT_COVERAGE || false;
 var staticConfig = require('./karma.conf').staticConfig;
 var sauceBrowsers = {
@@ -63,13 +63,14 @@ var sauceBrowsers = {
   }
 };
 
-module.exports = function (config) {
+function runner (config) {
   var reporters = ['mocha', 'saucelabs'];
   if (REPORT_COVERAGE) reporters.push('coverage');
   config.set(Object.assign({}, staticConfig, {
     reporters: reporters,
     logLevel: config.LOG_INFO,
-    browsers: browsers(),
+    browsers: ['sl_' + BROWSER],
+    frameworks: frameworks(),
     sauceLabs: {
       testName: 'Recurly.js tests',
       recordVideo: true,
@@ -79,12 +80,12 @@ module.exports = function (config) {
   }));
 };
 
-function browsers () {
-  if (BROWSER) {
-    return ['sl_' + BROWSER];
-  } else {
-    return Object.keys(sauceBrowsers);
-  }
+function frameworks () {
+  var frameworks = staticConfig.frameworks;
+  if (BROWSER === 'phantom') frameworks.push('phantomjs-shim');
+  return frameworks;
 }
 
 var server = require('./test/server');
+
+module.exports = runner;
