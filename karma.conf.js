@@ -1,6 +1,6 @@
 var staticConfig = {
   basePath: '',
-  frameworks: ['mocha', 'sinon', 'phantomjs-shim', 'source-map-support'],
+  frameworks: ['mocha', 'sinon', 'source-map-support'],
   files: [
     'build/recurly.js',
     'build/test.js'
@@ -10,11 +10,13 @@ var staticConfig = {
   port: 9876,
   colors: true,
   autoWatch: true,
+  // Warning: If PhantomJS is included, its shim framework will load in all invoked browsers.
+  //          In nearly all cases, these should be run one at a time.
   browsers: [
     'PhantomJS'
     // 'ChromeDebug'
     // 'FirefoxDebug'
-    // 'IE11 - Win7'
+    // 'VirtualBoxIE11Win7'
   ],
   singleRun: true,
   concurrency: Infinity,
@@ -30,6 +32,11 @@ var staticConfig = {
     FirefoxDebug: {
       base: 'Firefox',
       flags: ['-devtools']
+    },
+    VirtualBoxIE11Win7: {
+      base: 'VirtualBoxIE11',
+      keepAlive: true,
+      vmName: 'IE11 - Win7'
     }
   },
   client: {
@@ -47,9 +54,12 @@ var staticConfig = {
   }
 };
 
-var runner = function (config) {
+function runner (config) {
+  var frameworks = staticConfig.frameworks;
+  if (~staticConfig.browsers.indexOf('PhantomJS')) frameworks.push('phantomjs-shim');
   config.set(Object.assign({}, staticConfig, {
-    logLevel: config.LOG_INFO
+    logLevel: config.LOG_INFO,
+    frameworks: frameworks
   }));
 };
 
