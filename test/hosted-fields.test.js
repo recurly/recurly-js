@@ -73,4 +73,58 @@ describe('Recurly.HostedFields', function () {
       assert.strictEqual(this.hostedFields.tabbableItems.called, true);
     });
   });
+
+  describe('fieldConfig', () => {
+    this.ctx.fixture = 'all';
+
+    describe('format', () => {
+      it('prefers the individual field config value', function () {
+        this.recurly.configure({
+          fields: {
+            all: { format: true },
+            number: { format: false }
+          }
+        });
+
+        let fieldConfig = new HostedFields({ recurly: this.recurly.config }).fieldConfig('number');
+        assert.strictEqual(fieldConfig.format, false);
+      });
+
+      it('falls back to the general config value', function () {
+        this.recurly.configure({
+          fields: {
+            all: { format: true }
+          }
+        });
+
+        let fieldConfig = new HostedFields({ recurly: this.recurly.config }).fieldConfig('number');
+        assert.strictEqual(fieldConfig.format, true);
+      });
+    });
+
+    describe('tabIndex', () => {
+      it('prefers the general field config value', function () {
+        this.recurly.configure({
+          fields: {
+            all: { tabIndex: 0 },
+            number: { tabIndex: 200 }
+          }
+        });
+
+        let fieldConfig = new HostedFields({ recurly: this.recurly.config }).fieldConfig('number');
+        assert.strictEqual(fieldConfig.tabIndex, 0);
+      });
+
+      it('falls back to the individual config value', function () {
+        this.recurly.configure({
+          fields: {
+            number: { tabIndex: 200 }
+          }
+        });
+
+        let fieldConfig = new HostedFields({ recurly: this.recurly.config }).fieldConfig('number');
+        assert.strictEqual(fieldConfig.tabIndex, 200);
+      });
+    });
+  });
 });
