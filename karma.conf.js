@@ -13,7 +13,7 @@ var staticConfig = {
   // Warning: If PhantomJS is included, its shim framework will load in all invoked browsers.
   //          In nearly all cases, these should be run one at a time.
   browsers: [
-    'PhantomJS'
+    'ChromeHeadless'
     // 'ChromeDebug'
     // 'FirefoxDebug'
     // 'VirtualBoxIE11Win7'

@@ -2,14 +2,13 @@ language: node_js
 sudo: false
 node_js:
   - 10
-before_install:
-  - bash .travis-install-phantom.sh
 cache:
   directories:
-  - $HOME/travis-phantomjs
+  - node_modules
 script:
   - travis_wait make test-ci
 addons:
+  chrome: stable
   artifacts:
     paths:
       - build
@@ -25,7 +24,7 @@ env:
     - secure: Bv5h9pXMa5O0EdOuN2Dt1n9/+T1dMHimnn6XQb0ozjfwzjfhcPR6eKHkOxDVJ0c1rzne48ql0FK0P42QaCdZpEmy8wUyUTmI1gTMhjILcFbQFk+r9GOwGJsPttLNRS2J9+8u5tEDZjf5LiCnPBjy6vIinK7nlas93xTLTQwNEmI=
     - secure: yIrHdkLhWtO37N24cRU71PK80zvkPzlJ1Jm+1MS3C6/icgJ8At1N/UgpBdxuBs1tlJm1O7Ahk+/MhpGWlspx9tCF7Hzw9Rj0xpKhqsvM155zgH582xNPwNebiCr/tmsH2/ELgFBBgC9sCW5luzeKx9nyuedGA4fmD2fK5Phc5EE=
   matrix:
-    - BROWSER=phantom ARTIFACTS_BUCKET=recurly-js REPORT_COVERAGE=true
+    - BROWSER=chrome_headless ARTIFACTS_BUCKET=recurly-js REPORT_COVERAGE=true
     - BROWSER=chrome
     - BROWSER=firefox
     - BROWSER=safari
