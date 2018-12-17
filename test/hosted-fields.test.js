@@ -6,18 +6,20 @@ import {FIELD_TYPES, HostedFields} from '../lib/recurly/hosted-fields';
 import {Recurly} from '../lib/recurly';
 
 describe('Recurly.HostedFields', function () {
-  beforeEach(function (done) {
-    this.recurly = initRecurly();
-    this.recurly.ready(done);
-    this.hostedFields = new HostedFields({ recurly: this.recurly.config });
-    this.hostedField = this.hostedFields.fields[0];
-  });
-
   applyFixtures();
 
-  describe('initialization', function () {
-    this.ctx.fixture = 'all';
+  this.ctx.fixture = 'all';
 
+  beforeEach(function (done) {
+    const recurly = this.recurly = initRecurly();
+    this.recurly.ready(() => {
+      this.hostedFields = new HostedFields({ recurly });
+      this.hostedField = this.hostedFields.fields[0];
+      done();
+    });
+  });
+
+  describe('initialization', function () {
     it('builds fields collection', function () {
       for (let i = 0; i < this.hostedFields.fields.length; i++) {
         assert(this.hostedFields.fields[i]);
@@ -33,9 +35,6 @@ describe('Recurly.HostedFields', function () {
     stubAsMobileDevice();
 
     beforeEach(function (done) {
-      this.recurly = initRecurly();
-      this.hostedFields = new HostedFields({ recurly: this.recurly.config });
-      this.hostedField = this.hostedFields.fields[0];
       sinon.spy(this.hostedFields, 'onTab');
       sinon.spy(this.hostedFields, 'tabbableItems');
       this.recurly.ready(done);
@@ -45,8 +44,6 @@ describe('Recurly.HostedFields', function () {
       this.hostedFields.onTab.restore();
       this.hostedFields.tabbableItems.restore();
     });
-
-    this.ctx.fixture = 'all';
 
     it('binds to specific events', function () {
       [
@@ -75,8 +72,6 @@ describe('Recurly.HostedFields', function () {
   });
 
   describe('fieldConfig', () => {
-    this.ctx.fixture = 'all';
-
     describe('format', () => {
       it('prefers the individual field config value', function () {
         this.recurly.configure({
@@ -86,7 +81,7 @@ describe('Recurly.HostedFields', function () {
           }
         });
 
-        let fieldConfig = new HostedFields({ recurly: this.recurly.config }).fieldConfig('number');
+        let fieldConfig = new HostedFields({ recurly: this.recurly }).fieldConfig('number');
         assert.strictEqual(fieldConfig.format, false);
       });
 
@@ -97,7 +92,7 @@ describe('Recurly.HostedFields', function () {
           }
         });
 
-        let fieldConfig = new HostedFields({ recurly: this.recurly.config }).fieldConfig('number');
+        let fieldConfig = new HostedFields({ recurly: this.recurly }).fieldConfig('number');
         assert.strictEqual(fieldConfig.format, true);
       });
     });
@@ -111,7 +106,7 @@ describe('Recurly.HostedFields', function () {
           }
         });
 
-        let fieldConfig = new HostedFields({ recurly: this.recurly.config }).fieldConfig('number');
+        let fieldConfig = new HostedFields({ recurly: this.recurly }).fieldConfig('number');
         assert.strictEqual(fieldConfig.tabIndex, 0);
       });
 
@@ -122,7 +117,7 @@ describe('Recurly.HostedFields', function () {
           }
         });
 
-        let fieldConfig = new HostedFields({ recurly: this.recurly.config }).fieldConfig('number');
+        let fieldConfig = new HostedFields({ recurly: this.recurly }).fieldConfig('number');
         assert.strictEqual(fieldConfig.tabIndex, 200);
       });
     });
