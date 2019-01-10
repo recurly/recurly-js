@@ -9,6 +9,7 @@
     window.inputValue = '';
     window._config = undefined;
 
+    // Stub broker behavior
     if (config().type === 'number') {
       window.addEventListener('message', receive, false);
     }
@@ -36,7 +37,9 @@
     }
 
     function message (name, body) {
-      if (window.parent) window.parent.postMessage({ event: name, body: body }, '*');
+      if (!window.parent) return;
+      const groupId = config().busGroupId;
+      window.parent.postMessage({ event: name, body: body, groupId: groupId }, '*');
     }
 
     function recurlyConfig() {
