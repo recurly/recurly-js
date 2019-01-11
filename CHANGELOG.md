@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.9.5
+
+* Isolates message buses across multiple recurly instances [#500][500]
+
 ### Version 4.9.4
 
 * Fixes a bug in SubscriptionPricing where addon prices were not always calculated [#471][471]
@@ -256,6 +260,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[500]: https://github.com/recurly/recurly-js/commit/2aac851308c2e71f91caa4a4941a59cccc6ffd64
 [489]: https://github.com/recurly/recurly-js/commit/b82938c0835f70802a514c29851b2ef60a95f991
 [487]: https://github.com/recurly/recurly-js/commit/3d45b068e7dadbef4680aef5725f1567e9da317e
 [483]: https://github.com/recurly/recurly-js/commit/216b9095da55aa075ec0b408ef7736359b9acebf
