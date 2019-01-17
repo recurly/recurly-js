@@ -26,7 +26,7 @@
     "lodash.pick": "^4.4.0",
     "promise": "^8.0.2",
     "qs": "^6.5.2",
-    "tabbable": "^3.1.1",
+    "tabbable": "^3.1.2",
     "to-slug-case": "^1.0.0",
     "uuid": "^3.3.2"
   },
