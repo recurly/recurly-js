@@ -3,6 +3,7 @@
 ### Version 4.9.5
 
 * Isolates message buses across multiple recurly instances [#500][500]
+* Fixes detection of tabbing order on mobile browsers [#504][504]
 
 ### Version 4.9.4
 
@@ -260,6 +261,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[504]: https://github.com/recurly/recurly-js/commit/a87b9f15c14622fedb7269e38a14701294582786
 [500]: https://github.com/recurly/recurly-js/commit/2aac851308c2e71f91caa4a4941a59cccc6ffd64
 [489]: https://github.com/recurly/recurly-js/commit/b82938c0835f70802a514c29851b2ef60a95f991
 [487]: https://github.com/recurly/recurly-js/commit/3d45b068e7dadbef4680aef5725f1567e9da317e
