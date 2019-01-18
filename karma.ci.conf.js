@@ -74,6 +74,7 @@ function runner (config) {
     frameworks: frameworks(),
     sauceLabs: {
       testName: 'Recurly.js tests',
+      extendedDebugging: true,
       recordVideo: true,
       public: 'public'
     },

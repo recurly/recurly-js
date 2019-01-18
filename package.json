@@ -58,7 +58,7 @@
     "karma-ie-launcher": "^1.0.0",
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.2",
-    "karma-sauce-launcher": "^1.2.0",
+    "karma-sauce-launcher": "https://github.com/chrissrogers/karma-sauce-launcher/archive/master.tar.gz",
     "karma-sinon": "^1.0.5",
     "karma-source-map-support": "^1.3.0",
     "karma-virtualbox-ie11-launcher": "^1.2.0",
