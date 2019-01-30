@@ -157,7 +157,22 @@ const multipleForms = opts => `
   </form>
 `;
 
-const FIXTURES = { minimal, all, bank, pricing, checkoutPricing, multipleForms };
+const iframe = opts => `
+  <iframe
+    id="${fetch(opts, 'id', 'test-iframe')}"
+    src="${fetch(opts, 'src', 'https://google.com')}"
+  ></iframe>
+`;
+
+const FIXTURES = {
+  minimal,
+  all,
+  bank,
+  pricing,
+  checkoutPricing,
+  multipleForms,
+  iframe
+};
 
 export function applyFixtures () {
   beforeEach(function () {
