@@ -68,5 +68,8 @@ module.exports = {
       }),
       new OptimizeCSSAssetsPlugin({})
     ]
-  }
+  },
+  devServer: {
+    host: 'js.lvh.me'
+  },
 };
