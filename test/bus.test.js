@@ -38,7 +38,7 @@ describe('Recurly.Bus', function () {
       })
     });
 
-    describe.only('when adding a cross-domain iframe window recipient', function () {
+    describe('when adding a cross-domain iframe window recipient', function () {
       applyFixtures();
 
       this.ctx.fixture = 'iframe';
