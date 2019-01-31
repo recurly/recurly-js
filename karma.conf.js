@@ -10,8 +10,6 @@ var staticConfig = {
   port: 9876,
   colors: true,
   autoWatch: true,
-  // Warning: If PhantomJS is included, its shim framework will load in all invoked browsers.
-  //          In nearly all cases, these should be run one at a time.
   browsers: [
     'ChromeHeadless'
     // 'ChromeDebug'
