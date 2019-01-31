@@ -4,6 +4,8 @@
 
 * Isolates message buses across multiple recurly instances [#500][500]
 * Fixes detection of tabbing order on mobile browsers [#504][504]
+* Adds missing error [#507][507]
+* Fixes initialization error introduced in EdgeHTML 18 [#510][510]
 
 ### Version 4.9.4
 
@@ -261,6 +263,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[510]: https://github.com/recurly/recurly-js/commit/bd75ac7db6dc871eedd50083d94e2e8caaa3a439
+[507]: https://github.com/recurly/recurly-js/commit/f93f833cac21fa5d27ba6a4bcaf5816c38920383
 [504]: https://github.com/recurly/recurly-js/commit/a87b9f15c14622fedb7269e38a14701294582786
 [500]: https://github.com/recurly/recurly-js/commit/2aac851308c2e71f91caa4a4941a59cccc6ffd64
 [489]: https://github.com/recurly/recurly-js/commit/b82938c0835f70802a514c29851b2ef60a95f991
