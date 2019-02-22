@@ -1,5 +1,6 @@
 import assert from 'assert';
 import clone from 'component-clone';
+import find from 'component-find';
 import merge from 'lodash.merge';
 import omit from 'lodash.omit';
 import Emitter from 'component-emitter';
@@ -197,6 +198,17 @@ apiTest(function (requestMethod) {
               assert.strictEqual(authorization.label, this.applePay.config.i18n.authorizationLineItemLabel);
               assert.strictEqual(authorization.amount, '1.00');
               assert.strictEqual(this.applePay.totalLineItem.amount, '1.00');
+            });
+          });
+
+          describe('when tax amounts are specified', () => {
+            beforeEach(function (done) {
+              this.pricing.tax({ amount: { now: 20.01, next: 18.46 } }).done(() => done());
+            });
+
+            it('sets the tax line item accordingly', function () {
+              const taxLineItem = find(this.applePay.lineItems, li => li.label === this.applePay.config.i18n.taxLineItemLabel);
+              assert.strictEqual(taxLineItem.amount, '20.01');
             });
           });
         });

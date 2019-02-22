@@ -118,17 +118,15 @@ describe('CheckoutPricing#attach', function () {
     });
   });
 
-  describe('when given multiple subscriptions and adjustments', () => {
-    beforeEach(function () {
-      this.currentTest.ctx.fixture = 'checkoutPricing';
-      this.currentTest.ctx.fixtureOpts = {
-        sub_0_plan: 'basic',
-        sub_1_plan: 'basic-2',
-        adj_0: '1',
-        adj_1: '3',
-        giftcard: 'super-gift-card'
-      };
-    });
+  describe('when given multiple subscriptions and adjustments', function () {
+    this.ctx.fixture = 'checkoutPricing';
+    this.ctx.fixtureOpts = {
+      sub_0_plan: 'basic',
+      sub_1_plan: 'basic-2',
+      adj_0: '1',
+      adj_1: '3',
+      giftcard: 'super-gift-card'
+    };
 
     applyFixtures();
 
@@ -173,6 +171,75 @@ describe('CheckoutPricing#attach', function () {
         assert.equal(container().querySelector('[data-recurly="taxes_now"]').innerHTML, this.pricing.price.now.taxes);
         assert.equal(container().querySelector('[data-recurly="taxes_next"]').innerHTML, this.pricing.price.next.taxes);
         done();
+      });
+    });
+
+    describe('when tax amounts are set', function () {
+      describe('when tax amounts are blank', function () {
+        this.ctx.fixtureOpts = {
+          sub_0_plan: 'basic',
+          sub_1_plan: 'basic-2',
+          adj_0: '1',
+          adj_1: '3',
+          'tax_amount.now': '',
+          'tax_amount.next': ''
+        };
+
+        it('set the amounts to zero', function (done) {
+          this.pricing.on('set.tax', () => {
+            container();
+            assert.strictEqual(this.pricing.items.tax.amount.now, 0);
+            assert.strictEqual(this.pricing.items.tax.amount.next, 0);
+            done();
+          });
+        });
+      });
+
+      describe('when only setting tax_amount.now', function () {
+        this.ctx.fixtureOpts = {
+          sub_0_plan: 'basic',
+          sub_1_plan: 'basic-2',
+          adj_0: '1',
+          adj_1: '3',
+          'tax_amount.now': '20',
+        };
+
+        it('sets the `tax_amount.now` and defaults the `tax_amount.next` to zero', function (done) {
+          this.pricing.on('set.tax', () => {
+            assert.strictEqual(this.pricing.items.tax.amount.now, '20');
+            assert.strictEqual(this.pricing.items.tax.amount.next, 0);
+            done();
+          });
+        });
+      });
+
+      describe('when setting both tax amounts', function () {
+        this.ctx.fixtureOpts = {
+          sub_0_plan: 'basic',
+          sub_1_plan: 'basic-2',
+          adj_0: '1',
+          adj_1: '3',
+          'tax_amount.now': '20',
+          'tax_amount.next': '10'
+        };
+
+        it('sets both values', function (done) {
+          this.pricing.on('set.tax', () => {
+            assert.strictEqual(this.pricing.items.tax.amount.now, '20');
+            assert.strictEqual(this.pricing.items.tax.amount.next, '10');
+            done();
+          });
+        });
+
+        it('outputs the tax amounts exactly as given', function (done) {
+          this.pricing.on('change', () => {
+            // HACK: await application of taxes
+            if (!this.pricing.items.tax) return;
+            assert.strictEqual(container().querySelector('[data-recurly=taxes_now]').innerHTML, '20.00');
+            assert.strictEqual(container().querySelector('[data-recurly=taxes_next]').innerHTML, '10.00');
+            done();
+          });
+        });
       });
     });
   });
