@@ -178,6 +178,37 @@ describe('Recurly.Pricing.Subscription', function () {
           });
       })
     });
+
+    describe('given specific tax amounts', () => {
+      it('requires the now and next amounts be given as finite numbers', function () {
+        assert.throws(() => this.pricing.tax({ amount: 'invalid' }), /Invalid 'amount'/);
+        assert.throws(() => this.pricing.tax({ amount: { now: 'invalid' } }), /Invalid 'amount.now'/);
+        assert.throws(() => this.pricing.tax({ amount: { now: 20 } }), /Invalid 'amount.next'/);
+        assert.throws(() => this.pricing.tax({ amount: { now: 20, next: 'invalid' } }), /Invalid 'amount.next'/);
+      });
+
+      it('applies the specific tax amounts as provided, ignoring built-in tax calculations', function (done) {
+        this.pricing
+          .plan('basic', { quantity: 1 })
+          .address({
+            country: 'US',
+            postal_code: '94129'
+          })
+          .tax({
+            amount: {
+              now: 20,
+              next: 10
+            }
+          })
+          .done(price => {
+            assert.strictEqual(this.pricing.items.tax.amount.now, 20);
+            assert.strictEqual(this.pricing.items.tax.amount.next, 10);
+            assert.strictEqual(price.now.tax, '20.00');
+            assert.strictEqual(price.next.tax, '10.00');
+            done();
+          });
+      });
+    });
   });
 
   describe('with addons', () => {

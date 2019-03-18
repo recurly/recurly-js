@@ -101,7 +101,7 @@ describe('Recurly.Pricing.attach', function () {
       })
     });
 
-    describe('when pre-populated with a valid giftcard redemption code', function () {
+    describe('when pre-populated with a valid gift card redemption code', function () {
       this.ctx.fixtureOpts = {
         plan: 'basic',
         giftcard: 'super-gift-card'
@@ -113,6 +113,63 @@ describe('Recurly.Pricing.attach', function () {
           assert(this.pricing.items.gift_card.currency === 'USD');
           assert(this.pricing.items.gift_card.unit_amount === 20);
           done();
+        });
+      });
+    });
+
+    describe('when tax amounts are set', function () {
+      describe('when tax amounts are blank', function () {
+        this.ctx.fixtureOpts = {
+          plan: 'basic',
+          'tax_amount.now': '',
+          'tax_amount.next': ''
+        };
+
+        it('set the amounts to zero', function (done) {
+          this.pricing.on('set.tax', () => {
+            assert.strictEqual(this.pricing.items.tax.amount.now, 0);
+            assert.strictEqual(this.pricing.items.tax.amount.next, 0);
+            done();
+          });
+        });
+      });
+
+      describe('when only setting tax_amount.now', function () {
+        this.ctx.fixtureOpts = {
+          plan: 'basic',
+          'tax_amount.now': '20'
+        };
+
+        it('sets the `tax_amount.now` and defaults the `tax_amount.next` to zero', function (done) {
+          this.pricing.on('set.tax', () => {
+            assert.strictEqual(this.pricing.items.tax.amount.now, '20');
+            assert.strictEqual(this.pricing.items.tax.amount.next, 0);
+            done();
+          });
+        });
+      });
+
+      describe('when setting both tax amounts', function () {
+        this.ctx.fixtureOpts = {
+          plan: 'basic',
+          'tax_amount.now': '20',
+          'tax_amount.next': '10'
+        };
+
+        it('sets both values', function (done) {
+          this.pricing.on('set.tax', () => {
+            assert.strictEqual(this.pricing.items.tax.amount.now, '20');
+            assert.strictEqual(this.pricing.items.tax.amount.next, '10');
+            done();
+          });
+        });
+
+        it('outputs the tax amounts exactly as given', function (done) {
+          this.pricing.on('change', () => {
+            assert.strictEqual(container().querySelector('[data-recurly=tax_now]').innerHTML, '20.00');
+            assert.strictEqual(container().querySelector('[data-recurly=tax_next]').innerHTML, '10.00');
+            done();
+          });
         });
       });
     });

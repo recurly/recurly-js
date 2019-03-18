@@ -1573,7 +1573,6 @@ describe('CheckoutPricing', function () {
             this.pricing
               .reprice()
               .done(price => {
-                this.pricing;
                 // 8.75% of taxable amount: 21.99 (sub) + 40 (adj) - 9 (discount) = 52.99
                 assert.equal(price.now.taxes, '4.64');
                 // 8.75% of taxable amount: 19.99 (sub) - 3 (discount) = 16.99
@@ -1581,6 +1580,32 @@ describe('CheckoutPricing', function () {
                 done();
               });
           });
+        });
+      });
+
+      describe('given specific tax amounts', () => {
+        it('requires the now and next amounts be given as finite numbers', function () {
+          assert.throws(() => this.pricing.tax({ amount: 'invalid' }), /Invalid 'amount'/);
+          assert.throws(() => this.pricing.tax({ amount: { now: 'invalid' } }), /Invalid 'amount.now'/);
+          assert.throws(() => this.pricing.tax({ amount: { now: 20 } }), /Invalid 'amount.next'/);
+          assert.throws(() => this.pricing.tax({ amount: { now: 20, next: 'invalid' } }), /Invalid 'amount.next'/);
+        });
+
+        it('applies the specific tax amounts as provided', function (done) {
+          this.pricing
+            .tax({
+              amount: {
+                now: 20,
+                next: 10
+              }
+            })
+            .done(price => {
+              assert.strictEqual(this.pricing.items.tax.amount.now, 20);
+              assert.strictEqual(this.pricing.items.tax.amount.next, 10);
+              assert.strictEqual(price.now.taxes, '20.00');
+              assert.strictEqual(price.next.taxes, '10.00');
+              done();
+            });
         });
       });
     });
