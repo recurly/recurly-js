@@ -22,7 +22,6 @@
     "load-script": "^1.0.0",
     "lodash.chunk": "^4.2.0",
     "lodash.isempty": "^4.4.0",
-    "lodash.isfinite": "^3.3.2",
     "lodash.pick": "^4.4.0",
     "promise": "^8.0.2",
     "tabbable": "^3.1.2",
