@@ -1,4 +1,5 @@
-.recurly-hosted-field {
+.recurly-hosted-field,
+.recurly-element {
   background-color: white;
   border: 1px solid #D7D7D9;
   border-radius: 3px;
@@ -8,20 +9,26 @@
   padding: 0 8px 0 8px;
 }
 
-.recurly-hosted-field-focus {
+.recurly-hosted-field-focus,
+.recurly-element-focus {
   border: 1px solid #8C8C91;
 }
 
-.recurly-hosted-field-invalid {
+.recurly-hosted-field-invalid,
+.recurly-element-invalid {
   border: 1px solid #E35256;
 }
 
-.recurly-hosted-field-number {
+.recurly-hosted-field-number,
+.recurly-element-number {
   width: 12em;
 }
 
 .recurly-hosted-field-month,
 .recurly-hosted-field-year,
-.recurly-hosted-field-cvv {
+.recurly-hosted-field-cvv,
+.recurly-element-month,
+.recurly-element-year,
+.recurly-element-cvv {
   width: 4em;
 }
