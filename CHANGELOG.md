@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.9.6
+
+* Adds specific tax amount overrides to SubscriptionPricing and CheckoutPricing [#515][515]
+
 ### Version 4.9.5
 
 * Isolates message buses across multiple recurly instances [#500][500]
@@ -263,6 +267,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[515]: https://github.com/recurly/recurly-js/commit/00d6a3b7960678239ea57fbfb056d666ed05aacd
 [510]: https://github.com/recurly/recurly-js/commit/bd75ac7db6dc871eedd50083d94e2e8caaa3a439
 [507]: https://github.com/recurly/recurly-js/commit/f93f833cac21fa5d27ba6a4bcaf5816c38920383
 [504]: https://github.com/recurly/recurly-js/commit/a87b9f15c14622fedb7269e38a14701294582786
