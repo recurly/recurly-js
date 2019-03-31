@@ -6,7 +6,7 @@ import Emitter from 'component-emitter';
 
 class EmitterInheritant extends Emitter {}
 
-describe.only('Recurly.Bus', function () {
+describe('Recurly.Bus', function () {
   beforeEach(function () {
     this.bus = new Bus({ api: `//${window.location.host}/api` });
     this.exampleEmitters = [
