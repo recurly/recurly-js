@@ -9,20 +9,31 @@
     window.inputValue = '';
     window._config = undefined;
 
+    var prefix;
+    if (config().elementId) prefix = 'element:' + config().elementId;
+    else prefix = 'hostedField';
+
     // Stub broker behavior
     if (config().type === 'number') {
-      window.addEventListener('message', receive, false);
+      window.addEventListener('message', receivePostMessage, false);
     }
 
-    message('hostedField:ready', { type: config().type });
+    sendMessage(prefix + ':ready', { type: config().type });
 
-    function receive (event) {
-      if (event.data.event === 'token:init') token(event.data.body);
-      if (event.data.event === 'hostedField:configure') setConfig(event.data.body);
+    function receivePostMessage (event) {
+      var name = event.data.event;
+      if (name === 'token:init') {
+        onToken(event.data.body);
+      // HostedField uses ':configure', Element uses ':configure!'
+      } else if (~[prefix + ':configure', prefix + ':configure!'].indexOf(name)) {
+        onConfigure(event.data.body);
+      }
     }
 
-    function token (body) {
-      var recurly = new parent.recurly.Recurly(recurlyConfig());
+    // Event handlers
+
+    function onToken (body) {
+      var recurly = new parent.recurly.Recurly(getRecurlyConfig());
       var inputs = body.inputs;
       var id = body.id;
 
@@ -32,17 +43,24 @@
       }
 
       recurly.token(inputs, function send (err, token) {
-        message('token:done:' + id, { err: err, token: token });
+        sendMessage('token:done:' + id, { err: err, token: token });
       });
     }
 
-    function message (name, body) {
+    function onConfigure (newConfig) {
+      if (newConfig.type !== config().type) return;
+      window._config = newConfig;
+    }
+
+    // Utility
+
+    function sendMessage (name, body) {
       if (!window.parent) return;
-      const groupId = config().busGroupId;
+      var groupId = config().busGroupId;
       window.parent.postMessage({ event: name, body: body, groupId: groupId }, '*');
     }
 
-    function recurlyConfig() {
+    function getRecurlyConfig () {
       var queryConfig = config().recurly;
       queryConfig.parent = false;
       return queryConfig;
@@ -52,11 +70,6 @@
       if (window._config) return window._config;
       var query = window.location.hash;
       return window._config = JSON.parse(decodeURIComponent(query.substring(query.indexOf('config=') + 7)) || {});
-    }
-
-    function setConfig (newConfig) {
-      if (newConfig.type !== config().type) return;
-      window._config = newConfig;
     }
 
     function value (newValue) {
