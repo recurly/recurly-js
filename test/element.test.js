@@ -15,6 +15,10 @@ describe('Element', function () {
     add = () => {}
   }
 
+  applyFixtures();
+
+  this.ctx.fixture = 'elements';
+
   beforeEach(function () {
     let recurly = this.recurly = initRecurly();
     const elements = this.elements = new ElementsStub({ recurly });
@@ -28,6 +32,7 @@ describe('Element', function () {
       tabIndex: 100
     };
     this.element = new Element(validOptions);
+    this.validParentElement = document.querySelector('#recurly-elements');
   });
 
   it('requires an elements instance', function () {
@@ -49,11 +54,7 @@ describe('Element', function () {
   });
 
   describe('Element.attach', function () {
-    applyFixtures();
-
-    this.ctx.fixture = 'elements';
-
-    it('only accepts an HTMLElement', function () {
+    it('only accepts an HTMLElement', function (done) {
       const invalidExamples = [
         undefined,
         null,
@@ -69,17 +70,144 @@ describe('Element', function () {
         }, 'Invalid parent. Expected HTMLElement.');
       });
 
-      const validExample = document.querySelector('#recurly-elements');
-      this.element.attach(validExample);
+      this.element.once('attach', () => done());
+      this.element.attach(this.validParentElement);
+    });
+
+    it('attaches the element.container to the DOM', function (done) {
+      assertElementNotAttachedTo(this.validParentElement);
+      this.element.attach(this.validParentElement);
+      this.element.once('attach', () => {
+        assertElementAttachedTo(this.element, this.validParentElement);
+        done();
+      });
+    });
+
+    it('adds the iframe window to the bus', function (done) {
+      this.element.attach(this.validParentElement);
+      this.element.once('attach', () => {
+        assert(~this.element.bus.recipients.indexOf(this.element.window));
+        done();
+      });
+    });
+
+    it(`emits the 'attach' event`, function (done) {
+      this.element.on('attach', element => {
+        assert.strictEqual(element, this.element);
+        done();
+      });
+      this.element.attach(this.validParentElement);
+    });
+
+    describe('when the element is already attached', function () {
+      beforeEach(function (done) {
+        this.element.attach(this.validParentElement);
+        this.element.once('attach', () => done());
+      });
+
+      describe('to the same parent', function () {
+        it('does nothing', function () {
+          sinon.spy(this.element, 'emit');
+          assertElementAttachedTo(this.element, this.validParentElement);
+          this.element.attach(this.validParentElement);
+          assertElementAttachedTo(this.element, this.validParentElement);
+          assert(this.element.emit.notCalled);
+          this.element.emit.restore();
+        });
+      });
+
+      describe('to a different parent', function () {
+        beforeEach(function () {
+          this.validParentElementTwo = document.querySelector('#recurly-elements-two');
+        });
+
+        it(`removes the element from the previous parent
+            and attaches is to the new parent`, function (done) {
+          assertElementAttachedTo(this.element, this.validParentElement);
+          this.element.attach(this.validParentElementTwo);
+          this.element.once('attach', () => {
+            assertElementNotAttachedTo(this.validParentElement);
+            assertElementAttachedTo(this.element, this.validParentElementTwo);
+            done();
+          });
+        });
+      });
     });
   });
 
   describe('Element.remove', function () {
+    beforeEach(function () {
+      sinon.spy(this.validParentElement, 'removeChild');
+    });
 
+    afterEach(function () {
+      this.validParentElement.removeChild.restore();
+    });
+
+    describe('when the element is attached', function () {
+      beforeEach(function (done) {
+        this.element.on('attach', () => done());
+        this.element.attach(this.validParentElement);
+      });
+
+      it('removes the element from the DOM', function () {
+        assertElementAttachedTo(this.element, this.validParentElement);
+        this.element.remove();
+        assertElementNotAttachedTo(this.validParentElement);
+        assert(this.validParentElement.removeChild.calledOnceWithExactly(this.element.container));
+      });
+
+      it('removes the iframe window from the bus', function () {
+        assert(!!~this.element.bus.recipients.indexOf(this.element.window));
+        this.element.remove();
+        assert(!~this.element.bus.recipients.indexOf(this.element.window));
+      });
+
+      it(`emits the 'remove' event`, function (done) {
+        this.element.on('remove', element => {
+          assert.strictEqual(element, this.element);
+          done();
+        });
+        this.element.remove();
+      });
+    });
+
+    describe('when the element is not attached', function () {
+      it('does nothing', function () {
+        sinon.spy(this.element, 'emit');
+        this.element.remove();
+        assert(this.validParentElement.removeChild.notCalled);
+        assert(this.element.emit.notCalled);
+        this.element.emit.restore();
+      });
+    });
   });
 
   describe('Element.destroy', function () {
+    beforeEach(function (done) {
+      this.element.on('attach', () => done());
+      this.element.attach(this.validParentElement);
+    });
 
+    it('removes the element from the DOM', function () {
+      assertElementAttachedTo(this.element, this.validParentElement);
+      this.element.destroy();
+      assertElementNotAttachedTo(this.validParentElement);
+    });
+
+    it('removes event listeners', function () {
+      const listener = sinon.stub();
+      this.element.on('test-event', listener);
+      this.element.destroy();
+      this.element.emit('test-event');
+      assert(listener.notCalled);
+    });
+
+    it('removes itself from the bus', function () {
+      assert(!!~this.element.bus.recipients.indexOf(this.element));
+      this.element.destroy();
+      assert(!~this.element.bus.recipients.indexOf(this.element));
+    });
   });
 
   describe('Element.configure', function () {
@@ -122,3 +250,13 @@ describe('Element', function () {
 
   });
 });
+
+function assertElementAttachedTo (element, parent) {
+  assert.strictEqual(parent.children.length, 1);
+  assert.strictEqual(parent.children[0], element.container);
+  assert(parent.contains(element.iframe));
+}
+
+function assertElementNotAttachedTo (parent) {
+  assert.strictEqual(parent.children.length, 0);
+}

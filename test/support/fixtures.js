@@ -3,6 +3,7 @@ import { testBed } from './helpers';
 const elements = opts => `
   <form action="#" id="test-form">
     <div id="recurly-elements"></div>
+    <div id="recurly-elements-two"></div>
     <input type="text" data-recurly="first_name" value="${opts.first_name || ''}">
     <input type="text" data-recurly="last_name" value="${opts.last_name || ''}">
     <input type="hidden" data-recurly="token" name="recurly-token">
