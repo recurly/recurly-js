@@ -1,46 +1,33 @@
 import assert from 'assert';
 import Element from '../lib/recurly/element';
 import Elements from '../lib/recurly/elements';
-import { factory as cardElementFactory } from '../lib/recurly/element/card-element';
-import { factory as numberElementFactory } from '../lib/recurly/element/number-element';
-import { factory as monthElementFactory } from '../lib/recurly/element/month-element';
-import { factory as yearElementFactory } from '../lib/recurly/element/year-element';
-import { factory as cvvElementFactory } from '../lib/recurly/element/cvv-element';
 import { initRecurly } from './support/helpers';
 import { Recurly } from '../lib/recurly';
 
 const noop = () => {};
 
-describe('Recurly.Elements', function () {
+describe('Elements', function () {
+  class ElementsStub extends Elements {
+    add = noop;
+  }
+
   beforeEach(function () {
     const recurly = this.recurly = initRecurly();
     this.elements = new Elements({ recurly });
 
-    this.ELEMENT_TYPES = [
+    // This stub allows us to generate inert Element instances
+    this.elementsStub = new ElementsStub({ recurly })
+    this.cardElementExample = this.elementsStub.CardElement();
+  });
+
+  it('has factory properties that return Element instances', function () {
+    [
       'CardElement',
       'NumberElement',
       'MonthElement',
       'YearElement',
       'CvvElement'
-    ];
-
-    // This stub allows us to generate inert Element instances
-    this.elementsStub = {
-      add: noop,
-      remove: noop,
-      recurly: this.recurly,
-      bus: { add: noop, remove: noop },
-      CardElement: cardElementFactory,
-      NumberElement: numberElementFactory,
-      MonthElement: monthElementFactory,
-      YearElement: yearElementFactory,
-      CvvElement: cvvElementFactory
-    };
-    this.cardElementExample = this.elementsStub.CardElement();
-  });
-
-  it('has factory properties that return Element instances', function () {
-    this.ELEMENT_TYPES.forEach(elementName => {
+    ].forEach(elementName => {
       const elements = new Elements({ recurly: this.recurly });
       const element = elements[elementName]();
       assert.strictEqual(typeof elements[elementName], 'function');
@@ -76,7 +63,7 @@ describe('Recurly.Elements', function () {
 
       assert.throws(() => {
         this.elements.add(cardElementExampleTwo);
-      }, 'Invalid element. There is already a CardElement in this set.');
+      }, 'Invalid element. There is already a `CardElement` in this set.');
     });
 
     it('adds the Element to the set', function () {
