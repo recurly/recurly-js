@@ -2,6 +2,7 @@ import assert from 'assert';
 import { isAUid } from './support/matchers';
 import { Recurly } from '../lib/recurly';
 import CheckoutPricing from '../lib/recurly/pricing/checkout';
+import Elements from '../lib/recurly/elements';
 import SubscriptionPricing from '../lib/recurly/pricing/subscription';
 
 describe('Recurly', function () {
@@ -150,6 +151,12 @@ describe('Recurly', function () {
           hostedFieldsStub.state.testField
         ));
       });
+    });
+  });
+
+  describe('Elements factory', () => {
+    it('has an Elements factory at recurly.Elements', function () {
+      assert(recurly.Elements() instanceof Elements);
     });
   });
 });
