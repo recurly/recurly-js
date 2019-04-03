@@ -1,5 +1,7 @@
+import after from 'lodash.after';
 import { applyFixtures } from './support/fixtures';
 import assert from 'assert';
+import clone from 'component-clone';
 import Element from '../lib/recurly/element';
 import Elements from '../lib/recurly/elements';
 import { factory as cardElementFactory } from '../lib/recurly/element/card-element';
@@ -20,10 +22,9 @@ describe('Element', function () {
   this.ctx.fixture = 'elements';
 
   beforeEach(function () {
-    let recurly = this.recurly = initRecurly();
+    const recurly = this.recurly = initRecurly();
     const elements = this.elements = new ElementsStub({ recurly });
-    const validOptions = this.validOptions = {
-      elements,
+    const validConfig = this.validConfig = {
       displayIcon: true,
       inputType: 'select',
       style: {
@@ -31,8 +32,16 @@ describe('Element', function () {
       },
       tabIndex: 100
     };
-    this.element = new Element(validOptions);
+    const validOptions = this.validOptions = {
+      elements,
+      ...validConfig
+    }
+    const element = this.element = new Element(validOptions);
     this.validParentElement = document.querySelector('#recurly-elements');
+
+    // These simulate messages an element expects to receive from a frame
+    this.messageName = name => `element:${element.id}:${name}`
+    this.sendMessage = name => element.bus.send(this.messageName(name));
   });
 
   it('requires an elements instance', function () {
@@ -41,20 +50,17 @@ describe('Element', function () {
     assert.doesNotThrow(() => new Element({ elements }))
   });
 
-  it('accepts options according to a whitelist', function () {
-    const element = new Element(Object.assign({}, this.validOptions, {
-      invalidOption: 'test'
-    }));
-
-    assert.strictEqual(element.config.displayIcon, this.validOptions.displayIcon);
-    assert.strictEqual(element.config.inputType, this.validOptions.inputType);
-    assert.deepEqual(element.config.style, this.validOptions.style);
-    assert.strictEqual(element.config.tabIndex, this.validOptions.tabIndex);
-    assert.strictEqual(element.config.invalidOption, undefined);
+  it('configures the instance', function () {
+    const { element, validOptions } = this;
+    assert.strictEqual(element.config.displayIcon, validOptions.displayIcon);
+    assert.strictEqual(element.config.inputType, validOptions.inputType);
+    assert.strictEqual(element.config.tabIndex, validOptions.tabIndex);
+    assert.deepEqual(element.config.style, validOptions.style);
   });
 
   describe('Element.attach', function () {
     it('only accepts an HTMLElement', function (done) {
+      const { element, validParentElement } = this;
       const invalidExamples = [
         undefined,
         null,
@@ -66,53 +72,53 @@ describe('Element', function () {
 
       invalidExamples.forEach(invalidExample => {
         assert.throws(() => {
-          this.element.attach(invalidExample);
+          element.attach(invalidExample);
         }, 'Invalid parent. Expected HTMLElement.');
       });
 
-      this.element.once('attach', () => done());
-      this.element.attach(this.validParentElement);
+      element.once('attach', () => done());
+      element.attach(validParentElement);
     });
 
     it('attaches the element.container to the DOM', function (done) {
-      assertElementNotAttachedTo(this.validParentElement);
-      this.element.attach(this.validParentElement);
-      this.element.once('attach', () => {
-        assertElementAttachedTo(this.element, this.validParentElement);
+      const { element, validParentElement } = this;
+      assertElementNotAttachedTo(validParentElement);
+      element.attach(validParentElement);
+      element.once('attach', () => {
+        assertElementAttachedTo(element, validParentElement);
         done();
       });
     });
 
     it('adds the iframe window to the bus', function (done) {
-      this.element.attach(this.validParentElement);
-      this.element.once('attach', () => {
-        assert(~this.element.bus.recipients.indexOf(this.element.window));
+      const { element, validParentElement } = this;
+      element.attach(validParentElement);
+      element.once('attach', () => {
+        assert(~element.bus.recipients.indexOf(element.window));
         done();
       });
     });
 
     it(`emits the 'attach' event`, function (done) {
-      this.element.on('attach', element => {
-        assert.strictEqual(element, this.element);
+      const { element, validParentElement } = this;
+      element.once('attach', element => {
+        assert.strictEqual(element, element);
         done();
       });
-      this.element.attach(this.validParentElement);
+      element.attach(validParentElement);
     });
 
     describe('when the element is already attached', function () {
-      beforeEach(function (done) {
-        this.element.attach(this.validParentElement);
-        this.element.once('attach', () => done());
-      });
+      attachElement();
 
       describe('to the same parent', function () {
         it('does nothing', function () {
-          sinon.spy(this.element, 'emit');
-          assertElementAttachedTo(this.element, this.validParentElement);
-          this.element.attach(this.validParentElement);
-          assertElementAttachedTo(this.element, this.validParentElement);
-          assert(this.element.emit.notCalled);
-          this.element.emit.restore();
+          const { element, validParentElement } = this;
+          sinon.spy(element, 'emit');
+          assertElementAttachedTo(element, validParentElement);
+          element.attach(validParentElement);
+          assertElementAttachedTo(element, validParentElement);
+          assert(element.emit.notCalled);
         });
       });
 
@@ -123,11 +129,12 @@ describe('Element', function () {
 
         it(`removes the element from the previous parent
             and attaches is to the new parent`, function (done) {
-          assertElementAttachedTo(this.element, this.validParentElement);
-          this.element.attach(this.validParentElementTwo);
-          this.element.once('attach', () => {
-            assertElementNotAttachedTo(this.validParentElement);
-            assertElementAttachedTo(this.element, this.validParentElementTwo);
+          const { element, validParentElement, validParentElementTwo } = this;
+          assertElementAttachedTo(element, validParentElement);
+          element.attach(validParentElementTwo);
+          element.once('attach', () => {
+            assertElementNotAttachedTo(validParentElement);
+            assertElementAttachedTo(element, validParentElementTwo);
             done();
           });
         });
@@ -145,111 +152,344 @@ describe('Element', function () {
     });
 
     describe('when the element is attached', function () {
-      beforeEach(function (done) {
-        this.element.on('attach', () => done());
-        this.element.attach(this.validParentElement);
-      });
+      attachElement();
 
       it('removes the element from the DOM', function () {
-        assertElementAttachedTo(this.element, this.validParentElement);
-        this.element.remove();
-        assertElementNotAttachedTo(this.validParentElement);
-        assert(this.validParentElement.removeChild.calledOnceWithExactly(this.element.container));
+        const { element, validParentElement } = this;
+        assertElementAttachedTo(element, validParentElement);
+        element.remove();
+        assertElementNotAttachedTo(validParentElement);
+        assert(validParentElement.removeChild.calledOnceWithExactly(element.container));
       });
 
       it('removes the iframe window from the bus', function () {
-        assert(!!~this.element.bus.recipients.indexOf(this.element.window));
-        this.element.remove();
-        assert(!~this.element.bus.recipients.indexOf(this.element.window));
+        const { element } = this;
+        assert(!!~element.bus.recipients.indexOf(element.window));
+        element.remove();
+        assert(!~element.bus.recipients.indexOf(element.window));
+      });
+
+      it(`removes any dangling 'ready' message listeners`, function () {
+        const { element, messageName, sendMessage } = this;
+        const listener = sinon.stub();
+        element.on(messageName('ready'), listener);
+        element.remove();
+        sendMessage('ready');
+        assert(listener.notCalled);
       });
 
       it(`emits the 'remove' event`, function (done) {
-        this.element.on('remove', element => {
-          assert.strictEqual(element, this.element);
+        const { element } = this;
+        element.once('remove', element => {
+          assert.strictEqual(element, element);
           done();
         });
-        this.element.remove();
+        element.remove();
       });
     });
 
     describe('when the element is not attached', function () {
       it('does nothing', function () {
-        sinon.spy(this.element, 'emit');
-        this.element.remove();
-        assert(this.validParentElement.removeChild.notCalled);
-        assert(this.element.emit.notCalled);
-        this.element.emit.restore();
+        const { element, validParentElement } = this;
+        sinon.spy(element, 'emit');
+        element.remove();
+        assert(validParentElement.removeChild.notCalled);
+        assert(element.emit.notCalled);
       });
     });
   });
 
   describe('Element.destroy', function () {
-    beforeEach(function (done) {
-      this.element.on('attach', () => done());
-      this.element.attach(this.validParentElement);
-    });
+    attachElement();
 
     it('removes the element from the DOM', function () {
-      assertElementAttachedTo(this.element, this.validParentElement);
-      this.element.destroy();
-      assertElementNotAttachedTo(this.validParentElement);
+      const { element, validParentElement } = this;
+      assertElementAttachedTo(element, validParentElement);
+      element.destroy();
+      assertElementNotAttachedTo(validParentElement);
     });
 
     it('removes event listeners', function () {
+      const { element } = this;
       const listener = sinon.stub();
-      this.element.on('test-event', listener);
-      this.element.destroy();
-      this.element.emit('test-event');
+      element.once('test-event', listener);
+      element.destroy();
+      element.emit('test-event');
       assert(listener.notCalled);
     });
 
     it('removes itself from the bus', function () {
-      assert(!!~this.element.bus.recipients.indexOf(this.element));
-      this.element.destroy();
-      assert(!~this.element.bus.recipients.indexOf(this.element));
+      const { element } = this;
+      assert(!!~element.bus.recipients.indexOf(element));
+      element.destroy();
+      assert(!~element.bus.recipients.indexOf(element));
     });
   });
 
   describe('Element.configure', function () {
+    beforeEach(function () {
+      sinon.spy(this.element, 'update');
+    });
 
+    afterEach(function () {
+      this.element.update.restore();
+    });
+
+    it('sets config according to a whitelist', function () {
+      const { element, validOptions } = this;
+      element.configure(Object.assign({}, validOptions, {
+        invalidOption: 'test'
+      }));
+      assert.strictEqual(element.config.displayIcon, validOptions.displayIcon);
+      assert.strictEqual(element.config.inputType, validOptions.inputType);
+      assert.strictEqual(element.config.tabIndex, validOptions.tabIndex);
+      assert.deepEqual(element.config.style, validOptions.style);
+      assert(!('invalidOption' in element.config));
+    });
+
+    it('does not change config when it is equivalent to existing config', function () {
+      const { element, validConfig } = this;
+      const config = element._config;
+      element.configure(clone(validConfig));
+      assert.deepEqual(config, element._config);
+      assert(element.update.notCalled);
+    });
+
+    describe('when unequivalent options are given', function () {
+      beforeEach(function () {
+        this.example = {
+          displayIcon: false,
+          style: {
+            fontSize: '10px',
+            fontWeight: 'bold',
+            padding: '2px'
+          },
+          tabIndex: undefined
+        };
+      });
+
+      it('changes config ', function () {
+        const { element, validConfig, example } = this;
+        element.configure(example);
+        assert.strictEqual(element.config.displayIcon, example.displayIcon);
+        assert.strictEqual(element.config.inputType, validConfig.inputType);
+        assert.strictEqual(element.config.tabIndex, undefined);
+        assert.deepEqual(element.config.style, example.style);
+      });
+
+      it('calls update', function () {
+        const { element, example } = this;
+        element.configure(example);
+        assert(element.update.calledOnce);
+      })
+    });
   });
 
   describe('Element.config', function () {
-
+    it('returns an object containing all current config and additional attributes', function () {
+      const { element, recurly, validConfig } = this;
+      assert.deepEqual(this.element.config, {
+        ...validConfig,
+        busGroupId: element.bus.groupId,
+        deviceId: recurly.deviceId,
+        elementId: element.id,
+        recurly: recurly.config,
+        sessionId: recurly.sessionId,
+        type: element.type
+      });
+    });
   });
 
   describe('Element.container', function () {
+    it('returns an HTMLDivElement', function () {
+      assert(this.element.container instanceof HTMLDivElement);
+    });
 
+    it('memoizes its value', function () {
+      const example = this.container;
+      assert.strictEqual(this.container, example);
+    });
+
+    it('has a className matching the element.classList', function () {
+      const { element } = this;
+      assert.strictEqual(element.container.className, element.classList);
+    });
+
+    it('contains element.iframe as its sole child', function () {
+      const { element } = this;
+      const { children } = element.container;
+      assert.strictEqual(children.length, 1);
+      assert.strictEqual(children[0], element.iframe);
+    });
   });
 
   describe('Element.iframe', function () {
+    it('returns an HTMLIFrameElement', function () {
+      assert(this.element.iframe instanceof HTMLIFrameElement);
+    });
 
+    it('memoizes its value', function () {
+      const example = this.iframe;
+      assert.strictEqual(this.iframe, example);
+    });
+
+    it('assigns attributes', function () {
+      const { iframe, id, url } = this.element;
+      assert.strictEqual(iframe.getAttribute('allowtransparency'), 'true');
+      assert.strictEqual(iframe.getAttribute('frameborder'), '0');
+      assert.strictEqual(iframe.getAttribute('scrolling'), 'no');
+      assert.strictEqual(iframe.getAttribute('name'), `recurly-element--${id}`);
+      assert.strictEqual(iframe.getAttribute('allowpaymentrequest'), 'true');
+      assert.strictEqual(iframe.getAttribute('style'), 'background: transparent; width: 100%; height: 100%;');
+      assert.strictEqual(iframe.getAttribute('src'), url);
+    });
   });
 
   describe('Element.window', function () {
+    describe('when the element is not attached', function () {
+      it('returns null', function () {
+        assert.strictEqual(this.element.window, null);
+      });
+    });
 
+    describe('when the element is attached', function () {
+      attachElement();
+
+      it('returns the iframe.contentWindow', function () {
+        const { element } = this;
+        assert.strictEqual(element.window, element.iframe.contentWindow);
+      });
+    });
   });
 
   describe('Element.attached', function () {
+    describe('when the element is not attached', function () {
+      it('returns false', function () {
+        assert.strictEqual(this.element.attached, false);
+      });
+    });
 
+    describe('when the element is attached', function () {
+      attachElement();
+
+      it('returns true', function () {
+        assert.strictEqual(this.element.attached, true);
+      });
+    });
   });
 
   describe('Element.url', function () {
+    it('returns a String starting with the recurly instance API URL', function () {
+      const { element, recurly } = this;
+      assert.strictEqual(typeof element.url, 'string');
+      assert.strictEqual(element.url.indexOf(recurly.config.api), 0);
+    });
 
+    it('contains a decodable and accurate config slug', function () {
+      const { element } = this;
+      const { url } = element;
+      const config = JSON.parse(decodeURIComponent(url.substring(url.indexOf('config=') + 7)));
+      assert.strictEqual(JSON.stringify(config), JSON.stringify(element.config));
+    });
   });
 
-  describe(`Event: 'focus'`, function () {
+  describe('listeners', function () {
+    beforeEach(function () {
+      sinon.spy(this.element, 'update');
+    });
 
-  });
+    afterEach(function () {
+      this.element.update.restore();
+    });
 
-  describe(`Event: 'blur'`, function () {
+    describe('onStateChange', function () {
+      it(`is called when the 'state:change' bus message is sent`, function (done) {
+        const { element, messageName, sendMessage } = this;
+        sinon.spy(element, 'onStateChange');
+        element.on(messageName('state:change'), () => {
+          assert(element.onStateChange.calledOnce);
+          element.onStateChange.restore();
+          done();
+        });
+        assert(element.onStateChange.notCalled);
+        sendMessage('state:change');
+      });
 
-  });
+      it('does not update the state when it is equivalent to the existing state', function () {
+        const { element } = this;
+        const example = { test: 'value' };
+        element.onStateChange(example);
+        const state = element.state;
+        element.onStateChange({ ...example });
+        assert.strictEqual(state, element.state);
+      });
 
-  describe(`Event: 'submit'`, function () {
+      describe('when the new state differs from the existing state', function () {
+        beforeEach(function () {
+          this.element.onStateChange({ test: 'value' });
+          this.example = { test: 'value', john: 'rambo' };
+        });
 
+        it('updates the state when it has changed from the existing state', function () {
+          const { element, example } = this;
+          const { state } = element;
+          element.onStateChange(example);
+          assert.notStrictEqual(state, element.state);
+          assert.deepEqual(example, element.state);
+        });
+
+        it(`emits the 'change' event, passing the new state`, function (done) {
+          const { element, example } = this;
+          element.on('change', state => {
+            assert.deepEqual(state, element.state);
+            done();
+          });
+          element.onStateChange(example);
+        });
+
+        it('instructs the element to update', function () {
+          const { element, example } = this;
+          const marker = sinon.stub();
+          marker();
+          element.onStateChange(example);
+          assert(element.update.calledAfter(marker));
+        });
+      });
+    });
+
+    describe('onFocus', function () {
+      it(`emits 'focus' when the 'focus' bus message is sent`, function (done) {
+        const { element, sendMessage } = this;
+        element.on('focus', () => done());
+        sendMessage('focus');
+      });
+    });
+
+    describe('onBlur', function () {
+      it(`emits 'blur' when the 'blur' bus message is sent`, function (done) {
+        const { element, sendMessage } = this;
+        element.on('blur', () => done());
+        sendMessage('blur');
+      });
+    });
+
+    describe('onSubmit', function () {
+      it(`emits 'submit' when the 'submit' bus message is sent`, function (done) {
+        const { element, sendMessage } = this;
+        element.on('submit', () => done());
+        sendMessage('submit');
+      });
+    });
   });
 });
+
+function attachElement () {
+  beforeEach(function (done) {
+    const { element, validParentElement } = this;
+    element.once('attach', () => done());
+    element.attach(validParentElement);
+  });
+}
 
 function assertElementAttachedTo (element, parent) {
   assert.strictEqual(parent.children.length, 1);
