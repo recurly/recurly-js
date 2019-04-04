@@ -438,6 +438,34 @@ describe('Element', function () {
     });
   });
 
+  describe('Element.attaching', function () {
+    it(`returns true when the element has started attaching
+        but not finished doing so`, function (done) {
+      const { element, validParentElement } = this;
+      const assertElementAttaching = sinon.spy(() => assert.strictEqual(element.attaching, true));
+      element.on('attach', () => {
+        assert(assertElementAttaching.calledOnce);
+        done();
+      });
+      element.attach(validParentElement);
+      assertElementAttaching();
+    });
+
+    it('returns false when the element has not started attaching', function () {
+      const { element } = this;
+      assert.strictEqual(element.attaching, false);
+    });
+
+    it('returns false when the element has finished attaching', function (done) {
+      const { element, validParentElement } = this;
+      element.on('attach', () => {
+        assert.strictEqual(element.attaching, false);
+        done();
+      });
+      element.attach(validParentElement);
+    });
+  });
+
   describe('Element.url', function () {
     it('returns a String starting with the recurly instance API URL', function () {
       const { element, recurly } = this;
