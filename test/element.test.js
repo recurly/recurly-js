@@ -80,6 +80,11 @@ describe('Element', function () {
       element.attach(validParentElement);
     });
 
+    it('returns the instance', function () {
+      const { element, validParentElement } = this;
+      assert.strictEqual(element.attach(validParentElement), element);
+    });
+
     it('attaches the element.container to the DOM', function (done) {
       const { element, validParentElement } = this;
       assertElementNotAttachedTo(validParentElement);
@@ -120,6 +125,12 @@ describe('Element', function () {
           assertElementAttachedTo(element, validParentElement);
           assert(element.emit.notCalled);
         });
+
+        it('returns the instance', function () {
+          const { element, validParentElement } = this;
+          assert.strictEqual(element.attach(validParentElement), element);
+          assert.strictEqual(element.attach(validParentElement), element);
+        });
       });
 
       describe('to a different parent', function () {
@@ -137,6 +148,12 @@ describe('Element', function () {
             assertElementAttachedTo(element, validParentElementTwo);
             done();
           });
+        });
+
+        it('returns the instance', function () {
+          const { element, validParentElement, validParentElementTwo } = this;
+          assert.strictEqual(element.attach(validParentElement), element);
+          assert.strictEqual(element.attach(validParentElementTwo), element);
         });
       });
     });
