@@ -80,8 +80,9 @@ describe('Element', function () {
       element.attach(validParentElement);
     });
 
-    it('returns the instance', function () {
+    it('returns the instance', function (done) {
       const { element, validParentElement } = this;
+      element.on('attach', () => done());
       assert.strictEqual(element.attach(validParentElement), element);
     });
 
@@ -128,8 +129,13 @@ describe('Element', function () {
 
         it('returns the instance', function () {
           const { element, validParentElement } = this;
-          assert.strictEqual(element.attach(validParentElement), element);
-          assert.strictEqual(element.attach(validParentElement), element);
+          const attachSpy = sinon.spy(() => element.attach(validParentElement));
+          element.on('attach', () => {
+            assert(attachSpy.calledTwice);
+            done();
+          });
+          assert.strictEqual(attachSpy(), element);
+          assert.strictEqual(attachSpy(), element);
         });
       });
 
@@ -150,10 +156,15 @@ describe('Element', function () {
           });
         });
 
-        it('returns the instance', function () {
+        it('returns the instance', function (done) {
           const { element, validParentElement, validParentElementTwo } = this;
-          assert.strictEqual(element.attach(validParentElement), element);
-          assert.strictEqual(element.attach(validParentElementTwo), element);
+          const attachSpy = sinon.spy(el => element.attach(el));
+          element.on('attach', () => {
+            assert(attachSpy.calledTwice);
+            done();
+          });
+          assert.strictEqual(attachSpy(validParentElement), element);
+          assert.strictEqual(attachSpy(validParentElementTwo), element);
         });
       });
     });
