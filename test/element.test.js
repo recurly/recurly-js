@@ -203,6 +203,11 @@ describe('Element', function () {
         });
         element.remove();
       });
+
+      it('returns the instance', function () {
+        const { element } = this;
+        assert.strictEqual(element.remove(), element);
+      });
     });
 
     describe('when the element is not attached', function () {
@@ -212,6 +217,11 @@ describe('Element', function () {
         element.remove();
         assert(validParentElement.removeChild.notCalled);
         assert(element.emit.notCalled);
+      });
+
+      it('returns the instance', function () {
+        const { element } = this;
+        assert.strictEqual(element.remove(), element);
       });
     });
   });
@@ -241,6 +251,11 @@ describe('Element', function () {
       element.destroy();
       assert(!~element.bus.recipients.indexOf(element));
     });
+
+    it('returns the instance', function () {
+      const { element } = this;
+      assert.strictEqual(element.destroy(), element);
+    });
   });
 
   describe('Element.configure', function () {
@@ -264,13 +279,25 @@ describe('Element', function () {
       assert(!('invalidOption' in element.config));
     });
 
-    it('does not change config when it is equivalent to existing config', function () {
-      const { element, validConfig } = this;
-      const config = element._config;
-      element.configure(clone(validConfig));
-      assert.deepEqual(config, element._config);
-      assert(element.update.notCalled);
+    describe('when equivalent options are given', function () {
+      beforeEach(function () {
+        this.example = clone(this.validConfig);
+      });
+
+      it('does not change config when it is equivalent to existing config', function () {
+        const { element, example } = this;
+        const config = element._config;
+        element.configure(example);
+        assert.deepEqual(config, element._config);
+        assert(element.update.notCalled);
+      });
+
+      it('returns the instance', function () {
+        const { element, example } = this;
+        assert.strictEqual(element.configure(example), element);
+      });
     });
+
 
     describe('when unequivalent options are given', function () {
       beforeEach(function () {
@@ -298,7 +325,12 @@ describe('Element', function () {
         const { element, example } = this;
         element.configure(example);
         assert(element.update.calledOnce);
-      })
+      });
+
+      it('returns the instance', function () {
+        const { element, example } = this;
+        assert.strictEqual(element.configure(example), element);
+      });
     });
   });
 
