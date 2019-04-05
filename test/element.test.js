@@ -345,6 +345,17 @@ describe('Element', function () {
     });
   });
 
+  describe('Element.focus', function () {
+    it(`sends the 'focus!' message`, function () {
+      const { element, messageName } = this;
+      sinon.spy(element.bus, 'send');
+      element.focus();
+      debugger;
+      assert(element.bus.send.calledOnceWithExactly(messageName('focus!')));
+      element.bus.send.restore();
+    });
+  });
+
   describe('Element.config', function () {
     it('returns an object containing all current config and additional attributes', function () {
       const { element, recurly, validConfig } = this;
