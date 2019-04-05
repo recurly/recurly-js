@@ -350,7 +350,6 @@ describe('Element', function () {
       const { element, messageName } = this;
       sinon.spy(element.bus, 'send');
       element.focus();
-      debugger;
       assert(element.bus.send.calledOnceWithExactly(messageName('focus!')));
       element.bus.send.restore();
     });
@@ -386,11 +385,32 @@ describe('Element', function () {
       assert.strictEqual(element.container.className, element.classList);
     });
 
-    it('contains element.iframe as its sole child', function () {
+    it('contains element.tabProxy and element.iframe as its sole children', function () {
       const { element } = this;
       const { children } = element.container;
-      assert.strictEqual(children.length, 1);
-      assert.strictEqual(children[0], element.iframe);
+      assert.strictEqual(children.length, 2);
+      assert.strictEqual(children[0], element.tabProxy);
+      assert.strictEqual(children[1], element.iframe);
+    });
+  });
+
+  describe('Element.tabProxy', function () {
+    it('returns a hidden HTMLInputElement', function () {
+      assert(this.element.tabProxy instanceof HTMLInputElement);
+    });
+
+    it('memoizes its value', function () {
+      const example = this.tabProxy;
+      assert.strictEqual(this.tabProxy, example);
+    });
+
+    it('calls element.focus when it receives the focus event', function () {
+      const { element } = this;
+      const { tabProxy } = element;
+      const example = new CustomEvent('focus');
+      sinon.spy(element, 'focus');
+      tabProxy.dispatchEvent(example);
+      element.focus.restore();
     });
   });
 
@@ -492,6 +512,25 @@ describe('Element', function () {
     });
   });
 
+  describe('Element.tabbableItems', function () {
+    attachElement();
+
+    beforeEach(function () {
+      this.example = this.element.tabbableItems();
+    });
+
+    it('returns an Array of HTMLElements', function () {
+      const { element, example } = this;
+      assert(Array.isArray(example));
+      example.forEach(item => assert(item instanceof HTMLElement));
+    });
+
+    it('excludes Element frames', function () {
+      const { element, example } = this;
+      assert.strictEqual(!!~example.indexOf(element.iframe), false);
+    });
+  });
+
   describe('listeners', function () {
     beforeEach(function () {
       sinon.spy(this.element, 'update');
@@ -569,6 +608,60 @@ describe('Element', function () {
         const { element, sendMessage } = this;
         element.on('blur', () => done());
         sendMessage('blur');
+      });
+    });
+
+    describe('onTab', function () {
+      attachElement();
+
+      beforeEach(function () {
+        sinon.spy(this.element, 'onTab');
+      });
+
+      afterEach(function () {
+        this.element.onTab.restore();
+      });
+
+      it(`calls focus on the previous tabbable HTMLElement when called with 'previous'`, function () {
+        const { element } = this;
+        const example = document.querySelector('#test-tab-prev');
+        sinon.spy(example, 'focus');
+        element.onTab('previous')
+        assert(example.focus.calledOnce);
+        example.focus.restore();
+      });
+
+      it(`calls focus on the next tabbable HTMLElement when called with 'next'`, function () {
+        const { element } = this;
+        const example = document.querySelector('#test-tab-next');
+        sinon.spy(example, 'focus');
+        element.onTab('next')
+        assert(example.focus.calledOnce);
+        example.focus.restore();
+      });
+
+      describe(`when the 'tab:previous' message is sent`, function () {
+        beforeEach(function () {
+          const { element, messageName } = this
+          element.bus.send(messageName('tab:previous'));
+        });
+
+        it('is called with the corresponding direction', function () {
+          const { element } = this;
+          assert(element.onTab.calledOnceWithExactly('previous'));
+        });
+      });
+
+      describe(`when the 'tab:next' message is sent`, function () {
+        beforeEach(function () {
+          const { element, messageName } = this
+          element.bus.send(messageName('tab:next'));
+        });
+
+        it('is called with the corresponding direction', function () {
+          const { element } = this;
+          assert(element.onTab.calledOnceWithExactly('next'));
+        });
       });
     });
 
