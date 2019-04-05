@@ -32,7 +32,7 @@ describe('Elements', function () {
       const elements = new Elements({ recurly: this.recurly });
       const element = elements[elementName]();
       assert.strictEqual(typeof elements[elementName], 'function');
-      assert.strictEqual(element.constructor.name, elementName);
+      assert.strictEqual(element.elementClassName, elementName);
       assert(element instanceof Element);
     });
   });

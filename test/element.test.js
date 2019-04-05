@@ -9,7 +9,7 @@ import { factory as numberElementFactory } from '../lib/recurly/element/number-e
 import { factory as monthElementFactory } from '../lib/recurly/element/month-element';
 import { factory as yearElementFactory } from '../lib/recurly/element/year-element';
 import { factory as cvvElementFactory } from '../lib/recurly/element/cvv-element';
-import { initRecurly } from './support/helpers';
+import { initRecurly, createNativeEvent } from './support/helpers';
 import { Recurly } from '../lib/recurly';
 
 describe('Element', function () {
@@ -406,10 +406,9 @@ describe('Element', function () {
 
     it('calls element.focus when it receives the focus event', function () {
       const { element } = this;
-      const { tabProxy } = element;
-      const example = new CustomEvent('focus');
+      const example = createNativeEvent('focus');
       sinon.spy(element, 'focus');
-      tabProxy.dispatchEvent(example);
+      element.tabProxy.dispatchEvent(example);
       element.focus.restore();
     });
   });
@@ -431,7 +430,7 @@ describe('Element', function () {
       assert.strictEqual(iframe.getAttribute('scrolling'), 'no');
       assert.strictEqual(iframe.getAttribute('name'), `recurly-element--${id}`);
       assert.strictEqual(iframe.getAttribute('allowpaymentrequest'), 'true');
-      assert.strictEqual(iframe.getAttribute('style'), 'background: transparent; width: 100%; height: 100%;');
+      assert.strictEqual(iframe.getAttribute('style'), 'background: none; width: 100%; height: 100%;');
       assert.strictEqual(iframe.getAttribute('src'), url);
     });
   });
