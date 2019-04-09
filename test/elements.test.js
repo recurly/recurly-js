@@ -102,6 +102,14 @@ describe('Elements', function () {
         }, /Invalid element\. A `(\w+)` may not be added to the existing set/);
       });
     });
+
+    it('calls sendPeerAnnounce', function () {
+      const { elements, cardElementExample } = this;
+      sinon.spy(elements, 'sendPeerAnnounce');
+      elements.add(cardElementExample);
+      assert(elements.sendPeerAnnounce.calledOnce);
+      elements.sendPeerAnnounce.restore();
+    });
   });
 
   describe('Elements.remove', function () {
@@ -117,6 +125,14 @@ describe('Elements', function () {
       elements.remove(cardElementExample);
       assert.strictEqual(elements.elements.length, 0);
       assert.strictEqual(!!~elements.elements.indexOf(cardElementExample), false);
+    });
+
+    it('calls sendPeerAnnounce', function () {
+      const { elements, cardElementExample } = this;
+      sinon.spy(elements, 'sendPeerAnnounce');
+      elements.remove(cardElementExample);
+      assert(elements.sendPeerAnnounce.calledOnce);
+      elements.sendPeerAnnounce.restore();
     });
   });
 
@@ -144,16 +160,33 @@ describe('Elements', function () {
     });
   });
 
+  describe('Elements.sendPeerAnnounce', function () {
+    it(`sends the 'elements:peer-announce' message`, function () {
+      const { elements, cardElementExample } = this;
+      const name = 'elements:peer-announce';
+      const payload = { ids: [cardElementExample.id] };
+      elements.add(cardElementExample);
+      sinon.spy(elements.bus, 'send');
+      elements.sendPeerAnnounce();
+      assert(elements.bus.send.calledOnceWithExactly(name, payload));
+      elements.bus.send.restore();
+    });
+  });
+
   describe('listeners', function () {
     describe('onElementAttach', function () {
       const stubGetter = (prop, val) => el => sinon.stub(el, prop).get(() => val);
 
       beforeEach(function () {
-        sinon.spy(this.elements.bus, 'send');
+        const { elements } = this;
+        sinon.spy(elements.bus, 'send');
+        sinon.spy(elements, 'sendPeerAnnounce');
       });
 
       afterEach(function () {
-        this.elements.bus.send.restore();
+        const { elements } = this;
+        elements.bus.send.restore();
+        elements.sendPeerAnnounce.restore();
       });
 
       it(`is called when an Element emits the 'attach' event`, function () {
@@ -166,7 +199,7 @@ describe('Elements', function () {
       });
 
       describe('when no elements are added', function () {
-        it(...doesNotSendElementsReadyMessage());
+        it(...doesNotSendElementsMessages());
       });
 
       describe('when one element is added', function () {
@@ -181,7 +214,7 @@ describe('Elements', function () {
           });
 
           describe('when it is not yet attached', function () {
-            it(...doesNotSendElementsReadyMessage());
+            it(...doesNotSendElementsMessages());
           });
 
           describe('when it is attached', function () {
@@ -190,12 +223,11 @@ describe('Elements', function () {
               stubGetter('attached', true)(this.card);
             });
 
-            it(...sendsElementsReadyMessage());
+            it(...sendsElementsMessages());
           });
         });
       });
 
-      // TODO: run this suite for the previous scenario
       describe('when multiple elements are added', function () {
         beforeEach(function () {
           const { elements } = this;
@@ -212,7 +244,7 @@ describe('Elements', function () {
           });
 
           describe('when none of those elements are yet attached', function () {
-            it(...doesNotSendElementsReadyMessage());
+            it(...doesNotSendElementsMessages());
           });
 
           describe('when some of those elements are attached', function () {
@@ -222,7 +254,7 @@ describe('Elements', function () {
               [number, month].forEach(stubGetter('attached', true));
             });
 
-            it(...doesNotSendElementsReadyMessage());
+            it(...doesNotSendElementsMessages());
           });
 
           describe('when all of those elements are attached', function () {
@@ -232,7 +264,7 @@ describe('Elements', function () {
               [number, month, year].forEach(stubGetter('attached', true));
             });
 
-            it(...sendsElementsReadyMessage());
+            it(...sendsElementsMessages());
           });
         });
 
@@ -243,7 +275,7 @@ describe('Elements', function () {
           });
 
           describe('when none of those elements are yet attached', function () {
-            it(...doesNotSendElementsReadyMessage());
+            it(...doesNotSendElementsMessages());
           });
 
           describe('when some of those elements are attached', function () {
@@ -253,7 +285,7 @@ describe('Elements', function () {
               [number, month, year].forEach(stubGetter('attached', true));
             });
 
-            it(...doesNotSendElementsReadyMessage());
+            it(...doesNotSendElementsMessages());
           });
 
           describe('when all of those elements are attached', function () {
@@ -263,25 +295,29 @@ describe('Elements', function () {
               [number, month, year, cvv].forEach(stubGetter('attached', true));
             });
 
-            it(...sendsElementsReadyMessage());
+            it(...sendsElementsMessages());
           });
         });
       });
 
-      function doesNotSendElementsReadyMessage () {
-        return [`does not send the 'elements:ready!' message`, function () {
+      function doesNotSendElementsMessages () {
+        return [`does not send the 'elements:ready!' or announce messages`, function () {
           const { elements } = this;
+          elements.sendPeerAnnounce.resetHistory();
           elements.onElementAttach();
           assert(elements.bus.send.neverCalledWith('elements:ready!'));
+          assert(elements.sendPeerAnnounce.notCalled);
         }];
       }
 
-      function sendsElementsReadyMessage () {
-        return [`sends the 'elements:ready!' message`, function () {
+      function sendsElementsMessages () {
+        return [`sends the 'elements:ready!' and announce messages`, function () {
           const { elements } = this;
           const { bus } = elements;
+          elements.sendPeerAnnounce.resetHistory();
           elements.onElementAttach();
-          assert(bus.send.calledOnceWithExactly('elements:ready!'));
+          assert(bus.send.calledWithExactly('elements:ready!'));
+          assert(elements.sendPeerAnnounce.calledOnce);
         }];
       }
     });
