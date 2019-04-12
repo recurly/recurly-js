@@ -5,13 +5,18 @@
   </body>
   <script>
     // Hosted field stub. This listens for window events and passes back
-    window.name = 'recurlyHostedField:stub';
+    window.inputElement = document.querySelector('input');
     window.inputValue = '';
     window._config = undefined;
 
     var prefix;
-    if (config().elementId) prefix = 'element:' + config().elementId;
-    else prefix = 'hostedField';
+    if (config().elementId) {
+      window.name = 'recurly-element:stub';
+      prefix = 'element:' + config().elementId;
+    } else {
+      window.name = 'recurlyHostedField:stub';
+      prefix = 'hostedField';
+    }
 
     // Stub broker behavior
     if (config().type === 'number') {
@@ -74,6 +79,7 @@
 
     function value (newValue) {
       if (typeof newValue !== 'undefined') window.inputValue = newValue + '';
+      inputElement.value = window.inputValue;
       return window.inputValue;
     }
   </script>
