@@ -17,6 +17,7 @@
     "component-find": "1.0.0",
     "currency-symbol-map": "^4.0.4",
     "debug": "^3.2.6",
+    "deep-filter": "^1.0.2",
     "intersect": "^1.0.1",
     "jsonp": "^0.2.1",
     "load-script": "^1.0.0",
