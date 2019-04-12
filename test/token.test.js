@@ -3,6 +3,7 @@ import after from 'lodash.after';
 import merge from 'lodash.merge';
 import each from 'lodash.foreach';
 import clone from 'component-clone';
+import Promise from 'promise';
 import { Recurly } from '../lib/recurly';
 import { applyFixtures } from './support/fixtures';
 import { initRecurly, apiTest } from './support/helpers';
@@ -20,6 +21,14 @@ apiTest(requestMethod => {
       last_name: 'bar'
     };
 
+    const elementsMap = {
+      number: 'NumberElement',
+      month: 'MonthElement',
+      year: 'YearElement',
+      cvv: 'CvvElement',
+      card: 'CardElement',
+    };
+
     applyFixtures();
 
     beforeEach(function (done) {
@@ -30,23 +39,90 @@ apiTest(requestMethod => {
     afterEach(function () {
       this.recurly.destroy();
     });
+    /**
+     * For each example, updates corresponding hosted fields and returns all others
+     */
+    function plainObjectBuilder (example) {
+      example = clone(example);
+      const form = window.document.querySelector('#test-form');
 
-    describe('without markup', function () {
-      it('requires a callback', function () {
-        try {
-          this.recurly.token(clone(valid));
-        } catch (e) {
-          assert(~e.message.indexOf('callback'));
+      Object.keys(example).forEach(key => {
+        const val = example[key];
+        const el = form.querySelector(`[data-recurly=${key}]`);
+        if (el instanceof HTMLDivElement) {
+          el.querySelector('iframe').contentWindow.value(val);
+          delete example[key];
         }
       });
 
-      it('requires Recurly.configure', function () {
-        try {
-          let recurly = new Recurly();
-          recurly.token(clone(valid), () => {});
-        } catch (e) {
-          assert(~e.message.indexOf('configure'));
+      return Promise.resolve({ tokenArgs: [example], tokenBus: this.recurly.bus });
+    }
+
+    /**
+     * For each example, updates corresponding input field or hosted field
+     */
+    function formBuilder (example) {
+      const form = window.document.querySelector('#test-form');
+
+      Object.keys(example).forEach(key => {
+        const val = example[key];
+        const el = form.querySelector(`[data-recurly=${key}]`);
+        if (el instanceof HTMLDivElement) {
+          el.querySelector('iframe').contentWindow.value(val);
+        } else if (el && 'value' in el) {
+          el.value = val;
         }
+      });
+
+      return Promise.resolve({ tokenArgs: [form], tokenBus: this.recurly.bus });
+    }
+
+    /**
+     * For each example, updates corresponding input field or Element
+     */
+    function elementsBuilder (example) {
+      const form = window.document.querySelector('#test-form');
+      const container = form.querySelector(`#recurly-elements`);
+      const elements = this.elements = this.recurly.Elements();
+
+      return Promise.all(Object.keys(example).map(key => {
+        const val = example[key];
+        let el = form.querySelector(`[data-recurly=${key}]`);
+
+        return new Promise((resolve, reject) => {
+          if (el && 'value' in el) {
+            el.value = val;
+            resolve();
+          } else {
+            const elementClass = elementsMap[key];
+            if (!elementClass) return resolve();
+
+            const element = elements[elementClass]();
+            element.on('attach', () => {
+              element.iframe.contentWindow.value(val);
+              resolve();
+            });
+            element.attach(container);
+          }
+        });
+      })).then(() => ({ tokenArgs: [elements, form], tokenBus: elements.bus }));
+    }
+
+    /**
+     * Resolves immediately with the given example
+     */
+    function embeddedBuilder (example) {
+      return Promise.resolve({ tokenArgs: [example], tokenBus: this.recurly.bus });
+    }
+
+    describe('without markup', function () {
+      it('requires a callback', function () {
+        assert.throws(() => this.recurly.token(clone(valid)), /callback/);
+      });
+
+      it('requires Recurly.configure', function () {
+        const recurly = new Recurly();
+        assert.throws(() => recurly.token(clone(valid), () => {}), /configure/);
       });
     });
 
@@ -56,8 +132,15 @@ apiTest(requestMethod => {
       describe('when called with a plain object', function () {
         tokenSuite(plainObjectBuilder);
       });
+
       describe('when called with an HTMLFormElement', function () {
         tokenSuite(formBuilder);
+      });
+
+      describe('when called with an Elements instance', function () {
+        this.ctx.fixture = 'elements';
+
+        tokenSuite(elementsBuilder);
       });
     });
 
@@ -68,30 +151,37 @@ apiTest(requestMethod => {
         tokenSuite(plainObjectBuilder);
         tokenAllMarkupSuite(plainObjectBuilder);
       });
+
       describe('when called with an HTMLFormElement', function () {
         tokenSuite(formBuilder);
         tokenAllMarkupSuite(formBuilder);
       });
     });
 
-    describe('when behaving as a hosted field', function () {
+    describe('when behaving as an element/hosted field', function () {
       this.ctx.fixture = 'minimal';
 
       beforeEach(function () {
         this.recurly.config.parent = false;
       });
 
-      tokenSuite(example => example);
+      tokenSuite(embeddedBuilder);
     });
 
+    /**
+     * Applies a series of standard expectations for tokenization, accepting
+     * a function that sets up the example and subject beforehand
+     *
+     * @param {Function} builder callback function. Must return a promise resolving to the example
+     */
     function tokenSuite (builder) {
       describe('when given an invalid card number', function () {
-        let example = merge(clone(valid), {
+        prepareExample(Object.assign({}, valid, {
           number: '4111111111111112'
-        });
+        }), builder);
 
         it('produces a validation error', function (done) {
-          this.recurly.token(builder(example), (err, token) => {
+          this.subject((err, token) => {
             assert.strictEqual(err.code, 'validation');
             assert.strictEqual(err.fields.length, 1);
             assert.strictEqual(err.fields[0], 'number');
@@ -106,12 +196,12 @@ apiTest(requestMethod => {
       });
 
       describe('when given an invalid expiration', function () {
-        let example = merge(clone(valid), {
+        prepareExample(Object.assign({}, valid, {
           year: new Date().getFullYear() - 1
-        });
+        }), builder);
 
         it('produces a validation error', function (done) {
-          this.recurly.token(builder(example), (err, token) => {
+          this.subject((err, token) => {
             assert.strictEqual(err.code, 'validation');
             assert.strictEqual(err.fields.length, 2);
             assert(~err.fields.indexOf('month'));
@@ -130,12 +220,12 @@ apiTest(requestMethod => {
       });
 
       describe('when given a blank value', function () {
-        let example = merge(clone(valid), {
+        prepareExample(Object.assign({}, valid, {
           first_name: ''
-        });
+        }), builder);
 
         it('produces a validation error', function (done) {
-          this.recurly.token(builder(example), (err, token) => {
+          this.subject((err, token) => {
             assert.strictEqual(err.code, 'validation');
             assert.strictEqual(err.fields.length, 1);
             assert.strictEqual(err.fields[0], 'first_name');
@@ -150,12 +240,12 @@ apiTest(requestMethod => {
       });
 
       describe('when given a declining card', function () {
-        let example = merge(clone(valid), {
+        prepareExample(Object.assign({}, valid, {
           number: '4000000000000002'
-        });
+        }), builder);
 
         it('produces a validation error', function (done) {
-          this.recurly.token(builder(example), (err, token) => {
+          this.subject((err, token) => {
             assert.strictEqual(err.code, 'declined');
             assert(err.message.indexOf('card was declined'));
             assert.strictEqual(err.fields.length, 1);
@@ -170,14 +260,14 @@ apiTest(requestMethod => {
         });
       });
 
-      if(requestMethod === 'cors') {
+      if (requestMethod === 'cors') {
         describe('when given an invalid json response', function () {
-          let example = merge(clone(valid), {
+          prepareExample(Object.assign({}, valid, {
             number: '5454545454545454'
-          });
+          }), builder);
 
           it('produces an api-error with the raw responseText', function (done) {
-            this.recurly.token(builder(example), (err, token) => {
+            this.subject((err, token) => {
               assert(!token);
               assert.strictEqual(err.code, 'api-error');
               assert(err.message.indexOf('problem parsing the API response with: some json that cannot be parsed'));
@@ -188,10 +278,12 @@ apiTest(requestMethod => {
       }
 
       describe('when given an invalid cvv', function () {
-        let example = merge(clone(valid), { cvv: 'blah' });
+        prepareExample(Object.assign({}, valid, {
+          cvv: 'blah'
+        }), builder);
 
         it('produces a validation error', function (done) {
-          this.recurly.token(builder(example), (err, token) => {
+          this.subject((err, token) => {
             assert.strictEqual(err.code, 'validation');
             assert.strictEqual(err.fields.length, 1);
             assert.strictEqual(err.fields[0], 'cvv');
@@ -206,10 +298,10 @@ apiTest(requestMethod => {
       });
 
       describe('when given valid values', function () {
-        let examples = [
-          valid,
-          merge(clone(valid), { cvv: '' }),
-          merge(clone(valid), {
+        const examples = {
+          'basic valid values': valid,
+          'a blank cvv': Object.assign({}, valid, { cvv: '' }),
+          'a full address': Object.assign({}, valid, {
             address1: '400 Alabama St.',
             address2: 'Suite 202',
             city: 'San Francisco',
@@ -217,31 +309,30 @@ apiTest(requestMethod => {
             postal_code: '94110',
             phone: '1-844-732-8759'
           })
-        ];
+        };
 
-        it('yields a token', function (done) {
-          let part = after(examples.length, done);
+        Object.keys(examples).forEach(description => {
+          const example = examples[description];
+          describe(`when given ${description}`, function () {
+            prepareExample(example, builder);
 
-          examples.forEach(example => {
-            this.recurly.token(builder(example), (err, token) => {
-              assert(!err);
-              assert(token.id);
-              part();
+            it('yields a token', function (done) {
+              this.subject((err, token) => {
+                assert(!err);
+                assert(token.id);
+                done();
+              });
             });
-          });
-        });
 
-        it('sets the value of a data-recurly="token" field', function (done) {
-          let part = after(examples.length, done);
-
-          examples.forEach(example => {
-            this.recurly.token(builder(example), (err, token) => {
-              assert(!err);
-              assert(token.id);
-              if (example && example.nodeType === 3) {
-                assert(example.querySelector('[data-recurly=token]').value === token.id);
-              }
-              part();
+            it('sets the value of a data-recurly="token" field', function (done) {
+              this.subject((err, token) => {
+                assert(!err);
+                assert(token.id);
+                if (example && example.nodeType === 3) {
+                  assert(example.querySelector('[data-recurly=token]').value === token.id);
+                }
+                done();
+              });
             });
           });
         });
@@ -254,30 +345,33 @@ apiTest(requestMethod => {
           this.recurly = initRecurly({
             cors: this.recurly.config.cors,
             fraud: {
-              kount: { dataCollector: true }
+              kount: {
+                dataCollector: true,
+                form: document.querySelector('#test-form')
+              }
             }
           });
-          this.recurly.ready(() => {
-            sinon.spy(this.recurly.bus, 'send');
-            done();
-          });
+          const part = after(2, () => done());
+          this.recurly.ready(part);
+          this.recurly.fraud.on('ready', part);
         });
+
+        prepareExample(Object.assign({}, valid, {
+          fraud_session_id: '9a87s6dfaso978ljk'
+        }), builder);
 
         it('sends a fraud session id and yields a token', function (done) {
           // This test is to be performed on parents only
           if (!this.recurly.isParent) return done();
-          const example = merge(clone(valid), { fraud_session_id: '9a87s6dfaso978ljk' });
-          this.recurly.fraud.on('ready', () => {
-            this.recurly.token(builder(example), (err, token) => {
-              const spy = this.recurly.bus.send.withArgs('token:init');
-              assert(spy.calledOnce);
-              assert(spy.firstCall.args[1].inputs.fraud.length === 1);
-              assert(spy.firstCall.args[1].inputs.fraud[0].processor === 'kount');
-              assert(spy.firstCall.args[1].inputs.fraud[0].session_id === '9a87s6dfaso978ljk');
-              assert(!err);
-              assert(token);
-              done();
-            });
+          this.subject((err, token) => {
+            const spy = this.tokenBus.send.withArgs('token:init');
+            assert(spy.calledOnce);
+            assert(spy.firstCall.args[1].inputs.fraud.length === 1);
+            assert(spy.firstCall.args[1].inputs.fraud[0].processor === 'kount');
+            assert(spy.firstCall.args[1].inputs.fraud[0].session_id === '9a87s6dfaso978ljk');
+            assert(!err);
+            assert(token);
+            done();
           });
         });
       });
@@ -289,15 +383,17 @@ apiTest(requestMethod => {
               litle: { sessionId: '123456' }
             }
           });
-          sinon.spy(this.recurly.bus, 'send');
         });
+
+        prepareExample(Object.assign({}, valid, {
+          fraud_session_id: '123456'
+        }), builder);
 
         it('sends a fraud session id and yields a token', function (done) {
           // This test is to be performed on parents only
           if (!this.recurly.isParent) return done();
-          const example = merge(clone(valid), { fraud_session_id: '123456' });
-          this.recurly.token(builder(example), (err, token) => {
-            const spy = this.recurly.bus.send.withArgs('token:init');
+          this.subject((err, token) => {
+            const spy = this.tokenBus.send.withArgs('token:init');
             assert(spy.calledOnce);
             assert.strictEqual(spy.firstCall.args[1].inputs.fraud.length, 1);
             assert.strictEqual(spy.firstCall.args[1].inputs.fraud[0].processor, 'litle_threat_metrix');
@@ -315,10 +411,11 @@ apiTest(requestMethod => {
         });
 
         describe('when cvv is blank', function () {
+          prepareExample(Object.assign({}, valid, {
+            cvv: ''
+          }), builder);
           it('produces a validation error', function (done) {
-            const example = merge(clone(valid), { cvv: '' });
-
-            this.recurly.token(builder(example), (err, token) => {
+            this.subject((err, token) => {
               assert.strictEqual(err.code, 'validation');
               assert.strictEqual(err.fields.length, 1);
               assert(~err.fields.indexOf('cvv'));
@@ -333,10 +430,12 @@ apiTest(requestMethod => {
         });
 
         describe('when cvv is invalid', function () {
-          it('produces a validation error', function (done) {
-            const example = merge(clone(valid), { cvv: '23783564' });
+          prepareExample(Object.assign({}, valid, {
+            cvv: '23783564'
+          }), builder);
 
-            this.recurly.token(builder(example), (err, token) => {
+          it('produces a validation error', function (done) {
+            this.subject((err, token) => {
               assert.strictEqual(err.code, 'validation');
               assert.strictEqual(err.fields.length, 1);
               assert(~err.fields.indexOf('cvv'));
@@ -351,10 +450,12 @@ apiTest(requestMethod => {
         });
 
         describe('when cvv is valid', function () {
-          it('yields a token', function (done) {
-            const example = merge(clone(valid), { cvv: '123' });
+          prepareExample(Object.assign({}, valid, {
+            cvv: '123'
+          }), builder);
 
-            this.recurly.token(builder(example), (err, token) => {
+          it('yields a token', function (done) {
+            this.subject((err, token) => {
               assert(!err);
               assert(token);
               done();
@@ -375,87 +476,79 @@ apiTest(requestMethod => {
         });
 
         describe('when given a blank required value', function () {
-          let examples = [
-            merge(clone(valid), {
+          const examples = {
+            'a blank country': Object.assign({}, valid, {
               country: '',
               postal_code: '98765'
             }),
-            merge(clone(valid), {
+            'a blank country and unrelated field': Object.assign({}, valid, {
               country: '',
               postal_code: '98765',
               unrelated_configured_field: ''
             })
-          ];
+          };
 
-          it('produces a validation error', function (done) {
-            let part = after(examples.length, done);
+          Object.keys(examples).forEach(description => {
+            const example = examples[description];
+            describe(`when given ${description}`, function () {
+              prepareExample(example, builder);
 
-            examples.forEach(example => {
-              this.recurly.token(builder(example), (err, token) => {
-                assert.strictEqual(err.code, 'validation');
-                assert.strictEqual(err.fields.length, 1);
-                assert(~err.fields.indexOf('country'));
-                assert(!~err.fields.indexOf('postal_code'));
-                assert(!~err.fields.indexOf('unrelated_configured_field'));
+              it('produces a validation error', function (done) {
+                this.subject((err, token) => {
+                  assert(err.code === 'validation');
+                  assert(err.fields.length === 1);
+                  assert(~err.fields.indexOf('country'));
+                  assert(!~err.fields.indexOf('postal_code'));
+                  assert(!~err.fields.indexOf('unrelated_configured_field'));
+                  assert.strictEqual(err.details.length, 1);
+                  assert.strictEqual(err.details[0].field, 'country');
+                  assert.strictEqual(err.details[0].messages.length, 1);
+                  assert.strictEqual(err.details[0].messages[0], "can't be blank");
+                  assert(!token);
+                  done();
+                });
+              });
+            })
+          });
+
+          describe('when given a blank postal_code', function () {
+            prepareExample(Object.assign({}, valid, {
+              country: 'US',
+              postal_code: ''
+            }), builder);
+
+            it('produces a validation error', function (done) {
+              this.subject((err, token) => {
+                assert(err.code === 'validation');
+                assert(err.fields.length === 1);
+                assert(~err.fields.indexOf('postal_code'));
+                assert(!~err.fields.indexOf('country'));
                 assert.strictEqual(err.details.length, 1);
-                assert.strictEqual(err.details[0].field, 'country');
+                assert.strictEqual(err.details[0].field, 'postal_code');
                 assert.strictEqual(err.details[0].messages.length, 1);
                 assert.strictEqual(err.details[0].messages[0], "can't be blank");
                 assert(!token);
-                part();
+                done();
               });
-            });
-          });
-
-          it('produces a validation error', function (done) {
-            var example = merge(clone(valid), {
-              country: 'US',
-              postal_code: ''
-            });
-
-            this.recurly.token(builder(example), (err, token) => {
-              assert.strictEqual(err.code, 'validation');
-              assert.strictEqual(err.fields.length, 1);
-              assert(~err.fields.indexOf('postal_code'));
-              assert(!~err.fields.indexOf('country'));
-              assert.strictEqual(err.details.length, 1);
-              assert.strictEqual(err.details[0].field, 'postal_code');
-              assert.strictEqual(err.details[0].messages.length, 1);
-              assert.strictEqual(err.details[0].messages[0], "can't be blank");
-              assert(!token);
-              done();
             });
           });
         });
       });
     }
 
-    // For each example, updates corresponding hosted fields and returns all others
-    function plainObjectBuilder (example) {
-      example = clone(example);
-      const form = window.document.querySelector('#test-form');
-      each(example, (val, key) => {
-        let el = form.querySelector(`[data-recurly=${key}]`);
-        if (el instanceof HTMLDivElement) {
-          el.querySelector('iframe').contentWindow.value(val);
-          delete example[key];
-        }
+    function prepareExample (options = {}, builder) {
+      beforeEach(function (done) {
+        builder.call(this, options).then(example => {
+          this.subject = cb => this.recurly.token.apply(this.recurly, example.tokenArgs.concat(cb));
+          this.tokenBus = example.tokenBus;
+          sinon.spy(this.tokenBus, 'send');
+          done();
+        }).done();
       });
-      return example;
-    }
 
-    // For each example, updates corresponding input filds or hosted fields
-    function formBuilder (example) {
-      const form = window.document.querySelector('#test-form');
-      each(example, (val, key) => {
-        let el = form.querySelector(`[data-recurly=${key}]`);
-        if (el instanceof HTMLDivElement) {
-          el.querySelector('iframe').contentWindow.value(val);
-        } else if (el && 'value' in el) {
-          el.value = val;
-        }
+      afterEach(function () {
+        this.tokenBus.send.restore();
       });
-      return form;
     }
   });
 });
