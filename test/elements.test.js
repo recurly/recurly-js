@@ -24,10 +24,10 @@ describe('Elements', function () {
   it('has factory properties that return Element instances', function () {
     [
       'CardElement',
-      'NumberElement',
-      'MonthElement',
-      'YearElement',
-      'CvvElement'
+      'CardNumberElement',
+      'CardMonthElement',
+      'CardYearElement',
+      'CardCvvElement'
     ].forEach(elementName => {
       const elements = new Elements({ recurly: this.recurly });
       const element = elements[elementName]();
@@ -87,10 +87,10 @@ describe('Elements', function () {
       });
 
       const invalidSets = [
-        ['CardElement', 'NumberElement'],
-        ['CardElement', 'CvvElement'],
-        ['NumberElement', 'CardElement'],
-        ['NumberElement', 'MonthElement', 'YearElement', 'CvvElement', 'CardElement']
+        ['CardElement', 'CardNumberElement'],
+        ['CardElement', 'CardCvvElement'],
+        ['CardNumberElement', 'CardElement'],
+        ['CardNumberElement', 'CardMonthElement', 'CardYearElement', 'CardCvvElement', 'CardElement']
       ];
       invalidSets.forEach(invalidSet => {
         const elements = new Elements({ recurly: recurly });
@@ -231,10 +231,10 @@ describe('Elements', function () {
       describe('when multiple elements are added', function () {
         beforeEach(function () {
           const { elements } = this;
-          this.number = elements.NumberElement();
-          this.month = elements.MonthElement();
-          this.year = elements.YearElement();
-          this.cvv = elements.CvvElement();
+          this.number = elements.CardNumberElement();
+          this.month = elements.CardMonthElement();
+          this.year = elements.CardYearElement();
+          this.cvv = elements.CardCvvElement();
         });
 
         describe('when some elements have begun attachment', function () {

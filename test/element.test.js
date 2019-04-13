@@ -1,14 +1,8 @@
 import after from 'lodash.after';
 import { applyFixtures } from './support/fixtures';
 import assert from 'assert';
-import clone from 'component-clone';
 import Element from '../lib/recurly/element';
 import Elements from '../lib/recurly/elements';
-import { factory as cardElementFactory } from '../lib/recurly/element/card-element';
-import { factory as numberElementFactory } from '../lib/recurly/element/number-element';
-import { factory as monthElementFactory } from '../lib/recurly/element/month-element';
-import { factory as yearElementFactory } from '../lib/recurly/element/year-element';
-import { factory as cvvElementFactory } from '../lib/recurly/element/cvv-element';
 import { initRecurly, createNativeEvent } from './support/helpers';
 import { Recurly } from '../lib/recurly';
 
@@ -292,7 +286,7 @@ describe('Element', function () {
 
     describe('when equivalent options are given', function () {
       beforeEach(function () {
-        this.example = clone(this.validConfig);
+        this.example = Object.assign({}, this.validConfig);
       });
 
       it('does not change config when it is equivalent to existing config', function () {

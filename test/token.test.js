@@ -22,11 +22,11 @@ apiTest(requestMethod => {
     };
 
     const elementsMap = {
-      number: 'NumberElement',
-      month: 'MonthElement',
-      year: 'YearElement',
-      cvv: 'CvvElement',
       card: 'CardElement',
+      number: 'CardNumberElement',
+      month: 'CardMonthElement',
+      year: 'CardYearElement',
+      cvv: 'CardCvvElement'
     };
 
     applyFixtures();
