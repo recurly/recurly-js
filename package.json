@@ -39,6 +39,7 @@
   ],
   "devDependencies": {
     "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/plugin-transform-object-assign": "^7.2.0",
     "@babel/preset-env": "^7.4.3",
     "@koa/cors": "^3.0.0",
