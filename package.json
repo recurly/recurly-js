@@ -25,6 +25,7 @@
     "lodash.pick": "^4.4.0",
     "promise": "^8.0.3",
     "qs": "^6.7.0",
+    "string-squish": "^1.0.3",
     "tabbable": "^4.0.0",
     "to-slug-case": "^1.0.0",
     "uuid": "^3.3.2"
