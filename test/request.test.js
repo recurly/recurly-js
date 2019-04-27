@@ -1,8 +1,10 @@
+import after from 'after';
 import assert from 'assert';
 import isEmpty from 'lodash.isempty';
-import {Recurly} from '../lib/recurly';
-import {initRecurly} from './support/helpers';
-import {Request, factory} from '../lib/recurly/request';
+import Promise from 'promise';
+import { Recurly } from '../lib/recurly';
+import { initRecurly } from './support/helpers';
+import { Request, factory } from '../lib/recurly/request';
 
 describe('Request', () => {
   beforeEach(function () {
@@ -87,13 +89,13 @@ describe('Request', () => {
       it('invokes Request.request with method = get and all passed parameters', function () {
         this.request.get(example);
         assert(this.request.request.calledOnce);
-        assert(this.request.request.calledWithMatch(exampleMatch, sinon.match.func));
+        assert(this.request.request.calledWithMatch(exampleMatch));
       });
 
       it('performes a cached call when cached = true', function () {
         this.request.get(Object.assign({}, example, { cached: true }));
         assert(this.request.cached.calledOnce);
-        assert(this.request.cached.calledWithMatch(exampleMatch, sinon.match.func));
+        assert(this.request.cached.calledWithMatch(exampleMatch));
       });
     });
 
@@ -107,24 +109,26 @@ describe('Request', () => {
       it('invokes Request.request with method = post and all passed parameters', function () {
         this.request.post(example);
         assert(this.request.request.calledOnce);
-        assert(this.request.request.calledWithMatch(exampleMatch, sinon.match.func));
+        assert(this.request.request.calledWithMatch(exampleMatch));
       });
 
       it('performes a cached call when cached = true', function () {
         this.request.post(Object.assign({}, example, { cached: true }));
         assert(this.request.cached.calledOnce);
-        assert(this.request.cached.calledWithMatch(exampleMatch, sinon.match.func));
+        assert(this.request.cached.calledWithMatch(exampleMatch));
       });
     });
   });
 
   describe('Request.request', () => {
     it('Handles an empty response', function (done) {
-      this.request.request({ method: 'post', route: '/events' }, (err, res) => {
-        assert.strictEqual(err, null);
-        assert.strictEqual(res, undefined);
-        done();
-      });
+      const stub = sinon.stub();
+      this.request.request({ method: 'post', route: '/events' })
+        .done(res => {
+          assert.strictEqual(res, undefined);
+          assert(stub.notCalled);
+          done();
+        }, stub);
     });
 
     describe('Additional parameters', () => {
@@ -237,6 +241,7 @@ describe('Request', () => {
           sinon.spy(this.XHR.prototype, 'open');
           sinon.spy(this.XHR.prototype, 'send');
         });
+
         afterEach(function () {
           this.XHR.prototype.open.restore();
           this.XHR.prototype.send.restore();
@@ -244,7 +249,8 @@ describe('Request', () => {
 
         describe('when performing a POST request', () => {
           beforeEach(function (done) {
-            this.request.request({ method: 'post', route: '/test', data: this.example }, () => done());
+            const proceed = () => done();
+            this.request.request({ method: 'post', route: '/test', data: this.example }).done(proceed, proceed);
           });
 
           it('sends properly-encoded data in the request body', function () {
@@ -255,11 +261,13 @@ describe('Request', () => {
 
         describe('when performing a GET request', () => {
           beforeEach(function (done) {
-            this.request.request({ method: 'get', route: '/test', data: this.example }, () => done());
+            const proceed = () => done();
+            this.request.request({ method: 'get', route: '/test', data: this.example }).done(proceed, proceed);
           });
 
           it('appends properly-encoded data to the url', function () {
-            assert(this.XHR.prototype.open.calledWithExactly('get', `${this.recurly.config.api}/test?${this.exampleEncoded()}`));
+            const url = `${this.recurly.config.api}/test?${this.exampleEncoded()}`;
+            assert(this.XHR.prototype.open.calledWithExactly('get', url));
             assert(this.XHR.prototype.send.calledWith());
           });
         });
@@ -268,34 +276,35 @@ describe('Request', () => {
   });
 
   describe('Request.cached', () => {
-    const payload = { arbitrary: 'payload' };
+    const data = { arbitrary: 'payload' };
 
     it('on first call, invokes Request.request with identical parameters', function () {
       sinon.spy(this.request, 'request');
-      this.request.cached({ method: 'get', route: 'test', data: payload });
+      this.request.cached({ method: 'get', route: 'test', data });
       assert(this.request.request.calledOnce);
-      assert(this.request.request.calledWithMatch({ method: 'get', route: 'test', data: payload }));
+      assert(this.request.request.calledWithMatch({ method: 'get', route: 'test', data }));
       this.request.request.restore();
     });
 
     it('returns and does not cache error responses', function (done) {
-      this.request.cached({ method: 'get', route: '/test', data: payload }, (err, res) => {
-        assert(err);
-        assert(isEmpty(this.request.cache));
-        done();
-      });
+      this.request.cached({ method: 'get', route: '/test', data })
+        .done(() => {}, err => {
+          assert(err);
+          assert(isEmpty(this.request.cache));
+          done();
+        });
     });
 
     describe('given a successful response', () => {
       beforeEach(function () {
         sinon.stub(this.request, 'request');
-        this.request.request.callsArgWith(1, null, { success: true });
+        this.request.request.usingPromise(Promise).resolves({ success: true });
       });
+
       afterEach(function () { this.request.request.restore(); })
 
       it('returns and caches successful responses', function (done) {
-        this.request.cached({ method: 'get', route: 'test', data: payload }, (err, res) => {
-          assert.equal(err, null);
+        this.request.cached({ method: 'get', route: 'test', data }).done(res => {
           assert.equal(res.success, true);
           assert.equal(Object.keys(this.request.cache).length, 1);
           done();
@@ -304,9 +313,9 @@ describe('Request', () => {
 
       it(`invokes recurly.request on the first call, and not on the
           second, with identical responses for both requests`, function (done) {
-        this.request.cached({ method: 'get', route: 'test', data: payload }, (err, res) => {
+        this.request.cached({ method: 'get', route: 'test', data }).done(res => {
           assert(this.request.request.calledOnce);
-          this.request.cached({ method: 'get', route: 'test', data: payload }, (err, res) => {
+          this.request.cached({ method: 'get', route: 'test', data }).done(res => {
             assert(this.request.request.calledOnce);
             assert.equal(Object.keys(this.request.cache).length, 1);
             done();
@@ -326,28 +335,26 @@ describe('Request', () => {
       });
 
       it('adds the request to the queue', function () {
-        assert.strictEqual(this.request.queue.length, 0);
+        assert.strictEqual(this.recurly.listeners('configured').length, 0);
         this.request.queued(args);
-        assert.strictEqual(this.request.queue.length, 1);
+        assert.strictEqual(this.recurly.listeners('configured').length, 1);
       });
 
       it('executes the queue once configured', function (done) {
         const step = res => {
-          assert.strictEqual(this.request.queue.length, 0);
+          assert.strictEqual(this.recurly.listeners('configured').length, 0);
           done();
         };
-        assert.strictEqual(this.request.queue.length, 0);
-        this.request.queued(args, step);
-        assert.strictEqual(this.request.queue.length, 1);
+        assert.strictEqual(this.recurly.listeners('configured').length, 0);
+        this.request.queued(args).then(step);
+        assert.strictEqual(this.recurly.listeners('configured').length, 1);
         initRecurly(this.recurly);
       });
     });
 
     it('executes immediately when recurly is configured', function () {
       sinon.spy(this.request, 'request');
-      assert.strictEqual(this.request.queue.length, 0);
       this.request.queued(args);
-      assert.strictEqual(this.request.queue.length, 0);
       assert(this.request.request.calledOnce);
       assert(this.request.request.calledWithMatch(args));
       this.request.request.restore();
@@ -355,33 +362,33 @@ describe('Request', () => {
   });
 
   describe('Request.piped', () => {
-    let payload = {
+    let data = {
       long: Array.apply(null, Array(200)).map(() => 1)
     };
 
     describe('given all error responses', () => {
       beforeEach(function () {
         sinon.stub(this.request, 'request');
-        this.request.request.callsArgWith(1, { code: 'not-found'}, null);
+        this.request.request.usingPromise(Promise).rejects({ code: 'not-found'});
       });
 
-      it('responds with an error', function () {
-        this.request.piped({ method: 'get', route: 'test', data: payload, by: 'long' })
-          .catch(err => {
+      it('responds with an error', function (done) {
+        this.request.piped({ method: 'get', route: 'test', data, by: 'long' })
+          .done(() => {}, err => {
             assert.equal(err.code, 'not-found');
             done();
-          })
+          });
       });
     });
 
     describe('given successful responses', () => {
       beforeEach(function () {
         sinon.stub(this.request, 'request');
-        this.request.request.callsArgWith(1, null, { success: true });
+        this.request.request.usingPromise(Promise).resolves({ success: true });
       });
 
       it('spreads a long request set across multiple requests with a default size of 100', function (done) {
-        this.request.piped({ method: 'get', route: 'test', data: payload, by: 'long' })
+        this.request.piped({ method: 'get', route: 'test', data, by: 'long' })
           .done(() => {
             assert(this.request.request.calledTwice);
             done();
@@ -389,7 +396,7 @@ describe('Request', () => {
       });
 
       it('spreads a long request set across multiple requests with given a custom size', function (done) {
-        this.request.piped({ method: 'get', route: 'test', data: payload, by: 'long', size: 10 })
+        this.request.piped({ method: 'get', route: 'test', data, by: 'long', size: 10 })
           .done(() => {
             assert.equal(this.request.request.callCount, 20);
             done();
@@ -397,7 +404,7 @@ describe('Request', () => {
       });
 
       it('responds with the first response if it is an object', function (done) {
-        this.request.piped({ method: 'get', route: 'test', data: payload, by: 'long' })
+        this.request.piped({ method: 'get', route: 'test', data, by: 'long' })
           .done(res => {
             assert.equal(res.success, true);
             done();
@@ -405,8 +412,8 @@ describe('Request', () => {
       });
 
       it('responds with a flattened response set if the responses are arrays', function (done) {
-        this.request.request.callsArgWith(1, null, [{ success: true }]);
-        this.request.piped({ method: 'get', route: 'test', data: payload, by: 'long', size: 10 })
+        this.request.request.resolves([{ success: true }]);
+        this.request.piped({ method: 'get', route: 'test', data, by: 'long', size: 10 })
           .done(set => {
             assert.equal(set.length, 20);
             set.forEach(res => assert.equal(res.success, true));
