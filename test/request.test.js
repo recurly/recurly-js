@@ -227,6 +227,7 @@ describe('Request', () => {
             &key=test
             &deviceId=${this.recurly.deviceId}
             &sessionId=${this.recurly.sessionId}
+            &instanceId=${this.recurly.id}
             `.replace(/\n|\s/g, '');
 
           this.XHR = (function () {
