@@ -1,4 +1,4 @@
-import {testBed} from './helpers';
+import { testBed } from './helpers';
 
 const minimal = opts => `
   <form action="#" id="test-form">
@@ -168,6 +168,8 @@ const iframe = opts => `
   ></iframe>
 `;
 
+const empty = '';
+
 const FIXTURES = {
   minimal,
   all,
@@ -175,7 +177,8 @@ const FIXTURES = {
   pricing,
   checkoutPricing,
   multipleForms,
-  iframe
+  iframe,
+  empty
 };
 
 export function applyFixtures () {
