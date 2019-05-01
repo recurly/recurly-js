@@ -5,7 +5,7 @@ import { testBed } from './support/helpers';
 
 const sinon = window.sinon;
 
-describe.only('Recurly.Frame', function () {
+describe('Recurly.Frame', function () {
   const path = '/relay';
   const originalOpen = window.open;
   const payload = { example: 'data' };
