@@ -10,6 +10,7 @@
 
 var DECLINE_CARD = '4000000000000002';
 var INVALID_JSON = '5454545454545454';
+var DECLINED_MESSAGE = 'Your card was declined. In order to resolve the issue, you will need to contact your bank.';
 
 module.exports = function token () {
   var params = this.method === 'GET' ? this.query : this.request.body;
@@ -23,7 +24,7 @@ module.exports = function token () {
  */
 
 var ok = {
-  id: "7QF5CSJ2n-6CXX1k15FtYA"
+  id: '7QF5CSJ2n-6CXX1k15FtYA'
 };
 
 /**
@@ -39,9 +40,12 @@ var invalidJson = 'some json that cannot be parsed';
 
 var decline = {
   error: {
-    code: "declined",
-    message: "Your card was declined. In order to resolve the issue, you will need to contact your bank.",
-    fields: ["number"]
+    code: 'declined',
+    message: DECLINED_MESSAGE,
+    fields: ['number'],
+    details: [
+      { field: 'number', messages: [DECLINED_MESSAGE] }
+    ]
   }
 };
 

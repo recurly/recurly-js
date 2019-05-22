@@ -3,9 +3,9 @@ import after from 'lodash.after';
 import merge from 'lodash.merge';
 import each from 'lodash.foreach';
 import clone from 'component-clone';
-import {Recurly} from '../lib/recurly';
-import {applyFixtures} from './support/fixtures';
-import {initRecurly, apiTest} from './support/helpers';
+import { Recurly } from '../lib/recurly';
+import { applyFixtures } from './support/fixtures';
+import { initRecurly, apiTest } from './support/helpers';
 
 apiTest(requestMethod => {
   describe(`Recurly.token (${requestMethod})`, function () {
@@ -85,9 +85,13 @@ apiTest(requestMethod => {
 
         it('produces a validation error', function (done) {
           this.recurly.token(builder(example), (err, token) => {
-            assert(err.code === 'validation');
-            assert(err.fields.length === 1);
-            assert(err.fields[0] === 'number');
+            assert.strictEqual(err.code, 'validation');
+            assert.strictEqual(err.fields.length, 1);
+            assert.strictEqual(err.fields[0], 'number');
+            assert.strictEqual(err.details.length, 1);
+            assert.strictEqual(err.details[0].field, 'number');
+            assert.strictEqual(err.details[0].messages.length, 1);
+            assert.strictEqual(err.details[0].messages[0], 'is invalid');
             assert(!token);
             done();
           });
@@ -101,10 +105,17 @@ apiTest(requestMethod => {
 
         it('produces a validation error', function (done) {
           this.recurly.token(builder(example), (err, token) => {
-            assert(err.code === 'validation');
-            assert(err.fields.length === 2);
+            assert.strictEqual(err.code, 'validation');
+            assert.strictEqual(err.fields.length, 2);
             assert(~err.fields.indexOf('month'));
             assert(~err.fields.indexOf('year'));
+            assert.strictEqual(err.details.length, 2);
+            assert.strictEqual(err.details[0].field, 'month');
+            assert.strictEqual(err.details[0].messages.length, 1);
+            assert.strictEqual(err.details[0].messages[0], 'is invalid');
+            assert.strictEqual(err.details[1].field, 'year');
+            assert.strictEqual(err.details[1].messages.length, 1);
+            assert.strictEqual(err.details[1].messages[0], 'is invalid');
             assert(!token);
             done();
           });
@@ -118,9 +129,13 @@ apiTest(requestMethod => {
 
         it('produces a validation error', function (done) {
           this.recurly.token(builder(example), (err, token) => {
-            assert(err.code === 'validation');
-            assert(err.fields.length === 1);
-            assert(err.fields[0] === 'first_name');
+            assert.strictEqual(err.code, 'validation');
+            assert.strictEqual(err.fields.length, 1);
+            assert.strictEqual(err.fields[0], 'first_name');
+            assert.strictEqual(err.details.length, 1);
+            assert.strictEqual(err.details[0].field, 'first_name');
+            assert.strictEqual(err.details[0].messages.length, 1);
+            assert.strictEqual(err.details[0].messages[0], "can't be blank");
             assert(!token);
             done();
           });
@@ -134,10 +149,14 @@ apiTest(requestMethod => {
 
         it('produces a validation error', function (done) {
           this.recurly.token(builder(example), (err, token) => {
-            assert(err.code === 'declined');
+            assert.strictEqual(err.code, 'declined');
             assert(err.message.indexOf('card was declined'));
-            assert(err.fields.length === 1);
-            assert(err.fields[0] === 'number');
+            assert.strictEqual(err.fields.length, 1);
+            assert.strictEqual(err.fields[0], 'number');
+            assert.strictEqual(err.details.length, 1);
+            assert.strictEqual(err.details[0].field, 'number');
+            assert.strictEqual(err.details[0].messages.length, 1);
+            assert(err.details[0].messages[0].indexOf('card was declined'));
             assert(!token);
             done();
           });
@@ -153,7 +172,7 @@ apiTest(requestMethod => {
           it('produces an api-error with the raw responseText', function (done) {
             this.recurly.token(builder(example), (err, token) => {
               assert(!token);
-              assert(err.code === 'api-error');
+              assert.strictEqual(err.code, 'api-error');
               assert(err.message.indexOf('problem parsing the API response with: some json that cannot be parsed'));
               done();
             });
@@ -166,9 +185,13 @@ apiTest(requestMethod => {
 
         it('produces a validation error', function (done) {
           this.recurly.token(builder(example), (err, token) => {
-            assert(err.code === 'validation');
-            assert(err.fields.length === 1);
-            assert(err.fields[0] === 'cvv');
+            assert.strictEqual(err.code, 'validation');
+            assert.strictEqual(err.fields.length, 1);
+            assert.strictEqual(err.fields[0], 'cvv');
+            assert.strictEqual(err.details.length, 1);
+            assert.strictEqual(err.details[0].field, 'cvv');
+            assert.strictEqual(err.details[0].messages.length, 1);
+            assert.strictEqual(err.details[0].messages[0], 'is invalid');
             assert(!token);
             done();
           });
@@ -269,9 +292,9 @@ apiTest(requestMethod => {
           this.recurly.token(builder(example), (err, token) => {
             const spy = this.recurly.bus.send.withArgs('token:init');
             assert(spy.calledOnce);
-            assert(spy.firstCall.args[1].inputs.fraud.length === 1);
-            assert(spy.firstCall.args[1].inputs.fraud[0].processor === 'litle_threat_metrix');
-            assert(spy.firstCall.args[1].inputs.fraud[0].session_id === '123456');
+            assert.strictEqual(spy.firstCall.args[1].inputs.fraud.length, 1);
+            assert.strictEqual(spy.firstCall.args[1].inputs.fraud[0].processor, 'litle_threat_metrix');
+            assert.strictEqual(spy.firstCall.args[1].inputs.fraud[0].session_id, '123456');
             assert(!err);
             assert(token);
             done();
@@ -289,9 +312,13 @@ apiTest(requestMethod => {
             const example = merge(clone(valid), { cvv: '' });
 
             this.recurly.token(builder(example), (err, token) => {
-              assert(err.code === 'validation');
-              assert(err.fields.length === 1);
+              assert.strictEqual(err.code, 'validation');
+              assert.strictEqual(err.fields.length, 1);
               assert(~err.fields.indexOf('cvv'));
+              assert.strictEqual(err.details.length, 1);
+              assert.strictEqual(err.details[0].field, 'cvv');
+              assert.strictEqual(err.details[0].messages.length, 1);
+              assert.strictEqual(err.details[0].messages[0], "can't be blank");
               assert(!token);
               done();
             });
@@ -303,9 +330,13 @@ apiTest(requestMethod => {
             const example = merge(clone(valid), { cvv: '23783564' });
 
             this.recurly.token(builder(example), (err, token) => {
-              assert(err.code === 'validation');
-              assert(err.fields.length === 1);
+              assert.strictEqual(err.code, 'validation');
+              assert.strictEqual(err.fields.length, 1);
               assert(~err.fields.indexOf('cvv'));
+              assert.strictEqual(err.details.length, 1);
+              assert.strictEqual(err.details[0].field, 'cvv');
+              assert.strictEqual(err.details[0].messages.length, 1);
+              assert.strictEqual(err.details[0].messages[0], 'is invalid');
               assert(!token);
               done();
             });
@@ -354,11 +385,15 @@ apiTest(requestMethod => {
 
             examples.forEach(example => {
               this.recurly.token(builder(example), (err, token) => {
-                assert(err.code === 'validation');
-                assert(err.fields.length === 1);
+                assert.strictEqual(err.code, 'validation');
+                assert.strictEqual(err.fields.length, 1);
                 assert(~err.fields.indexOf('country'));
                 assert(!~err.fields.indexOf('postal_code'));
                 assert(!~err.fields.indexOf('unrelated_configured_field'));
+                assert.strictEqual(err.details.length, 1);
+                assert.strictEqual(err.details[0].field, 'country');
+                assert.strictEqual(err.details[0].messages.length, 1);
+                assert.strictEqual(err.details[0].messages[0], "can't be blank");
                 assert(!token);
                 part();
               });
@@ -372,10 +407,14 @@ apiTest(requestMethod => {
             });
 
             this.recurly.token(builder(example), (err, token) => {
-              assert(err.code === 'validation');
-              assert(err.fields.length === 1);
+              assert.strictEqual(err.code, 'validation');
+              assert.strictEqual(err.fields.length, 1);
               assert(~err.fields.indexOf('postal_code'));
               assert(!~err.fields.indexOf('country'));
+              assert.strictEqual(err.details.length, 1);
+              assert.strictEqual(err.details[0].field, 'postal_code');
+              assert.strictEqual(err.details[0].messages.length, 1);
+              assert.strictEqual(err.details[0].messages[0], "can't be blank");
               assert(!token);
               done();
             });
