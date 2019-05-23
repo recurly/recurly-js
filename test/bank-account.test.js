@@ -2,9 +2,9 @@ import assert from 'assert';
 import clone from 'component-clone';
 import after from 'lodash.after';
 import merge from 'lodash.merge';
-import {Recurly} from '../lib/recurly';
-import {fixture} from './support/fixtures';
-import {initRecurly, apiTest} from './support/helpers';
+import { Recurly } from '../lib/recurly';
+import { fixture } from './support/fixtures';
+import { initRecurly, apiTest } from './support/helpers';
 
 apiTest(function (requestMethod) {
   beforeEach(function (done) {
@@ -13,7 +13,7 @@ apiTest(function (requestMethod) {
   });
 
   describe(`Recurly.bankAccount.token (${requestMethod})`, function () {
-    var valid = {
+    const valid = {
       routing_number: '123456780',
       account_number: '1987649876',
       account_number_confirmation: '1987649876',
@@ -59,9 +59,13 @@ apiTest(function (requestMethod) {
         it('produces a validation error', function (done) {
 
           this.recurly.bankAccount.token(builder(example), (err, token) => {
-            assert(err.code === 'validation');
-            assert(err.fields.length === 1);
-            assert(err.fields[0] === 'name_on_account');
+            assert.strictEqual(err.code, 'validation');
+            assert.strictEqual(err.fields.length, 1);
+            assert.strictEqual(err.fields[0], 'name_on_account');
+            assert.strictEqual(err.details.length, 1);
+            assert.strictEqual(err.details[0].field, 'name_on_account');
+            assert.strictEqual(err.details[0].messages.length, 1);
+            assert.strictEqual(err.details[0].messages[0], "can't be blank");
             assert(!token);
             done();
           });
@@ -124,11 +128,15 @@ apiTest(function (requestMethod) {
       }
     });
 
-    it('requires a routingNumber', function () {
+    it('requires a routing_number', function () {
       recurly.bankAccount.bankInfo({}, (err, bankInfo) => {
-        assert(err.code === 'validation');
-        assert(err.fields.length === 1);
-        assert(err.fields[0] === 'routingNumber');
+        assert.strictEqual(err.code, 'validation');
+        assert.strictEqual(err.fields.length, 1);
+        assert.strictEqual(err.fields[0], 'routing_number');
+        assert.strictEqual(err.details.length, 1);
+        assert.strictEqual(err.details[0].field, 'routing_number');
+        assert.strictEqual(err.details[0].messages.length, 1);
+        assert.strictEqual(err.details[0].messages[0], "can't be blank");
         assert(!bankInfo);
       });
     });
