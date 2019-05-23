@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.9.7
+
+* Adds 'details' to token validation errors [#522][522]
+
 ### Version 4.9.6
 
 * Adds specific tax amount overrides to SubscriptionPricing and CheckoutPricing [#515][515]
@@ -267,6 +271,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[522]: https://github.com/recurly/recurly-js/commit/3a50c98811413c7593ec6783cee2b80e185b195f
 [515]: https://github.com/recurly/recurly-js/commit/00d6a3b7960678239ea57fbfb056d666ed05aacd
 [510]: https://github.com/recurly/recurly-js/commit/bd75ac7db6dc871eedd50083d94e2e8caaa3a439
 [507]: https://github.com/recurly/recurly-js/commit/f93f833cac21fa5d27ba6a4bcaf5816c38920383
