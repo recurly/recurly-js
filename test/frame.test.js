@@ -28,6 +28,11 @@ describe('Recurly.Frame', function () {
       this.frame = this.recurly.Frame({ path });
       done();
     });
+
+    // Returns a spy so frame.bindWindowCloseListener does not cancel the tick
+    window.open = sinon.spy(() => sinon.spy());
+
+    sinon.stub(window.document.body, 'appendChild').callsFake(relay => relay.onload());
   });
 
   afterEach(function () {
@@ -183,5 +188,13 @@ describe('Recurly.Frame', function () {
         });
       });
     });
+  });
+
+  it('emits a closed event when the frame closes', function (done) {
+    this.timeout(2000); // timeout with error if frame doesn't emit close event
+
+    this.recurly.Frame({ path }).on('close', () => done());
+
+    frame.window = {closed: true}; // stub the window closing
   });
 });
