@@ -29,13 +29,17 @@ app.use(route.get('/plans/:plan_id/coupons/:id', json));
 app.use(route.get('/tax', json));
 app.use(route.get('/token', json));
 app.use(route.post('/token', json));
+app.use(route.get('/tokens/:token_id', json));
+app.use(route.post('/tokens', json));
 
-app.use(route.get('/paypal/start', postMessage));
 app.use(route.get('/apple_pay/info', json));
 app.use(route.get('/apple_pay/start', json));
 app.use(route.get('/apple_pay/token', json));
 app.use(route.post('/apple_pay/start', json));
 app.use(route.post('/apple_pay/token', json));
+app.use(route.get('/paypal/start', postMessage));
+app.use(route.get('/three_d_secure/start', postMessage));
+app.use(route.get('/three_d_secure/mock', postMessage));
 
 app.use(route.get('/relay', html('relay')));
 app.use(route.get('/field.html', html('field')));

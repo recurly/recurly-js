@@ -2,9 +2,9 @@ import assert from 'assert';
 import { initRecurly } from './support/helpers';
 import { factory, Risk } from '../lib/recurly/risk';
 import RiskConcern from '../lib/recurly/risk/risk-concern';
-import { ThreeDSecureConcern } from '../lib/recurly/risk/three-d-secure/three-d-secure';
+import { ThreeDSecure } from '../lib/recurly/risk/three-d-secure/three-d-secure';
 
-describe('Recurly.Risk', function () {
+describe('Risk', function () {
   beforeEach(function () {
     this.recurly = initRecurly();
     this.risk = this.recurly.Risk();
@@ -27,7 +27,6 @@ describe('Recurly.Risk', function () {
       this.sandbox = sinon.createSandbox();
       this.sandbox.stub(navigator, 'language').get(() => 'fake-language');
       this.sandbox.stub(navigator, 'javaEnabled').callsFake(() => 'fake-java-enabled');
-      this.sandbox.stub(navigator, 'userAgent').get(() => 'fake-user-agent');
       this.sandbox.stub(screen, 'colorDepth').get(() => 'fake-color-depth');
       this.sandbox.stub(screen, 'height').get(() => 'fake-height');
       this.sandbox.stub(screen, 'width').get(() => 'fake-width');
@@ -58,15 +57,15 @@ describe('Recurly.Risk', function () {
       assert.strictEqual(browserInfo.screenHeight, 'fake-height');
       assert.strictEqual(browserInfo.screenWidth, 'fake-width');
       assert.strictEqual(browserInfo.timeZoneOffset, 'fake-timezone-offset');
-      assert.strictEqual(browserInfo.userAgent, 'fake-user-agent');
+      assert.strictEqual(browserInfo.userAgent, navigator.userAgent);
     });
   });
 
   describe('ThreeDSecure', function () {
-    it('functions as a factory for ThreeDSecureConcern', function () {
+    it('functions as a factory for ThreeDSecure', function () {
       const { risk } = this;
       const threeDSecure = risk.ThreeDSecure();
-      assert.strictEqual(threeDSecure instanceof ThreeDSecureConcern, true);
+      assert.strictEqual(threeDSecure instanceof ThreeDSecure, true);
     });
 
     it('adds the new instance to Risk.concerns', function () {

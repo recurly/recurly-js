@@ -1,0 +1,17 @@
+{
+  "type": "three_d_secure_action",
+  "id": "3dsat-id-stripe",
+  "gateway": {
+    "code": "1234567890",
+    "type": "stripe",
+    "credentials": {
+      "publishable_key": "test-publishable-key"
+    }
+  },
+  "three_d_secure": {
+    "params": {
+      "arbitrary": "values",
+      "per": "strategy"
+    }
+  }
+}

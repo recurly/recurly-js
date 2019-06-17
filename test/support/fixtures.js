@@ -168,6 +168,8 @@ const iframe = opts => `
   ></iframe>
 `;
 
+const threeDSecure = opts => `<div id="three-d-secure-container"></div>`;
+
 const empty = '';
 
 const FIXTURES = {
@@ -178,7 +180,8 @@ const FIXTURES = {
   checkoutPricing,
   multipleForms,
   iframe,
-  empty
+  threeDSecure,
+  empty,
 };
 
 export function applyFixtures () {
