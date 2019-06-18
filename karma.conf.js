@@ -40,7 +40,7 @@ var staticConfig = {
   client: {
     captureConsole: true,
     mocha: {
-      timeout: 10000, // 10 seconds
+      timeout: 3000, // 10 seconds
       grep: ''
     }
   },

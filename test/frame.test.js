@@ -31,8 +31,10 @@ describe('Recurly.Frame', function () {
   });
 
   afterEach(function () {
+    const { frame } = this;
     window.open = originalOpen;
     window.document.body.appendChild.restore();
+    if (frame) frame.destroy();
   });
 
   applyFixtures();
@@ -40,17 +42,17 @@ describe('Recurly.Frame', function () {
   this.ctx.fixture = 'empty';
 
   it('calls window.open', function () {
-    let frame = this.recurly.Frame({ path });
+    const frame = this.frame = this.recurly.Frame({ path });
     assert(window.open.calledOnce);
   });
 
   it('sends Recurly.version in the url', function () {
-    this.recurly.Frame({ path });
+    this.frame = this.recurly.Frame({ path });
     assert(window.open.calledWithMatch(`version=${this.recurly.version}`));
   });
 
   it('sends a listener event name to the opened url', function () {
-    this.recurly.Frame({ path });
+    this.frame = this.recurly.Frame({ path });
     assert(window.open.calledWithMatch(/recurly-frame-\w+-\w+/));
   });
 
@@ -59,7 +61,7 @@ describe('Recurly.Frame', function () {
     window.open = sinon.spy(function (url) {
       eventName = url.match(/(recurly-frame-\w+-\w+)/)[0];
     });
-    let frame = this.recurly.Frame({ path });
+    const frame = this.frame = this.recurly.Frame({ path });
     assert(frame.hasListeners(eventName));
   });
 
@@ -72,20 +74,21 @@ describe('Recurly.Frame', function () {
 
     it('opens the url relative to recurly.config.api', function () {
       examples.forEach(path => {
-        this.recurly.Frame({ path });
+        const frame = this.recurly.Frame({ path });
         assert(window.open.calledWithMatch(this.recurly.config.api + path));
+        frame.destroy();
       });
     });
   });
 
   describe('when given data', function () {
     it('encodes the data into the opener url', function () {
-      this.recurly.Frame({ path, payload });
+      this.frame = this.recurly.Frame({ path, payload });
       assert(window.open.calledWithMatch('example=data'));
     });
 
     it('produces a valid composite querystring of given and additional data', function () {
-      this.recurly.Frame({ path, payload });
+      this.frame = this.recurly.Frame({ path, payload });
       assert(window.open.calledWithMatch(function (url) {
         return (url.match(/\?/) || []).length;
       }));
@@ -104,7 +107,7 @@ describe('Recurly.Frame', function () {
   describe('when type=iframe', function () {
     it('requires a container', function () {
       assert.throws(() => {
-        this.recurly.Frame({ path, payload, type: 'iframe' });
+        this.frame = this.recurly.Frame({ path, payload, type: 'iframe' });
       }, 'Invalid container. Expected HTMLElement, got undefined');
     });
 

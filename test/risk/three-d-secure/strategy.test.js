@@ -44,6 +44,7 @@ describe('ThreeDSecureStrategy', function () {
 
       it('is a single child of the target element', function () {
         const { strategy, target } = this;
+        strategy.container;
         assert.strictEqual(strategy.container, target.children[0]);
         assert.strictEqual(target.children.length, 1);
       });

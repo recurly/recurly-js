@@ -22,17 +22,23 @@ describe('ThreeDSecure', function () {
     this.threeDSecure = new ThreeDSecure({ risk, actionTokenId });
 
     // Neuter the third party lib loaders
-    window.AdyenCheckout = this.sandbox.stub();
-    window.Stripe = this.sandbox.stub();
-    this.sandbox.stub(AdyenStrategy.prototype, 'loadAdyenLibrary').resolves();
-    this.sandbox.stub(StripeStrategy.prototype, 'loadStripeLibrary').resolves();
+    window.AdyenCheckout = sandbox.stub();
+    window.Stripe = sandbox.stub();
+    sandbox.stub(AdyenStrategy.prototype, 'loadAdyenLibrary').resolves();
+    sandbox.stub(StripeStrategy.prototype, 'loadStripeLibrary').resolves();
+
+    sandbox.spy(recurly, 'Frame');
 
     this.threeDSecure.whenReady(() => done());
   });
 
   afterEach(function () {
-    this.sandbox.restore();
+    const { sandbox } = this;
+    const { Frame } = this.recurly;
+    delete window.AdyenCheckout;
     delete window.Stripe;
+    Frame.getCalls().forEach(c => c.returnValue.destroy());
+    sandbox.restore();
   });
 
   it('adds itself to the provided Risk instance', function () {
