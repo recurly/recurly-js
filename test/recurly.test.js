@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { isUuidv4 } from './support/helpers';
+import { isABase64EncodedUUID } from './support/matchers';
 import { Recurly } from '../lib/recurly';
 import CheckoutPricing from '../lib/recurly/pricing/checkout';
 import SubscriptionPricing from '../lib/recurly/pricing/subscription';
@@ -31,27 +31,28 @@ describe('Recurly', function () {
     });
   });
 
+  describe('id', function () {
+    beforeEach(function () { this.subject = this.recurly.id; });
+    it(...isABase64EncodedUUID());
+  })
+
   describe('deviceId', function () {
-    it('is a uuid', function () {
-      const { recurly } = this;
-      assert(isUuidv4(recurly.deviceId));
-    });
+    beforeEach(function () { this.subject = this.recurly.deviceId; });
+    it(...isABase64EncodedUUID());
 
     it('is set on localStorage', function () {
-      const { recurly } = this;
-      assert.strictEqual(recurly.deviceId, localStorage.getItem('__recurly__.deviceId'));
+      const { subject } = this;
+      assert.strictEqual(subject, localStorage.getItem('__recurly__.deviceId'));
     });
   });
 
   describe('sessionId', function () {
-    it('is a uuid', function () {
-      const { recurly } = this;
-      assert(isUuidv4(recurly.sessionId));
-    });
+    beforeEach(function () { this.subject = this.recurly.sessionId; });
+    it(...isABase64EncodedUUID());
 
     it('is set on sessionStorage', function () {
-      const { recurly } = this;
-      assert.strictEqual(recurly.sessionId, sessionStorage.getItem('__recurly__.sessionId'));
+      const { subject } = this;
+      assert.strictEqual(subject, sessionStorage.getItem('__recurly__.sessionId'));
     });
   });
 
