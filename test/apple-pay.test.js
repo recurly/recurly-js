@@ -26,6 +26,17 @@ class ApplePaySessionStub extends Emitter {
     this.lineItems = li;
     this.emit('completePaymentMethodSelection');
   }
+  completeShippingContactSelection (st, sm, t, li) {
+    this.shippingMethods = sm;
+    this.total = t;
+    this.lineItems = li;
+    this.emit('completeShippingContactSelection');
+  }
+  completeShippingMethodSelection (st, t, li) {
+    this.total = t;
+    this.lineItems = li;
+    this.emit('completeShippingMethodSelection');
+  }
   completePayment (status) {
     this.status = status;
     this.emit('completePayment');
@@ -381,23 +392,67 @@ apiTest(function (requestMethod) {
 
       describe('onValidateMerchant', function () {
         it('calls the merchant validation endpoint and passes the result to the ApplePaySession', function (done) {
-          this.applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
           this.applePay.session.on('completeMerchantValidation', () => {
             assert.equal(typeof this.applePay.session.merchantSession, 'object');
             assert.equal(this.applePay.session.merchantSession.merchantSessionIdentifier, startFixture.ok.merchantSessionIdentifier);
             done();
           });
+          this.applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
         });
       });
 
-      describe('onPaymentMethodSelected', function (done) {
-        it('calls ApplePaySession.completePaymentSelection with a total and line items', function () {
-          this.applePay.session.onpaymentmethodselected();
+      describe('onPaymentMethodSelected', function () {
+        it('calls ApplePaySession.completePaymentSelection with a total and line items', function (done) {
           this.applePay.session.on('completePaymentMethodSelection', () => {
-            assert.equal(this.applePay.session.total, this.applePay.total);
-            assert.equal(this.applePay.session.lineItems, this.applePay.lineItems);
+            assert.deepEqual(this.applePay.session.total, this.applePay.finalTotalLineItem);
+            assert.deepEqual(this.applePay.session.lineItems, this.applePay.lineItems);
             done();
           });
+          this.applePay.session.onpaymentmethodselected();
+        });
+      });
+
+      describe('onShippingContactSelected', function () {
+        it('calls ApplePaySession.completeShippingContactSelection with empty methods, a total, and line items', function (done) {
+          this.applePay.session.on('completeShippingContactSelection', () => {
+            assert(Array.isArray(this.applePay.session.shippingMethods));
+            assert.equal(this.applePay.session.shippingMethods.length, 0);
+            assert.deepEqual(this.applePay.session.total, this.applePay.finalTotalLineItem);
+            assert.deepEqual(this.applePay.session.lineItems, this.applePay.lineItems);
+            done();
+          });
+          this.applePay.session.onshippingcontactselected();
+        });
+
+        it('emits shippingContactSelected', function (done) {
+          const example = { test: 'event' };
+          this.applePay.on('shippingContactSelected', event => {
+            assert.deepEqual(event, example);
+            done();
+          });
+          this.applePay.session.onshippingcontactselected(example);
+        });
+      });
+
+      describe('onShippingMethodSelected', function () {
+        it('calls ApplePaySession.completeShippingMethodSelection with status, a total, and line items', function (done) {
+          this.applePay.session.on('completeShippingContactSelection', () => {
+            assert(Array.isArray(this.applePay.session.shippingMethods));
+            assert.equal(this.applePay.session.shippingMethods.length, 0);
+            assert.deepEqual(this.applePay.session.total, this.applePay.finalTotalLineItem);
+            assert.deepEqual(this.applePay.session.lineItems, this.applePay.lineItems);
+            done();
+          });
+          this.applePay.session.onshippingcontactselected();
+        });
+
+        it('emits shippingMethodSelected', function (done) {
+          const example = { test: 'event' };
+          this.applePay.on('shippingMethodSelected', event => {
+            assert.deepEqual(event, example);
+            done();
+          });
+          this.applePay.session.onshippingmethodselected(example);
         });
       });
 
@@ -424,6 +479,15 @@ apiTest(function (requestMethod) {
             assert.deepEqual(token, tokenFixture.ok);
             done();
           });
+        });
+
+        it('emits paymentAuthorized', function (done) {
+          const example = clone(validAuthorizeEvent);
+          this.applePay.on('paymentAuthorized', event => {
+            assert.deepEqual(event, example);
+            done();
+          });
+          this.applePay.session.onpaymentauthorized(example);
         });
 
         describe('when payment data is invalid', function (done) {
