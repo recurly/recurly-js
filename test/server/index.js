@@ -19,6 +19,7 @@ app.use(cors());
 
 ejs(app, { root: __dirname, layout: false, viewExt: 'html.ejs' });
 
+app.use(route.get('/bank', json));
 app.use(route.get('/coupons/:id', json));
 app.use(route.get('/events', ok));
 app.use(route.post('/events', ok));
