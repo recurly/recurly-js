@@ -107,7 +107,7 @@ describe('ThreeDSecure', function () {
     it('sets a null strategy', function () {
       const { riskStub: risk } = this;
       const threeDSecure = new ThreeDSecure({ risk });
-      assert(threeDSecure.strategy instanceof ThreeDSecureStrategy);
+      assert.strictEqual(threeDSecure.strategy.constructor, ThreeDSecureStrategy);
     });
   });
 
