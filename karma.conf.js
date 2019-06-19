@@ -1,4 +1,4 @@
-var staticConfig = {
+const staticConfig = {
   basePath: '',
   frameworks: ['mocha', 'sinon', 'source-map-support'],
   files: [
@@ -40,7 +40,7 @@ var staticConfig = {
   client: {
     captureConsole: true,
     mocha: {
-      timeout : 800000, // 800 seconds
+      timeout: 7000, // 7 seconds
       grep: ''
     }
   },
@@ -53,15 +53,11 @@ var staticConfig = {
 };
 
 function runner (config) {
-  var frameworks = staticConfig.frameworks;
-  if (~staticConfig.browsers.indexOf('PhantomJS')) frameworks.push('phantomjs-shim');
-  config.set(Object.assign({}, staticConfig, {
-    logLevel: config.LOG_INFO,
-    frameworks: frameworks
-  }));
-};
+  const logLevel = config.LOG_INFO;
+  config.set(Object.assign({}, staticConfig, { logLevel }));
+}
 
-var server = require('./test/server');
+const server = require('./test/server');
 
 runner.staticConfig = staticConfig;
 

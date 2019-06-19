@@ -1,4 +1,4 @@
-import {testBed} from './helpers';
+import { testBed } from './helpers';
 
 const minimal = opts => `
   <form action="#" id="test-form">
@@ -168,6 +168,10 @@ const iframe = opts => `
   ></iframe>
 `;
 
+const threeDSecure = opts => `<div id="three-d-secure-container"></div>`;
+
+const empty = '';
+
 const FIXTURES = {
   minimal,
   all,
@@ -175,7 +179,9 @@ const FIXTURES = {
   pricing,
   checkoutPricing,
   multipleForms,
-  iframe
+  iframe,
+  threeDSecure,
+  empty,
 };
 
 export function applyFixtures () {

@@ -1,8 +1,6 @@
 import assert from 'assert';
 import {initRecurly} from '../../support/helpers';
 
-const sinon = window.sinon;
-
 describe('DirectStrategy', function () {
   const displayName = 'test';
   const validOpts = { display: { displayName } };
@@ -10,7 +8,15 @@ describe('DirectStrategy', function () {
   beforeEach(function () {
     this.recurly = initRecurly();
     this.paypal = this.recurly.PayPal(validOpts);
-    sinon.spy(this.recurly, 'Frame');
+    this.sandbox = sinon.createSandbox();
+    this.sandbox.spy(this.recurly, 'Frame');
+  });
+
+  afterEach(function () {
+    const { sandbox } = this;
+    const { Frame } = this.recurly;
+    Frame.getCalls().forEach(c => c.returnValue.destroy());
+    sandbox.restore();
   });
 
   it('passes the description to the API start endpoint', function () {

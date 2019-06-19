@@ -16,7 +16,7 @@
           if (!relay) throw new Error('relay not found');
           relay.send(JSON.stringify(msg), '*');
         } else {
-          window.opener.postMessage(JSON.stringify(msg), '*');
+          targetWindow().postMessage(JSON.stringify(msg), '*');
         }
       }
 
@@ -29,7 +29,7 @@
       function findRelay () {
         var loc = window.location;
         var origin = loc.protocol + '//' + loc.host;
-        var frames = window.opener.frames;
+        var frames = targetWindow().frames;
 
         for (var i = 0; i < frames.length; i++) {
           try {
@@ -49,6 +49,10 @@
 
       function report (err) {
         // TODO: report somewhere...
+      }
+
+      function targetWindow () {
+        return window.opener || window.parent;
       }
     })(window);
   </script>

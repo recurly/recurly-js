@@ -5,14 +5,10 @@ const path = require('path');
 let moduleConfig = require('./webpack.config').module;
 
 if (shouldInstrument()) {
-  moduleConfig.rules.push({
-    test: /\.js$/,
-    use: {
-      loader: 'istanbul-instrumenter-loader',
-      options: { esModules: true }
-    },
-    enforce: 'post',
-    exclude: /node_modules|test/,
+  moduleConfig.rules.find(rule => {
+    const loader = rule.use.find(use => use.loader === 'babel-loader')
+    if (!loader) return;
+    loader.options.plugins.push('istanbul');
   });
 }
 

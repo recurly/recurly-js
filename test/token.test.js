@@ -9,6 +9,9 @@ import { initRecurly, apiTest } from './support/helpers';
 
 apiTest(requestMethod => {
   describe(`Recurly.token (${requestMethod})`, function () {
+    // Some of these tests can take a while to stand up fields and receive reponses
+    this.timeout(15000);
+
     const valid = {
       number: '4111111111111111',
       month: '01',

@@ -1,7 +1,7 @@
-var BROWSER = process.env.BROWSER;
-var REPORT_COVERAGE = process.env.REPORT_COVERAGE || false;
-var staticConfig = require('./karma.conf').staticConfig;
-var sauceBrowsers = {
+const BROWSER = process.env.BROWSER;
+const REPORT_COVERAGE = process.env.REPORT_COVERAGE || false;
+const staticConfig = require('./karma.conf').staticConfig;
+const customLaunchers = {
   sl_chrome_headless: {
     base: 'ChromeHeadless',
     flags: ['--no-sandbox']
@@ -65,28 +65,24 @@ var sauceBrowsers = {
 };
 
 function runner (config) {
-  var reporters = ['mocha', 'saucelabs'];
+  const reporters = ['mocha', 'saucelabs'];
   if (REPORT_COVERAGE) reporters.push('coverage');
+
+  const logLevel = config.LOG_INFO;
+
   config.set(Object.assign({}, staticConfig, {
-    reporters: reporters,
-    logLevel: config.LOG_INFO,
+    reporters,
+    logLevel,
     browsers: ['sl_' + BROWSER],
-    frameworks: frameworks(),
     sauceLabs: {
       testName: 'Recurly.js tests',
       recordVideo: true,
       public: 'public'
     },
-    customLaunchers: sauceBrowsers,
+    customLaunchers
   }));
 };
 
-function frameworks () {
-  var frameworks = staticConfig.frameworks;
-  if (BROWSER === 'phantom') frameworks.push('phantomjs-shim');
-  return frameworks;
-}
-
-var server = require('./test/server');
+const server = require('./test/server');
 
 module.exports = runner;

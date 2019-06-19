@@ -28,7 +28,11 @@ module.exports = {
             loader: 'babel-loader',
             options: {
               cacheDirectory: true,
-              plugins: ['@babel/plugin-transform-object-assign'],
+              plugins: [
+                '@babel/plugin-transform-object-assign',
+                '@babel/plugin-proposal-class-properties',
+                '@babel/plugin-proposal-export-default-from'
+              ],
               presets: [
                 ['@babel/preset-env', {
                   targets: {
@@ -70,6 +74,7 @@ module.exports = {
     ]
   },
   devServer: {
+    disableHostCheck: true,
     host: 'js.lvh.me'
   },
 };
