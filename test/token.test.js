@@ -27,6 +27,10 @@ apiTest(requestMethod => {
       this.recurly.ready(() => done());
     });
 
+    afterEach(function () {
+      this.recurly.destroy();
+    });
+
     describe('without markup', function () {
       it('requires a callback', function () {
         try {

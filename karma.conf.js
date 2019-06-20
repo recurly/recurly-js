@@ -6,10 +6,7 @@ const staticConfig = {
     'build/test.js'
   ],
   proxies: {
-    '/api': {
-      target: 'http://localhost:9877',
-      changeOrigin: true
-    }
+    '/api': 'http://localhost:9877'
   },
   reporters: ['mocha', 'coverage'],
   port: 9876,

@@ -46,6 +46,8 @@ app.use(route.get('/frame_mock', postMessage));
 app.use(route.get('/relay', html('relay')));
 app.use(route.get('/field.html', html('field')));
 
+app.use(route.get('/mock-404'), ctx => ctx.status = 404);
+
 app.listen(port, () => {
   fs.writeFileSync(`${__dirname}/pid.txt`, process.pid, 'utf-8');
   console.log(`ready on ${port}`);
