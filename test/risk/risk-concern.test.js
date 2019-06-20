@@ -23,14 +23,7 @@ describe('RiskConcern', function () {
   });
 
   describe('error', function () {
-    it('constructs and throws an error', function () {
-      const { riskConcern } = this;
-      assert.throws(() => {
-        riskConcern.error('invalid-option', { name: 'test', expect: 'value' })
-      }, 'Option test must be value');
-    });
-
-    it('emits an error event', function (done) {
+    it('constructs and emits an error event', function (done) {
       const { riskConcern } = this;
       riskConcern.on('error', err => {
         assert(err.message, 'Option test must be value');
