@@ -5,7 +5,12 @@ const staticConfig = {
     'build/recurly.js',
     'build/test.js'
   ],
-  proxies: { '/api': 'http://localhost:9877' },
+  proxies: {
+    '/api': {
+      target: 'http://localhost:9877',
+      changeOrigin: true
+    }
+  },
   reporters: ['mocha', 'coverage'],
   port: 9876,
   colors: true,

@@ -42,6 +42,7 @@ app.use(route.get('/paypal/start', postMessage));
 app.use(route.get('/three_d_secure/start', postMessage));
 app.use(route.get('/three_d_secure/mock', postMessage));
 
+app.use(route.get('/frame_mock', postMessage));
 app.use(route.get('/relay', html('relay')));
 app.use(route.get('/field.html', html('field')));
 

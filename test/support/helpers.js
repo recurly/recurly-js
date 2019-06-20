@@ -12,7 +12,11 @@ import { BRAINTREE_CLIENT_VERSION } from '../../lib/recurly/paypal/strategy/brai
 export function initRecurly (recurly, opts) {
   if (!(recurly instanceof Recurly)) {
     if (!opts) opts = recurly;
+
     recurly = new Recurly;
+
+    // prevents itinerant event logging workers from dispatching
+    sinon.stub(recurly.reporter, 'send');
   }
   recurly.configure(merge({
     publicKey: 'test',

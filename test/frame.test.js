@@ -1,26 +1,20 @@
 import { applyFixtures } from './support/fixtures';
 import assert from 'assert';
-import { Recurly } from '../lib/recurly';
-import { testBed } from './support/helpers';
-
-const sinon = window.sinon;
+import { initRecurly, testBed } from './support/helpers';
 
 describe('Recurly.Frame', function () {
-  const path = '/relay';
-  const originalOpen = window.open;
+  const path = '/frame_mock';
   const payload = { example: 'data', event: 'test-event' };
-  const noop = () => {};
 
   beforeEach(function (done) {
-    this.recurly = new Recurly;
-    this.recurly.configure({
-      publicKey: 'test',
-      api: `//${window.location.host}/api`
-    });
+    const recurly = this.recurly = initRecurly();
     const sandbox = this.sandbox = sinon.createSandbox();
+    const newWindow = this.newWindow = { close: sinon.stub() };
 
-    this.newWindowSpy = sandbox.stub({ close: () => {} });
-    window.open = sandbox.stub().returns(this.newWindowSpy);
+    sandbox.stub(window, 'open').callsFake(url => {
+      this.eventName = url.match(/(recurly-frame-\w+-\w+)/)[0];
+      return newWindow;
+    });
 
     // HACK: when we're in an IE environment, we need to stub the relay creation;
     //       however, we want to proceed as normal in all other circumstances
@@ -29,12 +23,14 @@ describe('Recurly.Frame', function () {
       else this.appendChild.wrappedMethod.call(this, maybeRelay);
     });
 
-    this.recurly.ready(done);
+    recurly.ready(() => {
+      this.frame = this.recurly.Frame({ path });
+      done();
+    });
   });
 
   afterEach(function () {
-    const { frame, sandbox } = this;
-    window.open = originalOpen;
+    const { frame, sandbox, recurly } = this;
     sandbox.restore();
     if (frame) frame.destroy();
   });
@@ -44,27 +40,20 @@ describe('Recurly.Frame', function () {
   this.ctx.fixture = 'empty';
 
   it('calls window.open', function () {
-    const frame = this.frame = this.recurly.Frame({ path });
     assert(window.open.calledOnce);
   });
 
   it('sends Recurly.version in the url', function () {
-    this.frame = this.recurly.Frame({ path });
-    assert(window.open.calledWithMatch(`version=${this.recurly.version}`));
+    const { recurly } = this;
+    assert(window.open.calledWithMatch(`version=${recurly.version}`));
   });
 
   it('sends a listener event name to the opened url', function () {
-    this.frame = this.recurly.Frame({ path });
     assert(window.open.calledWithMatch(/recurly-frame-\w+-\w+/));
   });
 
   it('listens for the frame event', function () {
-    const { sandbox } = this;
-    let eventName;
-    window.open = sandbox.spy(function (url) {
-      eventName = url.match(/(recurly-frame-\w+-\w+)/)[0];
-    });
-    const frame = this.frame = this.recurly.Frame({ path });
+    const { sandbox, eventName, frame } = this;
     assert(frame.hasListeners(eventName));
   });
 
@@ -101,9 +90,13 @@ describe('Recurly.Frame', function () {
   describe('when the browser is detected to be IE', function () {
     beforeEach(function () {
       const { sandbox } = this;
+
       this.isIE = !!document.documentMode;
       if (this.isIE) sandbox.stub(document, 'documentMode').get('test');
       else document.documentMode = 'test';
+
+      // rerun this to account for IE mocking
+      this.frame = this.recurly.Frame({ path });
     });
 
     afterEach(function () {
@@ -111,8 +104,7 @@ describe('Recurly.Frame', function () {
     });
 
     it('creates a relay', function () {
-      const { sandbox } = this;
-      const frame = this.frame = this.recurly.Frame({ path });
+      const { sandbox, frame } = this;
       const { relay } = frame;
       sandbox.spy(frame, 'create');
 
@@ -145,9 +137,9 @@ describe('Recurly.Frame', function () {
   describe('destroy', function () {
     it('closes the window', function () {
       const frame = this.recurly.Frame({ path, payload });
-      assert(this.newWindowSpy.close.notCalled);
+      assert(this.newWindow.close.notCalled);
       frame.destroy();
-      assert(this.newWindowSpy.close.calledOnce);
+      assert(this.newWindow.close.calledOnce);
     });
   });
 
@@ -159,8 +151,9 @@ describe('Recurly.Frame', function () {
     });
 
     describe('when given a container', function () {
-      beforeEach(function () {
+      beforeEach(function (done) {
         this.frame = this.recurly.Frame({ path, payload, type: 'iframe', container: testBed() });
+        this.frame.on('done', () => done());
       });
 
       it('injects an iframe into the container', function () {
@@ -168,7 +161,7 @@ describe('Recurly.Frame', function () {
       });
 
       it('sets the url appropriately', function () {
-        assert(~this.frame.iframe.src.indexOf('/relay'));
+        assert(~this.frame.iframe.src.indexOf('/frame_mock'));
         assert(~this.frame.iframe.src.indexOf('example=data'));
         assert(~this.frame.iframe.src.indexOf(`version=${this.recurly.version}`));
         assert(~this.frame.iframe.src.indexOf('event=recurly-frame-'));
