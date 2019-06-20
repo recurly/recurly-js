@@ -31,35 +31,36 @@ describe('IntervalWorker', () => {
 
   it('calls the perform function with a jobId', function (done) {
     const start = Date.now();
-    this.worker = new IntervalWorker({ period: 1, perform: ({ jobId }) => {
+    const worker = this.worker = new IntervalWorker({ period: 1, perform: ({ jobId }) => {
       assert.strictEqual(jobId, 0);
-      this.worker.destroy();
+      worker.destroy();
       done();
     }});
-    this.worker.start();
+    worker.start();
   });
 
   it('calls the perform function at the period interval', function (done) {
     const then = Date.now();
-    this.worker = new IntervalWorker({ period: 500, perform: () => {
+    const worker = this.worker = new IntervalWorker({ period: 500, perform: () => {
       const lapse = Date.now() - then;
       assert(lapse >= 400);
       assert(lapse <= 600);
-      this.worker.destroy();
+      worker.destroy();
       done();
     }});
-    this.worker.start();
+    worker.start();
   });
 
   describe('#start', () => {
     it('enables the job', function (done) {
-      this.worker = new IntervalWorker(this.validShortPeriod);
-      assert.strictEqual(this.worker.active, false);
-      assert.strictEqual(this.perform.called, false);
-      this.worker.start();
-      assert.strictEqual(this.worker.active, true);
+      const { perform } = this;
+      const worker = this.worker = new IntervalWorker(this.validShortPeriod);
+      assert.strictEqual(worker.active, false);
+      assert.strictEqual(perform.called, false);
+      worker.start();
+      assert.strictEqual(worker.active, true);
       setTimeout(() => {
-        assert.strictEqual(this.perform.calledOnce, true);
+        assert.strictEqual(perform.calledOnce, true);
         done();
       }, 5);
     });
@@ -67,21 +68,22 @@ describe('IntervalWorker', () => {
 
   describe('#pause', () => {
     it('pauses the job', function (done) {
+      const { perform } = this;
       const part = after(2, () => done());
-      this.worker = new IntervalWorker(this.validShortPeriod);
-      this.worker.start();
-      assert.strictEqual(this.worker.active, true);
+      const worker = this.worker = new IntervalWorker(this.validShortPeriod);
+      worker.start();
+      assert.strictEqual(worker.active, true);
 
       setTimeout(() => {
-        assert.strictEqual(this.perform.calledOnce, true);
-        this.worker.pause();
-        assert.strictEqual(this.worker.active, false);
+        assert.strictEqual(perform.calledOnce, true);
+        worker.pause();
+        assert.strictEqual(worker.active, false);
         part();
       }, 5);
 
       setTimeout(() => {
-        assert.strictEqual(this.perform.calledOnce, true);
-        assert.strictEqual(this.worker.active, false);
+        assert.strictEqual(perform.calledOnce, true);
+        assert.strictEqual(worker.active, false);
         part();
       }, 15);
     });
@@ -89,31 +91,32 @@ describe('IntervalWorker', () => {
 
   describe('#destroy', () => {
     it('stops the worker', function (done) {
+      const { valid, perform } = this;
       const part = after(2, () => done());
-      this.worker = new IntervalWorker(this.validShortPeriod);
-      this.worker.start();
+      const worker = this.worker = new IntervalWorker({ period: 750, ...valid });
+      worker.start();
 
       setTimeout(() => {
-        assert.strictEqual(this.perform.calledOnce, true);
-        this.worker.destroy();
-        assert.strictEqual(this.worker.active, false);
-        assert.strictEqual(this.worker._intervalId, undefined);
+        assert.strictEqual(perform.calledOnce, true);
+        worker.destroy();
+        assert.strictEqual(worker.active, false);
+        assert.strictEqual(worker._intervalId, undefined);
         part();
-      }, 8);
+      }, 1000);
 
       setTimeout(() => {
-        assert.strictEqual(this.perform.calledOnce, true);
+        assert.strictEqual(perform.calledOnce, true);
         part();
-      }, 15);
+      }, 1800);
     });
 
     it('prevents further calls', function () {
-      this.worker = new IntervalWorker(this.validShortPeriod);
-      this.worker.start();
-      this.worker.destroy();
-      assert.throws(() => this.worker.start(), Error);
-      assert.throws(() => this.worker.pause(), Error);
-      assert.throws(() => this.worker.destroy(), Error);
+      const worker = this.worker = new IntervalWorker(this.validShortPeriod);
+      worker.start();
+      worker.destroy();
+      assert.throws(() => worker.start(), Error);
+      assert.throws(() => worker.pause(), Error);
+      assert.throws(() => worker.destroy(), Error);
     });
   });
 });

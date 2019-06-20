@@ -1,9 +1,11 @@
 import assert from 'assert';
+import { initRecurly } from '../support/helpers';
 import RiskConcern from '../../lib/recurly/risk/risk-concern';
 
 describe('RiskConcern', function () {
   beforeEach(function () {
-    this.riskStub = { add: sinon.stub(), remove: sinon.stub(), recurly: sinon.stub() };
+    const recurly = initRecurly();
+    this.riskStub = { add: sinon.stub(), remove: sinon.stub(), recurly };
     this.riskConcern = new RiskConcern({ risk: this.riskStub });
   });
 
@@ -21,20 +23,26 @@ describe('RiskConcern', function () {
   });
 
   describe('error', function () {
-    it('constructs and throws an error', function () {
-      const { riskConcern } = this;
-      assert.throws(() => {
-        riskConcern.error('invalid-option', { name: 'test', expect: 'value' })
-      }, 'Option test must be value');
-    });
-
-    it('emits an error event', function (done) {
+    it('constructs and emits an error event', function (done) {
       const { riskConcern } = this;
       riskConcern.on('error', err => {
         assert(err.message, 'Option test must be value');
         done();
       });
       assert.throws(() => riskConcern.error('invalid-option'));
+    });
+  });
+
+  describe('report', function () {
+    it('includes its id, namespace, and call-time metadata', function () {
+      const { riskConcern } = this;
+      riskConcern.risk.recurly.reporter.send.reset();
+      riskConcern.report('test-error', { test: 'metadata' });
+      assert(riskConcern.risk.recurly.reporter.send.calledOnce);
+      assert(riskConcern.risk.recurly.reporter.send.calledWithMatch(
+        'base:test-error',
+        { concernId: riskConcern.id, test: 'metadata' }
+      ));
     });
   });
 

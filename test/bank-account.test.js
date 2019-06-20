@@ -121,23 +121,40 @@ apiTest(function (requestMethod) {
     };
 
     it('requires a callback', function () {
+      const { recurly } = this;
       try {
-        this.recurly.bankAccount.bankInfo(valid);
+        recurly.bankAccount.bankInfo(valid);
       } catch (e) {
         assert(~e.message.indexOf('callback'));
       }
     });
 
-    it('requires a routing_number', function () {
+    it('requires a routingNumber', function () {
+      const { recurly } = this;
       recurly.bankAccount.bankInfo({}, (err, bankInfo) => {
-        assert.strictEqual(err.code, 'validation');
-        assert.strictEqual(err.fields.length, 1);
-        assert.strictEqual(err.fields[0], 'routing_number');
-        assert.strictEqual(err.details.length, 1);
-        assert.strictEqual(err.details[0].field, 'routing_number');
-        assert.strictEqual(err.details[0].messages.length, 1);
-        assert.strictEqual(err.details[0].messages[0], "can't be blank");
+        assert.deepEqual(err, {
+          name: 'validation',
+          code: 'validation',
+          message: 'There was an error validating your request.',
+          fields: ['routing_number'],
+          details: [
+            {
+              field: 'routing_number',
+              messages: ["can't be blank"]
+            }
+          ]
+        });
         assert(!bankInfo);
+      });
+    });
+
+    describe('when given a routingNumber', function () {
+      it('responds with bank info', function () {
+        const { recurly } = this;
+        recurly.bankAccount.bankInfo({ routingNumber: 'test-routing-number' }, (err, bankInfo) => {
+          assert.deepEqual(bankInfo, { bank_name: 'test-bank-name' });
+          assert(!err);
+        });
       });
     });
   });

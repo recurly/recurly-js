@@ -15,7 +15,7 @@ describe('ThreeDSecure', function () {
   beforeEach(function (done) {
     const actionTokenId = this.actionTokenId = 'test-action-token-id';
     const recurly = this.recurly = initRecurly();
-    const risk = this.riskStub = { add: sinon.stub(), remove: sinon.stub(), recurly };
+    const risk = this.risk = { add: sinon.stub(), remove: sinon.stub(), recurly };
     const sandbox = this.sandbox = sinon.createSandbox();
 
     this.container = testBed().querySelector('#three-d-secure-container');
@@ -42,27 +42,43 @@ describe('ThreeDSecure', function () {
   });
 
   it('adds itself to the provided Risk instance', function () {
-    const { threeDSecure, riskStub } = this;
-    assert(riskStub.add.calledOnce);
-    assert(riskStub.add.calledWithExactly(threeDSecure));
+    const { threeDSecure, risk } = this;
+
+    assert(risk.add.calledOnce);
+    assert(risk.add.calledWithExactly(threeDSecure));
+  });
+
+  it('reports its creation', function () {
+    const { risk, actionTokenId } = this;
+
+    risk.recurly.reporter.send.reset();
+    const threeDSecure = new ThreeDSecure({ risk, actionTokenId });
+
+    assert(risk.recurly.reporter.send.calledOnce);
+    assert(risk.recurly.reporter.send.calledWithMatch(
+      'three-d-secure:create',
+      { concernId: threeDSecure.id, actionTokenId }
+    ));
   });
 
   describe('recurly', function () {
     it('references the risk recurly instance', function () {
-      const { threeDSecure, riskStub } = this;
-      assert.strictEqual(threeDSecure.recurly, riskStub.recurly);
+      const { threeDSecure, risk } = this;
+
+      assert.strictEqual(threeDSecure.recurly, risk.recurly);
     });
   });
 
   describe('when an actionTokenId is valid', function () {
     it('sets the strategy according to the gateway type of the action token', function (done) {
-      const { riskStub: risk } = this;
+      const { risk } = this;
       [
         { id: 'adyen-action-token-id', strategy: AdyenStrategy },
         { id: 'stripe-action-token-id', strategy: StripeStrategy },
         { id: 'test-action-token-id', strategy: TestStrategy }
       ].forEach(({ id: actionTokenId, strategy }) => {
         const threeDSecure = new ThreeDSecure({ risk, actionTokenId });
+
         threeDSecure.whenReady(() => {
           assert(threeDSecure.strategy instanceof strategy);
           done();
@@ -71,9 +87,11 @@ describe('ThreeDSecure', function () {
     });
 
     it('constructs the strategy with the action token', function (done) {
-      const { riskStub: risk, actionTokenId, sandbox } = this;
+      const { risk, actionTokenId, sandbox } = this;
+
       sandbox.spy(ThreeDSecure.STRATEGY_MAP, 'test');
       const threeDSecure = new ThreeDSecure({ risk, actionTokenId });
+
       threeDSecure.whenReady(() => {
         assert(ThreeDSecure.STRATEGY_MAP.test.calledOnce);
         assert(ThreeDSecure.STRATEGY_MAP.test.calledWithMatch({
@@ -89,12 +107,29 @@ describe('ThreeDSecure', function () {
         done();
       });
     });
+
+    it('reports the strategy name', function (done) {
+      const { risk, actionTokenId } = this;
+
+      const threeDSecure = new ThreeDSecure({ risk, actionTokenId });
+      risk.recurly.reporter.send.reset();
+
+      threeDSecure.whenReady(() => {
+        assert(risk.recurly.reporter.send.calledOnce);
+        assert(risk.recurly.reporter.send.calledWithMatch(
+          'three-d-secure:ready',
+          { concernId: threeDSecure.id, strategy: 'test' }
+        ));
+        done();
+      });
+    });
   });
 
   describe('when an actionTokenId is not valid', function () {
     it('emits an error', function (done) {
-      const { riskStub: risk } = this;
+      const { risk } = this;
       const threeDSecure = new ThreeDSecure({ risk, actionTokenId: 'invalid-token-id' });
+
       threeDSecure.on('error', err => {
         assert.strictEqual(err.code, 'not-found');
         assert.strictEqual(err.message, 'Token not found');
@@ -105,15 +140,17 @@ describe('ThreeDSecure', function () {
 
   describe('when an actionTokenId is not provided', function () {
     it('sets a null strategy', function () {
-      const { riskStub: risk } = this;
+      const { risk } = this;
       const threeDSecure = new ThreeDSecure({ risk });
-      assert(threeDSecure.strategy instanceof ThreeDSecureStrategy);
+
+      assert.strictEqual(threeDSecure.strategy.constructor, ThreeDSecureStrategy);
     });
   });
 
   describe('attach', function () {
     it('defers to the strategy', function (done) {
       const { threeDSecure, container, sandbox } = this;
+
       threeDSecure.whenReady(() => {
         sandbox.spy(threeDSecure.strategy, 'attach');
         threeDSecure.attach(container);
@@ -122,21 +159,49 @@ describe('ThreeDSecure', function () {
         done();
       });
     });
+
+    it('reports attachment', function (done) {
+      const { risk, threeDSecure, container } = this;
+
+      threeDSecure.whenReady(() => {
+        risk.recurly.reporter.send.reset();
+        threeDSecure.attach(container);
+        assert(risk.recurly.reporter.send.calledOnce);
+        assert(risk.recurly.reporter.send.calledWithMatch(
+          'three-d-secure:attach',
+          { concernId: threeDSecure.id }
+        ));
+        done();
+      });
+    });
   });
 
   describe('remove', function () {
     beforeEach(function (done) {
       const { threeDSecure, container } = this;
+
       threeDSecure.attach(container);
       threeDSecure.whenReady(() => done());
     })
 
-    it('defers to the strategy', function (done) {
+    it('defers to the strategy', function () {
       const { threeDSecure, sandbox } = this;
+
       sandbox.spy(threeDSecure.strategy, 'remove');
       threeDSecure.remove();
       assert(threeDSecure.strategy.remove.calledOnce);
-      done();
+    });
+
+    it('reports removal', function () {
+      const { risk, threeDSecure } = this;
+
+      risk.recurly.reporter.send.reset();
+      threeDSecure.remove();
+      assert(risk.recurly.reporter.send.calledOnce);
+      assert(risk.recurly.reporter.send.calledWithMatch(
+        'three-d-secure:remove',
+        { concernId: threeDSecure.id }
+      ));
     });
   });
 });

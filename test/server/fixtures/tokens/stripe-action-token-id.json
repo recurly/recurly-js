@@ -5,13 +5,12 @@
     "code": "1234567890",
     "type": "stripe",
     "credentials": {
-      "publishable_key": "test-publishable-key"
+      "publishable_key": "test-stripe-publishable-key"
     }
   },
   "three_d_secure": {
     "params": {
-      "arbitrary": "values",
-      "per": "strategy"
+      "client_secret": "test-stripe-client-secret"
     }
   }
 }

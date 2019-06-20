@@ -1,9 +1,8 @@
 import assert from 'assert';
-import {applyFixtures} from './support/fixtures';
-import {initRecurly, stubAsMobileDevice} from './support/helpers';
+import { applyFixtures } from './support/fixtures';
+import { initRecurly, stubAsMobileDevice } from './support/helpers';
 import HostedField from '../lib/recurly/hosted-field';
-import {FIELD_TYPES, HostedFields} from '../lib/recurly/hosted-fields';
-import {Recurly} from '../lib/recurly';
+import { FIELD_TYPES, HostedFields } from '../lib/recurly/hosted-fields';
 
 describe('Recurly.HostedFields', function () {
   applyFixtures();
@@ -12,9 +11,10 @@ describe('Recurly.HostedFields', function () {
 
   beforeEach(function (done) {
     const recurly = this.recurly = initRecurly();
-    this.recurly.ready(() => {
-      this.hostedFields = new HostedFields({ recurly });
-      this.hostedField = this.hostedFields.fields[0];
+
+    recurly.ready(() => {
+      this.hostedFields = recurly.hostedFields;
+      this.hostedField = recurly.hostedFields.fields[0];
       done();
     });
   });
@@ -35,24 +35,25 @@ describe('Recurly.HostedFields', function () {
     stubAsMobileDevice();
 
     beforeEach(function (done) {
-      sinon.spy(this.hostedFields, 'onTab');
-      sinon.spy(this.hostedFields, 'tabbableItems');
-      this.recurly.ready(done);
+      this.sandbox = sinon.createSandbox();
+      this.sandbox.spy(this.hostedFields, 'onTab');
+      this.sandbox.spy(this.hostedFields, 'tabbableItems');
+      this.recurly.ready(() => done());
     });
 
     afterEach(function () {
-      this.hostedFields.onTab.restore();
-      this.hostedFields.tabbableItems.restore();
+      this.sandbox.restore();
     });
 
     it('binds to specific events', function () {
+      const { hostedFields } = this;
       [
         'bus:added',
         'hostedField:state:change',
         'hostedField:tab:next',
         'hostedField:tab:previous'
       ].forEach(event => {
-        assert.strictEqual(this.hostedFields.hasListeners(event), true);
+        assert.strictEqual(hostedFields.hasListeners(event), true);
       });
     });
 
@@ -71,53 +72,57 @@ describe('Recurly.HostedFields', function () {
     });
   });
 
-  describe('fieldConfig', () => {
-    describe('format', () => {
+  describe('fieldConfig', function () {
+    describe('format', function () {
       it('prefers the individual field config value', function () {
-        this.recurly.configure({
+        const { recurly, hostedFields } = this;
+        recurly.configure({
           fields: {
             all: { format: true },
             number: { format: false }
           }
         });
 
-        let fieldConfig = new HostedFields({ recurly: this.recurly }).fieldConfig('number');
+        const fieldConfig = hostedFields.fieldConfig('number');
         assert.strictEqual(fieldConfig.format, false);
       });
 
       it('falls back to the general config value', function () {
-        this.recurly.configure({
+        const { recurly, hostedFields } = this;
+        recurly.configure({
           fields: {
             all: { format: true }
           }
         });
 
-        let fieldConfig = new HostedFields({ recurly: this.recurly }).fieldConfig('number');
+        const fieldConfig = hostedFields.fieldConfig('number');
         assert.strictEqual(fieldConfig.format, true);
       });
     });
 
-    describe('tabIndex', () => {
+    describe('tabIndex', function () {
       it('prefers the general field config value', function () {
-        this.recurly.configure({
+        const { recurly, hostedFields } = this;
+        recurly.configure({
           fields: {
             all: { tabIndex: 0 },
             number: { tabIndex: 200 }
           }
         });
 
-        let fieldConfig = new HostedFields({ recurly: this.recurly }).fieldConfig('number');
+        const fieldConfig = hostedFields.fieldConfig('number');
         assert.strictEqual(fieldConfig.tabIndex, 0);
       });
 
       it('falls back to the individual config value', function () {
-        this.recurly.configure({
+        const { recurly, hostedFields } = this;
+        recurly.configure({
           fields: {
             number: { tabIndex: 200 }
           }
         });
 
-        let fieldConfig = new HostedFields({ recurly: this.recurly }).fieldConfig('number');
+        const fieldConfig = hostedFields.fieldConfig('number');
         assert.strictEqual(fieldConfig.tabIndex, 200);
       });
     });

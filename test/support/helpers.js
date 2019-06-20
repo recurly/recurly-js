@@ -1,7 +1,7 @@
 import bowser from 'bowser';
 import merge from 'lodash.merge';
-import {Recurly} from '../../lib/recurly';
-import {BRAINTREE_CLIENT_VERSION} from '../../lib/recurly/paypal/strategy/braintree';
+import { Recurly } from '../../lib/recurly';
+import { BRAINTREE_CLIENT_VERSION } from '../../lib/recurly/paypal/strategy/braintree';
 
 /**
  * initializes a Recurly instance designed for testing
@@ -12,7 +12,11 @@ import {BRAINTREE_CLIENT_VERSION} from '../../lib/recurly/paypal/strategy/braint
 export function initRecurly (recurly, opts) {
   if (!(recurly instanceof Recurly)) {
     if (!opts) opts = recurly;
+
     recurly = new Recurly;
+
+    // prevents itinerant event logging workers from dispatching
+    sinon.stub(recurly.reporter, 'send');
   }
   recurly.configure(merge({
     publicKey: 'test',
@@ -54,11 +58,6 @@ export function braintreeStub () {
   });
 
   afterEach(() => delete window.braintree);
-}
-
-export function isUuidv4 (example) {
-  const matcher = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
-  return matcher.test(example);
 }
 
 export function stubAsMobileDevice () {

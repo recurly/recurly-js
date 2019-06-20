@@ -19,6 +19,7 @@ app.use(cors());
 
 ejs(app, { root: __dirname, layout: false, viewExt: 'html.ejs' });
 
+app.use(route.get('/bank', json));
 app.use(route.get('/coupons/:id', json));
 app.use(route.get('/events', ok));
 app.use(route.post('/events', ok));
@@ -41,8 +42,11 @@ app.use(route.get('/paypal/start', postMessage));
 app.use(route.get('/three_d_secure/start', postMessage));
 app.use(route.get('/three_d_secure/mock', postMessage));
 
+app.use(route.get('/frame_mock', postMessage));
 app.use(route.get('/relay', html('relay')));
 app.use(route.get('/field.html', html('field')));
+
+app.use(route.get('/mock-404'), ctx => ctx.status = 404);
 
 app.listen(port, () => {
   fs.writeFileSync(`${__dirname}/pid.txt`, process.pid, 'utf-8');
