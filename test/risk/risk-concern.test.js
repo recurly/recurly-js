@@ -1,9 +1,11 @@
 import assert from 'assert';
+import { initRecurly } from '../support/helpers';
 import RiskConcern from '../../lib/recurly/risk/risk-concern';
 
 describe('RiskConcern', function () {
   beforeEach(function () {
-    this.riskStub = { add: sinon.stub(), remove: sinon.stub(), recurly: sinon.stub() };
+    const recurly = initRecurly();
+    this.riskStub = { add: sinon.stub(), remove: sinon.stub(), recurly };
     this.riskConcern = new RiskConcern({ risk: this.riskStub });
   });
 
@@ -35,6 +37,19 @@ describe('RiskConcern', function () {
         done();
       });
       assert.throws(() => riskConcern.error('invalid-option'));
+    });
+  });
+
+  describe('report', function () {
+    it('includes its id, namespace, and call-time metadata', function () {
+      const { riskConcern } = this;
+      riskConcern.risk.recurly.reporter.send.reset();
+      riskConcern.report('test-error', { test: 'metadata' });
+      assert(riskConcern.risk.recurly.reporter.send.calledOnce);
+      assert(riskConcern.risk.recurly.reporter.send.calledWithMatch(
+        'base:test-error',
+        { concernId: riskConcern.id, test: 'metadata' }
+      ));
     });
   });
 
