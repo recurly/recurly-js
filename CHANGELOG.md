@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.10.0
+
+* Adds support for 3D Secure 2.0 [#527][527]
+* Fixes Apple Pay shipping method selection [#529][529]
+
 ### Version 4.9.7
 
 * Adds 'details' to token validation errors [#522][522]
@@ -271,6 +276,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[527]: https://github.com/recurly/recurly-js/commit/6d05e365322d59296a2aa1912bdb07a9c80d2ed6
+[529]: https://github.com/recurly/recurly-js/commit/5ce67fc8a21694f2582f5aea3fe63dd80735fbd7
 [522]: https://github.com/recurly/recurly-js/commit/3a50c98811413c7593ec6783cee2b80e185b195f
 [515]: https://github.com/recurly/recurly-js/commit/00d6a3b7960678239ea57fbfb056d666ed05aacd
 [510]: https://github.com/recurly/recurly-js/commit/bd75ac7db6dc871eedd50083d94e2e8caaa3a439
