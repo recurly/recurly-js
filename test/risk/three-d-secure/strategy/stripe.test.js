@@ -20,7 +20,7 @@ describe('StripeStrategy', function () {
 
     if (this.isIE) window.Promise = Promise;
     this.exampleResult = {
-      paymentIntent: { test: 'result', consistingOf: 'arbitrary-values' }
+      paymentIntent: { id: 'test-id', test: 'result', consistingOf: 'arbitrary-values' }
     };
     this.stripe = {
       handleCardAction: sinon.stub().resolves(this.exampleResult)
@@ -74,9 +74,9 @@ describe('StripeStrategy', function () {
     });
 
     it('emits done with the paymentIntent result', function (done) {
-      const { strategy, target, exampleResult: { paymentIntent: example } } = this;
+      const { strategy, target, exampleResult: { paymentIntent: { id } } } = this;
       strategy.on('done', result => {
-        assert.deepEqual(result, example);
+        assert.deepEqual(result, { id });
         done();
       });
       strategy.attach(target);

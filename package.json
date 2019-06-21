@@ -23,12 +23,12 @@
     "lodash.chunk": "^4.2.0",
     "lodash.isempty": "^4.4.0",
     "lodash.pick": "^4.4.0",
+    "nanoid": "^2.0.3",
     "promise": "^8.0.3",
     "qs": "^6.7.0",
     "string-squish": "^1.0.3",
     "tabbable": "^4.0.0",
-    "to-slug-case": "^1.0.0",
-    "uuid": "^3.3.2"
+    "to-slug-case": "^1.0.0"
   },
   "engines": {
     "node": ">=10.0.0"
