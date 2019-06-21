@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { isABase64EncodedUUID } from './support/matchers';
+import { isAUid } from './support/matchers';
 import { Recurly } from '../lib/recurly';
 import CheckoutPricing from '../lib/recurly/pricing/checkout';
 import SubscriptionPricing from '../lib/recurly/pricing/subscription';
@@ -33,12 +33,12 @@ describe('Recurly', function () {
 
   describe('id', function () {
     beforeEach(function () { this.subject = this.recurly.id; });
-    it(...isABase64EncodedUUID());
+    it(...isAUid());
   })
 
   describe('deviceId', function () {
     beforeEach(function () { this.subject = this.recurly.deviceId; });
-    it(...isABase64EncodedUUID());
+    it(...isAUid());
 
     it('is set on localStorage', function () {
       const { subject } = this;
@@ -48,7 +48,7 @@ describe('Recurly', function () {
 
   describe('sessionId', function () {
     beforeEach(function () { this.subject = this.recurly.sessionId; });
-    it(...isABase64EncodedUUID());
+    it(...isAUid());
 
     it('is set on sessionStorage', function () {
       const { subject } = this;
