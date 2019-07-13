@@ -31,7 +31,8 @@ describe('Element', function () {
       ...validConfig
     }
     const element = this.element = new Element(validOptions);
-    this.validParentElement = document.querySelector('#recurly-elements');
+    this.validParentSelector = '#recurly-elements';
+    this.validParentElement = document.querySelector(this.validParentSelector);
 
     // These simulate messages an element expects to receive from a frame
     this.messageName = name => `element:${element.id}:${name}`
@@ -53,14 +54,14 @@ describe('Element', function () {
   });
 
   describe('Element.attach', function () {
-    it('only accepts an HTMLElement', function (done) {
+    it('accepts an HTMLElement', function (done) {
       const { element, validParentElement } = this;
       const invalidExamples = [
         undefined,
         null,
         true,
         0,
-        '#my-element',
+        '#my-nonexistent-element',
         document.querySelector('#my-nonexistent-element')
       ];
 
@@ -72,6 +73,12 @@ describe('Element', function () {
 
       element.once('attach', () => done());
       element.attach(validParentElement);
+    });
+
+    it('accepts a string corresponding to an HTMLElement via selector', function (done) {
+      const { element, validParentSelector } = this;
+      element.once('attach', () => done());
+      element.attach(validParentSelector);
     });
 
     it('returns the instance', function (done) {

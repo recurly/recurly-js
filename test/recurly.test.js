@@ -156,6 +156,7 @@ describe('Recurly', function () {
 
   describe('Elements factory', () => {
     it('has an Elements factory at recurly.Elements', function () {
+      const { recurly } = this;
       assert(recurly.Elements() instanceof Elements);
     });
   });

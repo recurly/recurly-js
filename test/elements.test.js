@@ -79,8 +79,8 @@ describe('Elements', function () {
 
       Elements.VALID_SETS.forEach(validSet => {
         const elements = new Elements({ recurly });
-        validSet.forEach(elementName => {
-          const element = elementsStub[elementName]();
+        validSet.forEach(elementClass => {
+          const element = elementsStub[elementClass.elementClassName]();
           elements.add(element);
           assert.strictEqual(!!~elements.elements.indexOf(element), true);
         });

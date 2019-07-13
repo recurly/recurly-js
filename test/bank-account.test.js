@@ -127,9 +127,9 @@ apiTest(function (requestMethod) {
 
       it('requires a routingNumber', function () {
         recurly.bankAccount.bankInfo({}, (err, bankInfo) => {
-          assert(err.code === 'validation');
-          assert(err.fields.length === 1);
-          assert(err.fields[0] === 'routingNumber');
+          assert.strictEqual(err.code, 'validation');
+          assert.strictEqual(err.fields.length, 1);
+          assert.strictEqual(err.fields[0], 'routing_number');
           assert(!bankInfo);
         });
       });
