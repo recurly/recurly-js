@@ -6,7 +6,7 @@ import clone from 'component-clone';
 import Promise from 'promise';
 import { Recurly } from '../lib/recurly';
 import { applyFixtures } from './support/fixtures';
-import { initRecurly, apiTest } from './support/helpers';
+import { initRecurly, apiTest, testBed } from './support/helpers';
 
 apiTest(requestMethod => {
   describe(`Recurly.token (${requestMethod})`, function () {
@@ -39,6 +39,7 @@ apiTest(requestMethod => {
     afterEach(function () {
       this.recurly.destroy();
     });
+
     /**
      * For each example, updates corresponding hosted fields and returns all others
      */
@@ -109,6 +110,15 @@ apiTest(requestMethod => {
     }
 
     /**
+     * An expansion of the elementsBuilder, which passes only the form
+     * as a tokenization argument, and not a direct reference to the Elements instsance
+     */
+    function elementsFormOnlyBuilder (...args) {
+      return elementsBuilder.call(this, ...args)
+        .then(({ tokenArgs, tokenBus }) => ({ tokenArgs: tokenArgs.slice(1), tokenBus }));
+    }
+
+    /**
      * Resolves immediately with the given example
      */
     function embeddedBuilder (example) {
@@ -142,6 +152,12 @@ apiTest(requestMethod => {
 
         tokenSuite(elementsBuilder);
       });
+
+      describe('when called with an HTMLFormElement containing valid Elements', function () {
+        this.ctx.fixture = 'elements';
+
+        tokenSuite(elementsFormOnlyBuilder);
+      });
     });
 
     describe('when using all markup', function () {
@@ -156,6 +172,11 @@ apiTest(requestMethod => {
         tokenSuite(formBuilder);
         tokenAllMarkupSuite(formBuilder);
       });
+
+      describe('when called with an Elements instance', function () {
+        this.ctx.fixture = 'elements';
+        tokenAllMarkupSuite(elementsBuilder);
+      });
     });
 
     describe('when behaving as an element/hosted field', function () {
@@ -166,6 +187,29 @@ apiTest(requestMethod => {
       });
 
       tokenSuite(embeddedBuilder);
+    });
+
+    describe('tokenizing elements', function () {
+      describe('when called with an HTMLFormElement containing no tokenizing Elements', function () {
+        this.ctx.fixture = 'elements';
+
+        it('produces an error', function (done) {
+          const { recurly } = this;
+          const form = testBed().querySelector('#test-form');
+          const container = testBed().querySelector('#recurly-elements');
+          const elements = recurly.Elements();
+          const cardMonthElement = elements.CardMonthElement();
+          const cardYearElement = elements.CardYearElement();
+          cardMonthElement.attach(container);
+          cardYearElement.attach(container);
+
+          recurly.token(form, (err, token) => {
+            assert.strictEqual(err.code, 'elements-tokenization-not-possible');
+            assert.deepEqual(err.found, ['CardMonthElement', 'CardYearElement']);
+            done();
+          });
+        });
+      });
     });
 
     /**

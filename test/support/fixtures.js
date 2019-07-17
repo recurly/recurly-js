@@ -1,13 +1,26 @@
 import { testBed } from './helpers';
 
+const commonFields = opts => `
+  <input type="text" data-recurly="first_name" value="${fetch(opts, 'first_name', '')}">
+  <input type="text" data-recurly="last_name" value="${fetch(opts, 'last_name', '')}">
+  <input type="text" data-recurly="address1" value="${fetch(opts, 'address1', '')}">
+  <input type="text" data-recurly="address2" value="${fetch(opts, 'address2', '')}">
+  <input type="text" data-recurly="city" value="${fetch(opts, 'city', '')}">
+  <input type="text" data-recurly="state" value="${fetch(opts, 'state', '')}">
+  <input type="text" data-recurly="postal_code" value="${fetch(opts, 'postal_code', '')}">
+  <input type="text" data-recurly="phone" value="${fetch(opts, 'phone', '')}">
+  <input type="text" data-recurly="vat_number" value="${fetch(opts, 'vat_number', '')}">
+  <input type="text" data-recurly="country" value="${fetch(opts, 'country', '')}">
+  <input type="hidden" name="recurly-token" data-recurly="token">
+`;
+
 const elements = opts => `
   <form action="#" id="test-form">
     <input type="text" id="test-tab-prev">
     <div id="recurly-elements"></div>
     <div id="recurly-elements-two"></div>
     <input type="text" id="test-tab-next">
-    <input type="text" data-recurly="first_name" value="${opts.first_name || ''}">
-    <input type="text" data-recurly="last_name" value="${opts.last_name || ''}">
+    ${commonFields(opts)}
     <input type="hidden" data-recurly="token" name="recurly-token">
   </form>
 `;
@@ -30,17 +43,7 @@ const all = opts => `
     <div data-recurly="month"></div>
     <div data-recurly="year"></div>
     <div data-recurly="cvv"></div>
-    <input type="text" data-recurly="first_name" value="${fetch(opts, 'first_name', '')}">
-    <input type="text" data-recurly="last_name" value="${fetch(opts, 'last_name', '')}">
-    <input type="text" data-recurly="address1" value="${fetch(opts, 'address1', '')}">
-    <input type="text" data-recurly="address2" value="${fetch(opts, 'address2', '')}">
-    <input type="text" data-recurly="city" value="${fetch(opts, 'city', '')}">
-    <input type="text" data-recurly="state" value="${fetch(opts, 'state', '')}">
-    <input type="text" data-recurly="postal_code" value="${fetch(opts, 'postal_code', '')}">
-    <input type="text" data-recurly="phone" value="${fetch(opts, 'phone', '')}">
-    <input type="text" data-recurly="vat_number" value="${fetch(opts, 'vat_number', '')}">
-    <input type="text" data-recurly="country" value="${fetch(opts, 'country', '')}">
-    <input type="hidden" name="recurly-token" data-recurly="token">
+    ${commonFields(opts)}
   </form>
 `;
 
@@ -51,15 +54,7 @@ const bank = opts => `
     <input type="text" data-recurly="account_number" value="${fetch(opts, 'account_number', '')}">
     <input type="text" data-recurly="account_number_confirmation" value="${fetch(opts, 'account_number_confirmation', '')}">
     <input type="text" data-recurly="account_type" value="${fetch(opts, 'account_type', '')}">
-    <input type="text" data-recurly="address1" value="${fetch(opts, 'address1', '')}">
-    <input type="text" data-recurly="address2" value="${fetch(opts, 'address2', '')}">
-    <input type="text" data-recurly="city" value="${fetch(opts, 'city', '')}">
-    <input type="text" data-recurly="state" value="${fetch(opts, 'state', '')}">
-    <input type="text" data-recurly="postal_code" value="${fetch(opts, 'postal_code', '')}">
-    <input type="text" data-recurly="country" value="${fetch(opts, 'country', '')}">
-    <input type="text" data-recurly="phone" value="${fetch(opts, 'phone', '')}">
-    <input type="text" data-recurly="vat_number" value="${fetch(opts, 'vat_number', '')}">
-    <input type="hidden" name="recurly-token" data-recurly="token">
+    ${commonFields(opts)}
     <button>submit</button>
   </form>
 `;
