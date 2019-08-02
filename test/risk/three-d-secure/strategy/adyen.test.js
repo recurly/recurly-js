@@ -129,6 +129,7 @@ describe('AdyenStrategy', function () {
           },
           container: strategy.container
         }));
+        strategy.remove();
       });
     });
   });

@@ -90,7 +90,6 @@ describe('StripeStrategy', function () {
       });
 
       it('emits an error on threeDSecure', function (done) {
-        this.timeout(0)
         const { threeDSecure, strategy, target, exampleResult: { error: example } } = this;
         threeDSecure.on('error', error => {
           assert.strictEqual(error.code, '3ds-auth-error');

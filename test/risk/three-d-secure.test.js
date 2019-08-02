@@ -6,6 +6,7 @@ import AdyenStrategy from '../../lib/recurly/risk/three-d-secure/strategy/adyen'
 import StripeStrategy from '../../lib/recurly/risk/three-d-secure/strategy/stripe';
 import TestStrategy from '../../lib/recurly/risk/three-d-secure/strategy/test';
 import ThreeDSecureStrategy from '../../lib/recurly/risk/three-d-secure/strategy';
+import WirecardStrategy from '../../lib/recurly/risk/three-d-secure/strategy/wirecard';
 
 describe('ThreeDSecure', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -75,7 +76,8 @@ describe('ThreeDSecure', function () {
       [
         { id: 'action-token-adyen', strategy: AdyenStrategy },
         { id: 'action-token-stripe', strategy: StripeStrategy },
-        { id: 'action-token-test', strategy: TestStrategy }
+        { id: 'action-token-test', strategy: TestStrategy },
+        { id: 'action-token-wirecard', strategy: WirecardStrategy }
       ].forEach(({ id: actionTokenId, strategy }) => {
         const threeDSecure = new ThreeDSecure({ risk, actionTokenId });
         threeDSecure.whenReady(() => {

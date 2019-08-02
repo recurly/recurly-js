@@ -1,0 +1,14 @@
+{
+  "type": "three_d_secure_action",
+  "id": "action-token-wirecard",
+  "gateway": {
+    "code": "1234567890",
+    "type": "wirecard"
+  },
+  "three_d_secure": {
+    "params": {
+      "acsUrl": "test-wirecard-acs-url",
+      "pareq": "test-wirecard-pa-req"
+    }
+  }
+}
