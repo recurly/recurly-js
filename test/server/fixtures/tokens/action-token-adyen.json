@@ -1,0 +1,15 @@
+{
+  "type": "three_d_secure_action",
+  "id": "action-token-adyen",
+  "gateway": {
+    "code": "1234567890",
+    "type": "adyen"
+  },
+  "three_d_secure": {
+    "params": {
+      "authentication": {
+        "threeds2.challengeToken": "test-challenge-token"
+      }
+    }
+  }
+}

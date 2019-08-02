@@ -1,14 +1,15 @@
 {
   "type": "three_d_secure_action",
-  "id": "3dsat-id-adyen",
+  "id": "action-token-adyen-fingerprint",
   "gateway": {
     "code": "1234567890",
     "type": "adyen"
   },
   "three_d_secure": {
     "params": {
-      "arbitrary": "values",
-      "per": "strategy"
+      "authentication": {
+        "threeds2.fingerprintToken": "test-fingerprint-token"
+      }
     }
   }
 }

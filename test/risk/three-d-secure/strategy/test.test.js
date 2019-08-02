@@ -2,7 +2,7 @@ import assert from 'assert';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import TestStrategy from '../../../../lib/recurly/risk/three-d-secure/strategy/test';
-import actionToken from '../../../server/fixtures/tokens/test-action-token-id.json';
+import actionToken from '../../../server/fixtures/tokens/action-token-test.json';
 
 describe('TestStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -35,7 +35,7 @@ describe('TestStrategy', function () {
           assert(recurly.Frame.calledWithMatch({
             type: 'iframe',
             path: '/three_d_secure/mock',
-            payload: { three_d_secure_action_token_id: 'test-action-token-id' },
+            payload: { three_d_secure_action_token_id: 'action-token-test' },
             container: strategy.container
           }));
           assert.strictEqual(result.success, true);

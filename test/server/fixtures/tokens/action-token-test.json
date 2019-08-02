@@ -1,6 +1,6 @@
 {
   "type": "three_d_secure_action",
-  "id": "test-action-token-id",
+  "id": "action-token-test",
   "gateway": {
     "code": "1234567890",
     "type": "test"

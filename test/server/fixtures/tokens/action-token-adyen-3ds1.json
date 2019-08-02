@@ -1,0 +1,19 @@
+{
+  "type": "three_d_secure_action",
+  "id": "action-token-adyen-3ds1",
+  "gateway": {
+    "code": "1234567890",
+    "type": "adyen"
+  },
+  "three_d_secure": {
+    "params": {
+      "redirect": {
+        "url": "test-url",
+        "data": {
+          "PaReq": "test-pa-req",
+          "MD": "test-md"
+        }
+      }
+    }
+  }
+}
