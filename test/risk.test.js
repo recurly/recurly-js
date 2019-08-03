@@ -40,24 +40,24 @@ describe('Risk', function () {
     it('returns an object containing risk-related browser info', function () {
       const browserInfo = Risk.browserInfo;
       assert.deepStrictEqual(Object.keys(browserInfo), [
-        'colorDepth',
-        'javaEnabled',
+        'color_depth',
+        'java_enabled',
         'language',
-        'referrerUrl',
-        'screenHeight',
-        'screenWidth',
-        'timeZoneOffset',
-        'userAgent'
+        'referrer_url',
+        'screen_height',
+        'screen_width',
+        'time_zone_offset',
+        'user_agent'
       ]);
 
-      assert.strictEqual(browserInfo.colorDepth, 'fake-color-depth');
-      assert.strictEqual(browserInfo.javaEnabled, 'fake-java-enabled');
+      assert.strictEqual(browserInfo.color_depth, 'fake-color-depth');
+      assert.strictEqual(browserInfo.java_enabled, 'fake-java-enabled');
       assert.strictEqual(browserInfo.language, 'fake-language');
-      assert.strictEqual(browserInfo.referrerUrl, location.href);
-      assert.strictEqual(browserInfo.screenHeight, 'fake-height');
-      assert.strictEqual(browserInfo.screenWidth, 'fake-width');
-      assert.strictEqual(browserInfo.timeZoneOffset, 'fake-timezone-offset');
-      assert.strictEqual(browserInfo.userAgent, navigator.userAgent);
+      assert.strictEqual(browserInfo.referrer_url, location.href);
+      assert.strictEqual(browserInfo.screen_height, 'fake-height');
+      assert.strictEqual(browserInfo.screen_width, 'fake-width');
+      assert.strictEqual(browserInfo.time_zone_offset, 'fake-timezone-offset');
+      assert.strictEqual(browserInfo.user_agent, navigator.userAgent);
     });
   });
 
