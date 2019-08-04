@@ -2,7 +2,7 @@ import assert from 'assert';
 import { applyFixtures } from '../../support/fixtures';
 import { testBed } from '../../support/helpers';
 import ThreeDSecureStrategy from '../../../lib/recurly/risk/three-d-secure/strategy';
-import actionToken from '../../server/fixtures/tokens/test-action-token-id.json';
+import actionToken from '../../server/fixtures/tokens/action-token-test.json';
 
 describe('ThreeDSecureStrategy', function () {
   this.ctx.fixture = 'threeDSecure';

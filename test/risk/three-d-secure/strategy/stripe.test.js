@@ -2,7 +2,7 @@ import assert from 'assert';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import StripeStrategy from '../../../../lib/recurly/risk/three-d-secure/strategy/stripe';
-import actionToken from '../../../server/fixtures/tokens/stripe-action-token-id.json';
+import actionToken from '../../../server/fixtures/tokens/action-token-stripe.json';
 import Promise from 'promise';
 
 describe('StripeStrategy', function () {
@@ -49,8 +49,8 @@ describe('StripeStrategy', function () {
 
   describe('when the Stripe.js library encounters a load error', function () {
     beforeEach(function () {
-      const { sandbox, threeDSecure, actionToken } = this;
-      sandbox.stub(StripeStrategy, 'LIB_URL').get(() => '/api/mock-404');
+      const { sandbox, threeDSecure } = this;
+      sandbox.stub(StripeStrategy, 'libUrl').get(() => '/api/mock-404');
       delete window.Stripe;
       this.strategy = new StripeStrategy({ threeDSecure, actionToken });
     });
@@ -90,7 +90,6 @@ describe('StripeStrategy', function () {
       });
 
       it('emits an error on threeDSecure', function (done) {
-        this.timeout(0)
         const { threeDSecure, strategy, target, exampleResult: { error: example } } = this;
         threeDSecure.on('error', error => {
           assert.strictEqual(error.code, '3ds-auth-error');

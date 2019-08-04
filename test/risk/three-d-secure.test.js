@@ -6,6 +6,7 @@ import AdyenStrategy from '../../lib/recurly/risk/three-d-secure/strategy/adyen'
 import StripeStrategy from '../../lib/recurly/risk/three-d-secure/strategy/stripe';
 import TestStrategy from '../../lib/recurly/risk/three-d-secure/strategy/test';
 import ThreeDSecureStrategy from '../../lib/recurly/risk/three-d-secure/strategy';
+import WirecardStrategy from '../../lib/recurly/risk/three-d-secure/strategy/wirecard';
 
 describe('ThreeDSecure', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -13,7 +14,7 @@ describe('ThreeDSecure', function () {
   applyFixtures();
 
   beforeEach(function (done) {
-    const actionTokenId = this.actionTokenId = 'test-action-token-id';
+    const actionTokenId = this.actionTokenId = 'action-token-test';
     const recurly = this.recurly = initRecurly();
     const risk = this.risk = { add: sinon.stub(), remove: sinon.stub(), recurly };
     const sandbox = this.sandbox = sinon.createSandbox();
@@ -73,12 +74,12 @@ describe('ThreeDSecure', function () {
     it('sets the strategy according to the gateway type of the action token', function (done) {
       const { risk } = this;
       [
-        { id: 'adyen-action-token-id', strategy: AdyenStrategy },
-        { id: 'stripe-action-token-id', strategy: StripeStrategy },
-        { id: 'test-action-token-id', strategy: TestStrategy }
+        { id: 'action-token-adyen', strategy: AdyenStrategy },
+        { id: 'action-token-stripe', strategy: StripeStrategy },
+        { id: 'action-token-test', strategy: TestStrategy },
+        { id: 'action-token-wirecard', strategy: WirecardStrategy }
       ].forEach(({ id: actionTokenId, strategy }) => {
         const threeDSecure = new ThreeDSecure({ risk, actionTokenId });
-
         threeDSecure.whenReady(() => {
           assert(threeDSecure.strategy instanceof strategy);
           done();
@@ -87,23 +88,12 @@ describe('ThreeDSecure', function () {
     });
 
     it('constructs the strategy with the action token', function (done) {
-      const { risk, actionTokenId, sandbox } = this;
-
-      sandbox.spy(ThreeDSecure.STRATEGY_MAP, 'test');
+      const { risk, actionTokenId } = this;
       const threeDSecure = new ThreeDSecure({ risk, actionTokenId });
-
       threeDSecure.whenReady(() => {
-        assert(ThreeDSecure.STRATEGY_MAP.test.calledOnce);
-        assert(ThreeDSecure.STRATEGY_MAP.test.calledWithMatch({
-          actionToken: {
-            type: 'three_d_secure_action',
-            id: 'test-action-token-id',
-            gateway: { code: '1234567890', type: 'test' },
-            three_d_secure: {
-              params: { challengeType: 'challenge' }
-            }
-          }
-        }));
+        const { strategy } = threeDSecure;
+        assert(strategy instanceof TestStrategy);
+        assert.strictEqual(strategy.actionToken.id, actionTokenId);
         done();
       });
     });
