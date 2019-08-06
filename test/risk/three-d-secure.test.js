@@ -1,12 +1,16 @@
 import assert from 'assert';
+import Promise from 'promise';
 import { applyFixtures } from '../support/fixtures';
 import { initRecurly, nextTick, testBed } from '../support/helpers';
-import { ThreeDSecure } from '../../lib/recurly/risk/three-d-secure/three-d-secure';
+import { factory, ThreeDSecure } from '../../lib/recurly/risk/three-d-secure/three-d-secure';
 import AdyenStrategy from '../../lib/recurly/risk/three-d-secure/strategy/adyen';
+import BraintreeStrategy from '../../lib/recurly/risk/three-d-secure/strategy/braintree';
+import SagepayStrategy from '../../lib/recurly/risk/three-d-secure/strategy/sage-pay';
 import StripeStrategy from '../../lib/recurly/risk/three-d-secure/strategy/stripe';
 import TestStrategy from '../../lib/recurly/risk/three-d-secure/strategy/test';
 import ThreeDSecureStrategy from '../../lib/recurly/risk/three-d-secure/strategy';
 import WirecardStrategy from '../../lib/recurly/risk/three-d-secure/strategy/wirecard';
+import WorldpayStrategy from '../../lib/recurly/risk/three-d-secure/strategy/worldpay';
 
 describe('ThreeDSecure', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -24,9 +28,11 @@ describe('ThreeDSecure', function () {
 
     // Neuter the third party lib loaders
     window.AdyenCheckout = sandbox.stub();
+    window.braintree = sandbox.stub();
     window.Stripe = sandbox.stub();
-    sandbox.stub(AdyenStrategy.prototype, 'loadAdyenLibrary').resolves();
-    sandbox.stub(StripeStrategy.prototype, 'loadStripeLibrary').resolves();
+    sandbox.stub(AdyenStrategy.prototype, 'loadAdyenLibrary').usingPromise(Promise).resolves();
+    sandbox.stub(BraintreeStrategy.prototype, 'loadBraintreeLibraries').usingPromise(Promise).resolves();
+    sandbox.stub(StripeStrategy.prototype, 'loadStripeLibrary').usingPromise(Promise).resolves();
 
     sandbox.spy(recurly, 'Frame');
 
@@ -37,9 +43,73 @@ describe('ThreeDSecure', function () {
     const { sandbox } = this;
     const { Frame } = this.recurly;
     delete window.AdyenCheckout;
+    delete window.braintree;
     delete window.Stripe;
     Frame.getCalls().forEach(c => c.returnValue.destroy());
     sandbox.restore();
+  });
+
+  describe('factory', function () {
+    beforeEach(function () {
+      const { sandbox, recurly } = this;
+      this.riskStub = { add: sandbox.stub(), recurly };
+    });
+
+    it('returns a ThreeDSecure instance', function () {
+      const { actionTokenId, riskStub } = this;
+      const threeDSecure = factory.call(riskStub, { actionTokenId });
+      assert(threeDSecure instanceof ThreeDSecure);
+    });
+
+    it('sets its Risk reference from the calling context', function () {
+      const { actionTokenId, riskStub } = this;
+      const threeDSecure = factory.call(riskStub, { actionTokenId });
+      assert.strictEqual(threeDSecure.risk, riskStub);
+    });
+  });
+
+  describe('ThreeDSecure.getStrategyForGatewayType', function () {
+    it('returns a ThreeDSecureStrategy given a valid type', function () {
+      assert.strictEqual(ThreeDSecure.getStrategyForGatewayType('test'), TestStrategy);
+    });
+
+    it('returns undefined given an invalid type', function () {
+      assert.strictEqual(ThreeDSecure.getStrategyForGatewayType('invalid'), undefined);
+    });
+  });
+
+  describe('ThreeDSecure.preflight', function () {
+    beforeEach(function () {
+      const { sandbox } = this;
+      this.bin = '411111';
+      this.preflights = [
+        {
+          gateway: { type: 'test-gateway-type' },
+          params: { arbitrary: 'test-params' }
+        }
+      ];
+      sandbox.stub(ThreeDSecure, 'getStrategyForGatewayType').callsFake(() => ({
+        preflight: sandbox.stub().usingPromise(Promise).resolves({ arbitrary: 'test-results' })
+      }));
+    });
+
+    it('returns a promise', function (done) {
+      const { recurly, bin, preflights } = this;
+      const returnValue = ThreeDSecure.preflight({ recurly, bin, preflights }).then(() => done());
+      assert(returnValue instanceof Promise);
+    });
+
+    it('resolves with preflight results from strategies', function (done) {
+      const { recurly, bin, preflights } = this;
+      const returnValue = ThreeDSecure.preflight({ recurly, bin, preflights })
+        .done(response => {
+          const [{ processor, results }] = response;
+          assert.strictEqual(Array.isArray(response), true);
+          assert.strictEqual(processor, 'test-gateway-type');
+          assert.deepStrictEqual(results, { arbitrary: 'test-results' });
+          done();
+        });
+    });
   });
 
   it('adds itself to the provided Risk instance', function () {
@@ -70,14 +140,40 @@ describe('ThreeDSecure', function () {
     });
   });
 
+  describe('when an actionTokenId is not valid', function () {
+    it('emits an error', function (done) {
+      const { risk } = this;
+      const threeDSecure = new ThreeDSecure({ risk, actionTokenId: 'invalid-token-id' });
+
+      threeDSecure.on('error', err => {
+        assert.strictEqual(err.code, 'not-found');
+        assert.strictEqual(err.message, 'Token not found');
+        done();
+      });
+    });
+  });
+
+  describe('when an actionTokenId is not provided', function () {
+    it('throws an error', function () {
+      const { risk } = this;
+
+      assert.throws(() => {
+        new ThreeDSecure({ risk });
+      }, /Option actionTokenId must be a three_d_secure_action_token_id/);
+    });
+  });
+
   describe('when an actionTokenId is valid', function () {
     it('sets the strategy according to the gateway type of the action token', function (done) {
       const { risk } = this;
       [
         { id: 'action-token-adyen', strategy: AdyenStrategy },
+        { id: 'action-token-braintree', strategy: BraintreeStrategy },
+        { id: 'action-token-sage-pay', strategy: SagepayStrategy },
         { id: 'action-token-stripe', strategy: StripeStrategy },
         { id: 'action-token-test', strategy: TestStrategy },
-        { id: 'action-token-wirecard', strategy: WirecardStrategy }
+        { id: 'action-token-wirecard', strategy: WirecardStrategy },
+        { id: 'action-token-worldpay', strategy: WorldpayStrategy }
       ].forEach(({ id: actionTokenId, strategy }) => {
         const threeDSecure = new ThreeDSecure({ risk, actionTokenId });
         threeDSecure.whenReady(() => {
@@ -113,28 +209,18 @@ describe('ThreeDSecure', function () {
         done();
       });
     });
-  });
 
-  describe('when an actionTokenId is not valid', function () {
-    it('emits an error', function (done) {
-      const { risk } = this;
-      const threeDSecure = new ThreeDSecure({ risk, actionTokenId: 'invalid-token-id' });
+    it('calls onStrategyDone when a strategy completes', function (done) {
+      const { sandbox, threeDSecure } = this;
+      const example = { arbitrary: 'test-payload' };
+      sandbox.spy(threeDSecure, 'onStrategyDone');
 
-      threeDSecure.on('error', err => {
-        assert.strictEqual(err.code, 'not-found');
-        assert.strictEqual(err.message, 'Token not found');
+      threeDSecure.whenReady(() => {
+        threeDSecure.strategy.emit('done', example);
+        assert(threeDSecure.onStrategyDone.calledOnce);
+        assert(threeDSecure.onStrategyDone.calledWithMatch(example));
         done();
       });
-    });
-  });
-
-  describe('when an actionTokenId is not provided', function () {
-    it('throws an error', function () {
-      const { risk } = this;
-
-      assert.throws(() => {
-        new ThreeDSecure({ risk });
-      }, /Option actionTokenId must be a three_d_secure_action_token_id/);
     });
   });
 
@@ -193,6 +279,26 @@ describe('ThreeDSecure', function () {
         'three-d-secure:remove',
         { concernId: threeDSecure.id }
       ));
+    });
+  });
+
+  describe('onStrategyDone', function () {
+    it('emits a three_d_secure_action_result token', function (done) {
+      const { sandbox, threeDSecure } = this;
+      const example = { arbitrary: 'test-payload' };
+      sandbox.spy(threeDSecure, 'onStrategyDone');
+
+      threeDSecure.on('token', token => {
+        assert.deepStrictEqual(token, {
+          type: 'three_d_secure_action_result',
+          id: '3dsart-id-test'
+        })
+        done();
+      });
+
+      threeDSecure.whenReady(() => {
+        threeDSecure.strategy.emit('done', example);
+      });
     });
   });
 });

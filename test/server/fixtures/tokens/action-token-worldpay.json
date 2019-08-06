@@ -1,0 +1,16 @@
+{
+  "type": "three_d_secure_action",
+  "id": "action-token-worldpay",
+  "gateway": {
+    "code": "1234567890",
+    "type": "worldpay"
+  },
+  "transaction": {
+    "amount_in_cents": 5000
+  },
+  "three_d_secure": {
+    "params": {
+      "redirect_url": "https://secure-test.worldpay.com/shopper/3ds/challenge.html"
+    }
+  }
+}
