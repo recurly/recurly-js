@@ -64,14 +64,14 @@ describe('Risk', function () {
   describe('ThreeDSecure', function () {
     it('functions as a factory for ThreeDSecure', function () {
       const { risk } = this;
-      const threeDSecure = risk.ThreeDSecure();
+      const threeDSecure = risk.ThreeDSecure({ actionTokenId: 'action-token-test' });
       assert.strictEqual(threeDSecure instanceof ThreeDSecure, true);
     });
 
     it('adds the new instance to Risk.concerns', function () {
       const { risk } = this;
       assert.strictEqual(risk.concerns.length, 0);
-      const threeDSecure = risk.ThreeDSecure();
+      const threeDSecure = risk.ThreeDSecure({ actionTokenId: 'action-token-test' });
       assert.strictEqual(risk.concerns.length, 1);
       assert.strictEqual(risk.concerns[0], threeDSecure);
     });

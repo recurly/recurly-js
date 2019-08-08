@@ -15,7 +15,7 @@ describe('AdyenStrategy', function () {
   beforeEach(function (done) {
     const recurly = this.recurly = initRecurly();
     const risk = recurly.Risk();
-    const threeDSecure = this.threeDSecure = risk.ThreeDSecure();
+    const threeDSecure = this.threeDSecure = risk.ThreeDSecure({ actionTokenId: 'action-token-test' });
     this.target = testBed().querySelector('#three-d-secure-container');
     this.sandbox = sinon.createSandbox();
 
