@@ -36,10 +36,20 @@ describe('ThreeDSecureStrategy', function () {
         strategy.attach(target);
       });
 
-      it('returns a container div element', function () {
-        const { strategy } = this;
-        assert(strategy.container instanceof HTMLDivElement);
-        assert.strictEqual(strategy.container.getAttribute('data-recurly'), 'three-d-secure-container');
+      it('is a div element', function () {
+        const { container } = this.strategy;
+        assert(container instanceof HTMLDivElement);
+      });
+
+      it('has a data-recurly attribute', function () {
+        const { container } = this.strategy;
+        assert.strictEqual(container.getAttribute('data-recurly'), 'three-d-secure-container')
+      });
+
+      it('sets its height and width to 100%', function () {
+        const { container } = this.strategy;
+        assert.strictEqual(container.style.height, '100%');
+        assert.strictEqual(container.style.width, '100%');
       });
 
       it('is a single child of the target element', function () {
