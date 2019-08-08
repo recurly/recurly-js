@@ -129,11 +129,12 @@ describe('ThreeDSecure', function () {
   });
 
   describe('when an actionTokenId is not provided', function () {
-    it('sets a null strategy', function () {
+    it('throws an error', function () {
       const { risk } = this;
-      const threeDSecure = new ThreeDSecure({ risk });
 
-      assert.strictEqual(threeDSecure.strategy.constructor, ThreeDSecureStrategy);
+      assert.throws(() => {
+        new ThreeDSecure({ risk });
+      }, /Option actionTokenId must be a three_d_secure_action_token_id/);
     });
   });
 
