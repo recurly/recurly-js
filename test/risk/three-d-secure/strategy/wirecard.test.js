@@ -1,11 +1,11 @@
 import assert from 'assert';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
-import WirecardStrateggy from '../../../../lib/recurly/risk/three-d-secure/strategy/wirecard';
+import WirecardStrategy from '../../../../lib/recurly/risk/three-d-secure/strategy/wirecard';
 import actionToken from '../../../server/fixtures/tokens/action-token-wirecard.json';
 import Promise from 'promise';
 
-describe('WirecardStrateggy', function () {
+describe('WirecardStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
 
   applyFixtures();
@@ -19,7 +19,7 @@ describe('WirecardStrateggy', function () {
     this.sandbox = sinon.createSandbox();
     this.sandbox.spy(recurly, 'Frame');
 
-    this.strategy = new WirecardStrateggy({ threeDSecure, actionToken });
+    this.strategy = new WirecardStrategy({ threeDSecure, actionToken });
     this.strategy.whenReady(() => done());
   });
 
