@@ -1,0 +1,18 @@
+{
+  "type": "three_d_secure_action",
+  "id": "action-token-braintree",
+  "gateway": {
+    "code": "1234567890",
+    "type": "braintree",
+    "credentials": {
+      "public_key": "test-braintree-public-key"
+    }
+  },
+  "three_d_secure": {
+    "params": {
+      "payment_method_nonce": "test-braintree-nonce",
+      "amount": 5000,
+      "bin": "test-braintree-bin"
+    }
+  }
+}
