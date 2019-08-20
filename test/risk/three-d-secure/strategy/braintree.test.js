@@ -22,15 +22,18 @@ describe.only('BraintreeStrategy', function () {
     this.exampleResult = {
       nonce: 'braintree-test-3ds-nonce'
     };
+    this.threeDSecureInstance = {
+      verifyCard: sinon.stub().returns(this.exampleResult)
+    };
     this.braintree = {
       client: {
-        create: sinon.stub().resolves(
-          sinon.stub().resolves(this.braintree)
-        )
+        create: sinon.stub().resolves()
       },
-      verifyCard: sinon.stub().resolves(this.exampleResult)
+      threeDSecure: {
+        create: sinon.stub().returns(this.threeDSecureInstance)
+      }
     };
-    window.Braintree = sinon.spy(publicKey => this.braintree);
+    window.braintree = this.braintree;
 
     this.strategy = new BraintreeStrategy({ threeDSecure, actionToken });
     this.strategy.whenReady(() => done());
@@ -39,24 +42,15 @@ describe.only('BraintreeStrategy', function () {
   afterEach(function () {
     const { isIE, sandbox } = this;
     sandbox.restore();
-    delete window.Braintree;
+    delete window.braintree;
     if (isIE) delete window.Promise;
-  });
-
-  it('instantiates Braintree.js with the Braintree public key', function (done) {
-    const { strategy } = this;
-    strategy.whenReady(() => {
-      assert(window.Braintree.calledOnce);
-      assert(window.Braintree.calledWithExactly('test-braintree-public-key'));
-      done();
-    });
   });
 
   describe('when the braintree.js library encounters a load error', function () {
     beforeEach(function () {
       const { sandbox, threeDSecure } = this;
       sandbox.replace(BraintreeStrategy.prototype, 'urlForResource', (f) => '/api/mock-404');
-      delete window.Braintree;
+      delete window.braintree;
       this.strategy = new BraintreeStrategy({ threeDSecure, actionToken });
     });
 
@@ -71,17 +65,32 @@ describe.only('BraintreeStrategy', function () {
   });
 
   describe('attach', function () {
-    it('instructs Braintree.js to handle the card action using the client secret', function (done) {
-      const { strategy, target, braintree } = this;
+    it('initializes Braintree.js with a client token', function (done) {
+      const { strategy, target } = this;
+
       strategy.attach(target);
-      assert(braintree.verifyCard.calledOnce);
-      assert(braintree.verifyCard.calledWithExactly({
-        amount: 5000,
-        nonce: "test-braintree-nonce",
-        bin: "test-braintree-bin",
-        onLookupComplete: sinon.match.func
+      assert(window.braintree.client.create.calledOnce);
+      assert(window.braintree.client.create.calledWithExactly({
+        authorization: 'test-braintree-client-token'
       }));
       done();
+    });
+
+    it('instructs Braintree.js to handle the card action using the client secret', function (done) {
+      const { strategy, target, braintree } = this;
+
+      strategy.attach(target);
+      strategy.on('done', result => {
+        assert(this.threeDSecureInstance.verifyCard.calledOnce);
+        assert(this.threeDSecureInstance.verifyCard.calledWithExactly({
+          amount: 5000,
+          nonce: "test-braintree-nonce",
+          bin: "test-braintree-bin",
+          onLookupComplete: sinon.match.func
+        }));
+
+        done();
+      });
     });
 
     it('emits done with the nonce result', function (done) {
@@ -97,7 +106,7 @@ describe.only('BraintreeStrategy', function () {
       beforeEach(function () {
         const { strategy } = this;
         this.exampleResult = { example: 'error', for: 'testing' };
-        strategy.braintree.verifyCard = sinon.stub().rejects(this.exampleResult);
+        strategy.braintree.client.create = sinon.stub().rejects(this.exampleResult);
       });
 
       it('emits an error on threeDSecure', function (done) {

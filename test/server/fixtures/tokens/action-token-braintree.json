@@ -4,15 +4,16 @@
   "gateway": {
     "code": "1234567890",
     "type": "braintree",
-    "credentials": {
-      "public_key": "test-braintree-public-key"
-    }
+    "credentials": {}
+  },
+  "transaction": {
+    "amount_in_cents": 5000
   },
   "three_d_secure": {
     "params": {
+      "bin": "test-braintree-bin",
       "payment_method_nonce": "test-braintree-nonce",
-      "amount": 5000,
-      "bin": "test-braintree-bin"
+      "client_token": "test-braintree-client-token"
     }
   }
 }
