@@ -5,7 +5,7 @@ import BraintreeStrategy from '../../../../lib/recurly/risk/three-d-secure/strat
 import actionToken from '../../../server/fixtures/tokens/action-token-braintree.json';
 import Promise from 'promise';
 
-describe.only('BraintreeStrategy', function () {
+describe('BraintreeStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
 
   applyFixtures();
