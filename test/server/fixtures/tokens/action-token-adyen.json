@@ -5,6 +5,9 @@
     "code": "1234567890",
     "type": "adyen"
   },
+  "transaction": {
+    "amount_in_cents": 5000
+  },
   "three_d_secure": {
     "params": {
       "authentication": {
