@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.10.1
+
+* Gateway-specific 3D Secure support [#540][540] [#535][535]
+* Fixes dimensions set on 3D Secure challenge containers [#538][538]
+
 ### Version 4.10.0
 
 * Adds support for 3D Secure 2.0 [#527][527]
@@ -276,6 +281,9 @@
 
 * Full rewrite for Billing Info tokenization
 
+[540]: https://github.com/recurly/recurly-js/commit/4cb3b3d9e1d2b8e843799af69ef64b039d212aa2
+[538]: https://github.com/recurly/recurly-js/commit/5038091ec93233f6ff9bd2f842632c76b6f2cfa0
+[535]: https://github.com/recurly/recurly-js/commit/ee3f1ecb055d06955e53358be7c193f6f8ece74e
 [527]: https://github.com/recurly/recurly-js/commit/6d05e365322d59296a2aa1912bdb07a9c80d2ed6
 [529]: https://github.com/recurly/recurly-js/commit/5ce67fc8a21694f2582f5aea3fe63dd80735fbd7
 [522]: https://github.com/recurly/recurly-js/commit/3a50c98811413c7593ec6783cee2b80e185b195f
