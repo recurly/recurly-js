@@ -1,0 +1,19 @@
+{
+  "type": "three_d_secure_action",
+  "id": "action-token-braintree",
+  "gateway": {
+    "code": "1234567890",
+    "type": "braintree",
+    "credentials": {}
+  },
+  "transaction": {
+    "amount_in_cents": 5000
+  },
+  "three_d_secure": {
+    "params": {
+      "bin": "test-braintree-bin",
+      "payment_method_nonce": "test-braintree-nonce",
+      "client_token": "test-braintree-client-token"
+    }
+  }
+}

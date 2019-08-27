@@ -8,6 +8,9 @@
       "publishable_key": "test-stripe-publishable-key"
     }
   },
+  "transaction": {
+    "amount_in_cents": 5000
+  },
   "three_d_secure": {
     "params": {
       "client_secret": "test-stripe-client-secret"
