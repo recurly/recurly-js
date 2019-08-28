@@ -1,11 +1,11 @@
 import assert from 'assert';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
-import SagepayStrategy from '../../../../lib/recurly/risk/three-d-secure/strategy/sagepay';
-import actionToken from '../../../server/fixtures/tokens/action-token-sagepay.json';
+import SagePayStrategy from '../../../../lib/recurly/risk/three-d-secure/strategy/sage-pay';
+import actionToken from '../../../server/fixtures/tokens/action-token-sage-pay.json';
 import Promise from 'promise';
 
-describe.only('SagepayStrategy', function () {
+describe('SagePayStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
 
   applyFixtures();
@@ -19,7 +19,7 @@ describe.only('SagepayStrategy', function () {
     this.sandbox = sinon.createSandbox();
     this.sandbox.spy(recurly, 'Frame');
 
-    this.strategy = new SagepayStrategy({ threeDSecure, actionToken });
+    this.strategy = new SagePayStrategy({ threeDSecure, actionToken });
     this.strategy.whenReady(() => done());
   });
 
@@ -37,9 +37,9 @@ describe.only('SagepayStrategy', function () {
       assert(recurly.Frame.calledWithMatch({
         path: '/three_d_secure/start',
         payload: {
-          redirect_url: 'test-sagepay-acs-url',
-          pa_req: 'test-sagepay-pa-req',
-          md: 'test-sagepay-md'
+          redirect_url: 'test-sage-pay-acs-url',
+          pa_req: 'test-sage-pay-pa-req',
+          md: 'test-sage-pay-md'
         }
       }));
     });

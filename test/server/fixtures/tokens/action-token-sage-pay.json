@@ -1,6 +1,6 @@
 {
   "type": "three_d_secure_action",
-  "id": "action-token-sagepay",
+  "id": "action-token-sage-pay",
   "gateway": {
     "code": "1234567890",
     "type": "sagepay"
@@ -10,9 +10,9 @@
   },
   "three_d_secure": {
     "params": {
-      "acsUrl": "test-sagepay-acs-url",
-      "pareq": "test-sagepay-pa-req",
-      "md": "test-sagepay-md"
+      "acsUrl": "test-sage-pay-acs-url",
+      "pareq": "test-sage-pay-pa-req",
+      "md": "test-sage-pay-md"
     }
   }
 }
