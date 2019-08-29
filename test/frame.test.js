@@ -28,12 +28,6 @@ describe('Recurly.Frame', function () {
       this.frame = this.recurly.Frame({ path });
       done();
     });
-
-    // Returns a spy so frame.bindWindowCloseListener does not cancel the tick
-    const windowStub = { close: () => { windowStub.closed = true; }, closed: false };
-    window.open = sinon.spy(() => windowStub);
-
-    sinon.stub(window.document.body, 'appendChild').callsFake(relay => relay.onload());
   });
 
   afterEach(function () {
@@ -192,6 +186,7 @@ describe('Recurly.Frame', function () {
   });
 
   it('emits a closed event when the frame closes', function (done) {
+    this.newWindow = { close: () => this.newWindow.closed = true, closed: false };
     this.timeout(2000); // timeout with error if frame doesn't emit close event
     const frame = this.recurly.Frame({ path }).on('close', () => done());
     frame.window.close();
