@@ -12,7 +12,9 @@
     "params": {
       "acsUrl": "test-sage-pay-acs-url",
       "pareq": "test-sage-pay-pa-req",
-      "md": "test-sage-pay-md"
+      "md": "test-sage-pay-md",
+      "creq": "test-sage-pay-creq",
+      "three_d_secure_action_token_id": "test-sage-pay-transaction-id"
     }
   }
 }

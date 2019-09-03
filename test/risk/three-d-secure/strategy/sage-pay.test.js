@@ -39,7 +39,9 @@ describe('SagePayStrategy', function () {
         payload: {
           redirect_url: 'test-sage-pay-acs-url',
           pa_req: 'test-sage-pay-pa-req',
-          md: 'test-sage-pay-md'
+          md: 'test-sage-pay-md',
+          creq: 'test-sage-pay-creq',
+          three_d_secure_action_token_id: 'action-token-sage-pay'
         }
       }));
     });
