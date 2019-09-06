@@ -44,4 +44,10 @@ node_modules: package.json
 clean:
 	@rm -rf node_modules build
 
+lint:
+	./node_modules/.bin/eslint ./lib
+
+lint-fix:
+	./node_modules/.bin/eslint ./lib --fix
+
 .PHONY: test clean
