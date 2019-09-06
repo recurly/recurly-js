@@ -184,4 +184,11 @@ describe('Recurly.Frame', function () {
       });
     });
   });
+
+  it('emits a closed event when the frame closes', function (done) {
+    this.newWindow = { close: () => this.newWindow.closed = true, closed: false };
+    this.timeout(2000); // timeout with error if frame doesn't emit close event
+    const frame = this.recurly.Frame({ path }).on('close', () => done());
+    frame.window.close();
+  });
 });

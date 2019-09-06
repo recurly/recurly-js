@@ -48,4 +48,11 @@ describe('DirectStrategy', function () {
       })));
     });
   });
+
+  it('emits a cancel event when the window closes', function (done) {
+    this.timeout(2500); // timeout with error if paypal doesn't emit cancel event
+    this.paypal.on('cancel', () => done());
+    this.paypal.start();
+    setTimeout(() => this.recurly.Frame.getCall(0).returnValue.emit('close'), 500);
+  });
 });
