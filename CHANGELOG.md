@@ -1,5 +1,12 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.10.2
+
+* Adds 3D Secure support for Worldpay gateway [#543][543]
+* Emits async exceptions from Fraud instead of throwing them [#546][546]
+* Adds 'cancel' event to PayPal [#525][525]
+* Adds 'aria-hidden' attributes to hidden input fields [#542][542]
+
 ### Version 4.10.1
 
 * Gateway-specific 3D Secure support [#540][540] [#535][535]
@@ -281,6 +288,10 @@
 
 * Full rewrite for Billing Info tokenization
 
+[543]: https://github.com/recurly/recurly-js/commit/1ec42923673016ca45c6ca2f155b67403ab1b839
+[546]: https://github.com/recurly/recurly-js/commit/9d403863a04fecbe654956a5925306a71711d4da
+[525]: https://github.com/recurly/recurly-js/commit/e6ee4d326641b99c05155cb6c5405321a56b55b3
+[542]: https://github.com/recurly/recurly-js/commit/7dd6508a8de91d3be5c1cdd532a65b2672617906
 [540]: https://github.com/recurly/recurly-js/commit/4cb3b3d9e1d2b8e843799af69ef64b039d212aa2
 [538]: https://github.com/recurly/recurly-js/commit/5038091ec93233f6ff9bd2f842632c76b6f2cfa0
 [535]: https://github.com/recurly/recurly-js/commit/ee3f1ecb055d06955e53358be7c193f6f8ece74e
