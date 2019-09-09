@@ -1,4 +1,6 @@
 import assert from 'assert';
+import Promise from 'promise';
+import errors from '../lib/recurly/errors';
 import { initRecurly } from './support/helpers';
 import { factory, Risk } from '../lib/recurly/risk';
 import RiskConcern from '../lib/recurly/risk/risk-concern';
@@ -8,6 +10,11 @@ describe('Risk', function () {
   beforeEach(function () {
     this.recurly = initRecurly();
     this.risk = this.recurly.Risk();
+    this.sandbox = sinon.createSandbox();
+  });
+
+  afterEach(function () {
+    this.sandbox.restore();
   });
 
   describe('factory', function () {
@@ -24,17 +31,13 @@ describe('Risk', function () {
 
   describe('Risk.browserInfo', function () {
     beforeEach(function () {
-      this.sandbox = sinon.createSandbox();
-      this.sandbox.stub(navigator, 'language').get(() => 'fake-language');
-      this.sandbox.stub(navigator, 'javaEnabled').callsFake(() => 'fake-java-enabled');
-      this.sandbox.stub(screen, 'colorDepth').get(() => 'fake-color-depth');
-      this.sandbox.stub(screen, 'height').get(() => 'fake-height');
-      this.sandbox.stub(screen, 'width').get(() => 'fake-width');
-      this.sandbox.stub(Date.prototype, 'getTimezoneOffset').callsFake(() => 'fake-timezone-offset');
-    });
-
-    afterEach(function () {
-      this.sandbox.restore();
+      const { sandbox } = this;
+      sandbox.stub(navigator, 'language').get(() => 'fake-language');
+      sandbox.stub(navigator, 'javaEnabled').callsFake(() => 'fake-java-enabled');
+      sandbox.stub(screen, 'colorDepth').get(() => 'fake-color-depth');
+      sandbox.stub(screen, 'height').get(() => 'fake-height');
+      sandbox.stub(screen, 'width').get(() => 'fake-width');
+      sandbox.stub(Date.prototype, 'getTimezoneOffset').callsFake(() => 'fake-timezone-offset');
     });
 
     it('returns an object containing risk-related browser info', function () {
@@ -58,6 +61,51 @@ describe('Risk', function () {
       assert.strictEqual(browserInfo.screen_width, 'fake-width');
       assert.strictEqual(browserInfo.time_zone_offset, 'fake-timezone-offset');
       assert.strictEqual(browserInfo.user_agent, navigator.userAgent);
+    });
+  });
+
+  describe('Risk.preflight', function () {
+    beforeEach(function () {
+      const { sandbox, recurly } = this;
+      this.bin = '411111';
+      this.recurly = initRecurly({ publicKey: 'test-preflight-key' });
+      this.stubPreflightResults = [{ arbitrary: 'preflight-results' }];
+      sandbox.stub(ThreeDSecure, 'preflight').usingPromise(Promise).resolves(this.stubPreflightResults);
+    });
+
+    it('retrieves preflight parameters from the API and resolves with results', function (done) {
+      const { recurly, sandbox, bin, stubPreflightResults } = this;
+      sandbox.spy(recurly.request, 'get');
+      Risk.preflight({ recurly, bin })
+        .done(results => {
+          assert(recurly.request.get.calledOnce);
+          assert(recurly.request.get.calledWithMatch({ route: '/risk/preflights' }));
+          assert.deepStrictEqual(results, stubPreflightResults)
+          done();
+        });
+    });
+
+    describe('when some results are timeouts', function () {
+      beforeEach(function () {
+        this.stubPreflightResults = [
+          { arbitrary: 'preflight-results' },
+          errors('risk-preflight-timeout', { processor: 'test' }),
+          { arbitrary: 'preflight-results-2' },
+          errors('risk-preflight-timeout', { processor: 'test-2' })
+        ];
+        ThreeDSecure.preflight.usingPromise(Promise).resolves(this.stubPreflightResults);
+      });
+
+      it('filters out those timeout results', function (done) {
+        const { recurly, bin, stubPreflightResults } = this;
+        Risk.preflight({ recurly, bin })
+          .done(results => {
+            assert.strictEqual(results.length, 2);
+            assert.deepStrictEqual(results[0], stubPreflightResults[0]);
+            assert.deepStrictEqual(results[1], stubPreflightResults[2]);
+            done();
+          });
+      });
     });
   });
 

@@ -13,6 +13,7 @@ const CREATE_TOKENS = Object.freeze({
     id: '3dsart-id-stripe'
   }),
   '3dsat-id-test': merge({}, THREE_D_SECURE_ACTION_RESULT_TOKEN),
+  'action-token-test': merge({}, THREE_D_SECURE_ACTION_RESULT_TOKEN)
 });
 
 const INVALID = {
@@ -29,7 +30,7 @@ module.exports = function tokens () {
   if (method === 'POST') {
     let token;
     if (params.type === 'three_d_secure_action_result') {
-      const token = CREATE_TOKENS[params.three_d_secure_action_token_id];
+      token = CREATE_TOKENS[params.three_d_secure_action_token_id];
     }
     if (token) return token;
     else return INVALID;
