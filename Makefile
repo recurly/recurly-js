@@ -38,16 +38,16 @@ ifdef REPORT_COVERAGE
 	@rm -rf ./build/reports
 endif
 
+lint: node_modules
+	@$(BIN)/eslint ./lib
+
+lint-fix: node_modules
+	@$(BIN)/eslint ./lib --fix
+
 node_modules: package.json
 	@npm install --silent
 
 clean:
 	@rm -rf node_modules build
-
-lint:
-	./node_modules/.bin/eslint ./lib
-
-lint-fix:
-	./node_modules/.bin/eslint ./lib --fix
 
 .PHONY: test clean
