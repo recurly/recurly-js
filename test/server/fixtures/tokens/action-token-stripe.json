@@ -9,6 +9,7 @@
     }
   },
   "transaction": {
+    "amount": 50,
     "amount_in_cents": 5000
   },
   "three_d_secure": {

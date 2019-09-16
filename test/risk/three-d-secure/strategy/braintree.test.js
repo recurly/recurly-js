@@ -83,7 +83,7 @@ describe('BraintreeStrategy', function () {
       strategy.on('done', result => {
         assert(this.threeDSecureInstance.verifyCard.calledOnce);
         assert(this.threeDSecureInstance.verifyCard.calledWithExactly({
-          amount: 5000,
+          amount: 50,
           nonce: "test-braintree-nonce",
           bin: "test-braintree-bin",
           onLookupComplete: sinon.match.func
