@@ -39,7 +39,8 @@ describe('WirecardStrategy', function () {
         payload: {
           redirect_url: 'test-wirecard-acs-url',
           pa_req: 'test-wirecard-pa-req'
-        }
+        },
+        type: 'iframe'
       }));
     });
   });
