@@ -56,7 +56,7 @@ const staticConfig = {
 };
 
 function runner (config) {
-  const logLevel = config.LOG_INFO;
+  const logLevel = config.LOG_DEBUG;
   config.set(Object.assign({}, staticConfig, { logLevel }));
 }
 

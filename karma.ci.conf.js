@@ -10,35 +10,36 @@ const customLaunchers = {
   bs_chrome: {
     base: 'BrowserStack',
     browser: 'Chrome',
-    os: 'Windows',
-    os_version: '7'
+    os: 'OS X',
+    os_version: 'Mojave'
   },
   bs_firefox: {
     base: 'BrowserStack',
     browser: 'Firefox',
-    os: 'Windows',
-    os_version: '7'
+    os: 'OS X',
+    os_version: 'Mojave'
   },
-  bs_edge: {
-    base: 'BrowserStack',
-    browser: 'Edge',
-    os: 'Windows',
-    os_version: '7'
-  },
-  bs_ie_11: {
-    base: 'BrowserStack',
-    browser: 'IE',
-    browser_version: '11.0',
-    os: 'Windows',
-    os_version: '7'
-  },
-
   bs_safari: {
     base: 'BrowserStack',
     browser: 'Safari',
     os: 'OS X',
     os_version: 'Mojave'
   },
+
+  bs_edge: {
+    base: 'BrowserStack',
+    browser: 'Edge',
+    os: 'Windows',
+    os_version: '10'
+  },
+  bs_ie_11: {
+    base: 'BrowserStack',
+    browser: 'IE',
+    browser_version: '11.0',
+    os: 'Windows',
+    os_version: '10'
+  },
+
 
   bs_ios_12: {
     base: 'BrowserStack',
@@ -100,16 +101,21 @@ function runner (config) {
     logLevel,
     browsers: ['bs_' + BROWSER],
     browserStack: {
-      captureTimeout: 900,
-      project: 'Recurly.js',
       autoAcceptAlerts: 'true',
+      'browserstack.console': 'verbose',
+      'browserstack.debug': 'true',
+      'browserstack.networkLogs': 'true',
       'browserstack.edge.enablePopups': 'true',
       'browserstack.ie.enablePopups': 'true',
       'browserstack.safari.enablePopups': 'true',
-      timeout: 900
+      captureTimeout: 1200,
+      pollingTimeout: 4000,
+      project: 'Recurly.js',
+      timeout: 1200
     },
     customLaunchers,
     hostname: 'bs-local.com'
+    // hostname: (~BROWSER.indexOf('ios') ? 'bs-local.com' : 'localhost')
   }));
 };
 
