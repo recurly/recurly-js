@@ -41,18 +41,18 @@ const customLaunchers = {
   },
 
 
-  bs_ios_12: {
+  bs_ios_13: {
     base: 'BrowserStack',
-    device: 'iPhone 8',
+    device: 'iPhone XS',
     os: 'ios',
-    os_version: '12.2',
+    os_version: '13.0',
     real_mobile: true
   },
-  bs_ios_11: {
+  bs_ios_12: {
     base: 'BrowserStack',
-    device: 'iPhone 8',
+    device: 'iPhone XS',
     os: 'ios',
-    os_version: '11.4',
+    os_version: '12.2',
     real_mobile: true
   },
 
@@ -102,9 +102,9 @@ function runner (config) {
     browsers: ['bs_' + BROWSER],
     browserStack: {
       autoAcceptAlerts: 'true',
-      'browserstack.console': 'verbose',
-      'browserstack.debug': 'true',
-      'browserstack.networkLogs': 'true',
+      // 'browserstack.console': 'verbose',
+      // 'browserstack.debug': 'true',
+      // 'browserstack.networkLogs': 'true',
       'browserstack.edge.enablePopups': 'true',
       'browserstack.ie.enablePopups': 'true',
       'browserstack.safari.enablePopups': 'true',

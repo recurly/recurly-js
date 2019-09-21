@@ -44,7 +44,7 @@ export function nextTick (cb) {
   setTimeout(cb, 0);
 }
 
-export function braintreeStub () {
+export function stubBraintree () {
   beforeEach(() => {
     const create = (opt, cb) => cb(null, {});
     window.braintree = {
@@ -82,5 +82,20 @@ export function stubAsNonMobileDevice () {
 
   afterEach(function () {
     this.mobileStubSandbox.restore()
+  });
+}
+
+export function stubWindowOpen () {
+  beforeEach(function () {
+    this.newWindow = { close: sinon.stub() };
+    this.windowOpenSandbox = sinon.createSandbox();
+    this.windowOpenSandbox.stub(window, 'open').callsFake(url => {
+      this.newWindowEventName = url.match(/(recurly-frame-\w+-\w+)/)[0];
+      return this.newWindow;
+    });
+  });
+
+  afterEach(function () {
+    this.windowOpenSandbox.restore();
   });
 }

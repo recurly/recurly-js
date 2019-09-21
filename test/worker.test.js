@@ -43,8 +43,11 @@ describe('IntervalWorker', () => {
     const then = Date.now();
     const worker = this.worker = new IntervalWorker({ period: 500, perform: () => {
       const lapse = Date.now() - then;
-      assert(lapse >= 400);
-      assert(lapse <= 600);
+      if (lapse > 600) {
+        console.log(`WARN: Lapse > 100ms`)
+      }
+      assert(lapse >= 450);
+      assert(lapse <= 650);
       worker.destroy();
       done();
     }});

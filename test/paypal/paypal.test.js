@@ -1,12 +1,14 @@
 import assert from 'assert';
 import after from 'lodash.after';
-import {PayPal} from '../../lib/recurly/paypal';
-import {DirectStrategy} from '../../lib/recurly/paypal/strategy/direct';
-import {BraintreeStrategy} from '../../lib/recurly/paypal/strategy/braintree';
-import {initRecurly, apiTest, braintreeStub} from '../support/helpers';
+import { PayPal } from '../../lib/recurly/paypal';
+import { DirectStrategy } from '../../lib/recurly/paypal/strategy/direct';
+import { BraintreeStrategy } from '../../lib/recurly/paypal/strategy/braintree';
+import { initRecurly, apiTest, stubBraintree, stubWindowOpen } from '../support/helpers';
 
 apiTest(function (requestMethod) {
   describe(`Recurly.PayPal (${requestMethod})`, function () {
+    stubWindowOpen();
+
     beforeEach(function () {
       this.recurly = initRecurly({ cors: requestMethod === 'cors' });
       this.paypal = this.recurly.PayPal();
@@ -19,7 +21,7 @@ apiTest(function (requestMethod) {
     describe('when configured to use Braintree', function () {
       const validOpts = { braintree: { clientAuthorization: 'valid' } };
 
-      braintreeStub();
+      stubBraintree();
 
       beforeEach(function () {
         this.paypal = this.recurly.PayPal(validOpts);
