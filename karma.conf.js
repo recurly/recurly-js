@@ -17,6 +17,7 @@ const staticConfig = {
     // 'ChromeDebug'
     // 'FirefoxDebug'
     // 'VirtualBoxIE11Win7'
+    // 'VirtualBoxEdgeWin10'
   ],
   singleRun: true,
   concurrency: Infinity,
@@ -32,6 +33,11 @@ const staticConfig = {
     FirefoxDebug: {
       base: 'Firefox',
       flags: ['-devtools']
+    },
+    VirtualBoxEdgeWin10: {
+      base: 'VirtualBoxEdge',
+      keepAlive: true,
+      uuid: 'fb87b330-a1dc-4d6d-ac5b-e669912f1a4f'
     },
     VirtualBoxIE11Win7: {
       base: 'VirtualBoxIE11',

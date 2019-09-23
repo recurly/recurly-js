@@ -9,7 +9,6 @@ apiTest(requestMethod => {
 
     beforeEach(function () {
       this.recurly = initRecurly({ cors: requestMethod === 'cors' });
-      this.assertValidCoupon = assertValidCoupon.bind(this);
     });
 
     it('requires a callback', function () {
@@ -59,7 +58,7 @@ apiTest(requestMethod => {
 
         describe('when given a valid coupon', function () {
           it('contains a discount amount', function (done) {
-            this.assertValidCoupon('coop', function (coupon) {
+            assertValidCoupon(this.recurly, 'coop', function (coupon) {
               assert(!coupon.discount.rate);
               each(coupon.discount.amount, (amount, currency) => {
                 assert(currency.length === 3);
@@ -72,7 +71,7 @@ apiTest(requestMethod => {
 
         describe('when given a valid percent-based coupon', function () {
           it('contains a discount rate', function (done) {
-            this.assertValidCoupon('coop-pct', function (coupon) {
+            assertValidCoupon(this.recurly, 'coop-pct', function (coupon) {
               assert(typeof coupon.discount.rate === 'number');
               done();
             });
@@ -81,8 +80,8 @@ apiTest(requestMethod => {
       });
     });
 
-    function assertValidCoupon (code, done) {
-      this.recurly.coupon({ plan: 'basic', coupon: code }, function (err, coupon) {
+    function assertValidCoupon (recurly, code, done) {
+      recurly.coupon({ plan: 'basic', coupon: code }, function (err, coupon) {
         assert(coupon);
         assert(coupon.code);
         assert(coupon.name);

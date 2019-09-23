@@ -23,9 +23,6 @@ describe('ThreeDSecure', function () {
     const risk = this.risk = { add: sinon.stub(), remove: sinon.stub(), recurly };
     const sandbox = this.sandbox = sinon.createSandbox();
 
-    this.container = testBed().querySelector('#three-d-secure-container');
-    this.threeDSecure = new ThreeDSecure({ risk, actionTokenId });
-
     // Neuter the third party lib loaders
     window.AdyenCheckout = sandbox.stub();
     window.braintree = sandbox.stub();
@@ -36,6 +33,8 @@ describe('ThreeDSecure', function () {
 
     sandbox.spy(recurly, 'Frame');
 
+    this.container = testBed().querySelector('#three-d-secure-container');
+    this.threeDSecure = new ThreeDSecure({ risk, actionTokenId });
     this.threeDSecure.whenReady(() => done());
   });
 

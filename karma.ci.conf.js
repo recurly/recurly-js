@@ -23,23 +23,26 @@ const customLaunchers = {
     base: 'BrowserStack',
     browser: 'Safari',
     os: 'OS X',
-    os_version: 'Mojave'
+    os_version: 'Mojave',
+    'browserstack.safari.enablePopups': 'true'
   },
 
   bs_edge: {
     base: 'BrowserStack',
     browser: 'Edge',
     os: 'Windows',
-    os_version: '10'
+    os_version: '10',
+    'browserstack.edge.enablePopups': 'true'
   },
   bs_ie_11: {
     base: 'BrowserStack',
     browser: 'IE',
     browser_version: '11.0',
     os: 'Windows',
-    os_version: '10'
+    os_version: '7',
+    'browserstack.ie.arch': 'x32',
+    'browserstack.ie.enablePopups': 'true'
   },
-
 
   bs_ios_13: {
     base: 'BrowserStack',
@@ -79,15 +82,7 @@ const customLaunchers = {
     os: 'android',
     os_version: '7.1',
     real_mobile: true
-  },
-  bs_android_6: {
-    base: 'BrowserStack',
-    browser: 'android',
-    device: 'Google Nexus 6',
-    os: 'android',
-    os_version: '6.0',
-    real_mobile: true
-  },
+  }
 };
 
 function runner (config) {
@@ -102,12 +97,8 @@ function runner (config) {
     browsers: ['bs_' + BROWSER],
     browserStack: {
       autoAcceptAlerts: 'true',
-      // 'browserstack.console': 'verbose',
-      // 'browserstack.debug': 'true',
-      // 'browserstack.networkLogs': 'true',
-      'browserstack.edge.enablePopups': 'true',
-      'browserstack.ie.enablePopups': 'true',
-      'browserstack.safari.enablePopups': 'true',
+      'browserstack.console': 'verbose',
+      'browserstack.networkLogs': 'true',
       captureTimeout: 1200,
       pollingTimeout: 4000,
       project: 'Recurly.js',
@@ -115,7 +106,6 @@ function runner (config) {
     },
     customLaunchers,
     hostname: 'bs-local.com'
-    // hostname: (~BROWSER.indexOf('ios') ? 'bs-local.com' : 'localhost')
   }));
 };
 

@@ -3,16 +3,16 @@ import after from 'lodash.after';
 import clone from 'component-clone';
 import assert from 'assert';
 import combinations from 'combinations';
-import {initRecurly} from './support/helpers';
-import {fixture} from './support/fixtures';
-import {Recurly} from '../lib/recurly';
+import { initRecurly, testBed } from './support/helpers';
+import { fixture } from './support/fixtures';
+import { Recurly } from '../lib/recurly';
 
 describe('Recurly.configure', function () {
   let api = `${window.location.protocol}//${window.location.host}/api`;
 
   beforeEach(function () {
     if (this.currentTest.ctx.fixture) fixture(this.currentTest.ctx.fixture);
-    this.recurly = new Recurly;
+    this.recurly = new Recurly();
   });
 
   describe('when options.publicKey is not given', function () {
@@ -237,12 +237,16 @@ describe('Recurly.configure', function () {
     this.ctx.fixture = 'multipleForms';
 
     it('resets and reinitializes fields on the new targets', function (done) {
-      configureRecurly(this.recurly, 1, () => {
-        assert(document.querySelector('#number-1 iframe') instanceof HTMLIFrameElement);
-        assert.equal(document.querySelector('#number-2 iframe'), null);
-        configureRecurly(this.recurly, 2, () => {
-          assert(document.querySelector('#number-2 iframe') instanceof HTMLIFrameElement);
-          assert.equal(document.querySelector('#number-1 iframe'), null);
+      const numberOne = testBed().querySelector('#number-1');
+      const numberTwo = testBed().querySelector('#number-2');
+      configureRecurly(this.recurly, '1', () => {
+        assert.strictEqual(numberOne.children.length, 1);
+        assert.strictEqual(numberTwo.children.length, 0);
+        assert(numberOne.querySelector('iframe') instanceof HTMLIFrameElement);
+        configureRecurly(this.recurly, '2', () => {
+          assert.strictEqual(numberOne.children.length, 0);
+          assert.strictEqual(numberTwo.children.length, 1);
+          assert(numberTwo.querySelector('iframe') instanceof HTMLIFrameElement);
           done();
         });
       });

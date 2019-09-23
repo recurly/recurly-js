@@ -10,14 +10,9 @@ describe('ThreeDSecureStrategy', function () {
   applyFixtures();
 
   beforeEach(function () {
-    const sandbox = this.sandbox = sinon.createSandbox();
-    const threeDSecure = this.threeDSecureStub = sandbox.stub();
+    const threeDSecure = this.threeDSecureStub = sinon.stub();
     this.strategy = new ThreeDSecureStrategy({ threeDSecure, actionToken });
     this.target = testBed().querySelector('#three-d-secure-container');
-  });
-
-  afterEach(function () {
-    this.sandbox.restore();
   });
 
   describe('attach', function () {
