@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.10.3
+
+* Renders Wirecard 3D Secure challenge as an iframe [#555][555]
+* Fixes Braintree 3D Secure challenge amount display [#556][556]
+
 ### Version 4.10.2
 
 * Adds 3D Secure support for Worldpay gateway [#543][543]
@@ -288,6 +293,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[556]: https://github.com/recurly/recurly-js/commit/c084d8cc7ad7275660ca367f708dee4818405eec
+[555]: https://github.com/recurly/recurly-js/commit/8f0c5774864fded21ec36eba70cba4800f5a8ab7
 [543]: https://github.com/recurly/recurly-js/commit/1ec42923673016ca45c6ca2f155b67403ab1b839
 [546]: https://github.com/recurly/recurly-js/commit/9d403863a04fecbe654956a5925306a71711d4da
 [525]: https://github.com/recurly/recurly-js/commit/e6ee4d326641b99c05155cb6c5405321a56b55b3
