@@ -62,5 +62,3 @@ $ make test
 [component]: http://github.com/component/component
 [license]: LICENSE.md
 [aristotle]: https://en.wikipedia.org/wiki/Golden_mean_(philosophy)
-
-[![BrowserStack Status](<badge_key>)]()
