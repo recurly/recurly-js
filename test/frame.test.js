@@ -1,21 +1,20 @@
 import { applyFixtures } from './support/fixtures';
 import assert from 'assert';
-import { initRecurly, testBed } from './support/helpers';
+import { initRecurly, stubWindowOpen, testBed } from './support/helpers';
 
 describe('Recurly.Frame', function () {
   const path = '/frame_mock';
   const payload = { example: 'data', event: 'test-event' };
 
+  this.ctx.fixture = 'empty';
+
+  stubWindowOpen();
+  applyFixtures();
+
   beforeEach(function (done) {
     this.recurly = initRecurly();
     this.sandbox = sinon.createSandbox();
-    this.newWindow = { close: sinon.stub() };
     this.isIE = !!document.documentMode;
-
-    this.sandbox.stub(window, 'open').callsFake(url => {
-      this.eventName = url.match(/(recurly-frame-\w+-\w+)/)[0];
-      return this.newWindow;
-    });
 
     // HACK: when we're in an IE environment, we need to stub the relay creation;
     //       however, we want to proceed as normal in all other circumstances
@@ -36,10 +35,6 @@ describe('Recurly.Frame', function () {
     if (frame) frame.destroy();
   });
 
-  applyFixtures();
-
-  this.ctx.fixture = 'empty';
-
   it('calls window.open', function () {
     assert(window.open.calledOnce);
   });
@@ -54,8 +49,8 @@ describe('Recurly.Frame', function () {
   });
 
   it('listens for the frame event', function () {
-    const { sandbox, eventName, frame } = this;
-    assert(frame.hasListeners(eventName));
+    const { sandbox, newWindowEventName, frame } = this;
+    assert(frame.hasListeners(newWindowEventName));
   });
 
   describe('when given a path', function () {

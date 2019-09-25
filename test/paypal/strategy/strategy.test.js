@@ -1,14 +1,14 @@
 import assert from 'assert';
 import each from 'component-each';
 import merge from 'lodash.merge';
-import {Recurly} from '../../../lib/recurly';
-import {initRecurly, apiTest, braintreeStub} from '../../support/helpers';
+import { Recurly } from '../../../lib/recurly';
+import { initRecurly, apiTest, stubBraintree } from '../../support/helpers';
 
 apiTest(function (requestMethod) {
   describe(`PayPalStrategy (${requestMethod})`, function () {
     const validOpts = {};
 
-    braintreeStub();
+    stubBraintree();
 
     beforeEach(function () {
       this.recurly = initRecurly({ cors: requestMethod === 'cors' });

@@ -5,7 +5,7 @@
 </p>
 
 [![build status][travis-image]][travis-url]
-[![Browser test status][sauce-image]][sauce-url]
+[![Browser test status][browserstack-image]][browserstack-url]
 [![coverage][coverage-image]][coverage-url]
 
 ## Documentation
@@ -52,8 +52,8 @@ $ make test
 [climate-image]: http://img.shields.io/codeclimate/github/recurly/recurly-js.svg?style=flat-square
 [coverage-url]: https://coveralls.io/github/recurly/recurly-js
 [coverage-image]: https://img.shields.io/coveralls/github/recurly/recurly-js.svg?style=flat-square
-[sauce-url]: https://saucelabs.com/u/recurly-js
-[sauce-image]: https://badges.herokuapp.com/travis/recurly/recurly-js/sauce/recurly-js?logos=none&style=flat-square
+[browserstack-url]: https://automate.browserstack.com/public-build/MDJrZjliTlUvTjkzVGFzZ2ZpT1FHZ011aS9RUS9QQXE2ZlBZNUZJWWRGND0tLUcwbzUxYUF3QUt6dnM5aHJBb0lWNWc9PQ==--e8dfaeba4b9697fa5fc4ee5e245d44e5d9ad9d99%
+[browserstack-image]: https://automate.browserstack.com/badge.svg?badge_key=MDJrZjliTlUvTjkzVGFzZ2ZpT1FHZ011aS9RUS9QQXE2ZlBZNUZJWWRGND0tLUcwbzUxYUF3QUt6dnM5aHJBb0lWNWc9PQ==--e8dfaeba4b9697fa5fc4ee5e245d44e5d9ad9d99%
 [travis-url]: https://travis-ci.org/recurly/recurly-js/builds
 [travis-image]: https://img.shields.io/travis/recurly/recurly-js/master.svg?style=flat-square
 
@@ -62,3 +62,5 @@ $ make test
 [component]: http://github.com/component/component
 [license]: LICENSE.md
 [aristotle]: https://en.wikipedia.org/wiki/Golden_mean_(philosophy)
+
+[![BrowserStack Status](<badge_key>)]()

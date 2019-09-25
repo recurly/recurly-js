@@ -38,10 +38,10 @@ ifdef REPORT_COVERAGE
 	@rm -rf ./build/reports
 endif
 
-lint: node_modules
+lint: build
 	@$(BIN)/eslint ./lib
 
-lint-fix: node_modules
+lint-fix: build
 	@$(BIN)/eslint ./lib --fix
 
 node_modules: package.json

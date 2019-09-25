@@ -1,9 +1,11 @@
 import assert from 'assert';
-import {initRecurly} from '../../support/helpers';
+import { initRecurly, stubWindowOpen } from '../../support/helpers';
 
 describe('DirectStrategy', function () {
   const displayName = 'test';
   const validOpts = { display: { displayName } };
+
+  stubWindowOpen();
 
   beforeEach(function () {
     this.recurly = initRecurly();

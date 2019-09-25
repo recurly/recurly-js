@@ -2,70 +2,91 @@ const BROWSER = process.env.BROWSER;
 const REPORT_COVERAGE = process.env.REPORT_COVERAGE || false;
 const staticConfig = require('./karma.conf').staticConfig;
 const customLaunchers = {
-  sl_chrome_headless: {
+  bs_chrome_headless: {
     base: 'ChromeHeadless',
     flags: ['--no-sandbox']
   },
-  sl_chrome: {
-    base: 'SauceLabs',
-    browserName: 'chrome',
-    platform: 'Windows 10'
+
+  bs_chrome: {
+    base: 'BrowserStack',
+    browser: 'Chrome',
+    os: 'OS X',
+    os_version: 'Mojave'
   },
-  sl_firefox: {
-    base: 'SauceLabs',
-    browserName: 'firefox',
-    platform: 'Windows 10'
+  bs_firefox: {
+    base: 'BrowserStack',
+    browser: 'Firefox',
+    os: 'OS X',
+    os_version: 'Mojave'
   },
-  sl_safari: {
-    base: 'SauceLabs',
-    browserName: 'safari',
-    platform: 'OS X 10.13',
-    version: '12'
+  bs_safari: {
+    base: 'BrowserStack',
+    browser: 'Safari',
+    os: 'OS X',
+    os_version: 'Mojave',
+    'browserstack.safari.enablePopups': 'true'
   },
-  sl_edge: {
-    base: 'SauceLabs',
-    browserName: 'MicrosoftEdge',
-    platform: 'Windows 10'
+
+  bs_edge: {
+    base: 'BrowserStack',
+    browser: 'Edge',
+    os: 'Windows',
+    os_version: '10',
+    'browserstack.edge.enablePopups': 'true'
   },
-  sl_ie_11: {
-    base: 'SauceLabs',
-    browserName: 'internet explorer',
-    platform: 'Windows 7',
-    version: '11'
+  bs_ie_11: {
+    base: 'BrowserStack',
+    browser: 'IE',
+    browser_version: '11.0',
+    os: 'Windows',
+    os_version: '7',
+    'browserstack.ie.arch': 'x32',
+    'browserstack.ie.enablePopups': 'true'
   },
-  sl_ios_12: {
-    base: 'SauceLabs',
-    browserName: 'iphone',
-    platform: 'iOS',
-    version: '12.0'
+
+  bs_ios_13: {
+    base: 'BrowserStack',
+    device: 'iPhone XS',
+    os: 'ios',
+    os_version: '13.0',
+    real_mobile: true
   },
-  sl_ios_11: {
-    base: 'SauceLabs',
-    browserName: 'iphone',
-    platform: 'iOS',
-    version: '11.0'
+  bs_ios_12: {
+    base: 'BrowserStack',
+    device: 'iPhone XS',
+    os: 'ios',
+    os_version: '12.2',
+    real_mobile: true
   },
-  sl_android_7: {
-    base: 'SauceLabs',
-    browserName: 'Chrome',
-    deviceName: 'Android GoogleAPI Emulator',
-    platform: 'Android',
-    version: '7'
+
+  bs_android_9: {
+    base: 'BrowserStack',
+    browser: 'android',
+    device: 'Google Pixel 3',
+    os: 'android',
+    os_version: '9.0',
+    real_mobile: true
   },
-  sl_android_6: {
-    base: 'SauceLabs',
-    browserName: 'android',
-    version: '6'
+  bs_android_8: {
+    base: 'BrowserStack',
+    browser: 'android',
+    device: 'Samsung Galaxy Note 9',
+    os: 'android',
+    os_version: '8.1',
+    real_mobile: true
   },
-  sl_android_5: {
-    base: 'SauceLabs',
-    browserName: 'android',
-    version: '5.1'
+  bs_android_7: {
+    base: 'BrowserStack',
+    browser: 'android',
+    device: 'Google Pixel',
+    os: 'android',
+    os_version: '7.1',
+    real_mobile: true
   }
 };
 
 function runner (config) {
-  const reporters = ['mocha', 'saucelabs'];
+  const reporters = ['mocha', 'BrowserStack'];
   if (REPORT_COVERAGE) reporters.push('coverage');
 
   const logLevel = config.LOG_INFO;
@@ -73,13 +94,18 @@ function runner (config) {
   config.set(Object.assign({}, staticConfig, {
     reporters,
     logLevel,
-    browsers: ['sl_' + BROWSER],
-    sauceLabs: {
-      testName: 'Recurly.js tests',
-      recordVideo: true,
-      public: 'public'
+    browsers: ['bs_' + BROWSER],
+    browserStack: {
+      autoAcceptAlerts: 'true',
+      'browserstack.console': 'verbose',
+      'browserstack.networkLogs': 'true',
+      captureTimeout: 1200,
+      pollingTimeout: 4000,
+      project: 'Recurly.js',
+      timeout: 1200
     },
-    customLaunchers
+    customLaunchers,
+    hostname: 'bs-local.com'
   }));
 };
 

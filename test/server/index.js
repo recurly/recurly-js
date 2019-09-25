@@ -56,19 +56,23 @@ app.listen(port, () => {
 
 function html (view) {
   return async ctx => {
+    setHeaders(ctx);
     await ctx.render(`fixtures/${view}`);
   };
 }
 
 async function json (ctx) {
+  setHeaders(ctx);
   ctx.body = fixture(ctx);
 }
 
 async function ok (ctx) {
+  setHeaders(ctx);
   ctx.body = '';
 }
 
 async function postMessage (ctx) {
+  setHeaders(ctx);
   await ctx.render('fixtures/post-message', {
     message: {
       recurly_event: ctx.query.event,
@@ -77,9 +81,12 @@ async function postMessage (ctx) {
   });
 }
 
-
 function fixture (ctx) {
   const f = require(`./fixtures${ctx.request.path}`);
   if (typeof f === 'function') return f.apply(ctx)
   return f;
+}
+
+function setHeaders (ctx) {
+  ctx.set('Connection', 'keep-alive');
 }
