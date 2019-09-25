@@ -90,10 +90,6 @@ export function stubWindowOpen () {
     this.newWindow = { close: sinon.stub() };
     this.windowOpenSandbox = sinon.createSandbox();
 
-    if ('restore' in window.open) {
-      window.open.restore();
-    }
-
     this.windowOpenSandbox.stub(window, 'open').callsFake(url => {
       this.newWindowEventName = url.match(/(recurly-frame-\w+-\w+)/)[0];
       return this.newWindow;
@@ -101,10 +97,7 @@ export function stubWindowOpen () {
   });
 
   afterEach(function () {
-    if ('restore' in window.open) {
-      window.open.restore();
-    }
-
+    window.open.restore();
     this.windowOpenSandbox.restore();
   });
 }

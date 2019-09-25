@@ -39,11 +39,11 @@
     "IE >= 11"
   ],
   "devDependencies": {
-    "@babel/core": "^7.6.0",
+    "@babel/core": "^7.6.2",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-export-default-from": "^7.5.2",
     "@babel/plugin-transform-object-assign": "^7.2.0",
-    "@babel/preset-env": "^7.6.0",
+    "@babel/preset-env": "^7.6.2",
     "@koa/cors": "^3.0.0",
     "ajv": "^6.10.2",
     "assert": "^2.0.0",
@@ -83,9 +83,9 @@
     "mini-css-extract-plugin": "^0.8.0",
     "mocha": "^6.2.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
-    "sinon": "^7.4.2",
+    "sinon": "^7.5.0",
     "uglifyjs-webpack-plugin": "^2.2.0",
-    "webpack": "^4.40.2",
+    "webpack": "^4.41.0",
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.8.1"
   },

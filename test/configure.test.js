@@ -262,7 +262,7 @@ describe('Recurly.configure', function () {
         }
       });
       assert.equal(recurly.configured, true);
-      recurly.ready(done);
+      setTimeout(() => recurly.ready(done), 1000);
     }
   });
 });
