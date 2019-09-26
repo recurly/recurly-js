@@ -3,6 +3,7 @@ import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import TestStrategy from '../../../../lib/recurly/risk/three-d-secure/strategy/test';
 import actionToken from '../../../server/fixtures/tokens/action-token-test.json';
+import { TYPE } from '../../../../lib/recurly/frame';
 
 describe('TestStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -33,7 +34,7 @@ describe('TestStrategy', function () {
         strategy.on('done', result => {
           assert(recurly.Frame.calledOnce);
           assert(recurly.Frame.calledWithMatch({
-            type: 'iframe',
+            type: TYPE.IFRAME,
             path: '/three_d_secure/mock',
             payload: { three_d_secure_action_token_id: 'action-token-test' },
             container: strategy.container

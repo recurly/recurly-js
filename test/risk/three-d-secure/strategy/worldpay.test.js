@@ -4,6 +4,7 @@ import { initRecurly, testBed } from '../../../support/helpers';
 import WorldpayStrategy from '../../../../lib/recurly/risk/three-d-secure/strategy/worldpay';
 import actionToken from '../../../server/fixtures/tokens/action-token-worldpay.json';
 import Promise from 'promise';
+import { TYPE } from '../../../../lib/recurly/frame';
 
 describe('WorldpayStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -67,7 +68,7 @@ describe('WorldpayStrategy', function () {
           jwt,
           redirect_url: 'https://secure-test.worldpay.com/shopper/3ds/ddc.html'
         },
-        type: 'iframe',
+        type: TYPE.IFRAME,
         height: 0,
         width: 0
       }));
