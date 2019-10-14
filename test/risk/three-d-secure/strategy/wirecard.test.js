@@ -4,7 +4,7 @@ import { initRecurly, testBed } from '../../../support/helpers';
 import WirecardStrategy from '../../../../lib/recurly/risk/three-d-secure/strategy/wirecard';
 import actionToken from '../../../server/fixtures/tokens/action-token-wirecard.json';
 import Promise from 'promise';
-import { TYPE } from '../../../../lib/recurly/frame';
+import { Frame}  from '../../../../lib/recurly/frame';
 
 describe('WirecardStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -41,7 +41,7 @@ describe('WirecardStrategy', function () {
           redirect_url: 'test-wirecard-acs-url',
           pa_req: 'test-wirecard-pa-req'
         },
-        type: TYPE.IFRAME
+        type: Frame.TYPES.IFRAME
       }));
     });
   });
