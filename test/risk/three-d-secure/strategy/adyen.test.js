@@ -6,6 +6,7 @@ import AdyenStrategy from '../../../../lib/recurly/risk/three-d-secure/strategy/
 import actionToken from '../../../server/fixtures/tokens/action-token-adyen.json';
 import fingerprintActionToken from '../../../server/fixtures/tokens/action-token-adyen-fingerprint.json';
 import fallbackActionToken from '../../../server/fixtures/tokens/action-token-adyen-3ds1.json';
+import { Frame } from '../../../../lib/recurly/frame'
 
 describe('AdyenStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -120,7 +121,7 @@ describe('AdyenStrategy', function () {
         strategy.attach(target);
         assert(recurly.Frame.calledOnce);
         assert(recurly.Frame.calledWithMatch({
-          type: 'iframe',
+          type: Frame.TYPES.IFRAME,
           path: '/three_d_secure/start',
           payload: {
             redirect_url: 'test-url',

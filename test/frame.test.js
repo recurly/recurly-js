@@ -1,6 +1,7 @@
 import { applyFixtures } from './support/fixtures';
 import assert from 'assert';
 import { initRecurly, stubWindowOpen, testBed } from './support/helpers';
+import { Frame } from '../lib/recurly/frame'
 
 describe('Recurly.Frame', function () {
   const path = '/frame_mock';
@@ -143,7 +144,7 @@ describe('Recurly.Frame', function () {
     it('requires a container', function () {
       const { recurly } = this;
       assert.throws(() => {
-        this.frame = recurly.Frame({ path, payload, type: 'iframe' });
+        this.frame = recurly.Frame({ path, payload, type: Frame.TYPES.IFRAME });
       }, 'Invalid container. Expected HTMLElement, got undefined');
     });
 
@@ -151,7 +152,7 @@ describe('Recurly.Frame', function () {
       beforeEach(function (done) {
         const { recurly, isIE } = this;
         if (isIE) window.document.body.appendChild.restore();
-        this.frame = recurly.Frame({ path, payload, type: 'iframe', container: testBed() });
+        this.frame = recurly.Frame({ path, payload, type: Frame.TYPES.IFRAME, container: testBed() });
         this.frame.on('done', () => done());
       });
 
