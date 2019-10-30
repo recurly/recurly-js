@@ -57,7 +57,7 @@ $ make test
 [travis-url]: https://travis-ci.org/recurly/recurly-js/builds
 [travis-image]: https://img.shields.io/travis/recurly/recurly-js/master.svg?style=flat-square
 
-[docs]: https://docs.recurly.com/js
+[docs]: https://developers.recurly.com/pages/recurly-js.html
 [examples]: https://github.com/recurly/recurly-js-examples
 [component]: http://github.com/component/component
 [license]: LICENSE.md
