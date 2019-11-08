@@ -138,6 +138,12 @@ describe('Recurly.Frame', function () {
       frame.destroy();
       assert(newWindow.close.calledOnce);
     });
+
+    it('removes window close listener', function () {
+      sinon.spy(global, 'clearInterval');
+      this.frame.destroy();
+      assert(clearInterval.calledWith(this.frame.windowCloseListenerTick));
+    });
   });
 
   describe('when type=iframe', function () {
