@@ -32,7 +32,7 @@ const staticConfig = {
     },
     FirefoxDebug: {
       base: 'Firefox',
-      flags: ['-devtools']
+      flags: ['--devtools']
     },
     VirtualBoxEdgeWin10: {
       base: 'VirtualBoxEdge',
