@@ -7,6 +7,7 @@ describe('CheckoutPricing', function () {
   beforeEach(function (done) {
     this.recurly = initRecurly();
     this.pricing = this.recurly.Pricing.Checkout();
+    this.sandbox = sinon.createSandbox();
 
     subscriptionPricingFactory('multiple-currencies', this.recurly, sub => {
       this.subscriptionPricingExample = sub;
@@ -19,7 +20,11 @@ describe('CheckoutPricing', function () {
       this.subscriptionPricingExampleTaxExempt = sub;
       done();
     });
-  })
+  });
+
+  afterEach(function () {
+    this.sandbox.restore();
+  });
 
   /**
    * Subscriptions
@@ -322,7 +327,8 @@ describe('CheckoutPricing', function () {
           currency: 'EUR',
           quantity: 0,
           taxExempt: true,
-          taxCode: 'tax-code-0'
+          taxCode: 'tax-code-0',
+          itemCode: null
         };
         return this.pricing
           .adjustment(this.adjustmentExampleOne)
@@ -332,8 +338,8 @@ describe('CheckoutPricing', function () {
 
       it('only updates properties supplied', function (done) {
         const part = after(8, done);
-        let firstAdjustment = this.pricing.items.adjustments[0]
-        let secondAdjustment = this.pricing.items.adjustments[1]
+        let firstAdjustment = this.pricing.items.adjustments[0];
+        let secondAdjustment = this.pricing.items.adjustments[1];
 
         assert.equal(firstAdjustment.amount, 20);
         assert.equal(firstAdjustment.id, 'adjustment-0');
@@ -450,6 +456,21 @@ describe('CheckoutPricing', function () {
             part();
           });
       });
+
+      describe('when given an id and itemCode', function () {
+        it('rejects with the expected error code', function (done) {
+          const { pricing, sandbox } = this;
+          const stub = sandbox.stub();
+
+          pricing.adjustment({ itemCode: 'any-item-code', id: 'adjustment-0' })
+            .then(stub)
+            .catch(err => {
+              assert(stub.notCalled);
+              assert.strictEqual(err.code, 'item-code-not-allowed');
+              done();
+            });
+        });
+      });
     });
 
     describe('given multiple currencies', () => {
@@ -492,6 +513,146 @@ describe('CheckoutPricing', function () {
             done();
           })
           .done();
+      });
+    });
+
+    describe('when given an itemCode', () => {
+      beforeEach(function () {
+        this.valid = { itemCode: 'basic-item' };
+        this.validEur = { itemCode: 'basic-item-eur' };
+        this.invalid = { itemCode: 'invalid' };
+      });
+
+      describe('when the itemCode is not valid', function () {
+        it('rejects with a not-found error', function (done) {
+          const { invalid, pricing, sandbox } = this;
+          const stub = sandbox.stub();
+          pricing.adjustment(invalid)
+            .then(stub)
+            .catch(err => {
+              assert(stub.notCalled);
+              assert.strictEqual(err.code, 'not-found');
+              done();
+            });
+        });
+      });
+
+      describe('when the itemCode is valid', function () {
+        beforeEach(function () {
+          const { pricing, valid } = this;
+          return pricing.adjustment(valid);
+        });
+
+        it('creates an adjustment with matching attributes', function () {
+          const { pricing } = this;
+          const newAdjustment = pricing.items.adjustments[0];
+          assert.strictEqual(pricing.items.adjustments.length, 1);
+          assert.strictEqual(newAdjustment.amount, 40);
+          assert.strictEqual(newAdjustment.quantity, 1);
+          assert.strictEqual(newAdjustment.currency, 'USD');
+          assert.strictEqual(newAdjustment.taxCode, null);
+          assert.strictEqual(newAdjustment.taxExempt, true);
+        });
+
+        describe('overrides', function () {
+          it('allows an amount override', function (done) {
+            const { pricing, valid } = this;
+            const { itemCode } = valid;
+            pricing
+              .adjustment({ itemCode, amount: 300 })
+              .then(() => {
+                const newAdjustment = pricing.items.adjustments[1];
+                assert.strictEqual(newAdjustment.amount, 300);
+                done();
+              });
+          });
+
+          it('does not allow taxExempt or taxCode to be overridden', function () {
+            const { pricing, valid } = this;
+            const { itemCode } = valid;
+            pricing
+              .adjustment({ itemCode, taxCode: 'test-tax-code', taxExempt: false })
+              .then(() => {
+                const newAdjustment = pricing.items.adjustments[1];
+                assert.strictEqual(newAdjustment.taxCode, null);
+                assert.strictEqual(newAdjustment.taxExempt, true);
+                done();
+              });
+          });
+        });
+
+        describe('changes', function () {
+          it('allows amount to chage', function (done) {
+            const { pricing } = this;
+            const newAdjustment = pricing.items.adjustments[0];
+            assert.strictEqual(newAdjustment.amount, 40);
+            pricing
+              .adjustment({ id: newAdjustment.id, amount: 400 })
+              .then(() => {
+                assert.strictEqual(newAdjustment.amount, 400);
+                done();
+              });
+          });
+
+          it('allows quantity to change', function (done) {
+            const { pricing } = this;
+            const newAdjustment = pricing.items.adjustments[0];
+            assert.strictEqual(newAdjustment.quantity, 1);
+            pricing
+              .adjustment({ id: newAdjustment.id, quantity: 200 })
+              .then(() => {
+                assert.strictEqual(newAdjustment.quantity, 200);
+                done();
+              });
+          });
+
+          it('does not allow taxExempt or taxCode to change', function () {
+            const { pricing } = this;
+            const newAdjustment = pricing.items.adjustments[0];
+            assert.strictEqual(newAdjustment.taxCode, null);
+            assert.strictEqual(newAdjustment.taxExempt, true);
+            pricing
+              .adjustment({ id: newAdjustment.id, taxCode: 'test-tax-code', taxExempt: false })
+              .then(() => {
+                assert.strictEqual(newAdjustment.taxCode, null);
+                assert.strictEqual(newAdjustment.taxExempt, true);
+                done();
+              });
+          });
+        });
+
+        describe('currency', function () {
+          it('rejects when the item does not support the requested currency', function (done) {
+            const { pricing, sandbox, valid } = this;
+            const stub = sandbox.stub();
+            pricing
+              .currency('EUR')
+              .then(() => assert.strictEqual(pricing.items.currency, 'EUR'))
+              .adjustment({ ...valid, currency: 'EUR' })
+              .then(stub)
+              .catch(err => {
+                assert.strictEqual(err.code, 'invalid-item-currency');
+              })
+              .done(price => {
+                assert.strictEqual(price.currency.code, 'EUR');
+                assert(stub.notCalled);
+                done();
+              });
+          });
+
+          it('rejects when the item does not support the pricing currency', function (done) {
+            const { pricing, sandbox, validEur } = this;
+            const stub = sandbox.stub();
+            assert.strictEqual(pricing.items.currency, 'USD');
+            pricing.adjustment(validEur)
+              .then(stub)
+              .catch(err => {
+                assert(stub.notCalled);
+                assert.strictEqual(err.code, 'invalid-item-currency');
+                done();
+              });
+          });
+        });
       });
     });
   });
@@ -597,8 +758,9 @@ describe('CheckoutPricing', function () {
       });
 
       it(`accepts a blank coupon code and unsets the existing coupon`, function (done) {
+        const { sandbox } = this;
         const part = after(2, done);
-        const errorSpy = sinon.spy();
+        const errorSpy = sandbox.spy();
         assert.equal(this.pricing.items.coupon.code, valid);
         this.pricing.on('error', errorSpy);
         this.pricing.coupon()
@@ -1457,8 +1619,9 @@ describe('CheckoutPricing', function () {
           });
 
           it('requests tax amounts for each code', function (done) {
-            sinon.spy(this.recurly, 'tax');
-            this.pricing
+            const { pricing, sandbox } = this;
+            sandbox.spy(this.recurly, 'tax');
+            pricing
               .reprice()
               .then(price => {
                 assert(this.recurly.tax.calledWith(sinon.match({ taxCode: 'valid-tax-code' })));
@@ -1531,17 +1694,18 @@ describe('CheckoutPricing', function () {
 
         describe('given VAT numbers on address and tax info', () => {
           it('takes the VAT number from the tax info', function (done) {
-            sinon.spy(this.recurly, 'tax');
-            this.pricing
-              .subscription(this.subscriptionPricingExample)
+            const { pricing, recurly, sandbox, subscriptionPricingExample } = this;
+            sandbox.spy(recurly, 'tax');
+            pricing
+              .subscription(subscriptionPricingExample)
               .address({ vatNumber: 'on-address' })
               .tax({ vatNumber: 'on-tax-info' })
               .then(() => {
-                assert.equal(this.pricing.items.address.vatNumber, 'on-address');
-                assert.equal(this.pricing.items.tax.vatNumber, 'on-tax-info');
+                assert.equal(pricing.items.address.vatNumber, 'on-address');
+                assert.equal(pricing.items.tax.vatNumber, 'on-tax-info');
               })
               .done(price => {
-                assert(this.recurly.tax.lastCall.calledWith(sinon.match({ vatNumber: 'on-tax-info' })));
+                assert(recurly.tax.lastCall.calledWith(sinon.match({ vatNumber: 'on-tax-info' })));
                 done();
               });
           });
@@ -1549,16 +1713,17 @@ describe('CheckoutPricing', function () {
 
         describe('given a shipping address and billing address', () => {
           it('taxes according to the shipping address', function (done) {
-            sinon.spy(this.recurly, 'tax');
+            const { pricing, recurly, sandbox, subscriptionPricingExample } = this;
+            sandbox.spy(recurly, 'tax');
 
             const address = { country: 'DE', postalCode: 'DE-code', vatNumber: 'arbitrary' };
             const shippingAddress = { country: 'US', postalCode: '94117' };
-            return this.pricing
-              .subscription(this.subscriptionPricingExample)
+            return pricing
+              .subscription(subscriptionPricingExample)
               .address(address)
               .shippingAddress(shippingAddress)
               .done(price => {
-                assert(this.recurly.tax.lastCall.calledWith(sinon.match(shippingAddress)));
+                assert(recurly.tax.lastCall.calledWith(sinon.match(shippingAddress)));
                 done();
               });
           });
