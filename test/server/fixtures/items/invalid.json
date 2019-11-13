@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "not-found",
+    "message": "Couldn't find Item with item_code=invalid"
+  }
+}

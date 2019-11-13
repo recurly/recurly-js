@@ -1,0 +1,13 @@
+{
+  "code": "basic-item",
+  "name": "Basic Item",
+  "tax_code": null,
+  "tax_exempt": true,
+  "currencies": [
+    {
+      "currency_code": "EUR",
+      "currency_symbol": "€",
+      "unit_amount": 100.0
+    }
+  ]
+}
