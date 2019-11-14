@@ -456,21 +456,6 @@ describe('CheckoutPricing', function () {
             part();
           });
       });
-
-      describe('when given an id and itemCode', function () {
-        it('rejects with the expected error code', function (done) {
-          const { pricing, sandbox } = this;
-          const stub = sandbox.stub();
-
-          pricing.adjustment({ itemCode: 'any-item-code', id: 'adjustment-0' })
-            .then(stub)
-            .catch(err => {
-              assert(stub.notCalled);
-              assert.strictEqual(err.code, 'item-code-not-allowed');
-              done();
-            });
-        });
-      });
     });
 
     describe('given multiple currencies', () => {
@@ -554,6 +539,22 @@ describe('CheckoutPricing', function () {
           assert.strictEqual(newAdjustment.taxExempt, true);
         });
 
+        it('allows currency to be specified, and sets its price accordingly', function (done) {
+          const { pricing, valid } = this;
+          pricing
+            .adjustment({ ...valid, currency: 'CAD' })
+            .done(price => {
+              const newAdjustment = pricing.items.adjustments[1];
+              assert.strictEqual(pricing.items.adjustments.length, 2);
+              assert.strictEqual(newAdjustment.amount, 60);
+              assert.strictEqual(newAdjustment.quantity, 1);
+              assert.strictEqual(newAdjustment.currency, 'CAD');
+              assert.strictEqual(newAdjustment.taxCode, null);
+              assert.strictEqual(newAdjustment.taxExempt, true);
+              done();
+            });
+        });
+
         describe('overrides', function () {
           it('allows an amount override', function (done) {
             const { pricing, valid } = this;
@@ -622,6 +623,30 @@ describe('CheckoutPricing', function () {
         });
 
         describe('currency', function () {
+          beforeEach(function (done) {
+            setTimeout(done, 2000)
+          });
+          it('allows the currency to change if the item has a corresponding price', function (done) {
+            const { pricing, valid } = this;
+            assert.strictEqual(pricing.items.currency, 'USD');
+            pricing
+              .adjustment({ ...valid, currency: 'CAD' })
+              .reprice()
+              .then(() => {
+                debugger;
+                assert.strictEqual(pricing.items.currency, 'USD');
+                assert.strictEqual(pricing.price.now.total, '40.00');
+              })
+              .currency('CAD')
+              .reprice()
+              .then(() => {
+                debugger;
+                assert.strictEqual(pricing.items.currency, 'CAD');
+                assert.strictEqual(pricing.price.now.total, '60.00');
+                done();
+              });
+          });
+
           it('rejects when the item does not support the requested currency', function (done) {
             const { pricing, sandbox, valid } = this;
             const stub = sandbox.stub();
