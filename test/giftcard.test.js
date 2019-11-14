@@ -1,7 +1,6 @@
-import each from 'lodash.foreach';
 import assert from 'assert';
-import {Recurly} from '../lib/recurly';
-import {apiTest} from './support/helpers';
+import { Recurly } from '../lib/recurly';
+import { apiTest } from './support/helpers';
 
 apiTest(function (requestMethod) {
   describe('Recurly.giftcard (' + requestMethod + ')', function () {

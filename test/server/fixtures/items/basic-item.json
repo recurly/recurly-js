@@ -1,0 +1,18 @@
+{
+  "code": "basic-item",
+  "name": "Basic Item",
+  "tax_code": null,
+  "tax_exempt": true,
+  "currencies": [
+    {
+      "currency_code": "CAD",
+      "currency_symbol": "$",
+      "unit_amount": 60.0
+    },
+    {
+      "currency_code": "USD",
+      "currency_symbol": "$",
+      "unit_amount": 40.0
+    }
+  ]
+}

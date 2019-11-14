@@ -12,13 +12,7 @@ const staticConfig = {
   port: 9876,
   colors: true,
   autoWatch: true,
-  browsers: [
-    'ChromeHeadless'
-    // 'ChromeDebug'
-    // 'FirefoxDebug'
-    // 'VirtualBoxIE11Win7'
-    // 'VirtualBoxEdgeWin10'
-  ],
+  browsers: [process.env.BROWSER || 'ChromeHeadless'],
   singleRun: true,
   concurrency: Infinity,
   browserDisconnectTimeout: 800000,
@@ -34,15 +28,11 @@ const staticConfig = {
       base: 'Firefox',
       flags: ['--devtools']
     },
-    VirtualBoxEdgeWin10: {
-      base: 'VirtualBoxEdge',
-      keepAlive: true,
-      uuid: 'fb87b330-a1dc-4d6d-ac5b-e669912f1a4f'
-    },
     VirtualBoxIE11Win7: {
       base: 'VirtualBoxIE11',
       keepAlive: true,
-      vmName: 'IE11 - Win7'
+      vmName: 'IE11 - Win7',
+      uuid: '9c440145-fbea-49ea-a22f-4162bfaaaa2f'
     }
   },
   client: {
@@ -62,8 +52,7 @@ const staticConfig = {
 };
 
 function runner (config) {
-  const logLevel = config.LOG_INFO;
-  config.set(Object.assign({}, staticConfig, { logLevel }));
+  config.set(Object.assign({}, staticConfig, { logLevel: config.LOG_INFO }));
 }
 
 const server = require('./test/server');

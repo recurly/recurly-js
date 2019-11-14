@@ -1,6 +1,6 @@
 {
   "error": {
-    "code": "not_found",
+    "code": "not-found",
     "message": "Couldn't find Plan with plan_code = invalid"
   }
 }
