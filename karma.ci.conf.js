@@ -11,19 +11,19 @@ const customLaunchers = {
     base: 'BrowserStack',
     browser: 'Chrome',
     os: 'OS X',
-    os_version: 'Mojave'
+    os_version: 'Catalina'
   },
   bs_firefox: {
     base: 'BrowserStack',
     browser: 'Firefox',
     os: 'OS X',
-    os_version: 'Mojave'
+    os_version: 'Catalina'
   },
   bs_safari: {
     base: 'BrowserStack',
     browser: 'Safari',
     os: 'OS X',
-    os_version: 'Mojave',
+    os_version: 'Catalina',
     'browserstack.safari.enablePopups': 'true'
   },
 
@@ -48,14 +48,14 @@ const customLaunchers = {
     base: 'BrowserStack',
     device: 'iPhone XS',
     os: 'ios',
-    os_version: '13.0',
+    os_version: '13.2',
     real_mobile: true
   },
   bs_ios_12: {
     base: 'BrowserStack',
     device: 'iPhone XS',
     os: 'ios',
-    os_version: '12.2',
+    os_version: '12.4',
     real_mobile: true
   },
 
