@@ -3,7 +3,7 @@ const staticConfig = {
   frameworks: ['mocha', 'sinon', 'source-map-support'],
   files: [
     'build/recurly.js',
-    'build/test.js'
+    'build/test-unit.js'
   ],
   proxies: {
     '/api': 'http://localhost:9877'

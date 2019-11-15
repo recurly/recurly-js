@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <script src="/build/recurly.js"></script>
+    <style>
+      body {
+        background: #f3f3f4;
+      }
+      .test-bed {
+        background: white;
+        border: 2px solid #723080;
+        margin: 1em auto;
+        width: 40%;
+      }
+      .test-bed:nth-child(10n+2) { border-color: #2676a5; }
+      .test-bed:nth-child(10n+3) { border-color: #3da07b; }
+      .test-bed:nth-child(10n+4) { border-color: #e35256; }
+      .test-bed:nth-child(10n+5) { border-color: #e9a720; }
+      .test-bed:nth-child(10n+6) { border-color: #f1da53; }
+      .test-bed:nth-child(10n+7) { border-color: #348c91; }
+      .test-bed:nth-child(10n+8) { border-color: #98bd66; }
+      .test-bed:nth-child(10n+9) { border-color: #e57b37; }
+      .test-bed:nth-child(10n+10) { border-color: #ab426c; }
+
+      .recurly-hosted-field { height: 40px; }
+    </style>
+  </head>
+  <body>
+    <div class="test-bed">
+      <form action="#" data-test="form">
+        <input type="text" data-test="first-name" data-recurly="first_name">
+        <input type="text" data-test="last-name" data-recurly="last_name">
+        <div data-recurly="card"></div>
+      </form>
+      <div data-test="output"></div>
+    </div>
+  </body>
+  <script>
+    var outputEl = document.querySelector('[data-test=output]');
+    var formEl = document.querySelector('[data-test=form]');
+
+    recurly.configure(<%- JSON.stringify(config) %>);
+
+    formEl.addEventListener('submit', function (event) {
+      event.preventDefault();
+      recurly.token(this, function (err, token) {
+        outputEl.innerText = err ? err.message : ('token received: ' + token.id);
+      });
+    });
+  </script>
+</html>

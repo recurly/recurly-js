@@ -1,44 +1,54 @@
-BIN = node_modules/.bin
-WEBPACK = $(BIN)/webpack
-KARMA = $(BIN)/karma
-COVERALLS = $(BIN)/coveralls
-SERVER = $(BIN)/webpack-dev-server --inline --hot --port 8020
-SRC = index.js $(shell find . -type f -name '*.js' ! -path './build/*' -o -name '*.css' ! -path './build/*')
-TESTS = $(shell find test -type f -name '*.js')
+bin = node_modules/.bin
+coveralls = $(bin)/coveralls
+nightwatch = node test/e2e.js
+eslint = $(bin)/eslint ./lib
+karma = $(bin)/karma start
+server = $(bin)/webpack-dev-server --inline --hot --port 8020
+webpack = $(bin)/webpack
+src = index.js $(shell find . -type f -name '*.js' ! -path './build/*' -o -name '*.css' ! -path './build/*')
+tests = $(shell find test -type f -name '*.js')
+
+ifdef RECURLY_JS_CERT
+	server_opts = "--https --cert $(RECURLY_JS_CERT) --key $(RECURLY_JS_KEY)"
+else
+	server_opts = "--https"
+endif
 
 server: build
-ifdef RECURLY_JS_CERT
-	@$(SERVER) --https --cert $(RECURLY_JS_CERT) --key $(RECURLY_JS_KEY)
-else
-	@$(SERVER) --https
-endif
+	@$(server) $(server_opts)
 server-http: build
-	@$(SERVER)
+	@$(server)
 
 build: build/recurly.min.js
-build/recurly.js: index.js $(SRC) node_modules
+build/recurly.js: index.js $(src) node_modules
 	@mkdir -p $(@D)
-	@$(WEBPACK) --display-reasons --display-chunks
+	@$(webpack) --display-reasons --display-chunks
 build/recurly.min.js: build/recurly.js
-	@$(WEBPACK) -p
-build/test.js: $(SRC) $(TESTS)
-	@$(WEBPACK) --config webpack.test.config.js
+	@$(webpack) -p
+build/test-unit.js: $(src) $(tests)
+	@$(webpack) --config webpack.test.config.js
 
-test: build build/test.js
-	@$(KARMA) start karma.conf.js
-test-debug: build build/test.js
+test: test-unit test-e2e
+test-ci: test-unit-ci test-e2e-ci
+test-unit: build build/test-unit.js
+	@$(karma) karma.conf.js
+test-unit-debug: build build/test.js
 	BROWSER=ChromeDebug $(KARMA) start karma.conf.js
-test-ci: build build/test.js
-	@$(KARMA) start karma.ci.conf.js
-ifdef REPORT_COVERAGE
-	@cat ./build/reports/coverage/lcov.info | $(COVERALLS)
+test-unit-ci: build build/test-unit.js
+	@$(karma) karma.ci.conf.js
+test-unit-cov-ci: export REPORT_COVERAGE = true
+test-unit-cov-ci: test-unit-ci
+	@cat ./build/reports/coverage/lcov.info | $(coveralls)
 	@rm -rf ./build/reports
-endif
+test-e2e: build $(src) $(tests)
+	@$(nightwatch)
+test-e2e-ci: build $(src) $(tests)
+	@$(nightwatch) -c nightwatch.ci.conf.js
 
 lint: build
-	@$(BIN)/eslint ./lib
+	@$(eslint)
 lint-fix: build
-	@$(BIN)/eslint ./lib --fix
+	@$(eslint) --fix
 
 node_modules: package.json
 	@npm install --silent
@@ -46,4 +56,6 @@ node_modules: package.json
 clean:
 	@rm -rf node_modules build
 
-.PHONY: test clean
+.PHONY: server server-http
+.PHONY: test-ci test-unit test-unit-ci test-unit-cov-ci test-e2e test-e2e-ci
+.PHONY: lint lint-fix clean

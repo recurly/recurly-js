@@ -1,9 +1,6 @@
 .DS_Store
-.sauce
 .vscode
-
 build
 node_modules
-
 npm-debug.log
 test/server/pid.txt
