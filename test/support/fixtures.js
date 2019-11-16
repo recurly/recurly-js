@@ -194,7 +194,7 @@ const FIXTURES = {
 
 export function applyFixtures () {
   beforeEach(function () {
-    const ctx = this.currentTest.ctx;
+    const { ctx } = this.currentTest;
     if (ctx.fixture) fixture(ctx.fixture, ctx.fixtureOpts);
   });
 
@@ -206,6 +206,16 @@ export function applyFixtures () {
 export function fixture (name, opts = {}) {
   const tpl = FIXTURES[name] || (() => {});
   testBed().innerHTML = tpl(opts);
+}
+
+/**
+ * Clears fixtures
+ */
+function clearFixture () {
+  const bed = testBed();
+  while (bed.lastChild) {
+    bed.removeChild(bed.lastChild);
+  }
 }
 
 /**

@@ -28,11 +28,15 @@ const staticConfig = {
       base: 'Firefox',
       flags: ['--devtools']
     },
+    VirtualBoxEdgeWin10: {
+      base: 'VirtualBoxEdge',
+      keepAlive: true,
+      uuid: process.env.VIRTUALBOX_EDGE_UUID
+    },
     VirtualBoxIE11Win7: {
       base: 'VirtualBoxIE11',
       keepAlive: true,
-      vmName: 'IE11 - Win7',
-      uuid: '9c440145-fbea-49ea-a22f-4162bfaaaa2f'
+      uuid: process.env.VIRTUALBOX_IE11_UUID
     }
   },
   client: {
