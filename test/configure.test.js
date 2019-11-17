@@ -7,8 +7,6 @@ import { applyFixtures } from './support/fixtures';
 import { Recurly } from '../lib/recurly';
 
 describe('Recurly.configure', function () {
-  applyFixtures();
-
   beforeEach(function () {
     this.api = `${window.location.protocol}//${window.location.host}/api`;
     this.recurly = new Recurly();
@@ -259,6 +257,8 @@ describe('Recurly.configure', function () {
   });
 
   describe('when reconfiguring field selectors', function () {
+    applyFixtures();
+
     this.ctx.fixture = 'multipleForms';
 
     it('resets and reinitializes fields on the new targets', function (done) {
@@ -289,7 +289,7 @@ describe('Recurly.configure', function () {
         }
       });
       assert.strictEqual(recurly.configured, true);
-      setTimeout(recurly.ready(done), 1000);
+      recurly.ready(done);
     }
   });
 });

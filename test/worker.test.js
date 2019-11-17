@@ -96,7 +96,7 @@ describe('IntervalWorker', () => {
     it('stops the worker', function (done) {
       const { valid, perform } = this;
       const part = after(2, () => done());
-      const worker = this.worker = new IntervalWorker({ period: 750, ...valid });
+      const worker = this.worker = new IntervalWorker({ period: 50, ...valid });
       worker.start();
 
       setTimeout(() => {
@@ -105,12 +105,12 @@ describe('IntervalWorker', () => {
         assert.strictEqual(worker.active, false);
         assert.strictEqual(worker._intervalId, undefined);
         part();
-      }, 1000);
+      }, 75);
 
       setTimeout(() => {
         assert.strictEqual(perform.calledOnce, true);
         part();
-      }, 1800);
+      }, 200);
     });
 
     it('prevents further calls', function () {

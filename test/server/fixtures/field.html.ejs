@@ -74,7 +74,9 @@
     function config () {
       if (window._config) return window._config;
       var query = window.location.hash;
-      return window._config = JSON.parse(decodeURIComponent(query.substring(query.indexOf('config=') + 7)) || {});
+      return window._config = JSON.parse(
+        decodeURIComponent(query.substring(query.indexOf('config=') + 7)) || {}
+      );
     }
 
     function value (newValue) {

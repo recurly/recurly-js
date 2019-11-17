@@ -199,23 +199,17 @@ export function applyFixtures () {
   });
 
   afterEach(function () {
-    if (this.currentTest.ctx.fixture) fixture();
+    if (!this.currentTest.ctx.fixture) return;
+    const bed = testBed();
+    while (bed.lastChild) {
+      bed.removeChild(bed.lastChild);
+    }
   });
 }
 
 export function fixture (name, opts = {}) {
   const tpl = FIXTURES[name] || (() => {});
   testBed().innerHTML = tpl(opts);
-}
-
-/**
- * Clears fixtures
- */
-function clearFixture () {
-  const bed = testBed();
-  while (bed.lastChild) {
-    bed.removeChild(bed.lastChild);
-  }
 }
 
 /**

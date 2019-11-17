@@ -42,8 +42,7 @@ const staticConfig = {
   client: {
     captureConsole: true,
     mocha: {
-      timeout: 7000, // 7 seconds
-      grep: ''
+      timeout: 7000 // 7 seconds
     }
   },
   coverageReporter: {

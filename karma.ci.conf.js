@@ -39,8 +39,7 @@ const customLaunchers = {
     browser: 'IE',
     browser_version: '11.0',
     os: 'Windows',
-    os_version: '7',
-    'browserstack.ie.arch': 'x32',
+    os_version: '10',
     'browserstack.ie.enablePopups': 'true'
   },
 

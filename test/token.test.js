@@ -29,16 +29,117 @@ apiTest(requestMethod => {
       cvv: 'CardCvvElement'
     };
 
-    applyFixtures();
+    describe('without markup', function () {
+      buildRecurly();
 
-    beforeEach(function (done) {
-      this.recurly = initRecurly({ cors: requestMethod === 'cors' });
-      this.recurly.ready(() => done());
+      it('requires a callback', function () {
+        assert.throws(() => this.recurly.token(clone(valid)), /callback/);
+      });
+
+      it('requires Recurly.configure', function () {
+        const recurly = new Recurly();
+        assert.throws(() => recurly.token(clone(valid), () => {}), /configure/);
+      });
     });
 
-    afterEach(function () {
-      this.recurly.destroy();
+    describe('when using minimal markup', function () {
+      applyFixtures();
+      buildRecurly();
+
+      this.ctx.fixture = 'minimal';
+
+      describe('when called with a plain object', function () {
+        tokenSuite(plainObjectBuilder);
+      });
+
+      describe('when called with an HTMLFormElement', function () {
+        tokenSuite(formBuilder);
+      });
+
+      describe('when called with an Elements instance', function () {
+        this.ctx.fixture = 'elements';
+
+        tokenSuite(elementsBuilder);
+      });
+
+      describe('when called with an HTMLFormElement containing valid Elements', function () {
+        this.ctx.fixture = 'elements';
+
+        tokenSuite(elementsFormOnlyBuilder);
+      });
     });
+
+    describe('when using all markup', function () {
+      applyFixtures();
+      buildRecurly();
+
+      this.ctx.fixture = 'all';
+
+      describe('when called with a plain object', function () {
+        tokenSuite(plainObjectBuilder);
+        tokenAllMarkupSuite(plainObjectBuilder);
+      });
+
+      describe('when called with an HTMLFormElement', function () {
+        tokenSuite(formBuilder);
+        tokenAllMarkupSuite(formBuilder);
+      });
+
+      describe('when called with an Elements instance', function () {
+        this.ctx.fixture = 'elements';
+        tokenAllMarkupSuite(elementsBuilder);
+      });
+    });
+
+    describe('when behaving as an element/hosted field', function () {
+      applyFixtures();
+      buildRecurly();
+
+      this.ctx.fixture = 'minimal';
+
+      beforeEach(function () {
+        this.recurly.config.parent = false;
+      });
+
+      tokenSuite(embeddedBuilder);
+    });
+
+    describe('tokenizing elements', function () {
+      describe('when called with an HTMLFormElement containing no tokenizing Elements', function () {
+        applyFixtures();
+        buildRecurly();
+
+        this.ctx.fixture = 'elements';
+
+        it('produces an error', function (done) {
+          const { recurly } = this;
+          const form = testBed().querySelector('#test-form');
+          const container = testBed().querySelector('#recurly-elements');
+          const elements = recurly.Elements();
+          const cardMonthElement = elements.CardMonthElement();
+          const cardYearElement = elements.CardYearElement();
+          cardMonthElement.attach(container);
+          cardYearElement.attach(container);
+
+          recurly.token(form, (err, token) => {
+            assert.strictEqual(err.code, 'elements-tokenization-not-possible');
+            assert.deepEqual(err.found, ['CardMonthElement', 'CardYearElement']);
+            done();
+          });
+        });
+      });
+    });
+
+    function buildRecurly () {
+      beforeEach(function (done) {
+        this.recurly = initRecurly({ cors: requestMethod === 'cors' });
+        this.recurly.ready(() => done());
+      });
+
+      afterEach(function () {
+        this.recurly.destroy();
+      });
+    };
 
     /**
      * For each example, updates corresponding hosted fields and returns all others
@@ -124,93 +225,6 @@ apiTest(requestMethod => {
     function embeddedBuilder (example) {
       return Promise.resolve({ tokenArgs: [example], tokenBus: this.recurly.bus });
     }
-
-    describe('without markup', function () {
-      it('requires a callback', function () {
-        assert.throws(() => this.recurly.token(clone(valid)), /callback/);
-      });
-
-      it('requires Recurly.configure', function () {
-        const recurly = new Recurly();
-        assert.throws(() => recurly.token(clone(valid), () => {}), /configure/);
-      });
-    });
-
-    describe('when using minimal markup', function () {
-      this.ctx.fixture = 'minimal';
-
-      describe('when called with a plain object', function () {
-        tokenSuite(plainObjectBuilder);
-      });
-
-      describe('when called with an HTMLFormElement', function () {
-        tokenSuite(formBuilder);
-      });
-
-      describe('when called with an Elements instance', function () {
-        this.ctx.fixture = 'elements';
-
-        tokenSuite(elementsBuilder);
-      });
-
-      describe('when called with an HTMLFormElement containing valid Elements', function () {
-        this.ctx.fixture = 'elements';
-
-        tokenSuite(elementsFormOnlyBuilder);
-      });
-    });
-
-    describe('when using all markup', function () {
-      this.ctx.fixture = 'all';
-
-      describe('when called with a plain object', function () {
-        tokenSuite(plainObjectBuilder);
-        tokenAllMarkupSuite(plainObjectBuilder);
-      });
-
-      describe('when called with an HTMLFormElement', function () {
-        tokenSuite(formBuilder);
-        tokenAllMarkupSuite(formBuilder);
-      });
-
-      describe('when called with an Elements instance', function () {
-        this.ctx.fixture = 'elements';
-        tokenAllMarkupSuite(elementsBuilder);
-      });
-    });
-
-    describe('when behaving as an element/hosted field', function () {
-      this.ctx.fixture = 'minimal';
-
-      beforeEach(function () {
-        this.recurly.config.parent = false;
-      });
-
-      tokenSuite(embeddedBuilder);
-    });
-
-    describe('tokenizing elements', function () {
-      describe('when called with an HTMLFormElement containing no tokenizing Elements', function () {
-        this.ctx.fixture = 'elements';
-
-        it('produces an error', function (done) {
-          const { recurly } = this;
-          const form = testBed().querySelector('#test-form');
-          const container = testBed().querySelector('#recurly-elements');
-          const elements = recurly.Elements();
-          const cardMonthElement = elements.CardMonthElement();
-          const cardYearElement = elements.CardYearElement();
-          cardMonthElement.attach(container);
-          cardYearElement.attach(container);
-
-          recurly.token(form, (err, token) => {
-            assert.strictEqual(err.code, 'elements-tokenization-not-possible');
-            assert.deepEqual(err.found, ['CardMonthElement', 'CardYearElement']);
-            done();
-          });
-        });
-      });
-    });
 
     /**
      * Applies a series of standard expectations for tokenization, accepting

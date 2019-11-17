@@ -623,9 +623,6 @@ describe('CheckoutPricing', function () {
         });
 
         describe('currency', function () {
-          beforeEach(function (done) {
-            setTimeout(done, 2000)
-          });
           it('allows the currency to change if the item has a corresponding price', function (done) {
             const { pricing, valid } = this;
             assert.strictEqual(pricing.items.currency, 'USD');
@@ -633,14 +630,12 @@ describe('CheckoutPricing', function () {
               .adjustment({ ...valid, currency: 'CAD' })
               .reprice()
               .then(() => {
-                debugger;
                 assert.strictEqual(pricing.items.currency, 'USD');
                 assert.strictEqual(pricing.price.now.total, '40.00');
               })
               .currency('CAD')
               .reprice()
               .then(() => {
-                debugger;
                 assert.strictEqual(pricing.items.currency, 'CAD');
                 assert.strictEqual(pricing.price.now.total, '60.00');
                 done();
