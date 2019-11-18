@@ -38,6 +38,15 @@ describe('Recurly.validate', function () {
       assert(type === 'visa');
     });
 
+    it('should parse discover', function () {
+      assert(recurly.validate.cardType('3050990900242198') === 'discover');
+      assert(recurly.validate.cardType('36003010814263') === 'discover');
+      assert(recurly.validate.cardType('6011111111111117') === 'discover');
+      assert(recurly.validate.cardType('6011000990139424') === 'discover');
+      assert(recurly.validate.cardType('6229252986142899') === 'discover');
+      assert(recurly.validate.cardType('8131917256371926354') === 'discover');
+    });
+
     it('should parse mastercard', function () {
       assert(recurly.validate.cardType('5454545454545454') === 'master');
       assert(recurly.validate.cardType('5555555555554444') === 'master');
