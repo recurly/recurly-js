@@ -3,8 +3,6 @@ import {applyFixtures} from '../../support/fixtures';
 import {initRecurly} from '../../support/helpers';
 import PricingAttachment from '../../../lib/recurly/pricing/subscription/attachment'
 
-const container = () => window.document.querySelector('#test-pricing');
-
 describe('Recurly.Pricing.attach', function () {
   beforeEach(function (done) {
     this.recurly = initRecurly();
@@ -14,9 +12,11 @@ describe('Recurly.Pricing.attach', function () {
 
   applyFixtures();
 
+  const container = () => window.document.querySelector('#test-pricing');
+
   describe('when no container is given', function () {
     it('throws an error', function () {
-      assert.throws(() => this.pricing.attach(container()), Error, 'invalid dom element');
+      assert.throws(() => this.pricing.attach(null), Error, 'invalid dom element');
     });
   });
 

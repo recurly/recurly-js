@@ -128,8 +128,6 @@ describe('CheckoutPricing#attach', function () {
       giftcard: 'super-gift-card'
     };
 
-    applyFixtures();
-
     beforeEach(function () {
       assert(typeof this.pricing.attachment === 'undefined');
       this.pricing.attach(container());

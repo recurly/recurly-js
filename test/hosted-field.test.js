@@ -7,12 +7,12 @@ import {Recurly} from '../lib/recurly';
 describe('Recurly.HostedField', function () {
   applyFixtures();
 
+  this.ctx.fixture = 'minimal';
+
   beforeEach(function (done) {
     this.recurly = initRecurly();
     this.recurly.ready(done);
   });
-
-  this.ctx.fixture = 'minimal';
 
   describe('when instantiated on a mobile device', function () {
     stubAsMobileDevice();

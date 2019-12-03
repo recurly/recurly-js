@@ -1,12 +1,19 @@
 import assert from 'assert';
+import { initRecurly } from './support/helpers';
 import { isAUid } from './support/matchers';
 import { Recurly } from '../lib/recurly';
 import CheckoutPricing from '../lib/recurly/pricing/checkout';
+import Elements from '../lib/recurly/elements';
 import SubscriptionPricing from '../lib/recurly/pricing/subscription';
 
 describe('Recurly', function () {
   beforeEach(function () {
     this.recurly = new Recurly;
+    this.sandbox = sinon.createSandbox();
+  });
+
+  afterEach(function () {
+    this.sandbox.reset();
   });
 
   it('should have a version', function () {
@@ -53,6 +60,20 @@ describe('Recurly', function () {
     it('is set on sessionStorage', function () {
       const { subject } = this;
       assert.strictEqual(subject, sessionStorage.getItem('__recurly__.sessionId'));
+    });
+  });
+
+  describe('configure', function () {
+    describe('when called repeatedly', function () {
+      it('persists bus recipients', function () {
+        const { recurly, sandbox } = this;
+        const stub = sandbox.stub();
+        initRecurly(recurly);
+        recurly.bus.add(stub);
+        assert.strictEqual(!!~recurly.bus.recipients.indexOf(stub), true);
+        recurly.configure({ publicKey: 'test-2' });
+        assert.strictEqual(!!~recurly.bus.recipients.indexOf(stub), true);
+      });
     });
   });
 
@@ -150,6 +171,13 @@ describe('Recurly', function () {
           hostedFieldsStub.state.testField
         ));
       });
+    });
+  });
+
+  describe('Elements factory', () => {
+    it('has an Elements factory at recurly.Elements', function () {
+      const { recurly } = this;
+      assert(recurly.Elements() instanceof Elements);
     });
   });
 });

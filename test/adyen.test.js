@@ -6,7 +6,6 @@ import {Recurly} from '../lib/recurly';
 import {fixture} from './support/fixtures';
 import {initRecurly, apiTest} from './support/helpers';
 
-
 apiTest(function (requestMethod) {
   describe(`Recurly.Adyen (${requestMethod})`, function () {
     beforeEach(function () {
