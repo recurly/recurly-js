@@ -35,6 +35,7 @@ jobs:
     - env: BROWSER=safari
     - env: BROWSER=edge
     - env: BROWSER=ie_11
+    - env: BROWSER=ios_13
     - env: BROWSER=ios_12
     - env: BROWSER=android_9
     - env: BROWSER=android_8
