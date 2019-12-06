@@ -1,6 +1,6 @@
 bin = node_modules/.bin
 coveralls = $(bin)/coveralls
-nightwatch = node test/e2e.js
+wdio = $(bin)/wdio
 eslint = $(bin)/eslint ./lib
 karma = $(bin)/karma start
 server = $(bin)/webpack-dev-server --inline --hot --port 8020
@@ -41,9 +41,9 @@ test-unit-cov-ci: test-unit-ci
 	@cat ./build/reports/coverage/lcov.info | $(coveralls)
 	@rm -rf ./build/reports
 test-e2e: build $(src) $(tests)
-	@$(nightwatch)
+	@$(wdio) wdio.conf.js
 test-e2e-ci: build $(src) $(tests)
-	@$(nightwatch) -c nightwatch.ci.conf.js
+	@$(wdio) wdio.ci.conf.js
 
 lint: build
 	@$(eslint)

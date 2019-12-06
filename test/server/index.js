@@ -3,9 +3,6 @@ const cors = require('@koa/cors');
 const ejs = require('koa-ejs');
 const fs = require('fs');
 const jsonp = require('koa-jsonp');
-const route = require('koa-route');
-const logger = require('koa-logger');
-const bodyParser = require('koa-bodyparser');
 const methodOverride = require('koa-override');
 const Koa = require('koa');
 const koaQs = require('koa-qs');
@@ -29,8 +26,8 @@ ejs(app, { root: __dirname, layout: false, viewExt: 'html.ejs', cache: false });
 app.use(route.get('/build/:artifact', build));
 app.use(route.get('/e2e', e2e));
 app.use(route.get('/frame_mock', postMessage));
-app.use(route.get('/mock-404'), ctx => ctx.status = 404);
-app.use(route.get('/mock-200'), ok);
+app.use(route.get('/mock-404', ctx => ctx.status = 404));
+app.use(route.get('/mock-200', ok));
 
 // Standard API fixtures
 app.use(route.get('/apple_pay/info', json));
