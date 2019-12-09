@@ -1,5 +1,12 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.11.0
+
+* Adds Elements [#568][568]
+* Adds support for Items to CheckoutPricing [#566][566]
+* Adds support for new Discover BIN ranges [#569][569]
+* Fixes PayPal cancel event firing on successful flow completion [#564][564]
+
 ### Version 4.10.3
 
 * Renders Wirecard 3D Secure challenge as an iframe [#555][555]
@@ -293,6 +300,10 @@
 
 * Full rewrite for Billing Info tokenization
 
+[569]: https://github.com/recurly/recurly-js/commit/bb146281f315f017df7c6f377afea3343184ff44
+[568]: https://github.com/recurly/recurly-js/commit/c089ce352a288a30069ebc1020dd771cd591d800
+[566]: https://github.com/recurly/recurly-js/commit/8e2f39ca6da0c0748f19910e44937a61d68acfa2
+[564]: https://github.com/recurly/recurly-js/commit/3603789ce81344c6048cfc55b2c1a61e222523ce
 [556]: https://github.com/recurly/recurly-js/commit/c084d8cc7ad7275660ca367f708dee4818405eec
 [555]: https://github.com/recurly/recurly-js/commit/8f0c5774864fded21ec36eba70cba4800f5a8ab7
 [543]: https://github.com/recurly/recurly-js/commit/1ec42923673016ca45c6ca2f155b67403ab1b839
