@@ -1,6 +1,6 @@
 {
-  "code": "intermediate",
-  "name": "Intermediate",
+  "code": "free-trial-no-setup",
+  "name": "Free trial without a setup fee",
   "period": {
     "interval": "months",
     "length": 1
@@ -11,8 +11,8 @@
   },
   "price": {
     "USD": {
-      "setup_fee": 2.0,
-      "unit_amount": 49.00
+      "setup_fee": 0.0,
+      "unit_amount": 49.0
     }
   },
   "addons": [{
