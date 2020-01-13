@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { initRecurly } from './support/helpers';
+import { applyFixtures } from './support/fixtures';
+import { initRecurly, nextTick, testBed } from './support/helpers';
 import { isAUid } from './support/matchers';
 import { Recurly } from '../lib/recurly';
 import CheckoutPricing from '../lib/recurly/pricing/checkout';
@@ -73,6 +74,53 @@ describe('Recurly', function () {
         assert.strictEqual(!!~recurly.bus.recipients.indexOf(stub), true);
         recurly.configure({ publicKey: 'test-2' });
         assert.strictEqual(!!~recurly.bus.recipients.indexOf(stub), true);
+      });
+
+      describe('when hostedFields are not finished initializing', function () {
+        applyFixtures();
+
+        this.ctx.fixture = 'multipleForms';
+
+        it('resets hostedFields and abandons the prior listeners', function (done) {
+          const { recurly, sandbox } = this;
+          const readyStub = sandbox.stub();
+          sandbox.spy(recurly, 'off');
+          assert.strictEqual(recurly.readyState, 0);
+          initRecurly(recurly, {
+            fields: {
+              number: { selector: '#number-1' },
+              month: { selector: '#month-1' },
+              year: { selector: '#year-1' },
+              cvv: { selector: '#cvv-1' }
+            }
+          });
+          assert.strictEqual(recurly.readyState, 1);
+          assert(recurly.off.notCalled);
+          recurly.configure({
+            fields: {
+              number: { selector: '#number-2' },
+              month: { selector: '#month-2' },
+              year: { selector: '#year-2' },
+              cvv: { selector: '#cvv-2' }
+            }
+          });
+          assert.strictEqual(recurly.readyState, 1);
+          recurly.on('hostedFields:ready', readyStub);
+
+          recurly.ready(() => {
+            // perform on next tick to allow the ready callback stack to proceed to the stub
+            nextTick(() => {
+              assert.strictEqual(recurly.readyState, 2);
+              assert(readyStub.calledOnce);
+              assert.strictEqual(testBed().querySelectorAll('#test-form-1 iframe').length, 0);
+              assert.strictEqual(testBed().querySelectorAll('#test-form-2 iframe').length, 4);
+              assert(recurly.off.calledWithExactly('hostedFields:ready'));
+              assert(recurly.off.calledWithExactly('hostedFields:state:change'));
+              assert(recurly.off.calledWithExactly('hostedField:submit'));
+              done();
+            });
+          });
+        });
       });
     });
   });
