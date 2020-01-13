@@ -2,7 +2,7 @@ import each from 'lodash.foreach';
 import clone from 'component-clone';
 import assert from 'assert';
 import combinations from 'combinations';
-import { initRecurly, testBed } from './support/helpers';
+import { initRecurly, nextTick, testBed } from './support/helpers';
 import { applyFixtures } from './support/fixtures';
 import { Recurly } from '../lib/recurly';
 
@@ -266,17 +266,17 @@ describe('Recurly.configure', function () {
       const numberOne = testBed().querySelector('#number-1');
       const numberTwo = testBed().querySelector('#number-2');
 
-      configureRecurly(recurly, '1', () => {
+      configureRecurly(recurly, '1', () => nextTick(() => {
         assert.strictEqual(numberOne.children.length, 1);
         assert.strictEqual(numberTwo.children.length, 0);
         assert(numberOne.querySelector('iframe') instanceof HTMLIFrameElement);
-        configureRecurly(recurly, '2', () => {
+        configureRecurly(recurly, '2', () => nextTick(() => {
           assert.strictEqual(numberOne.children.length, 0);
           assert.strictEqual(numberTwo.children.length, 1);
           assert(numberTwo.querySelector('iframe') instanceof HTMLIFrameElement);
           done();
-        });
-      });
+        }));
+      }));
     });
 
     function configureRecurly (recurly, index, done) {
