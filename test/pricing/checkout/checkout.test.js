@@ -1124,7 +1124,7 @@ describe('CheckoutPricing', function () {
 
           // Subscription with a free trial
           beforeEach(function (done) {
-            subscriptionPricingFactory('intermediate', this.recurly, sub => {
+            subscriptionPricingFactory('free-trial', this.recurly, sub => {
               this.subscriptionPricingExampleFour = sub;
               done();
             });

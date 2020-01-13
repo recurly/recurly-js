@@ -124,7 +124,7 @@ describe('Recurly.Pricing.Subscription', function () {
 
     it('should append 20 pct. of 49.00 to have a correct tax of $9.80', function (done) {
       this.pricing
-        .plan('intermediate', { quantity: 1 })
+        .plan('free-trial', { quantity: 1 })
         .address({
           country: 'GB'
         })
@@ -458,7 +458,7 @@ describe('Recurly.Pricing.Subscription', function () {
 
     it('should apply a trial extension coupon to a plan with a trial period', function (done) {
       this.pricing
-        .plan('intermediate', { quantity: 1 })
+        .plan('free-trial', { quantity: 1 })
         .address({
           country: 'US',
           postal_code: 'NoTax'
@@ -548,6 +548,36 @@ describe('Recurly.Pricing.Subscription', function () {
           done();
         })
         .done();
+    });
+
+    describe('when the plan has a free trial period with a set-up fee', () => {
+      it('applies single-use discounts to the setup fee', function () {
+        return this.pricing
+          .plan('free-trial')
+          .coupon('coop-single-use')
+          .reprice()
+          .then(price => {
+            assert.strictEqual(price.now.discount, '2.00');
+            assert.strictEqual(price.next.discount, '0.00');
+            assert.strictEqual(price.now.total, '0.00');
+            assert.strictEqual(price.next.total, '49.00');
+          });
+      });
+    });
+
+    describe('when the plan has a free trial period and no set-up fee', () => {
+      it('applies single-use discounts to the price next period', function () {
+        return this.pricing
+          .plan('free-trial-no-setup')
+          .coupon('coop-single-use')
+          .reprice()
+          .then(price => {
+            assert.strictEqual(price.now.discount, '0.00');
+            assert.strictEqual(price.next.discount, '20.00');
+            assert.strictEqual(price.now.total, '0.00');
+            assert.strictEqual(price.next.total, '29.00');
+          });
+      });
     });
 
     describe('when the plan is changed', () => {
