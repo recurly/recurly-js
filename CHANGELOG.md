@@ -1,5 +1,11 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.12.0
+
+* Updates kount fraud integration to make use of the Kount JS SDK [#577][577]
+* Fixes discount calculations on free trial subscriptions with a single-use coupon [#574][574]
+* Fixes HostedFields reset on re-configuration preceding initialization [#573][573]
+
 ### Version 4.11.0
 
 * Adds Elements [#568][568]
@@ -300,6 +306,9 @@
 
 * Full rewrite for Billing Info tokenization
 
+[573]: https://github.com/recurly/recurly-js/commit/42c06f62ddc86ce2bc9e5c5827ff1907ef4f441c
+[574]: https://github.com/recurly/recurly-js/commit/a8f31ee905c6d1cda6b1f738fc08334225b2f034
+[577]: https://github.com/recurly/recurly-js/commit/844fd2847be594eaf7ba1e17f24906666ca24d99
 [569]: https://github.com/recurly/recurly-js/commit/bb146281f315f017df7c6f377afea3343184ff44
 [568]: https://github.com/recurly/recurly-js/commit/c089ce352a288a30069ebc1020dd771cd591d800
 [566]: https://github.com/recurly/recurly-js/commit/8e2f39ca6da0c0748f19910e44937a61d68acfa2
