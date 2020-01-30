@@ -28,6 +28,7 @@ app.use(route.get('/gift_cards/:id', json));
 app.use(route.get('/items/:id', json));
 app.use(route.get('/plans/:plan_id', json));
 app.use(route.get('/plans/:plan_id/coupons/:id', json));
+app.use(route.get('/risk/info', json));
 app.use(route.get('/risk/preflights', json));
 app.use(route.get('/tax', json));
 app.use(route.get('/token', json));
@@ -49,6 +50,7 @@ app.use(route.get('/relay', html('relay')));
 app.use(route.get('/field.html', html('field')));
 
 app.use(route.get('/mock-404'), ctx => ctx.status = 404);
+app.use(route.get('/mock-200'), ok);
 
 app.listen(port, () => {
   fs.writeFileSync(`${__dirname}/pid.txt`, process.pid, 'utf-8');

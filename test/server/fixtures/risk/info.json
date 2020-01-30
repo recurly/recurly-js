@@ -1,0 +1,11 @@
+{
+  "profiles": [
+    {
+      "processor": "kount",
+      "params": {
+        "session_id": "9a87s6dfaso978ljk",
+        "script_url": "/api/mock-200"
+      }
+    }
+  ]
+}
