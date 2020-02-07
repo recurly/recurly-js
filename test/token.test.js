@@ -443,9 +443,7 @@ apiTest(requestMethod => {
           });
         });
 
-        prepareExample(Object.assign({}, valid, {
-          fraud_session_id: '123456'
-        }), builder);
+        prepareExample(valid, builder);
 
         it('sends a fraud session id and yields a token', function (done) {
           // This test is to be performed on parents only
@@ -456,6 +454,33 @@ apiTest(requestMethod => {
             assert.strictEqual(spy.firstCall.args[1].inputs.fraud.length, 1);
             assert.strictEqual(spy.firstCall.args[1].inputs.fraud[0].processor, 'litle_threat_metrix');
             assert.strictEqual(spy.firstCall.args[1].inputs.fraud[0].session_id, '123456');
+            assert(!err);
+            assert(token);
+            done();
+          });
+        });
+      });
+
+      describe('when braintree fraud options are enabled', function () {
+        beforeEach(function () {
+          this.recurly.configure({
+            fraud: {
+              braintree: { deviceData: 'braintree-device-data' }
+            }
+          });
+        });
+
+        prepareExample(valid, builder);
+
+        it('sends a fraud session id and yields a token', function (done) {
+          // This test is to be performed on parents only
+          if (!this.recurly.isParent) return done();
+          this.subject((err, token) => {
+            const spy = this.tokenBus.send.withArgs('token:init');
+            assert(spy.calledOnce);
+            assert.strictEqual(spy.firstCall.args[1].inputs.fraud.length, 1);
+            assert.strictEqual(spy.firstCall.args[1].inputs.fraud[0].processor, 'braintree');
+            assert.strictEqual(spy.firstCall.args[1].inputs.fraud[0].session_id, 'braintree-device-data');
             assert(!err);
             assert(token);
             done();

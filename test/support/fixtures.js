@@ -150,7 +150,7 @@ const checkoutPricing = opts => `
   </div>
 `;
 
-const multipleForms = opts => `
+const multipleForms = () => `
   <form action="#" id="test-form-1">
     <div id="number-1"></div>
     <div id="month-1"></div>
@@ -175,7 +175,9 @@ const iframe = opts => `
   ></iframe>
 `;
 
-const threeDSecure = opts => `<div id="three-d-secure-container"></div>`;
+const threeDSecure = () => `<div id="three-d-secure-container"></div>`;
+
+const emptyForm = () => `<form id="test-form"></form>`;
 
 const empty = '';
 
@@ -190,6 +192,7 @@ const FIXTURES = {
   iframe,
   threeDSecure,
   empty,
+  emptyForm
 };
 
 export function applyFixtures () {

@@ -12,25 +12,22 @@ ifdef RECURLY_JS_CERT
 else
 	@$(SERVER) --https
 endif
-
 server-http: build
 	@$(SERVER)
 
 build: build/recurly.min.js
-
 build/recurly.js: index.js $(SRC) node_modules
 	@mkdir -p $(@D)
 	@$(WEBPACK) --display-reasons --display-chunks
-
 build/recurly.min.js: build/recurly.js
 	@$(WEBPACK) -p
-
 build/test.js: $(SRC) $(TESTS)
 	@$(WEBPACK) --config webpack.test.config.js
 
 test: build build/test.js
 	@$(KARMA) start karma.conf.js
-
+test-debug: build build/test.js
+	BROWSER=ChromeDebug $(KARMA) start karma.conf.js
 test-ci: build build/test.js
 	@$(KARMA) start karma.ci.conf.js
 ifdef REPORT_COVERAGE
@@ -40,7 +37,6 @@ endif
 
 lint: build
 	@$(BIN)/eslint ./lib
-
 lint-fix: build
 	@$(BIN)/eslint ./lib --fix
 
