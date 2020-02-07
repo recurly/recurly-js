@@ -31,7 +31,7 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin({ filename: 'recurly.css' })
   ],
-  devtool: 'inline-source-map',
+  devtool: 'inline-source-map'
 };
 
 // Only instrument in CI if we're set to report coverage

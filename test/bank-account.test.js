@@ -4,7 +4,7 @@ import after from 'lodash.after';
 import merge from 'lodash.merge';
 import { Recurly } from '../lib/recurly';
 import { fixture } from './support/fixtures';
-import { initRecurly, apiTest } from './support/helpers';
+import { initRecurly, apiTest, testBed } from './support/helpers';
 
 apiTest(function (requestMethod) {
   describe('Recurly.bankAccount', function () {
@@ -14,7 +14,7 @@ apiTest(function (requestMethod) {
     });
 
     describe(`Recurly.bankAccount.token (${requestMethod})`, function () {
-      var valid = {
+      const valid = {
         routing_number: '123456780',
         account_number: '1987649876',
         account_number_confirmation: '1987649876',
@@ -24,8 +24,9 @@ apiTest(function (requestMethod) {
       };
 
       it('requires a callback', function () {
+        const { recurly } = this;
         try {
-          this.recurly.bankAccount.token(valid);
+          recurly.bankAccount.token(valid);
         } catch (e) {
           assert(~e.message.indexOf('callback'));
         }
@@ -33,7 +34,7 @@ apiTest(function (requestMethod) {
 
       it('requires Recurly.configure', function () {
         try {
-          let recurly = new Recurly();
+          const recurly = new Recurly();
           recurly.bankAccount.token(valid, function () {});
         } catch (e) {
           assert(~e.message.indexOf('configure'));
@@ -47,19 +48,19 @@ apiTest(function (requestMethod) {
       describe('when called with an HTMLFormElement', function () {
         tokenSuite(example => {
           fixture('bank', example);
-          return window.document.querySelector('#test-form');
+          return testBed().querySelector('#test-form');
         });
       });
 
       function tokenSuite (builder) {
         describe('when given a blank value', function () {
-          var example = merge(clone(valid), {
+          const example = merge(clone(valid), {
             name_on_account: ''
           });
 
           it('produces a validation error', function (done) {
-
-            this.recurly.bankAccount.token(builder(example), (err, token) => {
+            const { recurly } = this;
+            recurly.bankAccount.token(builder(example), (err, token) => {
               assert(err.code === 'validation');
               assert(err.fields.length === 1);
               assert(err.fields[0] === 'name_on_account');
@@ -70,7 +71,7 @@ apiTest(function (requestMethod) {
         });
 
         describe('when given valid values', function () {
-          var examples = [
+          const examples = [
             valid,
             merge({
               address1: '400 Alabama St.',
@@ -83,10 +84,11 @@ apiTest(function (requestMethod) {
           ];
 
           it('yields a token', function (done) {
-            var part = after(examples.length, done);
+            const { recurly } = this;
+            const part = after(examples.length, done);
 
             examples.forEach(example => {
-              this.recurly.bankAccount.token(builder(example), (err, token) => {
+              recurly.bankAccount.token(builder(example), (err, token) => {
                 assert(!err);
                 assert(token.id);
                 part();
@@ -95,10 +97,11 @@ apiTest(function (requestMethod) {
           });
 
           it('sets the value of a data-recurly="token" field', function (done) {
-            var part = after(examples.length, done);
+            const { recurly } = this;
+            const part = after(examples.length, done);
 
             examples.forEach(example => {
-              this.recurly.bankAccount.token(builder(example), (err, token) => {
+              recurly.bankAccount.token(builder(example), (err, token) => {
                 assert(!err);
                 assert(token.id);
                 if (example && example.nodeType === 3) {
@@ -109,17 +112,34 @@ apiTest(function (requestMethod) {
             });
           });
         });
+
+        describe('when given a valid IBAN', function () {
+          const validIban = {
+            iban: 'FR1420041010050500013M02606',
+            name_on_account: 'John Smith',
+            country: 'NO'
+          };
+
+          it('yields a token', function (done) {
+            const { recurly } = this;
+            recurly.bankAccount.token(validIban, (err, token) => {
+              assert(!err);
+              assert(token.id);
+              done();
+            });
+          });
+        });
       }
     });
 
     describe('Recurly.bankAccount.bankInfo (' + requestMethod + ')', function () {
-      var valid = {
+      const valid = {
         routingNumber: '123456780'
       };
 
       it('requires a callback', function () {
         try {
-          this.recurly.bankAccount.bankInfo(valid);
+          recurly.bankAccount.bankInfo(valid);
         } catch (e) {
           assert(~e.message.indexOf('callback'));
         }

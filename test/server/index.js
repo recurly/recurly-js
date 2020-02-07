@@ -7,6 +7,7 @@ const jsonp = require('koa-jsonp');
 const route = require('koa-route');
 const logger = require('koa-logger');
 const bodyParser = require('koa-bodyparser');
+const methodOverride = require('koa-override');
 const koaQs = require('koa-qs');
 
 const app = new Koa();
@@ -14,6 +15,7 @@ const port = process.env.PORT || 9877;
 
 koaQs(app);
 app.use(bodyParser());
+app.use(methodOverride());
 app.use(jsonp());
 app.use(cors());
 
@@ -34,6 +36,7 @@ app.use(route.get('/tax', json));
 app.use(route.get('/token', json));
 app.use(route.post('/token', json));
 app.use(route.get('/tokens/:token_id', json));
+app.use(route.get('/tokens', json));
 app.use(route.post('/tokens', json));
 
 app.use(route.get('/apple_pay/info', json));

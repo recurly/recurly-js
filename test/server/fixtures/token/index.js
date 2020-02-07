@@ -1,9 +1,3 @@
-
-/**
- * FIXME: need to get more decline messages: cvv, invalid fields, etc
- * This is contingent upon tokenizing with non-test cards
- */
-
 /**
  * Recurly standard magic decline number
  */

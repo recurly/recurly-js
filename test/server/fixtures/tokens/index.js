@@ -1,22 +1,41 @@
-const merge = require('lodash.merge');
+/**
+ * [GET|POST] /tokens
+ *
+ * The real endpoint is capable of creating all token types, but this fixture
+ * is only concerned with the current client needs: bank account and 3DS tokens
+ */
+
+const BANK_ACCOUNT_TOKENS = Object.freeze({
+  '1987649876': {
+    type: 'bank_account',
+    id: 'bank-account-token-id'
+  }
+});
+
+const IBAN_BANK_ACCOUNT_TOKENS = Object.freeze({
+  'FR1420041010050500013M02606': {
+    type: 'iban_bank_account',
+    id: 'iban-bank-account-token-id'
+  }
+});
 
 const THREE_D_SECURE_ACTION_RESULT_TOKEN = Object.freeze({
   type: 'three_d_secure_action_result',
   id: '3dsart-id-test'
 });
 
-const CREATE_TOKENS = Object.freeze({
-  '3dsat-id-adyen': merge({}, THREE_D_SECURE_ACTION_RESULT_TOKEN, {
+const THREE_D_SECURE_TOKENS = Object.freeze({
+  '3dsat-id-adyen': Object.assign({}, THREE_D_SECURE_ACTION_RESULT_TOKEN, {
     id: '3dsart-id-adyen'
   }),
-  '3dsat-id-stripe': merge({}, THREE_D_SECURE_ACTION_RESULT_TOKEN, {
+  '3dsat-id-stripe': Object.assign({}, THREE_D_SECURE_ACTION_RESULT_TOKEN, {
     id: '3dsart-id-stripe'
   }),
-  '3dsat-id-test': merge({}, THREE_D_SECURE_ACTION_RESULT_TOKEN),
-  'action-token-test': merge({}, THREE_D_SECURE_ACTION_RESULT_TOKEN)
+  '3dsat-id-test': THREE_D_SECURE_ACTION_RESULT_TOKEN,
+  'action-token-test': THREE_D_SECURE_ACTION_RESULT_TOKEN
 });
 
-const INVALID = {
+const CREATE_INVALID = {
   error: {
     code: 'invalid-parameter',
     message: 'your token could not be created'
@@ -25,14 +44,17 @@ const INVALID = {
 
 module.exports = function tokens () {
   const params = this.method === 'GET' ? this.query : this.request.body;
-  const method = (params._method || this.method).toUpperCase();
+  const { type } = params;
+  let token;
 
-  if (method === 'POST') {
-    let token;
-    if (params.type === 'three_d_secure_action_result') {
-      token = CREATE_TOKENS[params.three_d_secure_action_token_id];
-    }
-    if (token) return token;
-    else return INVALID;
+  if (type === 'iban_bank_account') {
+    token = IBAN_BANK_ACCOUNT_TOKENS[params.iban];
+  } else if (type === 'three_d_secure_action_result') {
+    token = THREE_D_SECURE_TOKENS[params.three_d_secure_action_token_id];
+  } else if ('account_number' in params) {
+    token = BANK_ACCOUNT_TOKENS[params.account_number];
   }
+
+  if (token) return token;
+  else return CREATE_INVALID;
 };
