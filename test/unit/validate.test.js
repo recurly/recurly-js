@@ -39,12 +39,10 @@ describe('Recurly.validate', function () {
     });
 
     it('should parse discover', function () {
-      assert(recurly.validate.cardType('3050990900242198') === 'discover');
-      assert(recurly.validate.cardType('36003010814263') === 'discover');
-      assert(recurly.validate.cardType('6011111111111117') === 'discover');
-      assert(recurly.validate.cardType('6011000990139424') === 'discover');
-      assert(recurly.validate.cardType('6229252986142899') === 'discover');
-      assert(recurly.validate.cardType('8131917256371926354') === 'discover');
+      assert(recurly.validate.cardType('6011000090139424') === 'discover');
+      assert(recurly.validate.cardType('64400000901394243') === 'discover');
+      assert(recurly.validate.cardType('650611009013942423') === 'discover');
+      assert(recurly.validate.cardType('601179999013942423') === 'discover');
     });
 
     it('should parse mastercard', function () {
