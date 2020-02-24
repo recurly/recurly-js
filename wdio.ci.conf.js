@@ -36,7 +36,7 @@ const config = exports.config = Object.assign({}, defaultConfig, {
       }
     )
   ],
-  baseUrl: 'https://bs-local.com:9877',
+  baseUrl: 'http://bs-local.com:9877',
   services: ['browserstack']
 });
 
