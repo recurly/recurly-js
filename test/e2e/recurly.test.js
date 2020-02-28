@@ -1,9 +1,5 @@
 const assert = require('assert');
-
-const recurlyJsConfig = {
-  publicKey: 'ewr1-zfJT5nPe1qW7jihI32LIRH'
-};
-const path = `e2e?config=${JSON.stringify(recurlyJsConfig)}`;
+const { init, assertIsAToken } = require('./support/helpers');
 
 const sel = {
   output: '[data-test=output]',
@@ -17,10 +13,10 @@ const sel = {
   cvv: 'input[placeholder="CVV"]'
 };
 
-describe('Recurly.js', () => {
-  it('injects a hosted field', async function () {
-    await browser.url(path);
+describe('Recurly.js', async () => {
+  beforeEach(init);
 
+  it('injects a hosted field', async function () {
     const iframe = await $(sel.iframe);
     const url = await iframe.getAttribute('src');
 
@@ -28,8 +24,6 @@ describe('Recurly.js', () => {
   });
 
   it('creates a token', async function () {
-    await browser.url(path);
-
     const iframe = await $(sel.iframe);
     await browser.switchToFrame(0);
 
@@ -50,10 +44,13 @@ describe('Recurly.js', () => {
     await (await $(sel.firstName)).setValue('John');
     await (await $(sel.lastName)).setValue('Rambo');
 
-    await (await $(sel.submit)).click();
+    const [err, token] = await browser.executeAsync(function (sel, done) {
+      recurly.token(document.querySelector(sel.form), function (err, token) {
+        done([err, token]);
+      });
+    }, sel);
 
-    await browser.waitUntil(() => {
-      return !!~$(sel.output).getText().indexOf('token received');
-    }, 4000);
+    assert.strictEqual(err, null);
+    assertIsAToken(token);
   });
-})
+});

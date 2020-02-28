@@ -71,13 +71,8 @@ async function build (ctx, artifact) {
 }
 
 async function e2e (ctx) {
-  if (!ctx.query.config) {
-    ctx.status = 400;
-    ctx.body = 'config not set';
-    return;
-  }
   setHeaders(ctx);
-  await ctx.render(`views/e2e`, { config: JSON.parse(ctx.query.config) });
+  await ctx.render('views/e2e');
 }
 
 function html (view) {
