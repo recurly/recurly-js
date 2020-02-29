@@ -29,6 +29,7 @@ module.exports = {
     bs_edge: {
       base: 'BrowserStack',
       browser: 'Edge',
+      browser_version: '18.0',
       os: 'Windows',
       os_version: '10',
       'browserstack.edge.enablePopups': 'true'

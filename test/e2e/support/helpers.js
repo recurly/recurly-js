@@ -30,9 +30,11 @@ async function init (opts = {}) {
  * @param {Object} opts to pass to recurly.configure
  */
 async function configureRecurly (opts = {}) {
-  return await browser.executeAsync((opts, done) => {
+  return await browser.executeAsync(function (opts, done) {
     recurly.configure(opts);
-    recurly.ready(() => done());
+    recurly.ready(function () {
+      done();
+    });
   }, opts);
 }
 

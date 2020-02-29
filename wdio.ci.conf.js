@@ -27,7 +27,10 @@ const config = exports.config = Object.assign({}, defaultConfig, {
       customLaunchers[`bs_${BROWSER || 'chrome'}`],
       {
         project,
-        build: `${TRAVIS_BUILD_NUMBER || `local (${branchName()}) e2e`}`,
+        build: `${TRAVIS_BUILD_NUMBER || `Local e2e [${branchName()}]`}`,
+        selenium_version: '3.141.59',
+        'browserstack.debug': true,
+        'browserstack.local': true,
         'browserstack.console': 'verbose',
         'browserstack.networkLogs': true,
         captureTimeout: 1200,
