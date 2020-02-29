@@ -3,17 +3,30 @@ const cors = require('@koa/cors');
 const ejs = require('koa-ejs');
 const fs = require('fs');
 const jsonp = require('koa-jsonp');
-const methodOverride = require('koa-override');
 const Koa = require('koa');
 const koaQs = require('koa-qs');
 const logger = require('koa-logger');
+const methodOverride = require('koa-override');
 const path = require('path');
+const proxy = require('koa-better-http-proxy');
 const route = require('koa-route');
-const send = require('koa-send')
+const send = require('koa-send');
 
 const app = module.exports = new Koa();
 const port = process.env.PORT || 9877;
+const proxyUrl = new URL(process.env.API || 'https://api.recurly.com/js/v1');
 
+app.use(logger());
+
+// API proxy
+app.use(route.all('/api-proxy/*', proxy(proxyUrl.origin, {
+  proxyReqPathResolver: ctx => {
+    return `${proxyUrl.pathname}/${ctx.request.url.replace(/^\/api-proxy\//, '')}`;
+  }
+})));
+app.use(route.get('/hosted-field/*', proxy(`${proxyUrl.origin.replace('api.', 'js.')}/`)));
+
+// Request parsing
 koaQs(app);
 app.use(bodyParser());
 app.use(methodOverride());

@@ -23,7 +23,10 @@ module.exports = {
       browser: 'Safari',
       os: 'OS X',
       os_version: 'Catalina',
-      'browserstack.safari.enablePopups': 'true'
+      'browserstack.safari.enablePopups': 'true',
+      safari: {
+        enablePopups: true
+      }
     },
 
     bs_edge: {
@@ -32,7 +35,10 @@ module.exports = {
       browser_version: '18.0',
       os: 'Windows',
       os_version: '10',
-      'browserstack.edge.enablePopups': 'true'
+      'browserstack.edge.enablePopups': 'true',
+      edge: {
+        enablePopups: true
+      }
     },
     bs_ie_11: {
       base: 'BrowserStack',
@@ -40,14 +46,17 @@ module.exports = {
       browser_version: '11.0',
       os: 'Windows',
       os_version: '10',
-      'browserstack.ie.enablePopups': 'true'
+      'browserstack.ie.enablePopups': 'true',
+      ie: {
+        enablePopups: true
+      }
     },
 
     bs_ios_13: {
       base: 'BrowserStack',
       device: 'iPhone XS',
       os: 'ios',
-      os_version: '13.2',
+      os_version: '13.3',
       real_mobile: true
     },
     bs_ios_12: {

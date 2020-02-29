@@ -40,19 +40,19 @@ jobs:
       env: BROWSER=ie_11
     - <<: *e2e
       name: iOS 13
-      env: BROWSER=ios_13
+      env: BROWSER=ios_13 API_PROXY=http://bs-local.com:9877/api-proxy
     - <<: *e2e
       name: iOS 12
-      env: BROWSER=ios_12
+      env: BROWSER=ios_12 API_PROXY=http://bs=local.com:9877/api-proxy
     - <<: *e2e
       name: Android 9
-      env: BROWSER=android_9
+      env: BROWSER=android_9 API_PROXY=http://bs=local.com:9877/api-proxy
     - <<: *e2e
       name: Android 8
-      env: BROWSER=android_8
+      env: BROWSER=android_8 API_PROXY=http://bs=local.com:9877/api-proxy
     - <<: *e2e
       name: Android 7
-      env: BROWSER=android_7
+      env: BROWSER=android_7 API_PROXY=http://bs=local.com:9877/api-proxy
 
     # - stage: Unit Test
     #   name: Coverage

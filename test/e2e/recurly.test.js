@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { init, assertIsAToken } = require('./support/helpers');
+const { environment, init, assertIsAToken } = require('./support/helpers');
 
 const sel = {
   output: '[data-test=output]',
@@ -20,7 +20,7 @@ describe('Recurly.js', async () => {
     const iframe = await $(sel.iframe);
     const url = await iframe.getAttribute('src');
 
-    assert.strictEqual(url.substring(0, url.indexOf('#')), 'https://api.recurly.com/js/v1/field.html');
+    assert.strictEqual(url.substring(0, url.indexOf('#')), `${environment().api}/field.html`);
   });
 
   it('creates a token', async function () {
@@ -39,7 +39,7 @@ describe('Recurly.js', async () => {
     assert.strictEqual(await expiry.getValue(), '10 / 28');
     assert.strictEqual(await cvv.getValue(), '123');
 
-    await browser.switchToParentFrame();
+    await browser.switchToFrame(null);
 
     await (await $(sel.firstName)).setValue('John');
     await (await $(sel.lastName)).setValue('Rambo');

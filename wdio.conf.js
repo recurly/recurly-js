@@ -1,4 +1,6 @@
-const { BROWSER } = process.env;
+const { spawn } = require('child_process');
+
+const { BROWSER, API, API_PROXY, PUBLIC_KEY } = process.env;
 
 exports.config = {
   runner: 'local',
@@ -19,9 +21,13 @@ exports.config = {
   reporters: ['spec'],
   mochaOpts: {
     ui: 'bdd',
-    timeout: 60000
+    timeout: 10000
   },
   onPrepare: (config, capabilities) => {
     const server = require('./test/server');
+  },
+  before: () => {
+    global.testEnvironment = { API, API_PROXY, PUBLIC_KEY };
+    browser.setTimeout({ script: 10000 });
   }
 };
