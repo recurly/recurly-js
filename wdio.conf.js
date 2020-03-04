@@ -21,13 +21,13 @@ exports.config = {
   reporters: ['spec'],
   mochaOpts: {
     ui: 'bdd',
-    timeout: 10000
+    timeout: 15000
   },
   onPrepare: (config, capabilities) => {
     const server = require('./test/server');
   },
   before: () => {
     global.testEnvironment = { API, API_PROXY, PUBLIC_KEY };
-    browser.setTimeout({ script: 10000 });
+    browser.setTimeout({ script: 15000, implicit: 5000 });
   }
 };

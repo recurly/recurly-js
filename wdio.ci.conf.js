@@ -30,7 +30,7 @@ const config = exports.config = Object.assign({}, defaultConfig, {
         toW3C(customLaunchers[`bs_${BROWSER || 'chrome'}`]),
         {
           projectName,
-          buildName: `${TRAVIS_BUILD_NUMBER || `Local (${branchName()}) e2e`}`,
+          buildName: `${TRAVIS_BUILD_NUMBER || `Local e2e [${branchName()}]`}`,
           seleniumVersion: '3.141.59',
           appiumVersion: '1.16.0',
           local: true,
@@ -41,10 +41,10 @@ const config = exports.config = Object.assign({}, defaultConfig, {
         }
       ),
       'browserstack.use_w3c': true,
-      captureTimeout: 10000,
-      newCommandTimeout: 10000,
-      pollingTimeout: 10000,
-      timeout: 10000
+      captureTimeout: 15000,
+      newCommandTimeout: 15000,
+      pollingTimeout: 15000,
+      timeout: 15000
     }
   ],
   baseUrl: 'http://bs-local.com:9877',

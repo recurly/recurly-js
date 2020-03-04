@@ -23,7 +23,7 @@ function runner (config) {
     browsers: [`bs_${BROWSER || 'chrome'}`],
     browserStack: {
       project,
-      build: `${TRAVIS_BUILD_NUMBER || `local (${branchName()}) unit`}`,
+      build: `${TRAVIS_BUILD_NUMBER || `local unit [${branchName()}]`}`,
       autoAcceptAlerts: 'true',
       'browserstack.console': 'verbose',
       'browserstack.networkLogs': 'true',

@@ -45,9 +45,11 @@ module.exports = {
       browser: 'IE',
       browser_version: '11.0',
       os: 'Windows',
-      os_version: '10',
+      os_version: '7',
       'browserstack.ie.enablePopups': 'true',
       ie: {
+        arch: 'x32',
+        driver: '3.141.59',
         enablePopups: true
       }
     },

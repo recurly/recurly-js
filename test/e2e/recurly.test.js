@@ -25,6 +25,10 @@ describe('Recurly.js', async () => {
 
   it('creates a token', async function () {
     const iframe = await $(sel.iframe);
+
+    await (await $(sel.firstName)).setValue('John');
+    await (await $(sel.lastName)).setValue('Rambo');
+
     await browser.switchToFrame(0);
 
     const number = await $(sel.number);
@@ -40,9 +44,6 @@ describe('Recurly.js', async () => {
     assert.strictEqual(await cvv.getValue(), '123');
 
     await browser.switchToFrame(null);
-
-    await (await $(sel.firstName)).setValue('John');
-    await (await $(sel.lastName)).setValue('Rambo');
 
     const [err, token] = await browser.executeAsync(function (sel, done) {
       recurly.token(document.querySelector(sel.form), function (err, token) {
