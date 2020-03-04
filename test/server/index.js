@@ -16,7 +16,7 @@ const app = module.exports = new Koa();
 const port = process.env.PORT || 9877;
 const proxyUrl = new URL(process.env.API || 'https://api.recurly.com/js/v1');
 
-app.use(logger());
+// app.use(logger());
 
 // API proxy
 app.use(route.all('/api-proxy/*', proxy(proxyUrl.origin, {

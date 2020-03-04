@@ -12,6 +12,7 @@ const {
   BROWSER_STACK_ACCESS_KEY: key,
   TRAVIS_BUILD_NUMBER
 } = process.env;
+const localIdentifier = `${Math.round(Math.random() * 100)}-${Date.now()}`;
 
 spawnSync('mkdir', ['-p', 'build/reports/e2e/log'] );
 
@@ -20,7 +21,8 @@ const config = exports.config = Object.assign({}, defaultConfig, {
   key,
   browserstackLocal: true,
   browserstackOpts: {
-    logfile: 'build/reports/e2e/log/browserstack.log'
+    logfile: 'build/reports/e2e/log/browserstack.log',
+    localIdentifier
   },
   capabilities: [
     {
@@ -34,7 +36,8 @@ const config = exports.config = Object.assign({}, defaultConfig, {
           local: true,
           debug: true,
           networkLogs: true,
-          consoleLogs: 'verbose'
+          consoleLogs: 'verbose',
+          localIdentifier
         }
       ),
       'browserstack.use_w3c': true,
