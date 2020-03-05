@@ -25,7 +25,7 @@ jobs:
       name: Coverage
       addons:
         chrome: stable
-      env: BROWSER=chrome_headless
+      env: BROWSER=chrome_headless REPORT_COVERAGE=true
       script: make test-unit-cov-ci
     - name: Chrome
       env: BROWSER=chrome

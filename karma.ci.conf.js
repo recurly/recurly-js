@@ -1,8 +1,8 @@
 const branchName = require('current-git-branch');
 const staticConfig = require('./karma.conf').staticConfig;
 const {
-  customLaunchers,
-  project
+  capabilities: launchers,
+  projectName: project
 } = require('./test/conf/browserstack');
 
 const {
@@ -16,26 +16,75 @@ function runner (config) {
   if (REPORT_COVERAGE) reporters.push('coverage');
 
   const logLevel = config.LOG_INFO;
-
-  config.set(Object.assign({}, staticConfig, {
+  const launcherName = `bs_${BROWSER || 'chrome'}`;
+  const cfg = Object.assign({}, staticConfig, {
     reporters,
     logLevel,
-    browsers: [`bs_${BROWSER || 'chrome'}`],
+    browsers: [launcherName],
     browserStack: {
       project,
       build: `${TRAVIS_BUILD_NUMBER || `local unit [${branchName()}]`}`,
-      autoAcceptAlerts: 'true',
+      autoAcceptAlerts: true,
       'browserstack.console': 'verbose',
-      'browserstack.networkLogs': 'true',
+      'browserstack.networkLogs': true,
       captureTimeout: 1200,
       pollingTimeout: 4000,
       timeout: 1200
     },
-    customLaunchers,
+    customLaunchers: {
+      [launcherName]: toLegacyLauncher(launchers[launcherName]),
+      bs_chrome_headless: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
     hostname: 'bs-local.com'
-  }));
+  });
+
+  console.log(cfg)
+
+  config.set(cfg);
 };
 
 const server = require('./test/server');
 
 module.exports = runner;
+
+/**
+ * karma-browserstack-launcher only supports the legacy
+ * JSONWP WebDriver protocol
+ *
+ * @param {Object} launcher
+ * @return {Object}
+ */
+function toLegacyLauncher (launcher) {
+  const capabilities = Object.assign({}, launcher);
+  const translations = {
+    browserName: 'browser',
+    browserVersion: 'browser_version',
+    deviceName: 'device',
+    osVersion: 'os_version',
+    realMobile: 'real_mobile'
+  };
+  for (const [newCap, oldCap] of Object.entries(translations)) {
+    if (capabilities[newCap]) {
+      delete Object.assign(capabilities, { [oldCap]: capabilities[newCap] })[newCap];
+    }
+  }
+  capabilities.base = 'BrowserStack';
+
+  // Csutom transformations
+  if (capabilities.ie) {
+    capabilities.os_version = '10';
+    capabilities['browserstack.ie.enablePopups'] = capabilities.ie.enablePopups;
+    delete capabilities.ie;
+  } else if (capabilities.edge) {
+    capabilities['browserstack.edge.enablePopups'] = capabilities.edge.enablePopups;
+    delete capabilities.edge;
+  } else if (capabilities.safari) {
+    capabilities['browserstack.safari.enablePopups'] = capabilities.safari.enablePopups;
+    delete capabilities.safari;
+  }
+
+  return capabilities;
+}

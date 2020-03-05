@@ -1,52 +1,39 @@
 module.exports = {
-  project: 'Recurly.js',
-  customLaunchers: {
-    bs_chrome_headless: {
-      base: 'ChromeHeadless',
-      flags: ['--no-sandbox']
-    },
-
+  projectName: 'Recurly.js',
+  capabilities: {
     bs_chrome: {
-      base: 'BrowserStack',
-      browser: 'Chrome',
+      browserName: 'Chrome',
       os: 'OS X',
-      os_version: 'Catalina'
+      osVersion: 'Catalina'
     },
     bs_firefox: {
-      base: 'BrowserStack',
-      browser: 'Firefox',
+      browserName: 'Firefox',
       os: 'OS X',
-      os_version: 'Catalina'
+      osVersion: 'Catalina'
     },
     bs_safari: {
-      base: 'BrowserStack',
-      browser: 'Safari',
+      browserName: 'Safari',
       os: 'OS X',
-      os_version: 'Catalina',
-      'browserstack.safari.enablePopups': 'true',
+      osVersion: 'Catalina',
       safari: {
         enablePopups: true
       }
     },
 
     bs_edge: {
-      base: 'BrowserStack',
-      browser: 'Edge',
-      browser_version: '18.0',
+      browserName: 'Edge',
+      browserVersion: '18.0',
       os: 'Windows',
-      os_version: '10',
-      'browserstack.edge.enablePopups': 'true',
+      osVersion: '10',
       edge: {
         enablePopups: true
       }
     },
     bs_ie_11: {
-      base: 'BrowserStack',
-      browser: 'IE',
-      browser_version: '11.0',
+      browserName: 'IE',
+      browserVersion: '11.0',
       os: 'Windows',
-      os_version: '8.1',
-      'browserstack.ie.enablePopups': 'true',
+      osVersion: '8.1',
       ie: {
         arch: 'x32',
         driver: '3.141.59',
@@ -55,43 +42,38 @@ module.exports = {
     },
 
     bs_ios_13: {
-      base: 'BrowserStack',
-      device: 'iPhone XS',
+      deviceName: 'iPhone XS',
       os: 'ios',
-      os_version: '13.3',
-      real_mobile: true
+      osVersion: '13.3',
+      realMobile: true
     },
     bs_ios_12: {
-      base: 'BrowserStack',
-      device: 'iPhone XS',
+      deviceName: 'iPhone XS',
       os: 'ios',
-      os_version: '12.4',
-      real_mobile: true
+      osVersion: '12.4',
+      realMobile: true
     },
 
     bs_android_9: {
-      base: 'BrowserStack',
-      browser: 'android',
-      device: 'Google Pixel 3',
+      browserName: 'android',
+      deviceName: 'Google Pixel 3',
       os: 'android',
-      os_version: '9.0',
-      real_mobile: true
+      osVersion: '9.0',
+      realMobile: true
     },
     bs_android_8: {
-      base: 'BrowserStack',
-      browser: 'android',
-      device: 'Samsung Galaxy Note 9',
+      browserName: 'android',
+      deviceName: 'Samsung Galaxy Note 9',
       os: 'android',
-      os_version: '8.1',
-      real_mobile: true
+      osVersion: '8.1',
+      realMobile: true
     },
     bs_android_7: {
-      base: 'BrowserStack',
-      browser: 'android',
-      device: 'Google Pixel',
+      browserName: 'android',
+      deviceName: 'Google Pixel',
       os: 'android',
-      os_version: '7.1',
-      real_mobile: true
+      osVersion: '7.1',
+      realMobile: true
     }
   }
 };

@@ -2,8 +2,8 @@ const { spawnSync } = require('child_process');
 const branchName = require('current-git-branch');
 const defaultConfig = require('./wdio.conf').config;
 const {
-  project: projectName,
-  customLaunchers
+  projectName,
+  capabilities
 } = require('./test/conf/browserstack');
 
 const {
@@ -27,7 +27,8 @@ const config = exports.config = Object.assign({}, defaultConfig, {
   capabilities: [
     {
       'bstack:options': Object.assign(
-        toW3C(customLaunchers[`bs_${BROWSER || 'chrome'}`]),
+        {},
+        capabilities[`bs_${BROWSER || 'chrome'}`],
         {
           projectName,
           buildName: `${TRAVIS_BUILD_NUMBER || `Local e2e [${branchName()}]`}`,
@@ -54,24 +55,3 @@ const config = exports.config = Object.assign({}, defaultConfig, {
 });
 
 delete config.path;
-
-function toW3C (launcher) {
-  const capabilities = Object.assign({}, launcher);
-  const translations = {
-    browserName: 'browser',
-    browserVersion: 'browser_version',
-    deviceName: 'device',
-    osVersion: 'os_version',
-    realMobile: 'real_mobile'
-  };
-  for (const [newCap, oldCap] of Object.entries(translations)) {
-    if (capabilities[oldCap]) {
-      delete Object.assign(capabilities, { [newCap]: capabilities[oldCap] })[oldCap];
-    }
-  }
-  delete capabilities.base;
-  delete capabilities['browserstack.safari.enablePopups'];
-  delete capabilities['browserstack.edge.enablePopups'];
-  delete capabilities['browserstack.ie.enablePopups'];
-  return capabilities;
-}
