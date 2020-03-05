@@ -42,6 +42,8 @@ test-unit-cov-ci: test-unit-ci
 	@rm -rf ./build/reports
 test-e2e: build $(src) $(tests)
 	@$(wdio) wdio.conf.js
+test-e2e-debug: build $(src) $(tests)
+	DEBUG=1 $(wdio) wdio.conf.js
 test-e2e-ci: build $(src) $(tests)
 	@$(wdio) wdio.ci.conf.js
 

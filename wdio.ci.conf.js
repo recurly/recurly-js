@@ -13,6 +13,7 @@ const {
   TRAVIS_BUILD_NUMBER
 } = process.env;
 const localIdentifier = `${Math.round(Math.random() * 100)}-${Date.now()}`;
+const { timeout } = defaultConfig.mochaOpts;
 
 spawnSync('mkdir', ['-p', 'build/reports/e2e/log'] );
 
@@ -42,10 +43,10 @@ const config = exports.config = Object.assign({}, defaultConfig, {
         }
       ),
       'browserstack.use_w3c': true,
-      captureTimeout: 15000,
-      newCommandTimeout: 15000,
-      pollingTimeout: 15000,
-      timeout: 15000
+      captureTimeout: timeout,
+      newCommandTimeout: timeout,
+      pollingTimeout: timeout,
+      timeout
     }
   ],
   baseUrl: 'http://bs-local.com:9877',
