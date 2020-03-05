@@ -39,6 +39,7 @@ ejs(app, { root: __dirname, layout: false, viewExt: 'html.ejs', cache: false });
 app.use(route.get('/build/:artifact', build));
 app.use(route.get('/e2e', e2e));
 app.use(route.get('/frame_mock', postMessage));
+app.use(route.get('/relay', html('relay')));
 app.use(route.get('/mock-404', ctx => ctx.status = 404));
 app.use(route.get('/mock-200', ok));
 
