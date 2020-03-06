@@ -2,7 +2,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const glob = require('glob');
 const path = require('path');
 
-let moduleConfig = require('./webpack.config').module;
+const moduleConfig = require('./webpack.config').module;
 
 if (shouldInstrument()) {
   moduleConfig.rules.find(rule => {
@@ -13,12 +13,12 @@ if (shouldInstrument()) {
 }
 
 module.exports = {
-  entry: glob.sync('./test/**/*.test.js'),
+  entry: glob.sync('./test/unit/**/*.test.js'),
   mode: 'development',
   output: {
     path: path.join(__dirname, 'build'),
     publicPath: '/build/',
-    filename: 'test.js'
+    filename: 'test-unit.js'
   },
   module: moduleConfig,
   resolve: {

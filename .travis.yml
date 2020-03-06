@@ -7,16 +7,6 @@ cache:
     - node_modules
 before_install:
   - bash .travis-pre.sh
-addons:
-  chrome: stable
-  artifacts:
-    paths:
-      - build
-    target_paths:
-      - artifacts/$TRAVIS_COMMIT
-    s3_region: us-west-1
-    permissions: public-read
-script: make test-ci
 env:
   global:
     - secure: U0dvpEjblZ3i+knw/cOWWgLvHUz/L9vN7Kv5VKDJ5ydvLy/1Tcueokp4hL7jhu4zwzlJto6MdFG1uKXr97zs+ETV9clYtRFBF/4YlAGs8sQcvPu4BOyH9pUJ77tnNR2ZX62wik9UFl6LmJOBpCjVkp+kh6it44QJm4Zv03Yx47w=
@@ -24,22 +14,82 @@ env:
     - secure: yIrHdkLhWtO37N24cRU71PK80zvkPzlJ1Jm+1MS3C6/icgJ8At1N/UgpBdxuBs1tlJm1O7Ahk+/MhpGWlspx9tCF7Hzw9Rj0xpKhqsvM155zgH582xNPwNebiCr/tmsH2/ELgFBBgC9sCW5luzeKx9nyuedGA4fmD2fK5Phc5EE=
     - secure: fGRo+RTDcnWNnYjSgDtHIRFrkXDxYzFrF0JaGs73ZunLXoYbJ5FclaM9+wjw8BbGEEsVbyBYMSHyy8E2Y0VRggal/XlFkKaqQQHSDVuslcM5YdAkcLC8jFSuSzP32X6cY+L9fKszFVaO+vn84lXwiQnqgpOHAtN32/eB//5Ky1s=
     - secure: m9ylFoxkeoOjBTYi7IF93Rqq95uJkL95onYJc5k1Xo2wNCDrAfvZ8cv6o70Qr/lpWqvgxPueDP6VXjxKAmSueQnx9uGKyigFCpMH4zl7+7n7l4382Eeyex2uE6kCh/lA4EjkmE3QdIW6l8YCGJD1IoHqVSKPZ67ZSdnapTgGPYQ=
+script: make test-unit-ci
 jobs:
   include:
     - stage: Lint
+      name: ESLint
       script: make lint
-    - stage: Test
+
+    - stage: Unit Test
+      name: Coverage
+      addons:
+        chrome: stable
       env: BROWSER=chrome_headless REPORT_COVERAGE=true
-    - env: BROWSER=chrome
-    - env: BROWSER=firefox
-    - env: BROWSER=safari
-    - env: BROWSER=edge
-    - env: BROWSER=ie_11
-    - env: BROWSER=ios_13
-    - env: BROWSER=ios_12
-    - env: BROWSER=android_9
-    - env: BROWSER=android_8
-    - env: BROWSER=android_7
+      script: make test-unit-cov-ci
+    - name: Chrome
+      env: BROWSER=chrome
+    - name: Firefox
+      env: BROWSER=firefox
+    - name: Safari
+      env: BROWSER=safari
+    - name: Edge
+      env: BROWSER=edge
+    - name: Internet Explorer 11
+      env: BROWSER=ie_11
+    - name: iOS 13
+      env: BROWSER=ios_13
+    - name: iOS 12
+      env: BROWSER=ios_12
+    - name: Android 9
+      env: BROWSER=android_9
+    - name: Android 8
+      env: BROWSER=android_8
+    - name: Android 7
+      env: BROWSER=android_7
+
+    - &e2e
+      stage: End-to-End Test
+      name: Chrome
+      env: BROWSER=chrome
+      script: make test-e2e-ci
+    - <<: *e2e
+      name: Firefox
+      env: BROWSER=firefox
+    - <<: *e2e
+      name: Safari
+      env: BROWSER=safari
+    - <<: *e2e
+      name: Edge
+      env: BROWSER=edge
+    - <<: *e2e
+      name: Internet Explorer 11
+      env: BROWSER=ie_11
+    - <<: *e2e
+      name: iOS 13
+      env: BROWSER=ios_13 API_PROXY=http://bs-local.com:9877/api-proxy
+    - <<: *e2e
+      name: iOS 12
+      env: BROWSER=ios_12 API_PROXY=http://bs-local.com:9877/api-proxy
+    - <<: *e2e
+      name: Android 9
+      env: BROWSER=android_9 API_PROXY=http://bs-local.com:9877/api-proxy
+    - <<: *e2e
+      name: Android 8
+      env: BROWSER=android_8 API_PROXY=http://bs-local.com:9877/api-proxy
+    - <<: *e2e
+      name: Android 7
+      env: BROWSER=android_7 API_PROXY=http://bs-local.com:9877/api-proxy
+
     - stage: Publish
+      name: Publish Artifacts
+      addons:
+        artifacts:
+          paths:
+            - build
+          target_paths:
+            - artifacts/$TRAVIS_COMMIT
+          s3_region: us-west-1
+          permissions: public-read
       env: ARTIFACTS_BUCKET=recurly-js
       script: make build
