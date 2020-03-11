@@ -9,9 +9,9 @@ src = index.js $(shell find . -type f -name '*.js' ! -path './build/*' -o -name 
 tests = $(shell find test -type f -name '*.js')
 
 ifdef RECURLY_JS_CERT
-	server_opts = "--https --cert $(RECURLY_JS_CERT) --key $(RECURLY_JS_KEY)"
+	server_opts = --https --cert $(RECURLY_JS_CERT) --key $(RECURLY_JS_KEY)
 else
-	server_opts = "--https"
+	server_opts = --https
 endif
 
 server: build
