@@ -9,14 +9,12 @@ const {
 } = process.env;
 
 let browserName = BROWSER || 'chrome';
-let maxInstances = 5;
 let timeout = 15000;
 let execArgv = [];
 let chromeOptions = {};
 
 if (DEBUG) {
   browserName = 'chrome';
-  maxInstances = 1;
   timeout = 24 * 60 * 60 * 1000;
   execArgv.concat(['--inspect']);
   chromeOptions.args = ['--auto-open-devtools-for-tabs'];
@@ -28,7 +26,7 @@ exports.config = {
   specs: [
     './test/e2e/**/*.test.js'
   ],
-  maxInstances,
+  maxInstances: 1,
   capabilities: [{ browserName, 'goog:chromeOptions': chromeOptions }],
   execArgv,
   logLevel: 'info',

@@ -14,15 +14,14 @@ describe('Expiration date validations', async () => {
   beforeEach(init);
 
   it('Test fontColor change for card field (fields.card.style.fontColor)', async function () {
-
     // Assert the default is black
     await browser.switchToFrame(0);
     const number = await $(sel.number);
     const expiry = await $(sel.expiry);
     const cvv = await $(sel.cvv);
-    assert.strictEqual((await number.getCSSProperty('color')).parsed.hex, '#545457');
-    assert.strictEqual((await expiry.getCSSProperty('color')).parsed.hex, '#545457');
-    assert.strictEqual((await cvv.getCSSProperty('color')).parsed.hex, '#545457');
+    await assertFontColorIs(number, '#545457');
+    await assertFontColorIs(expiry, '#545457');
+    await assertFontColorIs(cvv, '#545457');
 
     // Change the fontColor
     await browser.switchToFrame(null);
@@ -30,24 +29,20 @@ describe('Expiration date validations', async () => {
 
     // Assert the fontColor has changed all the combined card field
     await browser.switchToFrame(0);
-    assert.strictEqual((await number.getCSSProperty('color')).parsed.hex, '#008000');
-    assert.strictEqual((await expiry.getCSSProperty('color')).parsed.hex, '#008000');
-    assert.strictEqual((await cvv.getCSSProperty('color')).parsed.hex, '#008000');
-
+    await assertFontColorIs(number, '#008000');
+    await assertFontColorIs(expiry, '#008000');
+    await assertFontColorIs(cvv, '#008000');
   });
 
-
-
-  it('Test fontColor change for combined fields (fields.number.style.fontColor)', async function () {
-
+  it('Test fontColor change for individual fields (fields.number.style.fontColor)', async function () {
     // Assert the default is black
     await browser.switchToFrame(0);
     const number = await $(sel.number);
     const expiry = await $(sel.expiry);
     const cvv = await $(sel.cvv);
-    assert.strictEqual((await number.getCSSProperty('color')).parsed.hex, '#545457');
-    assert.strictEqual((await expiry.getCSSProperty('color')).parsed.hex, '#545457');
-    assert.strictEqual((await cvv.getCSSProperty('color')).parsed.hex, '#545457');
+    await assertFontColorIs(number, '#545457');
+    await assertFontColorIs(expiry, '#545457');
+    await assertFontColorIs(cvv, '#545457');
 
     // Change the fontColor
     await browser.switchToFrame(null);
@@ -55,14 +50,13 @@ describe('Expiration date validations', async () => {
 
     // Assert the fontColor has changed all the combined card field
     await browser.switchToFrame(0);
-    assert.strictEqual((await number.getCSSProperty('color')).parsed.hex, '#545457');
-    assert.strictEqual((await expiry.getCSSProperty('color')).parsed.hex, '#545457');
-    assert.strictEqual((await cvv.getCSSProperty('color')).parsed.hex, '#545457');
-
+    await assertFontColorIs(number, '#545457');
+    await assertFontColorIs(expiry, '#545457');
+    await assertFontColorIs(cvv, '#545457');
    });
 
-    // The font color should changed to red if an incorrect data was entered
-   it('Test expiry changed font color to red', async function () {
+  // The font color should changed to red if an incorrect data was entered
+  it('Test expiry changed font color to red', async function () {
     await browser.switchToFrame(0);
     const number = await $(sel.number)
     const expiry = await $(sel.expiry)
@@ -73,9 +67,9 @@ describe('Expiration date validations', async () => {
     await cvv.setValue(cards.visa.cvv)
 
     // Expect the default color is black
-    assert.strictEqual((await number.getCSSProperty('color')).parsed.hex, '#545457');
-    assert.strictEqual((await expiry.getCSSProperty('color')).parsed.hex, '#545457');
-    assert.strictEqual((await cvv.getCSSProperty('color')).parsed.hex, '#545457');
+    await assertFontColorIs(number, '#545457');
+    await assertFontColorIs(expiry, '#545457');
+    await assertFontColorIs(cvv, '#545457');
 
     //Now enter all invalid entries and expected the font color changed to red
     await number.setValue('4111 1111 111A 1111')
@@ -88,11 +82,17 @@ describe('Expiration date validations', async () => {
 
     //Switch back to the iframe and hosted fields color should all be red
     await browser.switchToFrame(0);
-    assert.strictEqual((await cvv.getCSSProperty('color')).parsed.hex, '#e35256');
-    assert.strictEqual((await number.getCSSProperty('color')).parsed.hex, '#e35256');
-    assert.strictEqual((await expiry.getCSSProperty('color')).parsed.hex, '#e35256')
-
+    await assertFontColorIs(number, '#e35256');
+    await assertFontColorIs(expiry, '#e35256');
+    await assertFontColorIs(cvv, '#e35256');
   });
+});
 
-})
-
+/**
+ * Asserts that a given element has the given font color
+ * @param  {Element} element
+ * @param  {String}  hex     ex: '#000000'
+ */
+async function assertFontColorIs (element, hex) {
+  return assert.strictEqual((await element.getCSSProperty('color')).parsed.hex, hex);
+}

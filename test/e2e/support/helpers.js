@@ -8,7 +8,15 @@ const FIELD_TYPES = {
   MONTH: 'month',
   YEAR: 'year',
   CVV: 'cvv'
-}
+};
+const TOKEN_TYPES = {
+  CREDIT_CARD: 'credit_card',
+  PAYPAL: 'paypal',
+  BANK_ACCOUNT: 'bank_account',
+  IBAN_BANK_ACCOUNT: 'iban_bank_account',
+  THREE_D_SECURE_ACTION: 'three_d_secure_action',
+  THREE_D_SECURE_ACTION_RESULT: 'three_d_secure_action_result'
+};
 
 module.exports = {
   environment,
@@ -17,7 +25,8 @@ module.exports = {
   assertIsAToken,
   styleHostedField,
   tokenize,
-  FIELD_TYPES
+  FIELD_TYPES,
+  TOKEN_TYPES
 };
 
 // Setup helpers
@@ -70,7 +79,10 @@ async function styleHostedField (field = FIELD_TYPES.CARD, styleOpts = {}) {
 // Action helpers
 
 /**
- * [tokenize description]
+ * Tokenizes a given form
+ *
+ * This currently only works for
+ *
  * @param  {String} form query selector of the form to tokenize
  * @return {Array} array of [err, token], as returned by `recurly.token`
  */
@@ -84,7 +96,22 @@ async function tokenize (form) {
 
 // Assertion helpers
 
-function assertIsAToken (maybeToken, expectedType = 'credit_card') {
+/**
+ * Asserts that a given element has the given font color
+ * @param  {Element} element
+ * @param  {String}  hex     ex: '#000000'
+ */
+async function assertFontColorIs (element, hex) {
+  return assert.strictEqual((await element.getCSSProperty('color')).parsed.hex, hex);
+}
+
+/**
+ * Asserts that a given object has the shape of a token
+ *
+ * @param  {Object} maybeToken   expected to be a token
+ * @param  {String} expectedType the type the token should be
+ */
+function assertIsAToken (maybeToken, expectedType = TOKEN_TYPES.CREDIT_CARD) {
   assert(maybeToken);
   assert.strictEqual(maybeToken.type, expectedType);
   assert.match(maybeToken.id, TOKEN_PATTERN);
