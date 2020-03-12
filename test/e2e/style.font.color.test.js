@@ -25,6 +25,7 @@ describe('Expiration date validations', async () => {
 
     // Change the fontColor
     await browser.switchToFrame(null);
+    const result = await styleHostedField(FIELD_TYPES.CARD, { fontColor: 'green' });
 
     // Assert the fontColor has changed all the combined card field
     await browser.switchToFrame(0);
