@@ -25,7 +25,6 @@ describe('Expiration date validations', async () => {
 
     // Change the fontColor
     await browser.switchToFrame(null);
-    const result = await styleHostedField(FIELD_TYPES.CARD, { fontColor: 'green' });
 
     // Assert the fontColor has changed all the combined card field
     await browser.switchToFrame(0);
@@ -86,13 +85,3 @@ describe('Expiration date validations', async () => {
     await assertFontColorIs(expiry, '#e35256');
     await assertFontColorIs(cvv, '#e35256');
   });
-});
-
-/**
- * Asserts that a given element has the given font color
- * @param  {Element} element
- * @param  {String}  hex     ex: '#000000'
- */
-async function assertFontColorIs (element, hex) {
-  return assert.strictEqual((await element.getCSSProperty('color')).parsed.hex, hex);
-}
