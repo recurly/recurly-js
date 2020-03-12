@@ -1,5 +1,10 @@
 const assert = require('assert');
-const { environment, init, assertIsAToken } = require('./support/helpers');
+const {
+  environment,
+  init,
+  assertIsAToken,
+  tokenize
+} = require('./support/helpers');
 
 const sel = {
   output: '[data-test=output]',
@@ -44,12 +49,7 @@ describe('Recurly.js', async () => {
     assert.strictEqual(await cvv.getValue(), '123');
 
     await browser.switchToFrame(null);
-
-    const [err, token] = await browser.executeAsync(function (sel, done) {
-      recurly.token(document.querySelector(sel.form), function (err, token) {
-        done([err, token]);
-      });
-    }, sel);
+    const [err, token] = await tokenize(sel.form);
 
     assert.strictEqual(err, null);
     assertIsAToken(token);

@@ -1,5 +1,9 @@
 const assert = require('assert');
-const { environment, init, assertIsAToken } = require('./support/helpers');
+const {
+  init,
+  assertIsAToken,
+  tokenize
+} = require('./support/helpers');
 const util = require('./support/util');
 const sel = require('./support/form.elements');
 const data = require('./support/data');
@@ -28,11 +32,7 @@ describe('AMEX card validations', async () => {
 
 
     await browser.switchToFrame(null);
-    const [err, token] = await browser.executeAsync(function (sel, done) {
-        recurly.token(document.querySelector(sel.form), function (err, token) {
-        done([err, token]);
-        });
-    }, sel);
+    const [err, token] = await tokenize(sel.form);
 
     assert.strictEqual(err, null);
     assertIsAToken(token);
@@ -60,11 +60,7 @@ describe('AMEX card validations', async () => {
     assert.strictEqual(await cvv.getValue(), cards.amex.cvv)
 
     await browser.switchToFrame(null);
-    const [err, token] = await browser.executeAsync(function (sel, done) {
-        recurly.token(document.querySelector(sel.form), function (err, token) {
-        done([err, token]);
-        });
-    }, sel);
+    const [err, token] = await tokenize(sel.form);
 
     assert.strictEqual(err, null);
     assertIsAToken(token);
@@ -90,12 +86,7 @@ describe('AMEX card validations', async () => {
     assert.strictEqual(await cvv.getValue(), '134')
 
     await browser.switchToFrame(null);
-    const [err, token] = await browser.executeAsync(function (sel, done) {
-        recurly.token(document.querySelector(sel.form), function (err, token) {
-        done([err, token]);
-        });
-    }, sel);
-
+    const [err, token] = await tokenize(sel.form);
 
     assert.strictEqual(err.message, 'There was an error validating your request.');
     assert.strictEqual(token, null);
