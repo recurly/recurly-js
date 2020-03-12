@@ -1,14 +1,19 @@
 const assert = require('assert');
-const { environment, init, assertIsAToken } = require('./support/helpers');
+const {
+  init,
+  assertIsAToken,
+  styleHostedField,
+  FIELD_TYPES
+} = require('./support/helpers');
 const util = require('./support/util');
 const sel = require('./support/form.elements');
 const data = require('./support/data');
 const cards = require('./support/credit.cards');
 
-describe('Expiration date validations', async () => {  
-    beforeEach(init);
+describe('Expiration date validations', async () => {
+  beforeEach(init);
 
-  it('Test fontColor change for combined fields (fields.cards.style.fontColor)', async function () {
+  it('Test fontColor change for card field (fields.card.style.fontColor)', async function () {
 
     // Assert the default is black
     await browser.switchToFrame(0);
@@ -21,23 +26,13 @@ describe('Expiration date validations', async () => {
 
     // Change the fontColor
     await browser.switchToFrame(null);
-      const result = await browser.execute(function() {
-        recurly.configure({
-          fields: {
-            card: {
-              style: {
-                fontColor: 'green'
-              }
-            }
-          }
-        });
-      });
- 
-      // Assert the fontColor has changed all the combined card field
-      await browser.switchToFrame(0);
-      assert.strictEqual((await number.getCSSProperty('color')).parsed.hex, '#008000');
-      assert.strictEqual((await expiry.getCSSProperty('color')).parsed.hex, '#008000');
-      assert.strictEqual((await cvv.getCSSProperty('color')).parsed.hex, '#008000');
+    const result = await styleHostedField(FIELD_TYPES.CARD, { fontColor: 'green' });
+
+    // Assert the fontColor has changed all the combined card field
+    await browser.switchToFrame(0);
+    assert.strictEqual((await number.getCSSProperty('color')).parsed.hex, '#008000');
+    assert.strictEqual((await expiry.getCSSProperty('color')).parsed.hex, '#008000');
+    assert.strictEqual((await cvv.getCSSProperty('color')).parsed.hex, '#008000');
 
   });
 
@@ -55,24 +50,14 @@ describe('Expiration date validations', async () => {
     assert.strictEqual((await cvv.getCSSProperty('color')).parsed.hex, '#545457');
 
     // Change the fontColor
-    await browser.switchToFrame(null)
-    const result = await browser.execute(function() {
-      recurly.configure({
-        fields: {
-          number: {
-            style: {
-              fontColor: 'blue'
-            }
-          }
-        }
-      });
-    });
- 
-      // Assert the fontColor has changed all the combined card field
-      await browser.switchToFrame(0);
-      assert.strictEqual((await number.getCSSProperty('color')).parsed.hex, '#545457');
-      assert.strictEqual((await expiry.getCSSProperty('color')).parsed.hex, '#545457');
-      assert.strictEqual((await cvv.getCSSProperty('color')).parsed.hex, '#545457');
+    await browser.switchToFrame(null);
+    const result = await styleHostedField(FIELD_TYPES.NUMBER, { fontColor: 'blue' });
+
+    // Assert the fontColor has changed all the combined card field
+    await browser.switchToFrame(0);
+    assert.strictEqual((await number.getCSSProperty('color')).parsed.hex, '#545457');
+    assert.strictEqual((await expiry.getCSSProperty('color')).parsed.hex, '#545457');
+    assert.strictEqual((await cvv.getCSSProperty('color')).parsed.hex, '#545457');
 
    });
 
@@ -97,13 +82,8 @@ describe('Expiration date validations', async () => {
     await expiry.setValue('124')
     await cvv.setValue('1X3')
 
-    //Switch set the focus back to the main frame 
+    //Switch set the focus back to the main frame
     await browser.switchToFrame(null);
-    const [err, token] = await browser.executeAsync(function (sel, done) {
-        recurly.token(document.querySelector(sel.form), function (err, token) {
-        done([err, token]);
-        });
-    }, sel);
     await (await $(sel.firstName)).addValue('');
 
     //Switch back to the iframe and hosted fields color should all be red
