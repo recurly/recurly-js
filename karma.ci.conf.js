@@ -25,6 +25,8 @@ function runner (config) {
       project,
       build: `${TRAVIS_BUILD_NUMBER || `local unit [${branchName()}]`}`,
       autoAcceptAlerts: true,
+      'browserstack.local': true,
+      'browserstack.debug': true,
       'browserstack.console': 'verbose',
       'browserstack.networkLogs': true,
       captureTimeout: 1200,
