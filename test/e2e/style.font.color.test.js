@@ -1,6 +1,7 @@
 const assert = require('assert');
 const {
   init,
+  assertFontColorIs
   assertIsAToken,
   styleHostedField,
   FIELD_TYPES
@@ -86,3 +87,4 @@ describe('Expiration date validations', async () => {
     await assertFontColorIs(expiry, '#e35256');
     await assertFontColorIs(cvv, '#e35256');
   });
+});

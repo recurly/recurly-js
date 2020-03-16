@@ -22,6 +22,7 @@ module.exports = {
   environment,
   init,
   configureRecurly,
+  assertFontColorIs,
   assertIsAToken,
   styleHostedField,
   tokenize,
