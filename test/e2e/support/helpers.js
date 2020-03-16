@@ -22,8 +22,9 @@ module.exports = {
   environment,
   init,
   configureRecurly,
-  assertFontColorIs,
   assertIsAToken,
+  assertStyleIs,
+  assertStyleColorIs,
   styleHostedField,
   tokenize,
   FIELD_TYPES,
@@ -98,19 +99,32 @@ async function tokenize (form) {
 // Assertion helpers
 
 /**
- * Asserts that a given element has the given font color
- * @param  {Element} element
- * @param  {String}  hex     ex: '#000000'
+ * Asserts that a given element has the given CSS proprty color
+ *
+ * @param {Element} element
+ * @param {String}  hex            ex: '#000000'
+ * @param {String}  [prop='color'] CSS property to check. Defaults to font color.
  */
-async function assertFontColorIs (element, hex) {
-  return assert.strictEqual((await element.getCSSProperty('color')).parsed.hex, hex);
+async function assertStyleColorIs (element, hex, prop = 'color') {
+  return assert.strictEqual((await element.getCSSProperty(prop)).parsed.hex, hex);
+}
+
+/**
+ * Asserts that a given element has the given CSS proprty color
+ *
+ * @param {Element} element
+ * @param {String}  property CSS property to check.
+ * @param {String}  value
+ */
+async function assertStyleIs (element, property, value) {
+  return assert.strictEqual((await element.getCSSProperty(property)).value, value);
 }
 
 /**
  * Asserts that a given object has the shape of a token
  *
- * @param  {Object} maybeToken   expected to be a token
- * @param  {String} expectedType the type the token should be
+ * @param {Object} maybeToken   expected to be a token
+ * @param {String} expectedType the type the token should be
  */
 function assertIsAToken (maybeToken, expectedType = TOKEN_TYPES.CREDIT_CARD) {
   assert(maybeToken);
