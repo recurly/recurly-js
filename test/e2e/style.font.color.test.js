@@ -20,9 +20,9 @@ describe('Expiration date validations', async () => {
     const number = await $(sel.number);
     const expiry = await $(sel.expiry);
     const cvv = await $(sel.cvv);
-    await assertStyleColorIs(number, '#545457');
-    await assertStyleColorIs(expiry, '#545457');
-    await assertStyleColorIs(cvv, '#545457');
+    await assertStyleColorIs(number, data.default.fontColor);
+    await assertStyleColorIs(expiry, data.default.fontColor);
+    await assertStyleColorIs(cvv, data.default.fontColor);
 
     // Change the fontColor
     await browser.switchToFrame(null);
@@ -41,9 +41,9 @@ describe('Expiration date validations', async () => {
     const number = await $(sel.number);
     const expiry = await $(sel.expiry);
     const cvv = await $(sel.cvv);
-    await assertStyleColorIs(number, '#545457');
-    await assertStyleColorIs(expiry, '#545457');
-    await assertStyleColorIs(cvv, '#545457');
+    await assertStyleColorIs(number, data.default.fontColor);
+    await assertStyleColorIs(expiry, data.default.fontColor);
+    await assertStyleColorIs(cvv, data.default.fontColor);
 
     // Change the fontColor
     await browser.switchToFrame(null);
@@ -68,9 +68,9 @@ describe('Expiration date validations', async () => {
     await cvv.setValue(cards.visa.cvv)
 
     // Expect the default color is black
-    await assertStyleColorIs(number, '#545457');
-    await assertStyleColorIs(expiry, '#545457');
-    await assertStyleColorIs(cvv, '#545457');
+    await assertStyleColorIs(number, data.default.fontColor);
+    await assertStyleColorIs(expiry, data.default.fontColor);
+    await assertStyleColorIs(cvv, data.default.fontColor);
 
     //Now enter all invalid entries and expected the font color changed to red
     await number.setValue('4111 1111 111A 1111')

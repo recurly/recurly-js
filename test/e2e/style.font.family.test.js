@@ -21,9 +21,9 @@ describe('Expiration date validations', async () => {
     const expiry = await $(sel.expiry);
     const cvv = await $(sel.cvv);
 
-    await assertStyleIs(number, 'font-family', 'source sans pro');
-    await assertStyleIs(expiry, 'font-family', 'source sans pro');
-    await assertStyleIs(cvv, 'font-family', 'source sans pro');
+    await assertStyleIs(number, 'font-family', data.default.fontFamily);
+    await assertStyleIs(expiry, 'font-family', data.default.fontFamily);
+    await assertStyleIs(cvv, 'font-family', data.default.fontFamily);
 
     // Change the fontFamily
     await browser.switchToFrame(null);
@@ -44,9 +44,9 @@ describe('Expiration date validations', async () => {
     const number = await $(sel.number);
     const expiry = await $(sel.expiry);
     const cvv = await $(sel.cvv);
-    await assertStyleIs(number, 'font-family', 'source sans pro');
-    await assertStyleIs(expiry, 'font-family', 'source sans pro');
-    await assertStyleIs(cvv, 'font-family', 'source sans pro');
+    await assertStyleIs(number, 'font-family', data.default.fontFamily);
+    await assertStyleIs(expiry, 'font-family', data.default.fontFamily);
+    await assertStyleIs(cvv, 'font-family', data.default.fontFamily);
 
     // Change the fontFamily using 
     await browser.switchToFrame(null);
@@ -66,9 +66,9 @@ describe('Expiration date validations', async () => {
     const number = await $(sel.number);
     const expiry = await $(sel.expiry);
     const cvv = await $(sel.cvv);
-    await assertStyleIs(number, 'font-family', 'source sans pro');
-    await assertStyleIs(expiry, 'font-family', 'source sans pro');
-    await assertStyleIs(cvv, 'font-family', 'source sans pro');
+    await assertStyleIs(number, 'font-family', data.default.fontFamily);
+    await assertStyleIs(expiry, 'font-family', data.default.fontFamily);
+    await assertStyleIs(cvv, 'font-family', data.default.fontFamily);
 
     // Change the fontFamily
     await browser.switchToFrame(null);
