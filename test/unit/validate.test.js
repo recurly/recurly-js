@@ -45,6 +45,14 @@ describe('Recurly.validate', function () {
       assert(recurly.validate.cardType('601179999013942423') === 'discover');
     });
 
+    it('should parse union_pay', function () {
+      assert(recurly.validate.cardType('6221261111113245') === 'union_pay');
+      assert(recurly.validate.cardType('6282000123842342') === 'union_pay');
+      assert(recurly.validate.cardType('6250941006528599') === 'union_pay');
+      assert(recurly.validate.cardType('8171999927660000') === 'union_pay');
+      assert(recurly.validate.cardType('8171999900000000021') === 'union_pay');
+    });
+
     it('should parse mastercard', function () {
       assert(recurly.validate.cardType('5454545454545454') === 'master');
       assert(recurly.validate.cardType('5555555555554444') === 'master');
@@ -121,5 +129,5 @@ describe('Recurly.validate', function () {
       assert(false === recurly.validate.cvv('123f'));
       assert(false === recurly.validate.cvv('123456'));
     });
-  })
+  });
 });
