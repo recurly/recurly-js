@@ -3,6 +3,7 @@ const assert = require('assert');
 const TEST_PATH = 'e2e';
 const TOKEN_PATTERN = /^[\w-]{21,23}$/;
 const FIELD_TYPES = {
+  ALL: 'all',
   CARD: 'card',
   NUMBER: 'number',
   MONTH: 'month',
