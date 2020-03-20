@@ -11,6 +11,8 @@ const {
   TRAVIS_BUILD_NUMBER
 } = process.env;
 
+const localIdentifier = `${Math.round(Math.random() * 100)}-${Date.now()}`;
+
 function runner (config) {
   const reporters = ['mocha', 'BrowserStack'];
   if (REPORT_COVERAGE) reporters.push('coverage');
@@ -25,9 +27,13 @@ function runner (config) {
       project,
       build: `${TRAVIS_BUILD_NUMBER || `local unit [${branchName()}]`}`,
       autoAcceptAlerts: true,
+      forceLocal: true,
+      'browserstack.local': true,
+      'browserstack.debug': true,
       'browserstack.console': 'verbose',
       'browserstack.networkLogs': true,
       captureTimeout: 1200,
+      localIdentifier,
       pollingTimeout: 4000,
       timeout: 1200
     },
