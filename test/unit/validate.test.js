@@ -39,16 +39,17 @@ describe('Recurly.validate', function () {
     });
 
     it('should parse discover', function () {
+      assert(recurly.validate.cardType('6010999990139424') !== 'discover');
+      assert(recurly.validate.cardType('6011040090139424') !== 'discover');
       assert(recurly.validate.cardType('6011000090139424') === 'discover');
-      assert(recurly.validate.cardType('64400000901394243') === 'discover');
-      assert(recurly.validate.cardType('650611009013942423') === 'discover');
-      assert(recurly.validate.cardType('601179999013942423') === 'discover');
+      assert(recurly.validate.cardType('6011039990139424') === 'discover');
     });
 
     it('should parse union_pay', function () {
-      assert(recurly.validate.cardType('6221261111113245') === 'union_pay');
-      assert(recurly.validate.cardType('6282000123842342') === 'union_pay');
-      assert(recurly.validate.cardType('6250941006528599') === 'union_pay');
+      assert(recurly.validate.cardType('6210939911113245') !== 'union_pay');
+      assert(recurly.validate.cardType('6210950011113245') !== 'union_pay');
+      assert(recurly.validate.cardType('6210940011113245') === 'union_pay');
+      assert(recurly.validate.cardType('6210949911113245') === 'union_pay');
       assert(recurly.validate.cardType('8171999927660000') === 'union_pay');
       assert(recurly.validate.cardType('8171999900000000021') === 'union_pay');
     });
