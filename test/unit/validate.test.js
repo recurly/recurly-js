@@ -39,40 +39,47 @@ describe('Recurly.validate', function () {
     });
 
     it('should parse discover', function () {
-      assert(recurly.validate.cardType('3050990900242198') === 'discover');
-      assert(recurly.validate.cardType('36003010814263') === 'discover');
-      assert(recurly.validate.cardType('6011111111111117') === 'discover');
-      assert(recurly.validate.cardType('6011000990139424') === 'discover');
-      assert(recurly.validate.cardType('6229252986142899') === 'discover');
-      assert(recurly.validate.cardType('8131917256371926354') === 'discover');
+      assert.strictEqual(recurly.validate.cardType('601099999013942'), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('6010999990139424'), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('6011040090139424'), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('6011000090139424'), 'discover');
+      assert.strictEqual(recurly.validate.cardType('6011039990139424'), 'discover');
+    });
+
+    it('should parse union_pay', function () {
+      assert.strictEqual(recurly.validate.cardType('621093991111324'), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('6210939911113245'), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('6210950011113245'), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('6210940011113245'), 'union_pay');
+      assert.strictEqual(recurly.validate.cardType('6210949911113245'), 'union_pay');
+      assert.strictEqual(recurly.validate.cardType('8171999927660000'), 'union_pay');
+      assert.strictEqual(recurly.validate.cardType('8171999900000000021'), 'union_pay');
     });
 
     it('should parse mastercard', function () {
-      assert(recurly.validate.cardType('5454545454545454') === 'master');
-      assert(recurly.validate.cardType('5555555555554444') === 'master');
-      assert(recurly.validate.cardType('5555555555554444') === 'master');
-      assert(recurly.validate.cardType('2222000222222224') === 'master');
-      assert(recurly.validate.cardType('2720989999999955') === 'master');
+      assert.strictEqual(recurly.validate.cardType('5454545454545454'), 'master');
+      assert.strictEqual(recurly.validate.cardType('5555555555554444'), 'master');
+      assert.strictEqual(recurly.validate.cardType('5555555555554444'), 'master');
+      assert.strictEqual(recurly.validate.cardType('2222000222222224'), 'master');
+      assert.strictEqual(recurly.validate.cardType('2720989999999955'), 'master');
     });
 
     it('should parse american_express', function () {
-      var type = recurly.validate.cardType('372546612345678');
-      assert(type === 'american_express');
+      assert.strictEqual(recurly.validate.cardType('372546612345678'), 'american_express');
     });
 
     it('should parse unknown', function () {
-      var type = recurly.validate.cardType('867-5309-jenny');
-      assert(type === 'unknown');
+      assert.strictEqual(recurly.validate.cardType('867-5309-jenny'), 'unknown');
     });
 
     it('should not parse partial numbers', function () {
-      var type = recurly.validate.cardType('3725');
-      assert(type === 'unknown');
+      assert.strictEqual(recurly.validate.cardType('3725'), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('62109400'), 'unknown');
     });
 
     it('should parse partial numbers if instructed', function () {
-      var type = recurly.validate.cardType('3725', true);
-      assert(type === 'american_express');
+      assert.strictEqual(recurly.validate.cardType('3725', true), 'american_express');
+      assert.strictEqual(recurly.validate.cardType('62109400', true), 'union_pay');
     });
   });
 
@@ -123,5 +130,5 @@ describe('Recurly.validate', function () {
       assert(false === recurly.validate.cvv('123f'));
       assert(false === recurly.validate.cvv('123456'));
     });
-  })
+  });
 });
