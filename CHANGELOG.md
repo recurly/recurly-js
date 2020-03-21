@@ -5,6 +5,7 @@
 * Updates kount fraud integration to make use of the Kount JS SDK [#577][577]
 * Fixes discount calculations on free trial subscriptions with a single-use coupon [#574][574]
 * Fixes HostedFields reset on re-configuration preceding initialization [#573][573]
+* Adds Union Pay card type validation [#590][590]
 
 ### Version 4.11.0
 
@@ -306,6 +307,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[590]: https://github.com/recurly/recurly-js/commit/bca67e3f832c59336c4000642f9abd08b291b86d
 [573]: https://github.com/recurly/recurly-js/commit/42c06f62ddc86ce2bc9e5c5827ff1907ef4f441c
 [574]: https://github.com/recurly/recurly-js/commit/a8f31ee905c6d1cda6b1f738fc08334225b2f034
 [577]: https://github.com/recurly/recurly-js/commit/844fd2847be594eaf7ba1e17f24906666ca24d99
