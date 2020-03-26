@@ -58,7 +58,7 @@
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.1.0",
     "babel-plugin-istanbul": "^6.0.0",
-    "chromedriver": "^81.0.0",
+    "chromedriver": "^83.0.0",
     "combinations": "^1.0.0",
     "coveralls": "^3.0.13",
     "css-loader": "^3.5.2",
