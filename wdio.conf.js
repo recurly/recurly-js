@@ -11,7 +11,9 @@ const {
 let browserName = BROWSER || 'chrome';
 let timeout = 15000;
 let execArgv = [];
-let chromeOptions = {};
+let chromeOptions = {
+  args: ['--headless']
+};
 
 if (DEBUG) {
   browserName = 'chrome';
