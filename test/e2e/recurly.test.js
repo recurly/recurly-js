@@ -19,7 +19,7 @@ const sel = {
 };
 
 describe('Recurly.js', async () => {
-  beforeEach(init);
+  beforeEach(init({ fixture: 'hosted-fields-card' }));
 
   it('injects a hosted field', async function () {
     const iframe = await $(sel.iframe);

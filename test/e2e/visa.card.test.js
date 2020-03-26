@@ -10,7 +10,7 @@ const data = require('./support/data');
 const cards = require('./support/credit.cards');
 
 describe('VISA card validations', async () => {
-  beforeEach(init);
+  beforeEach(init({ fixture: 'hosted-fields-card' }));
 
   it('Test visa 4 4 4 4 format', async function () {
     const iframe = await $(sel.iframe);

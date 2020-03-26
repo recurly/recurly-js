@@ -12,7 +12,7 @@ const data = require('./support/data');
 const cards = require('./support/credit.cards');
 
 describe('Expiration date validations', async () => {
-  beforeEach(init);
+  beforeEach(init({ fixture: 'hosted-fields-card' }));
 
   it('Test fontFamily change for hosted field (fields.all.style.fontFamily)', async function () {
     // Assert the default is source sans pro
@@ -48,7 +48,7 @@ describe('Expiration date validations', async () => {
     await assertStyleIs(expiry, 'font-family', data.default.fontFamily);
     await assertStyleIs(cvv, 'font-family', data.default.fontFamily);
 
-    // Change the fontFamily using 
+    // Change the fontFamily using
     await browser.switchToFrame(null);
     const result = await styleHostedField(FIELD_TYPES.CARD, { fontFamily: 'sans-serif' });
 
@@ -83,7 +83,7 @@ describe('Expiration date validations', async () => {
     await assertStyleIs(expiry, 'font-family', 'source sans pro');
     await assertStyleIs(cvv, 'font-family', 'source sans pro');
    });
-  
+
 
 });
 

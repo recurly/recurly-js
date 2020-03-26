@@ -9,8 +9,8 @@ const sel = require('./support/form.elements');
 const data = require('./support/data');
 const cards = require('./support/credit.cards');
 
-describe('AMEX card validations', async () => {  
-    beforeEach(init);
+describe('AMEX card validations', async () => {
+  beforeEach(init({ fixture: 'hosted-fields-card' }));
 
   it('Test amex 4 6 5 format', async function () {
     const iframe = await $(sel.iframe);

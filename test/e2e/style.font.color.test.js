@@ -12,7 +12,7 @@ const data = require('./support/data');
 const cards = require('./support/credit.cards');
 
 describe('Expiration date validations', async () => {
-  beforeEach(init);
+  beforeEach(init({ fixture: 'hosted-fields-card' }));
 
   it('Test fontColor change for card field (fields.card.style.fontColor)', async function () {
     // Assert the default is black

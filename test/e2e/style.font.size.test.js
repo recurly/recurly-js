@@ -12,7 +12,7 @@ const data = require('./support/data');
 const cards = require('./support/credit.cards');
 
 describe('Expiration date validations', async () => {
-  beforeEach(init);
+  beforeEach(init({ fixture: 'hosted-fields-card' }));
 
   it('Test fontSize change for hosted field (fields.all.style.fontSize)', async function () {
     // Assert the default is source sans pro
@@ -48,7 +48,7 @@ describe('Expiration date validations', async () => {
     await assertStyleIs(expiry, 'fontSize', data.default.fontSize);
     await assertStyleIs(cvv, 'fontSize', data.default.fontSize);
 
-    // Change the fontSize using 
+    // Change the fontSize using
     await browser.switchToFrame(null);
     const result = await styleHostedField(FIELD_TYPES.CARD, { fontSize: '2em' });
 
@@ -83,7 +83,7 @@ describe('Expiration date validations', async () => {
     await assertStyleIs(expiry, 'fontSize', data.default.fontSize);
     await assertStyleIs(cvv, 'fontSize', data.default.fontSize);
    });
-  
+
 
 });
 

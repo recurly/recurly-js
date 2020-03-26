@@ -1,7 +1,13 @@
 const assert = require('assert');
 
-const TEST_PATH = 'e2e';
 const TOKEN_PATTERN = /^[\w-]{21,23}$/;
+const ELEMENT_TYPES = {
+  CardElement: 'CardElement',
+  CardNumberElement: 'CardNumberElement',
+  CardMonthElement: 'CardMonthElement',
+  CardYearElement: 'CardYearElement',
+  CardCvvElement: 'CardCvvElement'
+};
 const FIELD_TYPES = {
   ALL: 'all',
   CARD: 'card',
@@ -20,14 +26,17 @@ const TOKEN_TYPES = {
 };
 
 module.exports = {
-  environment,
-  init,
-  configureRecurly,
   assertIsAToken,
   assertStyleIs,
   assertStyleColorIs,
+  configureRecurly,
+  createElement,
+  environment,
+  getInputPlaceholderStyle,
+  init,
   styleHostedField,
   tokenize,
+  ELEMENT_TYPES,
   FIELD_TYPES,
   TOKEN_TYPES
 };
@@ -40,9 +49,11 @@ module.exports = {
  * @param {Object} opts to pass to recurly.configure
  * @return {Promise}
  */
-async function init (opts = {}) {
-  await browser.url(TEST_PATH);
-  return await configureRecurly(Object.assign({}, environment(), opts));
+function init ({ fixture = '', opts = {} } = {}) {
+  return async () => {
+    await browser.url(`e2e/${fixture}`);
+    return await configureRecurly(Object.assign({}, environment(), opts));
+  };
 }
 
 /**
@@ -60,6 +71,24 @@ async function configureRecurly (opts = {}) {
       done();
     });
   }, opts);
+}
+
+/**
+ * Creates an Element
+ *
+ * @param {String} elementClass one of ELEMENT_TYPES
+ */
+async function createElement (elementClass, config = {}) {
+  return await browser.executeAsync(function (elementClass, config, done) {
+    const elements = recurly.Elements();
+    const element = elements[elementClass](config);
+    const container = document.querySelector('.test-element-container');
+
+    element.on('attach', function () {
+      done();
+    });
+    element.attach(container);
+  }, elementClass, config);
 }
 
 /**
@@ -100,18 +129,7 @@ async function tokenize (form) {
 // Assertion helpers
 
 /**
- * Asserts that a given element has the given CSS proprty color
- *
- * @param {Element} element
- * @param {String}  hex            ex: '#000000'
- * @param {String}  [prop='color'] CSS property to check. Defaults to font color.
- */
-async function assertStyleColorIs (element, hex, prop = 'color') {
-  return assert.strictEqual((await element.getCSSProperty(prop)).parsed.hex, hex);
-}
-
-/**
- * Asserts that a given element has the given CSS proprty color
+ * Asserts that a given element has the given CSS property color
  *
  * @param {Element} element
  * @param {String}  property CSS property to check.
@@ -119,6 +137,17 @@ async function assertStyleColorIs (element, hex, prop = 'color') {
  */
 async function assertStyleIs (element, property, value) {
   return assert.strictEqual((await element.getCSSProperty(property)).value, value);
+}
+
+/**
+ * Asserts that a given element has the given CSS property color
+ *
+ * @param {Element} element
+ * @param {String}  hex            ex: '#000000'
+ * @param {String}  [prop='color'] CSS property to check. Defaults to font color.
+ */
+async function assertStyleColorIs (element, hex, prop = 'color') {
+  return assert.strictEqual((await element.getCSSProperty(prop)).parsed.hex, hex);
 }
 
 /**
@@ -131,6 +160,40 @@ function assertIsAToken (maybeToken, expectedType = TOKEN_TYPES.CREDIT_CARD) {
   assert(maybeToken);
   assert.strictEqual(maybeToken.type, expectedType);
   assert.match(maybeToken.id, TOKEN_PATTERN);
+}
+
+// Generics
+
+/**
+ * Gets the value of a placeholder style prop for input elements
+ *
+ * @param  {String} prop the property to retrieve. ex: 'color'
+ * @return {String} the prop's value
+ */
+async function getInputPlaceholderStyle (prop) {
+  return await browser.execute(function (prop) {
+    var selectors = [
+      '::-webkit-input-placeholder',
+      'input::-moz-placeholder',
+      'input:-ms-input-placeholder'
+    ];
+    var sheets = document.styleSheets;
+    for (var i = 0; i < sheets.length; i++) {
+      var sheet = sheets[i];
+      if (sheet.href) continue; // skip external sheets
+      var rules = sheet.cssRules;
+      for (var j = 0; j < rules.length; j++) {
+        var rule = rules[j];
+        if (!rule.selectorText) continue;
+        for (var k = 0; k < selectors.length; k++) {
+          var sel = selectors[k]
+          if (!!~rule.selectorText.indexOf(sel)) {
+            return rule.style.getPropertyValue(prop);
+          }
+        }
+      }
+    }
+  }, prop);
 }
 
 // Utility
