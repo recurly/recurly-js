@@ -6,7 +6,6 @@ const {
   assertStyleIs,
   FIELD_TYPES
 } = require('./support/helpers');
-const util = require('./support/util');
 const sel = require('./support/form.elements');
 const data = require('./support/data');
 const cards = require('./support/credit.cards');
