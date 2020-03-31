@@ -5,6 +5,7 @@ eslint = $(bin)/eslint ./lib
 karma = $(bin)/karma start
 server = $(bin)/webpack-dev-server --inline --hot --port 8020
 webpack = $(bin)/webpack
+tsc = $(bin)/tsc
 src = index.js $(shell find . -type f -name '*.js' ! -path './build/*' -o -name '*.css' ! -path './build/*')
 tests = $(shell find test -type f -name '*.js')
 
@@ -27,6 +28,12 @@ build/recurly.min.js: build/recurly.js
 	@$(webpack) -p
 build/test-unit.js: $(src) $(tests)
 	@$(webpack) --config webpack.test.config.js
+build/recurly.d.ts:
+	@$(tsc) -p types -outFile ./build/recurly.d.ts
+
+types: build/recurly.d.ts
+types-watch:
+	@$(tsc) -w -p types -outFile ./build/recurly.d.ts
 
 test: test-unit test-e2e
 test-ci: test-unit-ci test-e2e-ci

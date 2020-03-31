@@ -8,6 +8,7 @@
     "type": "git",
     "url": "git://github.com/recurly/recurly-js.git"
   },
+  "types": "types",
   "dependencies": {
     "array-unique": "^0.3.2",
     "bowser": "^1.9.4",
@@ -99,6 +100,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "sinon": "^9.0.0",
     "terser-webpack-plugin": "^2.3.2",
+    "typescript": "^3.8.3",
     "wdio-chromedriver-service": "^5.0.2",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
