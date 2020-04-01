@@ -8,10 +8,12 @@ const {
   FIELD_TYPES
 } = require('./support/helpers');
 
+const EXAMPLE = 'test';
 const GRAY = 'rgb(163, 163, 167)';
 const GREEN = 'green';
 const ABSENT = '';
 const CARD_DEFAULT_CONTENT = ['Card number', 'MM / YY', 'CVV'];
+const CARD_EXAMPLE_CONTENT = ['test number', 'test exp', 'test cvv'];
 
 describe('Placeholder styling', async () => {
   describe('when using Elements', function () {
@@ -35,6 +37,25 @@ describe('Placeholder styling', async () => {
 
         it(...hasPlaceholderColor(GREEN));
         it(...hasPlaceholderContent(CARD_DEFAULT_CONTENT));
+      });
+
+      describe('when placeholder content is set', function () {
+        beforeEach(async () => {
+          const config = {
+            style: {
+              placeholder: {
+                content: {
+                  number: CARD_EXAMPLE_CONTENT[0],
+                  expiry: CARD_EXAMPLE_CONTENT[1],
+                  cvv: CARD_EXAMPLE_CONTENT[2]
+                }
+              }
+            }
+          };
+          await createElement(ELEMENT_TYPES.CardElement, config);
+        });
+
+        it(...hasPlaceholderContent(CARD_EXAMPLE_CONTENT));
       });
     });
 
@@ -63,6 +84,18 @@ describe('Placeholder styling', async () => {
         it(...hasPlaceholderColor(GREEN, 4));
         it(...hasPlaceholderContent([ABSENT]));
       });
+
+      describe('when placeholder content is set', function () {
+        beforeEach(async () => {
+          const config = { style: { placeholder: { content: EXAMPLE } } };
+          await createElement(ELEMENT_TYPES.CardNumberElement, config);
+          await createElement(ELEMENT_TYPES.CardMonthElement, config);
+          await createElement(ELEMENT_TYPES.CardYearElement, config);
+          await createElement(ELEMENT_TYPES.CardCvvElement, config);
+        });
+
+        it(...hasPlaceholderContent([EXAMPLE]));
+      });
     });
   });
 
@@ -81,6 +114,22 @@ describe('Placeholder styling', async () => {
 
       it(...hasPlaceholderColor(GREEN));
       it(...hasPlaceholderContent(CARD_DEFAULT_CONTENT));
+    });
+
+    describe('when placeholder content is set', function () {
+      beforeEach(async () => {
+        await styleHostedField(FIELD_TYPES.CARD, {
+          placeholder: {
+            content: {
+              number: CARD_EXAMPLE_CONTENT[0],
+              expiry: CARD_EXAMPLE_CONTENT[1],
+              cvv: CARD_EXAMPLE_CONTENT[2]
+            }
+          }
+        });
+      });
+
+      it(...hasPlaceholderContent(CARD_EXAMPLE_CONTENT));
     });
   });
 
@@ -103,6 +152,18 @@ describe('Placeholder styling', async () => {
 
       it(...hasPlaceholderColor(GREEN));
       it(...hasPlaceholderContent([ABSENT]));
+    });
+
+    describe('when placeholder content is set', function () {
+      beforeEach(async () => {
+        const config = { placeholder: { content: EXAMPLE } };
+        await styleHostedField(FIELD_TYPES.NUMBER, config);
+        await styleHostedField(FIELD_TYPES.MONTH, config);
+        await styleHostedField(FIELD_TYPES.YEAR, config);
+        await styleHostedField(FIELD_TYPES.CVV, config);
+      });
+
+      it(...hasPlaceholderContent([EXAMPLE]));
     });
   });
 });
