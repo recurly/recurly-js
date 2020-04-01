@@ -21,6 +21,10 @@ jobs:
       name: ESLint
       script: make lint
 
+    - stage: Typecheck
+      name: Check type definitions
+      script: make test-types
+
     - stage: Unit Test
       name: Coverage
       addons:

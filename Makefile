@@ -5,6 +5,8 @@ eslint = $(bin)/eslint ./lib
 karma = $(bin)/karma start
 server = $(bin)/webpack-dev-server --inline --hot --port 8020
 webpack = $(bin)/webpack
+tsc = $(bin)/tsc
+dts = $(bin)/dtslint
 src = index.js $(shell find . -type f -name '*.js' ! -path './build/*' -o -name '*.css' ! -path './build/*')
 tests = $(shell find test -type f -name '*.js')
 
@@ -27,6 +29,12 @@ build/recurly.min.js: build/recurly.js
 	@$(webpack) -p
 build/test-unit.js: $(src) $(tests)
 	@$(webpack) --config webpack.test.config.js
+build/recurly.d.ts:
+	@$(tsc) -p types -outFile ./build/recurly.d.ts
+
+types: build/recurly.d.ts
+types-watch:
+	@$(tsc) -w -p types -outFile ./build/recurly.d.ts
 
 test: test-unit test-e2e
 test-ci: test-unit-ci test-e2e-ci
@@ -46,7 +54,8 @@ test-e2e-debug: build $(src) $(tests)
 	DEBUG=1 $(wdio) wdio.conf.js
 test-e2e-ci: build $(src) $(tests)
 	@$(wdio) wdio.ci.conf.js
-
+test-types: types
+	$(dts) test/types
 lint: build
 	@$(eslint)
 lint-fix: build
@@ -59,5 +68,5 @@ clean:
 	@rm -rf node_modules build
 
 .PHONY: server server-http
-.PHONY: test-ci test-unit test-unit-ci test-unit-cov-ci test-e2e test-e2e-ci
+.PHONY: test-ci test-unit test-unit-ci test-unit-cov-ci test-e2e test-e2e-ci test-types
 .PHONY: lint lint-fix clean
