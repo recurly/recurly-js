@@ -3,9 +3,11 @@ const {
   assertIsARecurlyError,
   assertIsAToken,
   configureRecurly,
+  createElement,
   environment,
   init,
-  tokenize
+  tokenize,
+  ELEMENT_TYPES
 } = require('./support/helpers');
 
 const sel = {
@@ -15,32 +17,46 @@ const sel = {
 };
 
 const yearAt = add => ((new Date()).getFullYear() + add).toString().substring(2);
+const EXAMPLE_CARD = ['4111111111111111', `10${yearAt(1)}`, '123'];
+const EXAMPLE_DISTINCT = ['4111111111111111', '10', yearAt(1), '123'];
 
 describe('tokenization', async () => {
-  // TODO: complete
-  // describe('when using a CardElement', tokenSuite({
-  //   example: ['4111111111111111', `10${yearAt(1)}`, '123'],
-  //   expectedTypes: ['card']
-  // }));
+  describe('when using a CardElement', tokenSuite({
+    setup: async () => await createElement(ELEMENT_TYPES.CardElement),
+    example: EXAMPLE_CARD,
+    expectsFrames: createsElements('card'),
+  }));
+
+  describe('when using distinct card Elements', tokenSuite({
+    setup: async () => {
+      await createElement(ELEMENT_TYPES.CardNumberElement);
+      await createElement(ELEMENT_TYPES.CardMonthElement);
+      await createElement(ELEMENT_TYPES.CardYearElement);
+      await createElement(ELEMENT_TYPES.CardCvvElement);
+    },
+    example: EXAMPLE_DISTINCT,
+    expectsFrames: createsElements('number', 'month', 'year', 'cvv'),
+  }));
 
   describe('when using a card hosted field', tokenSuite({
     fixture: 'hosted-fields-card',
-    example: ['4111111111111111', `10${yearAt(1)}`, '123'],
-    expectedTypes: ['card']
+    example: EXAMPLE_CARD,
+    expectsFrames: createsHostedFields('card'),
   }));
 
   describe('when using distinct hosted fields', tokenSuite({
     fixture: 'hosted-fields-card-distinct',
-    example: ['4111111111111111', '10', yearAt(1), '123'],
-    expectedTypes: ['number', 'month', 'year', 'cvv']
+    example: EXAMPLE_DISTINCT,
+    expectsFrames: createsHostedFields('number', 'month', 'year', 'cvv')
   }));
 });
 
-function tokenSuite ({ fixture, example, expectedTypes }) {
+function tokenSuite ({ fixture, setup, expectsFrames, example }) {
   return () => {
     beforeEach(init({ fixture }));
+    if (setup) beforeEach(setup);
 
-    it(...createsHostedFields(expectedTypes))
+    it(...expectsFrames)
     it(...createsAToken(example));
 
     describe('when an invalid number is provided', () => {
@@ -61,6 +77,7 @@ function tokenSuite ({ fixture, example, expectedTypes }) {
     describe('when cvv is not provided', () => it(...createsAToken(withoutCvv(example))));
     describe('when cvv is required', () => {
       beforeEach(init({ fixture, opts: { required: ['cvv'] } }));
+      if (setup) beforeEach(setup);
 
       describe('when a cvv is provided', () => it(...createsAToken(example)));
       describe('when a cvv is not provided', () => {
@@ -94,9 +111,23 @@ function withoutCvv (example) {
   return newExample;
 }
 
-function createsHostedFields (types = []) {
-  return [`creates hosted fields for ${types}`, async function () {
-    const frames = await $$('.recurly-hosted-field iframe');
+function createsElements (...types) {
+  return [
+    `creates Elements for ${types}`,
+    createsFrames(types, () => $$('.recurly-element iframe'))
+  ];
+}
+
+function createsHostedFields (...types) {
+  return [
+    `creates Hosted Fields for ${types}`,
+    createsFrames(types, () => $$('.recurly-hosted-field iframe'))
+  ];
+}
+
+function createsFrames (types = [], getFrames = () => []) {
+  return async () => {
+    const frames = await getFrames();
     assert.strictEqual(frames.length, types.length);
     let i = 0;
     for (const frame of frames) {
@@ -107,7 +138,7 @@ function createsHostedFields (types = []) {
       assert.strictEqual(type, types[i++])
       await browser.switchToFrame(null);
     }
-  }]
+  }
 }
 
 function createsAToken (examples) {
