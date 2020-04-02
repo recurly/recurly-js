@@ -180,9 +180,9 @@ function hasPlaceholderColor (color, count = 1) {
 
 function hasPlaceholderContent (contents) {
   return [`has placeholder(s) set to "${contents}"`, async () => {
-    for (const frame of await browser.$$('iframe')) {
+    for (const frame of await $$('iframe')) {
       await browser.switchToFrame(frame);
-      const inputs = await browser.$$(`.recurly-hosted-field-input`);
+      const inputs = await $$('.recurly-hosted-field-input');
       let i = 0;
       for (const content of contents) {
         const input = inputs[i++];

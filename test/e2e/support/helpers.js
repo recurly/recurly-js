@@ -26,6 +26,7 @@ const TOKEN_TYPES = {
 };
 
 module.exports = {
+  assertIsARecurlyError,
   assertIsAToken,
   assertStyleIs,
   assertStyleColorIs,
@@ -80,7 +81,7 @@ async function configureRecurly (opts = {}) {
  */
 async function createElement (elementClass, config = {}) {
   return await browser.executeAsync(function (elementClass, config, done) {
-    const elements = recurly.Elements();
+    const elements = window.__e2e__.elements = window.__e2e__.elements || recurly.Elements();
     const element = elements[elementClass](config);
     const container = document.querySelector('.test-element-container');
 
@@ -160,6 +161,23 @@ function assertIsAToken (maybeToken, expectedType = TOKEN_TYPES.CREDIT_CARD) {
   assert(maybeToken);
   assert.strictEqual(maybeToken.type, expectedType);
   assert.match(maybeToken.id, TOKEN_PATTERN);
+}
+
+/**
+ * Asserts that a given object is a RecurlyError, optionally with deep inclusive comparison.
+ *
+ * @param  {Object} maybeError   expected to be a RecurlyError
+ * @param  {Object} [includes] deep includes object
+ */
+function assertIsARecurlyError (maybeError, includes = {}) {
+  assert(maybeError);
+  assert.strictEqual(typeof maybeError.code, 'string');
+  assert.strictEqual(typeof maybeError.message, 'string');
+  assert.notStrictEqual(maybeError.code, '');
+  assert.notStrictEqual(maybeError.message, '');
+  for (const [key, val] of Object.entries(includes)) {
+    assert.strictEqual(JSON.stringify(maybeError[key]), JSON.stringify(val));
+  }
 }
 
 // Generics
