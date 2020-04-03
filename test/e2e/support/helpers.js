@@ -24,6 +24,50 @@ const TOKEN_TYPES = {
   THREE_D_SECURE_ACTION: 'three_d_secure_action',
   THREE_D_SECURE_ACTION_RESULT: 'three_d_secure_action_result'
 };
+const CARDS = {
+  BLANK: {
+    brand: 'unknown',
+    number: '',
+    formatted: '',
+    iconTitle: 'generic_card',
+    cvvIconTitle: 'CVV-Generic'
+  },
+  AMEX: {
+    brand: 'american_express',
+    number: '372546612345678',
+    formatted: '3725 466123 45678',
+    iconTitle: 'amex',
+    cvvIconTitle: 'CC-Amex'
+  },
+  DISCOVER: {
+    brand: 'discover',
+    number: '6011000090139424',
+    formatted: '3050 9909 0024 2198',
+    iconTitle: 'discover',
+    cvvIconTitle: 'CVV-Generic'
+  },
+  MASTER: {
+    brand: 'master',
+    number: '5454545454545454',
+    formatted: '5454 5454 5454 5454',
+    iconTitle: 'mastercard',
+    cvvIconTitle: 'CVV-Generic'
+  },
+  UNION_PAY: {
+    brand: 'union_pay',
+    number: '6210940011113245',
+    formatted: '6210 9400 1111 3245',
+    iconTitle: 'union-pay',
+    cvvIconTitle: 'CVV-Generic'
+  },
+  VISA: {
+    brand: 'visa',
+    number: '4111111111111111',
+    formatted: '4111 1111 1111 1111',
+    iconTitle: 'visa',
+    cvvIconTitle: 'CVV-Generic'
+  }
+};
 
 module.exports = {
   assertIsARecurlyError,
@@ -37,6 +81,7 @@ module.exports = {
   init,
   styleHostedField,
   tokenize,
+  CARDS,
   ELEMENT_TYPES,
   FIELD_TYPES,
   TOKEN_TYPES
