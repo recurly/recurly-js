@@ -13,7 +13,20 @@ module.exports = {
     default: {
         fontColor: '#545457',
         fontFamily: 'source sans pro',
-        fontSize: '16px'
+        fontFeatureSettings: 'normal',
+        fontKerning: 'auto',
+        fontSize: '16px',
+        fontStretch: '100%',
+        fontStyle: 'normal',
+        fontVariant: 'normal',
+        fontWeight: 400,
+        letterSpacing: 'normal',
+        lineHeight: 'normal',
+        textAlign: 'start',
+        textDecoration: 'none solid rgb(84, 84, 87)',
+        textRendering: 'auto',
+        textShadow: 'none',
+        textTransform: 'none'
       }
   
   };
