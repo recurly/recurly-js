@@ -16,7 +16,6 @@ const PROPERTIES = [
     ['font-variant', data.default.fontVariant],
     ['font-weight', data.default.fontWeight],
     ['letter-spacing', data.default.letterSpacing],
-
     ['line-height', data.default.lineHeight],
     ['text-align', data.default.textAlign],
     ['text-decoration', data.default.textDecoration],
@@ -27,30 +26,17 @@ const PROPERTIES = [
 
 // Test all the style defaults  
 describe('Common field style properties tests', async () => {
-    beforeEach(init({ fixture: 'hosted-fields-card' }));                
+    beforeEach(init({ fixture: 'hosted-fields-card' }));    
 
-    PROPERTIES.forEach(function(arrElement) {
-
-        describe('Default ' + arrElement + ' suite', async () => {
- 
-            it('Test number field default ' + arrElement[0], async function () {
-                await browser.switchToFrame(0);
-                const number = await $(sel.number);            
-                await assertStyleIs(number, arrElement[0], arrElement[1]);
-            });
-
-            it('Test expiry field default ' + arrElement[0], async function () {
-                await browser.switchToFrame(0);
-                const expiry = await $(sel.expiry);
-                await assertStyleIs(expiry, arrElement[0], arrElement[1]);
-            });
-
-            it('Test cvv field default ' + arrElement[0], async function () {
-                await browser.switchToFrame(0);
-                const cvv = await $(sel.cvv);
-                await assertStyleIs(cvv, arrElement[0], arrElement[1]);
-            });
-        });
-    });
+    it(`Test number field default ${PROPERTIES.map(p => p[0])}`, async function () {
+        await browser.switchToFrame(0);
+        const number = await $(sel.number);
+        const expiry = await $(sel.expiry);
+        const cvv = await $(sel.cvv);
+        for (const [prop, defaultValue] of PROPERTIES) {
+          await assertStyleIs(number, prop, defaultValue);
+          await assertStyleIs(expiry, prop, defaultValue);
+          await assertStyleIs(cvv, prop, defaultValue);
+        };
+      });
 });
-
