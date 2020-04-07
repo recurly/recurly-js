@@ -1,4 +1,4 @@
-type RecurlyOptions = {
+export type RecurlyOptions = {
   cors?: boolean;
   publicKey: string;
   currency?: string;
@@ -17,6 +17,4 @@ type RecurlyOptions = {
   };
 };
 
-type Configure = (recurlyConfig: RecurlyOptions | string) => void;
-
-export default Configure;
+export type Configure = (recurlyConfig: RecurlyOptions | string) => void;

@@ -1,4 +1,4 @@
-type Address = {
+export type Address = {
   first_name: string;
   last_name: string;
   address1?: string;
@@ -10,5 +10,3 @@ type Address = {
   phone?: string;
   vat_number?: string;
 };
-
-export default Address;

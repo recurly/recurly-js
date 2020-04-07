@@ -1,25 +1,16 @@
-import { PricingInstance } from '.';
-import Address from '../address';
-import PricingPromise from './promise';
+import { PricingInstance, Tax } from '.';
+import { Address } from '../address';
+import { PricingPromise } from './promise';
 
-type Tax = {
-  tax_code: string;
-  vat_number?: string;
-  amounts?: {
-    now?: string;
-    next?: string;
-  };
-};
-
-type PlanOptions = {
+export type PlanOptions = {
   quantity?: number;
 };
 
-type AddonOptions = {
+export type AddonOptions = {
   quantity?: number;
 };
 
-type SubscriptionPricingStateTax = {
+export type SubscriptionPricingStateTax = {
   tax_type: string;
   region: string;
   rate: string;
@@ -65,7 +56,7 @@ export type SubscriptionPricingState = {
   };
 };
 
-interface SubscriptionPricingMethods {
+export interface SubscriptionPricingMethods {
   addon: (addonCode: string, addonOptions?: AddonOptions) => SubscriptionPricingPromise;
   address: (address: Address) => SubscriptionPricingPromise;
   coupon: (coupon: string) => SubscriptionPricingPromise;
@@ -82,10 +73,8 @@ export interface SubscriptionPricingInstance
   attach: (element: string | HTMLElement) => void;
 }
 
-interface SubscriptionPricingPromise
+export interface SubscriptionPricingPromise
   extends SubscriptionPricingInstance,
     PricingPromise<SubscriptionPricingState, SubscriptionPricingMethods> {}
 
-type SubscriptionPricing = () => SubscriptionPricingInstance;
-
-export default SubscriptionPricing;
+export type SubscriptionPricing = () => SubscriptionPricingInstance;

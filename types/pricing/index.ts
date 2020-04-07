@@ -1,8 +1,17 @@
-import Emitter = require('../emitter');
+import { Emitter } from '../emitter';
 import { CheckoutPricingInstance } from './checkout';
 import { SubscriptionPricingInstance } from './subscription';
 
-type PricingEvent =
+export type Tax = {
+  tax_code: string;
+  vat_number?: string;
+  amounts?: {
+    now?: string;
+    next?: string;
+  };
+};
+
+export type PricingEvent =
   | 'change'
   | 'set.subscription'
   | 'set.plan'
@@ -23,9 +32,7 @@ export interface PricingInstance<PricingPromise> extends Emitter<PricingEvent> {
   reset: VoidFunction;
 }
 
-type Pricing = {
+export type Pricing = {
   Checkout: () => CheckoutPricingInstance;
   Subscription: () => SubscriptionPricingInstance;
 };
-
-export default Pricing;

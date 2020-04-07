@@ -1,1 +1,1 @@
-/// <reference path="../../build/recurly.d.ts" />
+export * from '../../types';

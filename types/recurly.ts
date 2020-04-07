@@ -1,19 +1,19 @@
-import Risk from './3d-secure';
-import Adyen from './adyen';
-import ApplePay from './apple-pay';
-import BankAccount from './bank-account';
-import Configure from './configure';
-import Elements from './elements';
-import Emitter from './emitter';
-import GiftCard from './gift-card';
-import PayPal from './paypal';
-import Pricing from './pricing';
-import Token from './token';
-import Validate from './validate';
+import { Risk } from './3d-secure';
+import { Adyen } from './adyen';
+import { ApplePay } from './apple-pay';
+import { BankAccount } from './bank-account';
+import { Configure } from './configure';
+import { Elements } from './elements';
+import { Emitter } from './emitter';
+import { GiftCard } from './gift-card';
+import { PayPal } from './paypal';
+import { Pricing } from './pricing';
+import { Token } from './token';
+import { Validate } from './validate';
 
-type RecurlyEvent = 'change' | 'field:submit' | 'error';
+export type RecurlyEvent = 'change' | 'field:submit' | 'error';
 
-interface Recurly extends Emitter<RecurlyEvent> {
+export interface Recurly extends Emitter<RecurlyEvent> {
   Adyen: Adyen;
   ApplePay: ApplePay;
   bankAccount: BankAccount;
@@ -29,7 +29,7 @@ interface Recurly extends Emitter<RecurlyEvent> {
 
 declare global {
   interface Window {
-      recurly: Recurly;
+    recurly: Recurly;
   }
 
   namespace Recurly {

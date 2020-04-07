@@ -1,27 +1,25 @@
-import Emitter from './emitter';
+import { Emitter } from './emitter';
 import { TokenHandler } from './token';
 
-type BraintreeConfig = {
+export type BraintreeConfig = {
   braintree: {
     clientAuthorization: string;
   };
 };
 
-type DirectConfig = {
+export type DirectConfig = {
   display?: {
     displayName?: string;
   };
 };
 
-type PayPalConfig = BraintreeConfig | DirectConfig;
+export type PayPalConfig = BraintreeConfig | DirectConfig;
 
-type PayPalEvent = 'error' | 'token';
+export type PayPalEvent = 'error' | 'token';
 
-interface PayPalInstance extends Emitter<PayPalEvent> {
+export interface PayPalInstance extends Emitter<PayPalEvent> {
   start: VoidFunction;
   token: TokenHandler;
 }
 
-type PayPal = (config?: PayPalConfig) => PayPalInstance;
-
-export default PayPal;
+export type PayPal = (config?: PayPalConfig) => PayPalInstance;

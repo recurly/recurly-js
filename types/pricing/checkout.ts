@@ -1,16 +1,16 @@
-import { PricingInstance } from '.';
-import Address from '../address';
-import PricingPromise from './promise';
+import { PricingInstance, Tax } from '.';
+import { Address } from '../address';
+import { PricingPromise } from './promise';
 import { SubscriptionPricingState } from './subscription';
 
-type ItemAdjustment = {
+export type ItemAdjustment = {
   itemCode: string;
   quantity: number;
   currency?: string;
   id?: string;
 };
 
-type NonItemAdjustment = {
+export type NonItemAdjustment = {
   amount: number;
   quantity: number;
   currency?: string;
@@ -19,18 +19,9 @@ type NonItemAdjustment = {
   id?: string;
 };
 
-type Adjustment = ItemAdjustment | NonItemAdjustment;
+export type Adjustment = ItemAdjustment | NonItemAdjustment;
 
-type Tax = {
-  tax_code: string;
-  vat_number?: string;
-  amounts?: {
-    now?: string;
-    next?: string;
-  };
-};
-
-type Item = {
+export type Item = {
   type: string;
   id: string;
   amount: string;
@@ -39,43 +30,45 @@ type Item = {
   plan: string;
 };
 
-type CheckoutPricingStateTax = {
+export type CheckoutPricingStateTax = {
   tax_type: string;
   region: string;
   rate: string;
 };
 
-type CheckoutPricingState = {
-  price: {
-    now: {
-      items: Item[];
-      subscriptions: string;
-      adjustments: string;
-      discount: string;
-      subtotal: string;
-      taxes: string;
-      giftCard: string;
-      total: string;
-    };
-    next: {
-      items: Item[];
-      subscriptions: string;
-      adjustments: string;
-      discount: string;
-      subtotal: string;
-      taxes: string;
-      giftCard: string;
-      total: string;
-    };
-    currency: {
-      code: string;
-      symbol: string;
-    };
-    taxes: CheckoutPricingStateTax[];
+export type CheckoutPrice = {
+  now: {
+    items: Item[];
+    subscriptions: string;
+    adjustments: string;
+    discount: string;
+    subtotal: string;
+    taxes: string;
+    giftCard: string;
+    total: string;
   };
+  next: {
+    items: Item[];
+    subscriptions: string;
+    adjustments: string;
+    discount: string;
+    subtotal: string;
+    taxes: string;
+    giftCard: string;
+    total: string;
+  };
+  currency: {
+    code: string;
+    symbol: string;
+  };
+  taxes: CheckoutPricingStateTax[];
 };
 
-interface CheckoutPricingMethods {
+export type CheckoutPricingState = {
+  price: CheckoutPrice;
+};
+
+export interface CheckoutPricingMethods {
   address: (address: Address) => CheckoutPricingPromise;
   adjustment: (adjustment: Adjustment) => CheckoutPricingPromise;
   coupon: (coupon: string) => CheckoutPricingPromise;
@@ -94,6 +87,4 @@ export interface CheckoutPricingPromise
   extends CheckoutPricingInstance,
     PricingPromise<CheckoutPricingState, CheckoutPricingMethods> {}
 
-type CheckoutPricing = () => CheckoutPricingInstance;
-
-export default CheckoutPricing;
+export type CheckoutPricing = () => CheckoutPricingInstance;

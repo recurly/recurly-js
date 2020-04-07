@@ -1,4 +1,4 @@
-import Emitter from './emitter';
+import { Emitter } from './emitter';
 
 export type CommonElementStyle = {
   fontColor?: string;
@@ -52,23 +52,23 @@ export type IndividualElementOptions = {
   };
 };
 
-type Attach<ElementType> = (el: string | HTMLElement) => ElementType;
+export type Attach<ElementType> = (el: string | HTMLElement) => ElementType;
 
-type ElementEvent = 'change' | 'focus' | 'blur' | 'submit' | 'attach' | 'remove';
+export type ElementEvent = 'change' | 'focus' | 'blur' | 'submit' | 'attach' | 'remove';
 
-interface CardElement extends Emitter<ElementEvent> {
+export interface CardElement extends Emitter<ElementEvent> {
   attach: Attach<CardElement>;
   remove: () => CardElement;
   configure: (options: CardElementOptions) => CardElement;
 }
 
-interface IndividualElement extends Emitter<ElementEvent> {
+export interface IndividualElement extends Emitter<ElementEvent> {
   attach: Attach<IndividualElement>;
   remove: () => Element;
   configure: (options: IndividualElementOptions) => Element;
 }
 
-type ElementsInstanceEvents = 'submit';
+export type ElementsInstanceEvents = 'submit';
 
 export interface ElementsInstance extends Emitter<ElementsInstanceEvents> {
   CardElement: (cardElementOptions?: CardElementOptions) => CardElement;
@@ -78,6 +78,4 @@ export interface ElementsInstance extends Emitter<ElementsInstanceEvents> {
   CardCvvElement: (cardCvvElementOptions?: IndividualElementOptions) => IndividualElement;
 }
 
-type Elements = () => ElementsInstance;
-
-export default Elements;
+export type Elements = () => ElementsInstance;

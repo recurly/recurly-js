@@ -1,7 +1,7 @@
-import RecurlyError from './error';
+import { RecurlyError } from './error';
 import { TokenHandler } from './token';
 
-type BillingInfo = {
+export type BillingInfo = {
   routing_number: string;
   account_number: string;
   account_number_confirmation: string;
@@ -17,21 +17,19 @@ type BillingInfo = {
   vat_number?: string;
 };
 
-type BankInfoOptions = {
+export type BankInfoOptions = {
   routingNumber: string;
 };
 
-type BankInfoPayload = {
+export type BankInfoPayload = {
   bank_name: string;
 };
 
-type BankInfoHandler = (err: RecurlyError, bankInfo: BankInfoPayload) => void;
+export type BankInfoHandler = (err: RecurlyError, bankInfo: BankInfoPayload) => void;
 
-type BankInfo = (bankInfoOptions: BankInfoOptions, BankInfoHandler: BankInfoHandler) => void;
+export type BankInfo = (bankInfoOptions: BankInfoOptions, BankInfoHandler: BankInfoHandler) => void;
 
-type BankAccount = {
+export type BankAccount = {
   token: (data: HTMLFormElement | BillingInfo, tokenHandler: TokenHandler) => void;
   bankInfo: BankInfo;
 };
-
-export default BankAccount;

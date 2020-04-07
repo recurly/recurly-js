@@ -1,7 +1,7 @@
-import Emitter from './emitter';
+import { Emitter } from './emitter';
 import { CheckoutPricingInstance } from './pricing/checkout';
 
-type ApplePayConfig = {
+export type ApplePayConfig = {
   country: string;
   currency: string;
   label: string;
@@ -10,7 +10,7 @@ type ApplePayConfig = {
   form?: HTMLFormElement;
 };
 
-type ApplePayEvent =
+export type ApplePayEvent =
   | 'token'
   | 'error'
   | 'ready'
@@ -19,11 +19,9 @@ type ApplePayEvent =
   | 'shippingMethodSelected'
   | 'cancel';
 
-interface ApplePayInstance extends Emitter<ApplePayEvent> {
+export interface ApplePayInstance extends Emitter<ApplePayEvent> {
   ready: (cb?: VoidFunction) => void;
   begin: (cb?: VoidFunction) => void;
 }
 
-type ApplePay = (config: ApplePayConfig) => ApplePayInstance;
-
-export default ApplePay;
+export type ApplePay = (config: ApplePayConfig) => ApplePayInstance;
