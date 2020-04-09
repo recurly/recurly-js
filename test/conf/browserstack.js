@@ -41,12 +41,12 @@ module.exports = {
       }
     },
 
-    bs_ios_13: {
-      deviceName: 'iPhone XS',
-      os: 'ios',
-      osVersion: '13.3',
-      realMobile: true
-    },
+    // bs_ios_13: {
+    //   deviceName: 'iPhone XS',
+    //   os: 'ios',
+    //   osVersion: '13',
+    //   realMobile: true
+    // },
     bs_ios_12: {
       deviceName: 'iPhone XS',
       os: 'ios',
