@@ -20,6 +20,7 @@ export type PayPalEvent = 'error' | 'token';
 export interface PayPalInstance extends Emitter<PayPalEvent> {
   start: VoidFunction;
   token: TokenHandler;
+  destroy: VoidFunction;
 }
 
 export type PayPal = (config?: PayPalConfig) => PayPalInstance;

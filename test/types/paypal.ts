@@ -22,4 +22,5 @@ export default function paypal() {
   paypal.on('fake-event', () => {});
 
   paypal.start();
+  paypal.destroy();
 }
