@@ -15,6 +15,7 @@ const data = require('./support/data');
  *  [2] = Style Value to be changed
  *  [3] = Style Value to be asserted
  */
+
 const PROPERTIES = [
     ['fontFamily',          'font-family',           'Arial,sans-serif',     'arial'                           ], 
     ['fontFeatureSettings', 'font-feature-settings', '"smcp", "zero"',       '"smcp", "zero"'                  ],
@@ -33,37 +34,62 @@ const PROPERTIES = [
     ['textTransform',       'text-transform',        'lowercase',            'lowercase'                       ]
 ]
 
-// Test changing the style and make assertions to confirm such changes  
-describe('Common field style properties tests', async () => {
-    beforeEach(init({ fixture: 'hosted-fields-card' }));    
 
-    it(`Test changing style fields.all for: ${PROPERTIES.map(p => p[0])}`, async function () {
-        await browser.switchToFrame(0);
-        const number = await $(sel.number);
-        const expiry = await $(sel.expiry);
-        const cvv = await $(sel.cvv);
-        for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
-          await browser.switchToFrame(null);
-          const config = await styleHostedField(FIELD_TYPES.ALL, { [rjsProp]: newValue });
-          await browser.switchToFrame(0); 
-          await assertStyleIs(number, cssProp, assertValue);
-          await assertStyleIs(expiry, cssProp, assertValue);
-          await assertStyleIs(cvv, cssProp, assertValue);
-        };
-      });
+describe('Styling Card Fields ', async () => {
+    describe('Changing common card fields properties', async () => {
+        beforeEach(init({ fixture: 'hosted-fields-card' })); 
 
-      it(`Test changing style fields.card for: ${PROPERTIES.map(p => p[0])}`, async function () {
-        await browser.switchToFrame(0);
-        const number = await $(sel.number);
-        const expiry = await $(sel.expiry);
-        const cvv = await $(sel.cvv);
-        for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
-          await browser.switchToFrame(null);
-          const config = await styleHostedField(FIELD_TYPES.CARD, { [rjsProp]: newValue });
-          await browser.switchToFrame(0); 
-          await assertStyleIs(number, cssProp, assertValue);
-          await assertStyleIs(expiry, cssProp, assertValue);
-          await assertStyleIs(cvv, cssProp, assertValue);
-        };
-      });
+        it(`Test changing style fields.card for: ${PROPERTIES.map(p => p[0])}`, async function () {
+            await browser.switchToFrame(0);
+            const number = await $(sel.number);
+            const expiry = await $(sel.expiry);
+            const cvv = await $(sel.cvv);
+
+            for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
+                await browser.switchToFrame(null);
+                const config = await styleHostedField(FIELD_TYPES.CARD, { [rjsProp]: newValue });
+                await browser.switchToFrame(0);
+                await assertStyleIs(number, cssProp, assertValue);
+                await assertStyleIs(expiry, cssProp, assertValue);
+                await assertStyleIs(cvv, cssProp, assertValue);               
+            };              
+        });      
+    });
+
+    describe('Changing individual card field properties', async () => {
+        beforeEach(init({ fixture: 'hosted-fields-card-distinct' })); 
+
+        it(`Test changing style fields individual fields for: ${PROPERTIES.map(p => p[0])}`, async function () {
+            await browser.switchToFrame(0);
+            const input = await $('.recurly-hosted-field-input');
+            for (const type of ['number', 'month', 'year', 'cvv']) {
+                for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
+                    await browser.switchToFrame(null);
+                    const frame = await $(`.recurly-hosted-field-${type} iframe`);
+
+                    let config = null;
+                    switch(type){
+                        case "number":
+                            config = await styleHostedField(FIELD_TYPES.NUMBER, { [rjsProp]: newValue });
+                            break;
+                        case "month":
+                            config = await styleHostedField(FIELD_TYPES.MONTH, { [rjsProp]: newValue });
+                            break;
+                        case "year":
+                            config = await styleHostedField(FIELD_TYPES.YEAR, { [rjsProp]: newValue });
+                            break;
+                        case "cvv":
+                            config = await styleHostedField(FIELD_TYPES.CVV, { [rjsProp]: newValue });
+                            break;
+                        default:
+                            break;
+                       }
+
+                    await browser.switchToFrame(frame);
+                    await assertStyleIs(input, cssProp, assertValue);               
+                };
+            }
+               
+        });      
+    });
 });
