@@ -1,16 +1,14 @@
-import RecurlyError from './error';
+import { RecurlyError } from './';
 
-type GiftCardOptions = {
+export type GiftCardOptions = {
   code: string;
 };
 
-type GiftCardResult = {
+export type GiftCardResult = {
   currency: string;
   unit_amount: number;
 };
 
-type Done = (error: RecurlyError, result: GiftCardResult) => void;
+export type Done = (error: RecurlyError, result: GiftCardResult) => void;
 
-type GiftCard = (giftCardOptions: GiftCardOptions, done: Done) => void;
-
-export default GiftCard;
+export type GiftCard = (giftCardOptions: GiftCardOptions, done: Done) => void;

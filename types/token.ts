@@ -1,20 +1,22 @@
-import RecurlyError from './error';
+import { RecurlyError } from './error';
 import { ElementsInstance } from './elements';
-import Address from './address';
+import { Address } from './address';
 
-type TokenPayload = {
+export type TokenPayload = {
   id: string;
   type: string;
 };
 
-type CustomerData = Address;
+export type CustomerData = Address;
 
 export type TokenHandler = (error: RecurlyError | null, token: TokenPayload) => void;
 
-type HostedFieldToken = (form: HTMLFormElement | CustomerData, second: TokenHandler) => void;
+export type HostedFieldToken = (form: HTMLFormElement | CustomerData, second: TokenHandler) => void;
 
-type ElementsToken = (elements: ElementsInstance, second: HTMLFormElement | CustomerData, third: TokenHandler) => void;
+export type ElementsToken = (
+  elements: ElementsInstance,
+  second: HTMLFormElement | CustomerData,
+  third: TokenHandler
+) => void;
 
-type Token = HostedFieldToken & ElementsToken;
-
-export default Token;
+export type Token = HostedFieldToken & ElementsToken;

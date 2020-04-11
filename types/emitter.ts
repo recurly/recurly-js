@@ -1,4 +1,4 @@
-interface Emitter<Event = string> {
+export interface Emitter<Event = string> {
   on(event: Event, listener: Function): Emitter<Event>;
   once(event: Event, listener: Function): Emitter<Event>;
   off(event?: Event, listener?: Function): Emitter<Event>;
@@ -6,10 +6,3 @@ interface Emitter<Event = string> {
   listeners(event: Event): Function[];
   hasListeners(event: Event): boolean;
 }
-
-declare const Emitter: {
-  (obj?: object): Emitter;
-  new (obj?: object): Emitter;
-};
-
-export = Emitter;

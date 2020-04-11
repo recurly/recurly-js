@@ -29,12 +29,6 @@ build/recurly.min.js: build/recurly.js
 	@$(webpack) -p
 build/test-unit.js: $(src) $(tests)
 	@$(webpack) --config webpack.test.config.js
-build/recurly.d.ts:
-	@$(tsc) -p types -outFile ./build/recurly.d.ts
-
-types: build/recurly.d.ts
-types-watch:
-	@$(tsc) -w -p types -outFile ./build/recurly.d.ts
 
 test: test-unit test-e2e
 test-ci: test-unit-ci test-e2e-ci
