@@ -77,9 +77,9 @@ jobs:
     - <<: *e2e
       name: Internet Explorer 11
       env: BROWSER=ie_11
-    # - <<: *e2e
-      # name: iOS 13
-      # env: BROWSER=ios_13 API_PROXY=http://bs-local.com:9877/api-proxy
+    - <<: *e2e
+      name: iOS 13
+      env: BROWSER=ios_13 API_PROXY=http://bs-local.com:9877/api-proxy
     - <<: *e2e
       name: iOS 12
       env: BROWSER=ios_12 API_PROXY=http://bs-local.com:9877/api-proxy
