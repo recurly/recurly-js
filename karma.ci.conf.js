@@ -42,6 +42,9 @@ function runner (config) {
       bs_chrome_headless: {
         base: 'ChromeHeadless',
         flags: ['--no-sandbox']
+      },
+      bs_electron: {
+        base: 'Electron'
       }
     },
     hostname: 'bs-local.com'
