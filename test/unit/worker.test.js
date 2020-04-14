@@ -19,9 +19,9 @@ describe('IntervalWorker', () => {
     assert.throws(() => new IntervalWorker({ perform: 'invalid' }), Error, 'Invalid perform function');
   });
 
-  it('has a default interval period of 10s', function () {
+  it('has a default interval period of 30s', function () {
     this.worker = new IntervalWorker(this.valid);
-    assert.strictEqual(this.worker.period, 10000);
+    assert.strictEqual(this.worker.period, 30000);
   });
 
   it('accepts a custom interval period', function () {
