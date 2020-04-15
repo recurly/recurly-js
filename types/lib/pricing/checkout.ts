@@ -76,7 +76,7 @@ export interface CheckoutPricingMethods {
   giftCard: (giftcard: string) => CheckoutPricingPromise;
   shippingAddress: (address: Address) => CheckoutPricingPromise;
   tax: (tax: Tax) => CheckoutPricingPromise;
-  subscription: (subscriptionPricing: SubscriptionPricingState | void) => CheckoutPricingPromise;
+  subscription: (subscriptionPricing: SubscriptionPricingState) => CheckoutPricingPromise;
 }
 
 export interface CheckoutPricingInstance extends CheckoutPricingMethods, PricingInstance<CheckoutPricingPromise> {

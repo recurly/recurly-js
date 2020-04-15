@@ -5,28 +5,30 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 3.1
 
-import { Recurly } from './recurly';
+import { Recurly } from './lib/recurly';
 
 declare global {
   interface Window {
     recurly: Recurly;
   }
+
+  const recurly: Recurly;
 }
 
-export * from './pricing/checkout';
-export * from './pricing/promise';
-export * from './pricing/subscription';
-export * from './pricing';
-export * from './3d-secure';
-export * from './address';
-export * from './adyen';
-export * from './apple-pay';
-export * from './bank-account';
-export * from './configure';
-export * from './elements';
-export * from './error';
-export * from './gift-card';
-export * from './paypal';
-export * from './recurly';
-export * from './token';
-export * from './validate';
+export * from './lib/pricing/checkout';
+export * from './lib/pricing/promise';
+export * from './lib/pricing/subscription';
+export * from './lib/pricing/index';
+export * from './lib/3d-secure';
+export * from './lib/address';
+export * from './lib/adyen';
+export * from './lib/apple-pay';
+export * from './lib/bank-account';
+export * from './lib/configure';
+export * from './lib/elements';
+export * from './lib/error';
+export * from './lib/gift-card';
+export * from './lib/paypal';
+export * from './lib/recurly';
+export * from './lib/token';
+export * from './lib/validate';

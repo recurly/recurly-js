@@ -26,15 +26,3 @@ export interface Recurly extends Emitter<RecurlyEvent> {
   token: Token;
   validate: Validate;
 }
-
-declare global {
-  interface Window {
-    recurly: Recurly;
-  }
-
-  namespace Recurly {
-    type recurly = Recurly;
-  }
-
-  const recurly: Recurly;
-}

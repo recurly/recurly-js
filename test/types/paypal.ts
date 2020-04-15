@@ -22,5 +22,10 @@ export default function paypal() {
   paypal.on('fake-event', () => {});
 
   paypal.start();
+  paypal.start({
+    options: {
+      description: "description"
+    }
+  });
   paypal.destroy();
 }

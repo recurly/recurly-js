@@ -1,4 +1,4 @@
-import { RecurlyError } from './';
+import { RecurlyError } from './error';
 
 export type GiftCardOptions = {
   code: string;
