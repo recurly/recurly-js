@@ -12,6 +12,7 @@ apiTest(function (requestMethod) {
     beforeEach(function () {
       this.recurly = initRecurly({ cors: requestMethod === 'cors' });
       this.paypal = this.recurly.PayPal();
+      this.sandbox = sinon.createSandbox();
     });
 
     it('uses a direct PayPal strategy by default', function () {
@@ -62,5 +63,14 @@ apiTest(function (requestMethod) {
         });
       });
     });
+
+    describe('destroy', function () {
+      it('deletes the strategy and removes listeners', function () {
+        this.sandbox.spy(this.paypal, 'off');
+        this.paypal.destroy();
+        assert.equal(this.paypal.strategy, undefined);
+        assert(this.paypal.off.calledOnce);
+      })
+    })
   });
 });

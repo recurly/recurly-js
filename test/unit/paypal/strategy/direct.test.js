@@ -57,4 +57,18 @@ describe('DirectStrategy', function () {
     this.paypal.start();
     setTimeout(() => this.recurly.Frame.getCall(0).returnValue.emit('close'), 500);
   });
+
+  describe('destroy', function () {
+    it('closes the window and removes listeners', function () {
+      this.sandbox.spy(this.paypal, 'off');
+      this.paypal.start();
+      // need to instantiate the spy after calling paypal.start to spy on `strategy.frame`
+      this.sandbox.spy(this.paypal.strategy.frame, 'destroy');
+      // need to preserve this because paypal.destroy() deletes the strategy
+      const destroyRef = this.paypal.strategy.frame.destroy;
+      this.paypal.destroy();
+      assert(destroyRef.calledOnce);
+      assert(this.paypal.off.calledOnce);
+    });
+  });
 });

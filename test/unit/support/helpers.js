@@ -46,7 +46,15 @@ export function nextTick (cb) {
 
 export function stubBraintree () {
   beforeEach(() => {
-    const create = (opt, cb) => cb(null, {});
+    const create = (opt, cb) => cb(null, {
+      tokenize: (opts, cb) => {
+        cb(null, {})
+
+        return {
+          close: () => {}
+        }
+      }
+    });
     window.braintree = {
       client: {
         VERSION: BRAINTREE_CLIENT_VERSION,
