@@ -15,7 +15,6 @@ const data = require('./support/data');
  *  [2] = Style Value to be changed
  *  [3] = Style Value to be asserted
  */
-
 const PROPERTIES = [
     ['fontFamily',          'font-family',           'Arial,sans-serif',     'arial'                           ], 
     ['fontFeatureSettings', 'font-feature-settings', '"smcp", "zero"',       '"smcp", "zero"'                  ],
@@ -33,7 +32,6 @@ const PROPERTIES = [
     ['textShadow',          'text-shadow',           'red 2px 5px',          'rgb(255,0,0)2px5px0px'           ],
     ['textTransform',       'text-transform',        'lowercase',            'lowercase'                       ]
 ]
-
 
 describe('Styling Card Fields ', async () => {
     describe('Changing common card fields properties', async () => {
@@ -53,7 +51,35 @@ describe('Styling Card Fields ', async () => {
                 await assertStyleIs(expiry, cssProp, assertValue);
                 await assertStyleIs(cvv, cssProp, assertValue);               
             };              
-        });      
+        }); 
+        
+        it(`Test changing style fields.card.invalid for: ${PROPERTIES.map(p => p[0])}`, async function () {
+
+
+            for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
+                await browser.switchToFrame(null);
+                const config = await styleHostedField(FIELD_TYPES.CARD, { invalid: {[rjsProp]: newValue } });
+
+                //Now enter all invalid entries
+                await browser.switchToFrame(0);
+                const number = await $(sel.number);
+                const expiry = await $(sel.expiry);
+                const cvv = await $(sel.cvv);
+
+                await number.setValue('4111 1111 111A 1111')
+                await expiry.setValue('124')
+                await cvv.setValue('1X3')
+
+                //Switch set the focus back to the main frame
+                await browser.switchToFrame(null);
+                await (await $(sel.firstName)).addValue('');
+                
+                await browser.switchToFrame(0);
+                await assertStyleIs(number, cssProp, assertValue);
+                await assertStyleIs(expiry, cssProp, assertValue);
+                await assertStyleIs(cvv, cssProp, assertValue);               
+            };              
+        }); 
     });
 
     describe('Changing individual card field properties', async () => {
@@ -66,24 +92,7 @@ describe('Styling Card Fields ', async () => {
                 for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
                     await browser.switchToFrame(null);
                     const frame = await $(`.recurly-hosted-field-${type} iframe`);
-
-                    let config = null;
-                    switch(type){
-                        case "number":
-                            config = await styleHostedField(FIELD_TYPES.NUMBER, { [rjsProp]: newValue });
-                            break;
-                        case "month":
-                            config = await styleHostedField(FIELD_TYPES.MONTH, { [rjsProp]: newValue });
-                            break;
-                        case "year":
-                            config = await styleHostedField(FIELD_TYPES.YEAR, { [rjsProp]: newValue });
-                            break;
-                        case "cvv":
-                            config = await styleHostedField(FIELD_TYPES.CVV, { [rjsProp]: newValue });
-                            break;
-                        default:
-                            break;
-                       }
+                    const config = await styleHostedField(FIELD_TYPES[type.toUpperCase()], { [rjsProp]: newValue });
 
                     await browser.switchToFrame(frame);
                     await assertStyleIs(input, cssProp, assertValue);               
