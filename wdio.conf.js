@@ -12,7 +12,7 @@ let browserName = BROWSER || 'chrome';
 let timeout = 15000;
 let execArgv = [];
 let chromeOptions = {
-  args: ['--headless']
+  args: []
 };
 
 if (DEBUG) {
@@ -23,6 +23,8 @@ if (DEBUG) {
 }
 
 exports.config = {
+  debug: true,
+  execArgv: ['--inspect-brk=127.0.0.1:5859'],
   runner: 'local',
   path: '/',
   specs: [
@@ -30,7 +32,6 @@ exports.config = {
   ],
   maxInstances: 1,
   capabilities: [{ browserName, 'goog:chromeOptions': chromeOptions }],
-  execArgv,
   logLevel: 'info',
   baseUrl: 'http://localhost:9877',
   waitforTimeout: Math.round(timeout * 2/3),

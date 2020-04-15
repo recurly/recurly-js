@@ -24,6 +24,7 @@ const PROPERTIES = [
     ['text-transform', data.default.textTransform]
 ]
 
+
 // Test all the style defaults  
 describe('Common field style properties tests', async () => {
     beforeEach(init({ fixture: 'hosted-fields-card' }));    
