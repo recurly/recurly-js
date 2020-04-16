@@ -2,24 +2,25 @@ const assert = require('assert');
 const {
   init,
   assertIsAToken,
-  tokenize
+  tokenize,
+  SEL,
+  NAME
 } = require('./support/helpers');
-const sel = require('./support/form.elements');
-const data = require('./support/data');
+
 const cards = require('./support/credit.cards');
 
 describe('AMEX card validations', async () => {
   beforeEach(init({ fixture: 'hosted-fields-card' }));
 
   it('Test amex 4 6 5 format', async function () {
-    const iframe = await $(sel.iframe);
-    await (await $(sel.firstName)).setValue(data.firstName);
-    await (await $(sel.lastName)).setValue(data.lastName);
+    const iframe = await $(SEL.iframe);
+    await (await $(SEL.firstName)).setValue(NAME.firstName);
+    await (await $(SEL.lastName)).setValue(NAME.lastName);
 
     await browser.switchToFrame(0);
-    const number = await $(sel.number)
-    const expiry = await $(sel.expiry)
-    const cvv = await $(sel.cvv)
+    const number = await $(SEL.number)
+    const expiry = await $(SEL.expiry)
+    const cvv = await $(SEL.cvv)
 
     await number.setValue(cards.amex.number1)
     await expiry.setValue(cards.amex.expiry)
@@ -31,7 +32,7 @@ describe('AMEX card validations', async () => {
 
 
     await browser.switchToFrame(null);
-    const [err, token] = await tokenize(sel.form);
+    const [err, token] = await tokenize(SEL.form);
 
     assert.strictEqual(err, null);
     assertIsAToken(token);
@@ -40,14 +41,14 @@ describe('AMEX card validations', async () => {
 
 
   it('Test amex 4-6-5 format', async function () {
-    const iframe = await $(sel.iframe);
-    await (await $(sel.firstName)).setValue(data.firstName);
-    await (await $(sel.lastName)).setValue(data.lastName);
+    const iframe = await $(SEL.iframe);
+    await (await $(SEL.firstName)).setValue(NAME.firstName);
+    await (await $(SEL.lastName)).setValue(NAME.lastName);
 
     await browser.switchToFrame(0);
-    const number = await $(sel.number)
-    const expiry = await $(sel.expiry)
-    const cvv = await $(sel.cvv)
+    const number = await $(SEL.number)
+    const expiry = await $(SEL.expiry)
+    const cvv = await $(SEL.cvv)
 
     await number.setValue(cards.amex.number2)
     await expiry.setValue(cards.amex.expiry)
@@ -59,7 +60,7 @@ describe('AMEX card validations', async () => {
     assert.strictEqual(await cvv.getValue(), cards.amex.cvv)
 
     await browser.switchToFrame(null);
-    const [err, token] = await tokenize(sel.form);
+    const [err, token] = await tokenize(SEL.form);
 
     assert.strictEqual(err, null);
     assertIsAToken(token);
@@ -67,14 +68,14 @@ describe('AMEX card validations', async () => {
   });
 
   it('Test amex non-numeric format', async function () {
-    const iframe = await $(sel.iframe);
-    await (await $(sel.firstName)).setValue(data.firstName);
-    await (await $(sel.lastName)).setValue(data.lastName);
+    const iframe = await $(SEL.iframe);
+    await (await $(SEL.firstName)).setValue(NAME.firstName);
+    await (await $(SEL.lastName)).setValue(NAME.lastName);
 
     await browser.switchToFrame(0);
-    const number = await $(sel.number)
-    const expiry = await $(sel.expiry)
-    const cvv = await $(sel.cvv)
+    const number = await $(SEL.number)
+    const expiry = await $(SEL.expiry)
+    const cvv = await $(SEL.cvv)
 
     await number.setValue('3711 443711 4X376')
     await expiry.setValue('1X28')
@@ -85,7 +86,7 @@ describe('AMEX card validations', async () => {
     assert.strictEqual(await cvv.getValue(), '134')
 
     await browser.switchToFrame(null);
-    const [err, token] = await tokenize(sel.form);
+    const [err, token] = await tokenize(SEL.form);
 
     assert.strictEqual(err.message, 'There was an error validating your request.');
     assert.strictEqual(token, null);

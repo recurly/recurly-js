@@ -4,25 +4,24 @@ const {
   assertIsAToken,
   styleHostedField,
   assertStyleIs,
-  FIELD_TYPES
+  FIELD_TYPES,
+  STYLE_DEFAULTS,
+  SEL
 } = require('./support/helpers');
-const sel = require('./support/form.elements');
-const data = require('./support/data');
-const cards = require('./support/credit.cards');
 
-describe('Expiration date validations', async () => {
+describe('fontSize style tests', async () => {
   beforeEach(init({ fixture: 'hosted-fields-card' }));
 
-  it('Test fontSize change for hosted field (fields.all.style.fontSize)', async function () {
+  it('when changing fields.all.style.fontSize', async function () {
     // Assert the default is source sans pro
     await browser.switchToFrame(0);
-    const number = await $(sel.number);
-    const expiry = await $(sel.expiry);
-    const cvv = await $(sel.cvv);
+    const number = await $(SEL.number);
+    const expiry = await $(SEL.expiry);
+    const cvv = await $(SEL.cvv);
 
-    await assertStyleIs(number, 'fontSize', data.default.fontSize);
-    await assertStyleIs(expiry, 'fontSize', data.default.fontSize);
-    await assertStyleIs(cvv, 'fontSize', data.default.fontSize);
+    await assertStyleIs(number, 'fontSize', STYLE_DEFAULTS.COMMON.fontSize);
+    await assertStyleIs(expiry, 'fontSize', STYLE_DEFAULTS.COMMON.fontSize);
+    await assertStyleIs(cvv, 'fontSize', STYLE_DEFAULTS.COMMON.fontSize);
 
     // Change the fontSize
     await browser.switchToFrame(null);
@@ -37,15 +36,15 @@ describe('Expiration date validations', async () => {
   });
 
 
-  it('Test fontSize change for combined fields (fields.card.style.fontSize)', async function () {
+  it('when changing fields.card.style.fontSize', async function () {
     // Assert the default is source sans pro
     await browser.switchToFrame(0);
-    const number = await $(sel.number);
-    const expiry = await $(sel.expiry);
-    const cvv = await $(sel.cvv);
-    await assertStyleIs(number, 'fontSize', data.default.fontSize);
-    await assertStyleIs(expiry, 'fontSize', data.default.fontSize);
-    await assertStyleIs(cvv, 'fontSize', data.default.fontSize);
+    const number = await $(SEL.number);
+    const expiry = await $(SEL.expiry);
+    const cvv = await $(SEL.cvv);
+    await assertStyleIs(number, 'fontSize', STYLE_DEFAULTS.COMMON.fontSize);
+    await assertStyleIs(expiry, 'fontSize', STYLE_DEFAULTS.COMMON.fontSize);
+    await assertStyleIs(cvv, 'fontSize', STYLE_DEFAULTS.COMMON.fontSize);
 
     // Change the fontSize using
     await browser.switchToFrame(null);
@@ -59,15 +58,15 @@ describe('Expiration date validations', async () => {
    });
 
 
-   it('Test fontSize should not change for individual fields (fields.number.style.fontSize)', async function () {
+   it('when changing fields.number.style.fontSize', async function () {
     // Assert the default is source sans pro
     await browser.switchToFrame(0);
-    const number = await $(sel.number);
-    const expiry = await $(sel.expiry);
-    const cvv = await $(sel.cvv);
-    await assertStyleIs(number, 'fontSize', data.default.fontSize);
-    await assertStyleIs(expiry, 'fontSize', data.default.fontSize);
-    await assertStyleIs(cvv, 'fontSize', data.default.fontSize);
+    const number = await $(SEL.number);
+    const expiry = await $(SEL.expiry);
+    const cvv = await $(SEL.cvv);
+    await assertStyleIs(number, 'fontSize', STYLE_DEFAULTS.COMMON.fontSize);
+    await assertStyleIs(expiry, 'fontSize', STYLE_DEFAULTS.COMMON.fontSize);
+    await assertStyleIs(cvv, 'fontSize', STYLE_DEFAULTS.COMMON.fontSize);
 
     // Change the fontSize
     await browser.switchToFrame(null);
@@ -78,9 +77,9 @@ describe('Expiration date validations', async () => {
 
     // Assert the fontSize should not changed for individual card fields
     await browser.switchToFrame(0);
-    await assertStyleIs(number, 'fontSize', data.default.fontSize);
-    await assertStyleIs(expiry, 'fontSize', data.default.fontSize);
-    await assertStyleIs(cvv, 'fontSize', data.default.fontSize);
+    await assertStyleIs(number, 'fontSize', STYLE_DEFAULTS.COMMON.fontSize);
+    await assertStyleIs(expiry, 'fontSize', STYLE_DEFAULTS.COMMON.fontSize);
+    await assertStyleIs(cvv, 'fontSize', STYLE_DEFAULTS.COMMON.fontSize);
    });
 
 

@@ -69,6 +69,50 @@ const CARDS = {
   }
 };
 
+const STYLE_DEFAULTS = {
+  COMMON: {
+    fontColor: '#545457',
+    fontFeatureSettings: 'normal',
+    fontKerning: 'auto',
+    fontSize: '16px',
+    fontStretch: '100%',
+    fontStyle: 'normal',
+    fontVariant: 'normal',
+    fontWeight: 400,
+    letterSpacing: 'normal',
+    lineHeight: 'normal',
+    textAlign: 'start',
+    textRendering: 'auto',
+    textShadow: 'none',
+    textTransform: 'none'
+  },
+  COMBINED: {
+      fontFamily: 'source sans pro',
+      textDecoration: 'none solid rgb(84, 84, 87)'
+  },
+  DISTINCT: {
+      fontFamily: 'helvetica',
+      textDecoration: 'none solid rgb(0, 0, 0)'
+  }
+};
+
+const SEL = {
+  output: '[data-test=output]',
+  form: '[data-test=form]',
+  submit: '[data-test=submit]',
+  firstName: '[data-test="first-name"]',
+  lastName: '[data-test="last-name"]',
+  iframe: '.recurly-hosted-field iframe',
+  number: 'input[placeholder="Card number"]',
+  expiry: 'input[placeholder="MM / YY"]',
+  cvv: 'input[placeholder="CVV"]'
+};
+
+const NAME = {
+  firstName: 'John',
+  lastName: 'Rambo',
+};
+
 module.exports = {
   assertIsARecurlyError,
   assertIsAToken,
@@ -84,7 +128,10 @@ module.exports = {
   CARDS,
   ELEMENT_TYPES,
   FIELD_TYPES,
-  TOKEN_TYPES
+  TOKEN_TYPES,
+  STYLE_DEFAULTS,
+  SEL,
+  NAME
 };
 
 // Setup helpers
@@ -145,6 +192,9 @@ async function createElement (elementClass, config = {}) {
  * @return {Promise}
  */
 async function styleHostedField (field = FIELD_TYPES.CARD, styleOpts = {}) {
+  console.log('111111=' + field)
+  console.log('222222=', styleOpts)
+  console.log('3333333')
   return await configureRecurly({
     fields: {
       [field]: {
@@ -182,6 +232,9 @@ async function tokenize (form) {
  * @param {String}  value
  */
 async function assertStyleIs (element, property, value) {
+ // console.log('aaaaaa=', element)
+  console.log('bbbbbb=' + property)
+  console.log('cccccc=' + value)
   return assert.strictEqual((await element.getCSSProperty(property)).value, value);
 }
 

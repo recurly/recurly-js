@@ -1,28 +1,26 @@
 const assert = require('assert');
 const {
   init,
-  assertIsAToken,
   styleHostedField,
   assertStyleIs,
-  FIELD_TYPES
+  FIELD_TYPES,
+  STYLE_DEFAULTS,
+  SEL
 } = require('./support/helpers');
-const sel = require('./support/form.elements');
-const data = require('./support/data');
-const cards = require('./support/credit.cards');
 
-describe('Expiration date validations', async () => {
+describe('fontFamily style tests', async () => {
   beforeEach(init({ fixture: 'hosted-fields-card' }));
 
-  it('Test fontFamily change for hosted field (fields.all.style.fontFamily)', async function () {
+  it('when changing fields.all.style.fontFamily', async function () {
     // Assert the default is source sans pro
     await browser.switchToFrame(0);
-    const number = await $(sel.number);
-    const expiry = await $(sel.expiry);
-    const cvv = await $(sel.cvv);
+    const number = await $(SEL.number);
+    const expiry = await $(SEL.expiry);
+    const cvv = await $(SEL.cvv);
 
-    await assertStyleIs(number, 'font-family', data.default.fontFamily);
-    await assertStyleIs(expiry, 'font-family', data.default.fontFamily);
-    await assertStyleIs(cvv, 'font-family', data.default.fontFamily);
+    await assertStyleIs(number, 'font-family', STYLE_DEFAULTS.COMBINED.fontFamily);
+    await assertStyleIs(expiry, 'font-family', STYLE_DEFAULTS.COMBINED.fontFamily);
+    await assertStyleIs(cvv, 'font-family', STYLE_DEFAULTS.COMBINED.fontFamily);
 
     // Change the fontFamily
     await browser.switchToFrame(null);
@@ -37,15 +35,15 @@ describe('Expiration date validations', async () => {
   });
 
 
-  it('Test fontFamily change for combined fields (fields.card.style.fontFamily)', async function () {
+  it('when changing fields.card.style.fontFamily', async function () {
     // Assert the default is source sans pro
     await browser.switchToFrame(0);
-    const number = await $(sel.number);
-    const expiry = await $(sel.expiry);
-    const cvv = await $(sel.cvv);
-    await assertStyleIs(number, 'font-family', data.default.fontFamily);
-    await assertStyleIs(expiry, 'font-family', data.default.fontFamily);
-    await assertStyleIs(cvv, 'font-family', data.default.fontFamily);
+    const number = await $(SEL.number);
+    const expiry = await $(SEL.expiry);
+    const cvv = await $(SEL.cvv);
+    await assertStyleIs(number, 'font-family', STYLE_DEFAULTS.COMBINED.fontFamily);
+    await assertStyleIs(expiry, 'font-family', STYLE_DEFAULTS.COMBINED.fontFamily);
+    await assertStyleIs(cvv, 'font-family', STYLE_DEFAULTS.COMBINED.fontFamily);
 
     // Change the fontFamily using
     await browser.switchToFrame(null);
@@ -59,15 +57,15 @@ describe('Expiration date validations', async () => {
    });
 
 
-   it('Test fontFamily should not change for individual fields (fields.number.style.fontFamily)', async function () {
+   it('when changing fields.number.style.fontFamily', async function () {
     // Assert the default is source sans pro
     await browser.switchToFrame(0);
-    const number = await $(sel.number);
-    const expiry = await $(sel.expiry);
-    const cvv = await $(sel.cvv);
-    await assertStyleIs(number, 'font-family', data.default.fontFamily);
-    await assertStyleIs(expiry, 'font-family', data.default.fontFamily);
-    await assertStyleIs(cvv, 'font-family', data.default.fontFamily);
+    const number = await $(SEL.number);
+    const expiry = await $(SEL.expiry);
+    const cvv = await $(SEL.cvv);
+    await assertStyleIs(number, 'font-family', STYLE_DEFAULTS.COMBINED.fontFamily);
+    await assertStyleIs(expiry, 'font-family', STYLE_DEFAULTS.COMBINED.fontFamily);
+    await assertStyleIs(cvv, 'font-family', STYLE_DEFAULTS.COMBINED.fontFamily);
 
     // Change the fontFamily
     await browser.switchToFrame(null);

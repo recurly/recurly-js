@@ -3,10 +3,9 @@ const {
   init,
   styleHostedField,
   assertStyleIs,
-  FIELD_TYPES
+  FIELD_TYPES,
+  SEL
 } = require('./support/helpers');
-const sel = require('./support/form.elements');
-const data = require('./support/data');
 
 /**
  *  Style Properties Array
@@ -33,15 +32,15 @@ const PROPERTIES = [
     ['textTransform',       'text-transform',        'lowercase',            'lowercase'                       ]
 ]
 
-describe('Styling Card Fields ', async () => {
-    describe('Changing common card fields properties', async () => {
+describe('Changing common property style tests', async () => {
+    describe('when changing hosted-fields-card fixture', async () => {
         beforeEach(init({ fixture: 'hosted-fields-card' })); 
 
         it(`Test changing style fields.card for: ${PROPERTIES.map(p => p[0])}`, async function () {
             await browser.switchToFrame(0);
-            const number = await $(sel.number);
-            const expiry = await $(sel.expiry);
-            const cvv = await $(sel.cvv);
+            const number = await $(SEL.number);
+            const expiry = await $(SEL.expiry);
+            const cvv = await $(SEL.cvv);
 
             for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
                 await browser.switchToFrame(null);
@@ -53,18 +52,32 @@ describe('Styling Card Fields ', async () => {
             };              
         }); 
         
+        it(`Test changing style fields.all for: ${PROPERTIES.map(p => p[0])}`, async function () {
+            await browser.switchToFrame(0);
+            const number = await $(SEL.number);
+            const expiry = await $(SEL.expiry);
+            const cvv = await $(SEL.cvv);
+
+            for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
+                await browser.switchToFrame(null);
+                const config = await styleHostedField(FIELD_TYPES.ALL, { [rjsProp]: newValue });
+                await browser.switchToFrame(0);
+                await assertStyleIs(number, cssProp, assertValue);
+                await assertStyleIs(expiry, cssProp, assertValue);
+                await assertStyleIs(cvv, cssProp, assertValue);               
+            };              
+        }); 
+
         it(`Test changing style fields.card.invalid for: ${PROPERTIES.map(p => p[0])}`, async function () {
-
-
             for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
                 await browser.switchToFrame(null);
                 const config = await styleHostedField(FIELD_TYPES.CARD, { invalid: {[rjsProp]: newValue } });
 
                 //Now enter all invalid entries
                 await browser.switchToFrame(0);
-                const number = await $(sel.number);
-                const expiry = await $(sel.expiry);
-                const cvv = await $(sel.cvv);
+                const number = await $(SEL.number);
+                const expiry = await $(SEL.expiry);
+                const cvv = await $(SEL.cvv);
 
                 await number.setValue('4111 1111 111A 1111')
                 await expiry.setValue('124')
@@ -72,7 +85,7 @@ describe('Styling Card Fields ', async () => {
 
                 //Switch set the focus back to the main frame
                 await browser.switchToFrame(null);
-                await (await $(sel.firstName)).addValue('');
+                await (await $(SEL.firstName)).addValue('');
                 
                 await browser.switchToFrame(0);
                 await assertStyleIs(number, cssProp, assertValue);
@@ -82,7 +95,7 @@ describe('Styling Card Fields ', async () => {
         }); 
     });
 
-    describe('Changing individual card field properties', async () => {
+    describe('when changing hosted-fields-card-distinct fixture', async () => {
         beforeEach(init({ fixture: 'hosted-fields-card-distinct' })); 
 
         it(`Test changing style fields individual fields for: ${PROPERTIES.map(p => p[0])}`, async function () {
@@ -97,8 +110,7 @@ describe('Styling Card Fields ', async () => {
                     await browser.switchToFrame(frame);
                     await assertStyleIs(input, cssProp, assertValue);               
                 };
-            }
-               
+            }             
         });      
     });
 });
