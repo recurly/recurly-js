@@ -78,7 +78,7 @@ app.use(route.get('/tokens/:token_id', json));
 app.use(route.get('/tokens', json));
 app.use(route.post('/tokens', json));
 
-app.listen(port, () => {
+module.exports.server = app.listen(port, () => {
   log(`Ready on ${port}`);
 });
 
