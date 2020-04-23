@@ -43,6 +43,8 @@ jobs:
       env: BROWSER=ie_11
     - name: iOS 12
       env: BROWSER=ios_12
+    - name: iOS 13
+      env: BROWSER=ios_13
     - name: Android 9
       env: BROWSER=android_9
     - name: Android 8
