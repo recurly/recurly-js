@@ -44,7 +44,6 @@ const config = exports.config = Object.assign({}, defaultConfig, {
       ),
       'browserstack.use_w3c': true,
       captureTimeout: timeout,
-      newCommandTimeout: timeout,
       pollingTimeout: timeout,
       timeout
     }

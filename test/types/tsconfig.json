@@ -6,6 +6,10 @@
     "strictNullChecks": false,
     "strictFunctionTypes": false,
     "esModuleInterop": true,
-    "types": []
+    "types": [],
+    "baseUrl": "../../types",
+    "paths": {
+      "recurly__recurly-js": ["./"]
+    }
   }
 }
