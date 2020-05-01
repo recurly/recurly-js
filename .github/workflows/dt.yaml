@@ -1,0 +1,53 @@
+name: DefinitelyTyped
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  DefinitelyTyped:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Recurly-js
+        uses: actions/checkout@v2
+        with:
+          path: recurly-js
+      - name: Checkout DefinitelyTyped
+        uses: actions/checkout@v2
+        with:
+          repository: dbrudner/DefinitelyTyped
+          ref: master
+          path: DefinitelyTyped
+          fetch-depth: 1
+      - name: Set remote
+        run: |
+          cd DefinitelyTyped
+          git config user.password ${{ secrets.DEFINITELY_TYPED_PR_GITHUB_ACCESS_TOKEN }}
+          git remote set-url origin https://github.com/dbrudner/DefinitelyTyped
+          git fetch --unshallow -p origin
+      - name: Move files
+        run: |
+          cp -R recurly-js/types/* DefinitelyTyped/types/recurly__recurly-js
+          cp -R recurly-js/test/types/* DefinitelyTyped/types/recurly__recurly-js/test
+          rm DefinitelyTyped/types/recurly__recurly-js/test/tsconfig.json DefinitelyTyped/types/recurly__recurly-js/test/index.d.ts
+      - id: get-version
+        run: |
+          VERSION=$(cat recurly-js/package.json | jq '.version' -r )
+          echo ::set-output name=version::$VERSION
+      - name: open PR
+        uses: dbrudner/create-pull-request@v2
+        with:
+          path: DefinitelyTyped
+          commit-message: Updates recurly-js types
+          branch: update-recurly-js
+          request-to-parent: true
+          token: ${{ secrets.DEFINITELY_TYPED_PR_GITHUB_ACCESS_TOKEN }}
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          title: Updates types for Recurly.js v${{ steps.get-version.outputs.version }}
+          body: |
+            # Updates types for Recurly.js v${{ steps.get-version.outputs.version }}
+
+            View the full recurly-js release [here](https://github.com/recurly/recurly-js/releases/tag/v${{ steps.get-version.outputs.version }})
+
+            Note: This is an automated pull request. For more info, see the [Recurly.js](https://github.com/recurly/recurly-js) repository or [documentation](https://developers.recurly.com/reference/recurly-js/index.html).
