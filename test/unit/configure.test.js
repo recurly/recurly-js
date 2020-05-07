@@ -10,6 +10,7 @@ describe('Recurly.configure', function () {
   beforeEach(function () {
     this.api = `${window.location.protocol}//${window.location.host}/api`;
     this.recurly = new Recurly();
+    
   });
 
   describe('when options.publicKey is not given', function () {
@@ -55,7 +56,7 @@ describe('Recurly.configure', function () {
         { publicKey: 'test', currency: 'USD', api, required: ['postal_code', 'country'] }
       ];
     });
-
+//test
     it('sets Recurly.config to the options given', function () {
       const { examples } = this;
       examples.forEach((opts) => {

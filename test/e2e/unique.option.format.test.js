@@ -3,6 +3,20 @@ const {
   init
 } = require('./support/helpers');
 
+const DEFAULT_DATA = [
+  ['number', '4111 1111 1111 1111', '4111 1111 1111 1111'],
+  ['number', '4111-1111-1111-1111', '4111 1111 1111 1111'],
+  ['number', '4111G1111-1111-1111', '4111 1111 1111 1111'],
+  ['month',  '10',                '10'                   ],
+  ['month',  '5',                 '5'                    ],
+  ['month',  '1X',                '1'                    ],   
+  ['year',   '48',                '48'                   ],
+  ['year',   '2 6',               '26'                   ],
+  ['year',   'W6',                '6'                    ],
+  ['cvv',    '123',               '123'                  ],
+  ['cvv',    '12 ',               '12'                   ],
+  ['cvv',    '123M',              '123'                  ]
+]
 
 const ALL_DATA = [
     ['number', '4111 1111 1111 1111', '4111 1111 1111 1111'],
@@ -213,5 +227,27 @@ describe('Unique options for format', async () => {
             };
         });       
     });
+
+    describe('when format is false for all fields separately', async () => {
+      beforeEach(init({ 
+          fixture: 'hosted-fields-card-distinct', 
+          opts: { 'fields': {'number': {'format': true}} } 
+      })); 
+
+      
+      it(`Test the following ${DEFAULT_DATA.length} scenarios`, async function () {
+          
+          const input = await $('.recurly-hosted-field-input');
+
+          for (const [field, setValue, expectValue] of DEFAULT_DATA) {
+
+              await browser.switchToFrame(null);
+              const frame = await $(`.recurly-hosted-field-${field} iframe`);
+              await browser.switchToFrame(frame);
+              await input.setValue(setValue);
+              assert.strictEqual(await input.getValue(), expectValue);
+          };
+      });       
+  });
 });
 

@@ -45,7 +45,8 @@ describe('Element', function () {
     assert.doesNotThrow(() => new Element({ elements }))
   });
 
-  it('configures the instance', function () {
+  it.only('configures the instance', function () {
+
     const { element, validOptions } = this;
     assert.strictEqual(element.config.displayIcon, validOptions.displayIcon);
     assert.strictEqual(element.config.inputType, validOptions.inputType);

@@ -105,7 +105,8 @@ const SEL = {
   iframe: '.recurly-hosted-field iframe',
   number: 'input[placeholder="Card number"]',
   expiry: 'input[placeholder="MM / YY"]',
-  cvv: 'input[placeholder="CVV"]'
+  cvv: 'input[placeholder="CVV"]',
+  altTarget: '[data-test="alt-target"]'
 };
 
 const NAME = {
@@ -131,10 +132,35 @@ module.exports = {
   TOKEN_TYPES,
   STYLE_DEFAULTS,
   SEL,
-  NAME
+  NAME,
+  testEvent
 };
 
 // Setup helpers
+
+async function testEvent (element) {
+  return await browser.executeAsync(function (element, done) {
+
+    setTimeout(function () { done(); }, 2000);
+    const cnumber = document.querySelector(element);
+    cnumber.value = '55555'
+    
+    cnumber.addEventListener('change', function(){                       
+   //             alert("Hello World!"); 
+            done()
+        });
+  }, element);
+}
+/*
+async function aaaaaaconfigureRecurly (opts = {}) {
+  return await browser.executeAsync(function (opts, done) {
+    recurly.configure(opts);
+    recurly.ready(function () {
+      done();
+    });
+  }, opts);
+}
+*/
 
 /**
  * initializes a standard e2e test
@@ -156,7 +182,7 @@ function init ({ fixture = '', opts = {} } = {}) {
  * @return {Promise}
  */
 async function configureRecurly (opts = {}) {
-  console.log('configureRecurly', opts);
+  console.log('yyyyyyyyyyconfigureRecurly', opts);
 
   return await browser.executeAsync(function (opts, done) {
     recurly.configure(opts);
@@ -192,9 +218,6 @@ async function createElement (elementClass, config = {}) {
  * @return {Promise}
  */
 async function styleHostedField (field = FIELD_TYPES.CARD, styleOpts = {}) {
-  console.log('111111=' + field)
-  console.log('222222=', styleOpts)
-  console.log('3333333')
   return await configureRecurly({
     fields: {
       [field]: {
