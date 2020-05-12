@@ -132,35 +132,10 @@ module.exports = {
   TOKEN_TYPES,
   STYLE_DEFAULTS,
   SEL,
-  NAME,
-  testEvent
+  NAME
 };
 
 // Setup helpers
-
-async function testEvent (element) {
-  return await browser.executeAsync(function (element, done) {
-
-    setTimeout(function () { done(); }, 2000);
-    const cnumber = document.querySelector(element);
-    cnumber.value = '55555'
-    
-    cnumber.addEventListener('change', function(){                       
-   //             alert("Hello World!"); 
-            done()
-        });
-  }, element);
-}
-/*
-async function aaaaaaconfigureRecurly (opts = {}) {
-  return await browser.executeAsync(function (opts, done) {
-    recurly.configure(opts);
-    recurly.ready(function () {
-      done();
-    });
-  }, opts);
-}
-*/
 
 /**
  * initializes a standard e2e test
@@ -182,8 +157,6 @@ function init ({ fixture = '', opts = {} } = {}) {
  * @return {Promise}
  */
 async function configureRecurly (opts = {}) {
-  console.log('yyyyyyyyyyconfigureRecurly', opts);
-
   return await browser.executeAsync(function (opts, done) {
     recurly.configure(opts);
     recurly.ready(function () {
@@ -255,9 +228,6 @@ async function tokenize (form) {
  * @param {String}  value
  */
 async function assertStyleIs (element, property, value) {
- // console.log('aaaaaa=', element)
-  console.log('bbbbbb=' + property)
-  console.log('cccccc=' + value)
   return assert.strictEqual((await element.getCSSProperty(property)).value, value);
 }
 
