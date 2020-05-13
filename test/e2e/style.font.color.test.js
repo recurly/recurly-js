@@ -8,8 +8,6 @@ const {
   SEL
 } = require('./support/helpers');
 
-const cards = require('./support/credit.cards');
-
 
 describe('fontColor style tests', async () => {
   beforeEach(init({ fixture: 'hosted-fields-card' }));
@@ -63,9 +61,9 @@ describe('fontColor style tests', async () => {
     const expiry = await $(SEL.expiry)
     const cvv = await $(SEL.cvv)
 
-    await number.setValue(cards.visa.number1)
-    await expiry.setValue(cards.visa.expiry)
-    await cvv.setValue(cards.visa.cvv)
+    await number.setValue('4111 1111 1111 1111')
+    await expiry.setValue('10 / 28')
+    await cvv.setValue('123')
 
     // Expect the default color is black
     await assertStyleColorIs(number, STYLE_DEFAULTS.COMMON.fontColor);
