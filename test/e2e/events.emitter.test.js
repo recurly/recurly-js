@@ -54,4 +54,4 @@ describe('Events Emitter testing', async () => {
     //induce change event
     document.querySelector('iframe').focus();
     });
-  }
+ }
