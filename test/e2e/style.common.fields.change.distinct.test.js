@@ -71,78 +71,37 @@ const GROUP_PROPERTIES_VALUE = [
 ]
 
 
-describe('Changing common property style tests', async () => {
-    describe('when changing hosted-fields-card fixture', async () => {
-        beforeEach(init({ fixture: 'hosted-fields-card' })); 
+describe('Changing common property style tests for hosted-fields-card-distinct fixture', async () => {
+    beforeEach(init({ fixture: 'hosted-fields-card-distinct' })); 
 
-        it(`1.Test changing style fields.card for: ${PROPERTIES.map(p => p[0])}`, async function () {
-            await browser.switchToFrame(0);
-            const number = await $(SEL.number);
-            const expiry = await $(SEL.expiry);
-            const cvv = await $(SEL.cvv);
-
+    it(`Test changing style fields individual fields for: ${PROPERTIES.map(p => p[0])}`, async function () {
+        await browser.switchToFrame(0);
+        const input = await $('.recurly-hosted-field-input');
+        for (const type of ['number', 'month', 'year', 'cvv']) {
             for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
                 await browser.switchToFrame(null);
-                const config = await styleHostedField(FIELD_TYPES.CARD, { [rjsProp]: newValue });
-                await browser.switchToFrame(0);
-                await assertStyleIs(number, cssProp, assertValue);
-                await assertStyleIs(expiry, cssProp, assertValue);
-                await assertStyleIs(cvv, cssProp, assertValue);               
-            };              
-        }); 
-        
-        it(`Test changing style fields.all for: ${PROPERTIES.map(p => p[0])}`, async function () {
-            await browser.switchToFrame(0);
-            const number = await $(SEL.number);
-            const expiry = await $(SEL.expiry);
-            const cvv = await $(SEL.cvv);
+                const frame = await $(`.recurly-hosted-field-${type} iframe`);
+                const config = await styleHostedField(FIELD_TYPES[type.toUpperCase()], { [rjsProp]: newValue });
 
-            for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
+                await browser.switchToFrame(frame);
+                await assertStyleIs(input, cssProp, assertValue);               
+            };
+        }             
+    }); 
+    
+    it(`Test changing style fields individual fields for: GROUP_PROPERTIES`, async function () {
+        await browser.switchToFrame(0);
+        const input = await $('.recurly-hosted-field-input');
+        for (const type of ['number', 'month', 'year', 'cvv']) {
+            await browser.switchToFrame(null);
+            const frame = await $(`.recurly-hosted-field-${type} iframe`);
+            const config = await styleHostedField(FIELD_TYPES[type.toUpperCase()], GROUP_PROPERTIES); 
+            
+            for (const [prop, value] of GROUP_PROPERTIES_VALUE) {
+                await browser.switchToFrame(frame);
+                await assertStyleIs(input, prop, value);
                 await browser.switchToFrame(null);
-                const config = await styleHostedField(FIELD_TYPES.ALL, { [rjsProp]: newValue });
-                await browser.switchToFrame(0);
-                await assertStyleIs(number, cssProp, assertValue);
-                await assertStyleIs(expiry, cssProp, assertValue);
-                await assertStyleIs(cvv, cssProp, assertValue);               
-            };              
-        }); 
-
-        it('Test changing style fields.all elements and all four hosted fields in one "all" definition', async function () {
-            await browser.switchToFrame(0);
-            const number = await $(SEL.number);
-            const expiry = await $(SEL.expiry);
-            const cvv = await $(SEL.cvv);
-
-                await browser.switchToFrame(null);
-                const config = await styleHostedField(FIELD_TYPES.ALL, GROUP_PROPERTIES);
-
-                for (const [prop, value] of GROUP_PROPERTIES_VALUE) {
-                    await browser.switchToFrame(0);
-                    await assertStyleIs(number, prop, value);
-                    await assertStyleIs(expiry, prop, value);
-                    await assertStyleIs(cvv, prop, value);
-                    await browser.switchToFrame(null);
-                }
-        }); 
-
-
-        it('Test changing style fields.card elements and all four hosted fields in one "all" definition', async function () {
-            await browser.switchToFrame(0);
-            const number = await $(SEL.number);
-            const expiry = await $(SEL.expiry);
-            const cvv = await $(SEL.cvv);
-
-                await browser.switchToFrame(null);
-                const config = await styleHostedField(FIELD_TYPES.CARD, GROUP_PROPERTIES);
-
-                for (const [prop, value] of GROUP_PROPERTIES_VALUE) {
-                    await browser.switchToFrame(0);
-                    await assertStyleIs(number, prop, value);
-                    await assertStyleIs(expiry, prop, value);
-                    await assertStyleIs(cvv, prop, value);
-                    await browser.switchToFrame(null);
-                }
-        }); 
-    });
-
+            }
+        }             
+    }); 
 });
