@@ -96,7 +96,7 @@ describe('fontColor style tests', async () => {
     const number = await $(SEL.number)
     const expiry = await $(SEL.expiry)
     const cvv = await $(SEL.cvv)
-    
+
     //Now enter all invalid entries
     await number.setValue('4111 1111 111A 1111')
     await expiry.setValue('124')

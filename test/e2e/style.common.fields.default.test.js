@@ -7,7 +7,7 @@ const {
 } = require('./support/helpers');
 
 const COMBINED_PROP = [
-  ['font-family',           STYLE_DEFAULTS.COMBINED.fontFamily], 
+  ['font-family',           STYLE_DEFAULTS.COMBINED.fontFamily],
   ['font-feature-settings', STYLE_DEFAULTS.COMMON.fontFeatureSettings],
   ['font-kerning',          STYLE_DEFAULTS.COMMON.fontKerning],
   ['font-size',             STYLE_DEFAULTS.COMMON.fontSize],
@@ -25,7 +25,7 @@ const COMBINED_PROP = [
 ]
 
 const DISTINCT_PROP = [
-  ['font-family',           STYLE_DEFAULTS.DISTINCT.fontFamily], 
+  ['font-family',           STYLE_DEFAULTS.DISTINCT.fontFamily],
   ['font-feature-settings', STYLE_DEFAULTS.COMMON.fontFeatureSettings],
   ['font-kerning',          STYLE_DEFAULTS.COMMON.fontKerning],
   ['font-size',             STYLE_DEFAULTS.COMMON.fontSize],
@@ -45,14 +45,14 @@ const DISTINCT_PROP = [
 // Test all the style defaults properties for both combined and distinct fields
 describe('Default common property style tests', async () => {
   describe('when testing hosted-fields-card fixture', async () => {
-    beforeEach(init({ fixture: 'hosted-fields-card' })); 
+    beforeEach(init({ fixture: 'hosted-fields-card' }));
 
     it(`Test combined fields property defaults: ${COMBINED_PROP.map(p => p[0])}`, async function () {
       await browser.switchToFrame(0);
       const number = await $(SEL.number);
       const expiry = await $(SEL.expiry);
       const cvv = await $(SEL.cvv);
-      for await (const [prop, defaultValue] of COMBINED_PROP) {
+      for (const [prop, defaultValue] of COMBINED_PROP) {
         await assertStyleIs(number, prop, defaultValue);
         await assertStyleIs(expiry, prop, defaultValue);
         await assertStyleIs(cvv, prop, defaultValue);
@@ -60,18 +60,18 @@ describe('Default common property style tests', async () => {
     });
   });
 
-  describe.only('when testing hosted-fields-card-distinct fixture', async () => {
-    beforeEach(init({ fixture: 'hosted-fields-card-distinct' }));  
+  describe('when testing hosted-fields-card-distinct fixture', async () => {
+    beforeEach(init({ fixture: 'hosted-fields-card-distinct' }));
 
     it(`Test distinct fields property defaults ${DISTINCT_PROP.map(p => p[0])}`, async function () {
       await browser.switchToFrame(0);
       const input = await $('.recurly-hosted-field-input');
-      for await (const type of ['number', 'month', 'year', 'cvv']) {
-        for await (const [prop, defaultValue] of DISTINCT_PROP) {
-            await browser.switchToFrame(null);
-            const frame = await $(`.recurly-hosted-field-${type} iframe`);
-            await browser.switchToFrame(frame);
-            await assertStyleIs(input, prop, defaultValue);               
+      for (const type of ['number', 'month', 'year', 'cvv']) {
+        for (const [prop, defaultValue] of DISTINCT_PROP) {
+          await browser.switchToFrame(null);
+          const frame = await $(`.recurly-hosted-field-${type} iframe`);
+          await browser.switchToFrame(frame);
+          await assertStyleIs(input, prop, defaultValue);
         };
       }
     });

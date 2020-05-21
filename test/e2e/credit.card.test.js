@@ -18,7 +18,7 @@ const GOOD_CARDS = [
   ['dis',   '6011-0160-1101-6011', '6011 0160 1101 6011', '10', yearAt(1), CVC[0] ],
   ['diner', '3643 893643 8936',    '3643 893643 8936',    '10', yearAt(1), CVC[0] ],
   ['jcb',   '3566-0035-6600-3566', '3566 0035 6600 3566', '10', yearAt(1), CVC[0] ]
-]
+];
 
 const BAD_CARDS = [
   ['visa',  '4111111111111115',    '4111 1111 1111 1115', '10', yearAt(1), CVC[0] ],
@@ -27,80 +27,78 @@ const BAD_CARDS = [
   ['dis',   '6011016011016019',    '6011 0160 1101 6019', '10', yearAt(1), CVC[0] ],
   ['diner', '36438936438939',      '3643 893643 8939',    '10', yearAt(1), CVC[0] ],
   ['jcb',   '3566003566003569',    '3566 0035 6600 3569', '10', yearAt(1), CVC[0] ]
-]
+];
 
 
 // Test all the style defaults properties for both combined and distinct fields
 describe('Credit card number validation tests', async () => {
   describe('when fixture is hosted-fields-card', async () => {
-    beforeEach(init({ fixture: 'hosted-fields-card' })); 
+    beforeEach(init({ fixture: 'hosted-fields-card' }));
 
     it(`1. Test all the good card numbers: ${GOOD_CARDS.map(p => p[1])}`, async function () {
-        const iframe = await $(SEL.iframe);
-        await (await $(SEL.firstName)).setValue(NAME.firstName);
-        await (await $(SEL.lastName)).setValue(NAME.lastName);
+      const iframe = await $(SEL.iframe);
+      await (await $(SEL.firstName)).setValue(NAME.firstName);
+      await (await $(SEL.lastName)).setValue(NAME.lastName);
 
+      await browser.switchToFrame(0);
+      const number = await $(SEL.number)
+      const expiry = await $(SEL.expiry)
+      const cvv = await $(SEL.cvv)
+
+      for await (const [brand, num, formatted, mm, yy, cvc] of GOOD_CARDS) {
+        await number.setValue(num)
+        await expiry.setValue(EXPIRED)
+        await cvv.setValue(cvc)
+
+        assert.strictEqual(await number.getValue(), formatted)
+        assert.strictEqual(await expiry.getValue(), EXPIRED)
+        assert.strictEqual(await cvv.getValue(), cvc)
+
+        await browser.switchToFrame(null);
+        const [err, token] = await tokenize(SEL.form);
+
+        assert.strictEqual(err, null);
+        assertIsAToken(token);
         await browser.switchToFrame(0);
-        const number = await $(SEL.number)
-        const expiry = await $(SEL.expiry)
-        const cvv = await $(SEL.cvv)
-
-        for await (const [brand, num, formatted, mm, yy, cvc] of GOOD_CARDS) {
-            await number.setValue(num)
-            await expiry.setValue(EXPIRED)
-            await cvv.setValue(cvc)
-
-            assert.strictEqual(await number.getValue(), formatted)
-            assert.strictEqual(await expiry.getValue(), EXPIRED)
-            assert.strictEqual(await cvv.getValue(), cvc)
-
-            await browser.switchToFrame(null);
-            const [err, token] = await tokenize(SEL.form);
-        
-            assert.strictEqual(err, null);
-            assertIsAToken(token);
-            await browser.switchToFrame(0);
-        };
-
+      }
     });
 
     it(`2. Test all the bad card numbers: ${BAD_CARDS.map(p => p[1])}`, async function () {
-        const iframe = await $(SEL.iframe);
-        await (await $(SEL.firstName)).setValue(NAME.firstName);
-        await (await $(SEL.lastName)).setValue(NAME.lastName);
+      const iframe = await $(SEL.iframe);
+      await (await $(SEL.firstName)).setValue(NAME.firstName);
+      await (await $(SEL.lastName)).setValue(NAME.lastName);
 
+      await browser.switchToFrame(0);
+      const number = await $(SEL.number)
+      const expiry = await $(SEL.expiry)
+      const cvv = await $(SEL.cvv)
+
+      for await (const [brand, num, formatted, mm, yy, cvc] of BAD_CARDS) {
+        await number.setValue(num)
+        await expiry.setValue(EXPIRED)
+        await cvv.setValue(cvc)
+
+        assert.strictEqual(await number.getValue(), formatted)
+        assert.strictEqual(await expiry.getValue(), EXPIRED)
+        assert.strictEqual(await cvv.getValue(), cvc)
+
+        await browser.switchToFrame(null);
+        const [err, token] = await tokenize(SEL.form);
+
+        assert.strictEqual(err.message, 'There was an error validating your request.');
+        assert.strictEqual(token, null);
         await browser.switchToFrame(0);
-        const number = await $(SEL.number)
-        const expiry = await $(SEL.expiry)
-        const cvv = await $(SEL.cvv)
-
-        for await (const [brand, num, formatted, mm, yy, cvc] of BAD_CARDS) {
-            await number.setValue(num)
-            await expiry.setValue(EXPIRED)
-            await cvv.setValue(cvc)
-
-            assert.strictEqual(await number.getValue(), formatted)
-            assert.strictEqual(await expiry.getValue(), EXPIRED)
-            assert.strictEqual(await cvv.getValue(), cvc)
-
-            await browser.switchToFrame(null);
-            const [err, token] = await tokenize(SEL.form);
-        
-            assert.strictEqual(err.message, 'There was an error validating your request.');
-            assert.strictEqual(token, null);
-            await browser.switchToFrame(0);
-        };
+      }
     });
   });
 
-  describe.only('when fixture is hosted-fields-card-distinct', async () => {
-    beforeEach(init({ fixture: 'hosted-fields-card-distinct' }));  
+  describe('when fixture is hosted-fields-card-distinct', async () => {
+    beforeEach(init({ fixture: 'hosted-fields-card-distinct' }));
 
     it(`3. Test all the good card numbers: ${GOOD_CARDS.map(p => p[1])}`, async function () {
       await browser.switchToFrame(0);
       const input = await $('.recurly-hosted-field-input');
 
-      
       for await (const [brand, num, formatted, mm, yy, cvc] of GOOD_CARDS) {
         for await (const type of ['number', 'month', 'year', 'cvv']) {
 
@@ -118,20 +116,18 @@ describe('Credit card number validation tests', async () => {
 
           await input.setValue(eval(type));
           await browser.switchToFrame(null);
-             
-        };
+        }
       }
       const [err, token] = await tokenize(SEL.form);
       assert.strictEqual(err, null);
       assertIsAToken(token)
       await browser.switchToFrame(0);
-
     });
 
     it(`4. Test all the bad card numbers: ${BAD_CARDS.map(p => p[1])}`, async function () {
       await browser.switchToFrame(0);
       const input = await $('.recurly-hosted-field-input');
-      
+
       for await (const [brand, num, formatted, mm, yy, cvc] of BAD_CARDS) {
         for await (const type of ['number', 'month', 'year', 'cvv']) {
 
@@ -149,14 +145,13 @@ describe('Credit card number validation tests', async () => {
 
           await input.setValue(eval(type));
           await browser.switchToFrame(null);
-             
-        };
+        }
       }
+
       const [err, token] = await tokenize(SEL.form);
       assert.strictEqual(err.message, 'There was an error validating your request.');
       assert.strictEqual(token, null);
       await browser.switchToFrame(0);
-
     });
   });
 });
