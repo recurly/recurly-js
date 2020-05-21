@@ -35,7 +35,7 @@ describe('Credit card number validation tests', async () => {
   describe('when fixture is hosted-fields-card', async () => {
     beforeEach(init({ fixture: 'hosted-fields-card' })); 
 
-    it(`Test all the good card numbers: ${GOOD_CARDS.map(p => p[1])}`, async function () {
+    it(`1. Test all the good card numbers: ${GOOD_CARDS.map(p => p[1])}`, async function () {
         const iframe = await $(SEL.iframe);
         await (await $(SEL.firstName)).setValue(NAME.firstName);
         await (await $(SEL.lastName)).setValue(NAME.lastName);
@@ -45,7 +45,7 @@ describe('Credit card number validation tests', async () => {
         const expiry = await $(SEL.expiry)
         const cvv = await $(SEL.cvv)
 
-        for (const [brand, num, formatted, mm, yy, cvc] of GOOD_CARDS) {
+        for await (const [brand, num, formatted, mm, yy, cvc] of GOOD_CARDS) {
             await number.setValue(num)
             await expiry.setValue(EXPIRED)
             await cvv.setValue(cvc)
@@ -64,7 +64,7 @@ describe('Credit card number validation tests', async () => {
 
     });
 
-    it(`Test all the bad card numbers: ${BAD_CARDS.map(p => p[1])}`, async function () {
+    it(`2. Test all the bad card numbers: ${BAD_CARDS.map(p => p[1])}`, async function () {
         const iframe = await $(SEL.iframe);
         await (await $(SEL.firstName)).setValue(NAME.firstName);
         await (await $(SEL.lastName)).setValue(NAME.lastName);
@@ -74,7 +74,7 @@ describe('Credit card number validation tests', async () => {
         const expiry = await $(SEL.expiry)
         const cvv = await $(SEL.cvv)
 
-        for (const [brand, num, formatted, mm, yy, cvc] of BAD_CARDS) {
+        for await (const [brand, num, formatted, mm, yy, cvc] of BAD_CARDS) {
             await number.setValue(num)
             await expiry.setValue(EXPIRED)
             await cvv.setValue(cvc)
@@ -96,7 +96,7 @@ describe('Credit card number validation tests', async () => {
   describe('when fixture is hosted-fields-card-distinct', async () => {
     beforeEach(init({ fixture: 'hosted-fields-card-distinct' }));  
 
-    it(`Test all the good card numbers: ${GOOD_CARDS.map(p => p[1])}`, async function () {
+    it(`3. Test all the good card numbers: ${GOOD_CARDS.map(p => p[1])}`, async function () {
       await browser.switchToFrame(0);
       const input = await $('.recurly-hosted-field-input');
 
@@ -128,7 +128,7 @@ describe('Credit card number validation tests', async () => {
 
     });
 
-    it(`Test all the bad card numbers: ${BAD_CARDS.map(p => p[1])}`, async function () {
+    it(`4. Test all the bad card numbers: ${BAD_CARDS.map(p => p[1])}`, async function () {
       await browser.switchToFrame(0);
       const input = await $('.recurly-hosted-field-input');
       

@@ -91,7 +91,7 @@ describe('Changing common property style tests', async () => {
             };              
         }); 
         
-        it(`Test changing style fields.all for: ${PROPERTIES.map(p => p[0])}`, async function () {
+        it(`2. Test changing style fields.all for: ${PROPERTIES.map(p => p[0])}`, async function () {
             await browser.switchToFrame(0);
             const number = await $(SEL.number);
             const expiry = await $(SEL.expiry);
@@ -107,7 +107,7 @@ describe('Changing common property style tests', async () => {
             };              
         }); 
 
-        it('Test changing style fields.all elements and all four hosted fields in one "all" definition', async function () {
+        it('3. Test changing style fields.all elements and all four hosted fields in one "all" definition', async function () {
             await browser.switchToFrame(0);
             const number = await $(SEL.number);
             const expiry = await $(SEL.expiry);
@@ -126,7 +126,7 @@ describe('Changing common property style tests', async () => {
         }); 
 
 
-        it('Test changing style fields.card elements and all four hosted fields in one "all" definition', async function () {
+        it('4. Test changing style fields.card elements and all four hosted fields in one "all" definition', async function () {
             await browser.switchToFrame(0);
             const number = await $(SEL.number);
             const expiry = await $(SEL.expiry);
