@@ -22,6 +22,7 @@ if (DEBUG) {
   chromeOptions.args = ['--auto-open-devtools-for-tabs'];
 }
 
+exports.timeout = timeout;
 exports.config = {
   runner: 'local',
   path: '/',
@@ -40,7 +41,7 @@ exports.config = {
   reporters: ['spec'],
   mochaOpts: {
     ui: 'bdd',
-    timeout
+    timeout: timeout * 4
   },
   onPrepare: (config, capabilities) => {
     const server = require('./test/server');

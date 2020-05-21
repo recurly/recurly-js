@@ -1,6 +1,6 @@
 const { spawnSync } = require('child_process');
 const branchName = require('current-git-branch');
-const defaultConfig = require('./wdio.conf').config;
+const defaultWdio = require('./wdio.conf');
 const {
   projectName,
   capabilities
@@ -13,18 +13,13 @@ const {
   TRAVIS_BUILD_NUMBER
 } = process.env;
 const localIdentifier = `${Math.round(Math.random() * 100)}-${Date.now()}`;
-const { timeout } = defaultConfig.mochaOpts;
+const { timeout, config: defaultConfig } = defaultWdio;
 
 spawnSync('mkdir', ['-p', 'build/reports/e2e/log'] );
 
 const config = exports.config = Object.assign({}, defaultConfig, {
   user,
   key,
-  browserstackLocal: true,
-  browserstackOpts: {
-    logfile: 'build/reports/e2e/log/browserstack.log',
-    localIdentifier
-  },
   capabilities: [
     {
       'bstack:options': Object.assign(
@@ -50,7 +45,13 @@ const config = exports.config = Object.assign({}, defaultConfig, {
   ],
   baseUrl: 'http://bs-local.com:9877',
   services: [
-    ['browserstack']
+    ['browserstack', {
+      browserstackLocal: true,
+      opts: {
+        logfile: 'build/reports/e2e/log/browserstack.log',
+        localIdentifier
+      }
+    }]
   ]
 });
 
