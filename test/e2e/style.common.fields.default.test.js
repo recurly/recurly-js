@@ -52,7 +52,7 @@ describe('Default common property style tests', async () => {
       const number = await $(SEL.number);
       const expiry = await $(SEL.expiry);
       const cvv = await $(SEL.cvv);
-      for (const [prop, defaultValue] of COMBINED_PROP) {
+      for await (const [prop, defaultValue] of COMBINED_PROP) {
         await assertStyleIs(number, prop, defaultValue);
         await assertStyleIs(expiry, prop, defaultValue);
         await assertStyleIs(cvv, prop, defaultValue);
@@ -66,8 +66,8 @@ describe('Default common property style tests', async () => {
     it(`Test distinct fields property defaults ${DISTINCT_PROP.map(p => p[0])}`, async function () {
       await browser.switchToFrame(0);
       const input = await $('.recurly-hosted-field-input');
-      for (const type of ['number', 'month', 'year', 'cvv']) {
-        for (const [prop, defaultValue] of DISTINCT_PROP) {
+      for await (const type of ['number', 'month', 'year', 'cvv']) {
+        for await (const [prop, defaultValue] of DISTINCT_PROP) {
             await browser.switchToFrame(null);
             const frame = await $(`.recurly-hosted-field-${type} iframe`);
             await browser.switchToFrame(frame);

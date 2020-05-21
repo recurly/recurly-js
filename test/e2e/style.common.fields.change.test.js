@@ -81,7 +81,7 @@ describe('Changing common property style tests', async () => {
             const expiry = await $(SEL.expiry);
             const cvv = await $(SEL.cvv);
 
-            for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
+            for await (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
                 await browser.switchToFrame(null);
                 const config = await styleHostedField(FIELD_TYPES.CARD, { [rjsProp]: newValue });
                 await browser.switchToFrame(0);
@@ -97,7 +97,7 @@ describe('Changing common property style tests', async () => {
             const expiry = await $(SEL.expiry);
             const cvv = await $(SEL.cvv);
 
-            for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
+            for await (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
                 await browser.switchToFrame(null);
                 const config = await styleHostedField(FIELD_TYPES.ALL, { [rjsProp]: newValue });
                 await browser.switchToFrame(0);
@@ -116,7 +116,7 @@ describe('Changing common property style tests', async () => {
                 await browser.switchToFrame(null);
                 const config = await styleHostedField(FIELD_TYPES.ALL, GROUP_PROPERTIES);
 
-                for (const [prop, value] of GROUP_PROPERTIES_VALUE) {
+                for await (const [prop, value] of GROUP_PROPERTIES_VALUE) {
                     await browser.switchToFrame(0);
                     await assertStyleIs(number, prop, value);
                     await assertStyleIs(expiry, prop, value);
@@ -135,7 +135,7 @@ describe('Changing common property style tests', async () => {
                 await browser.switchToFrame(null);
                 const config = await styleHostedField(FIELD_TYPES.CARD, GROUP_PROPERTIES);
 
-                for (const [prop, value] of GROUP_PROPERTIES_VALUE) {
+                for await (const [prop, value] of GROUP_PROPERTIES_VALUE) {
                     await browser.switchToFrame(0);
                     await assertStyleIs(number, prop, value);
                     await assertStyleIs(expiry, prop, value);

@@ -101,8 +101,8 @@ describe('Credit card number validation tests', async () => {
       const input = await $('.recurly-hosted-field-input');
 
       
-      for (const [brand, num, formatted, mm, yy, cvc] of GOOD_CARDS) {
-        for (const type of ['number', 'month', 'year', 'cvv']) {
+      for await (const [brand, num, formatted, mm, yy, cvc] of GOOD_CARDS) {
+        for await (const type of ['number', 'month', 'year', 'cvv']) {
 
           await browser.switchToFrame(null);
           await (await $(SEL.firstName)).setValue('John');
@@ -132,8 +132,8 @@ describe('Credit card number validation tests', async () => {
       await browser.switchToFrame(0);
       const input = await $('.recurly-hosted-field-input');
       
-      for (const [brand, num, formatted, mm, yy, cvc] of BAD_CARDS) {
-        for (const type of ['number', 'month', 'year', 'cvv']) {
+      for await (const [brand, num, formatted, mm, yy, cvc] of BAD_CARDS) {
+        for await (const type of ['number', 'month', 'year', 'cvv']) {
 
           await browser.switchToFrame(null);
           await (await $(SEL.firstName)).setValue('John');

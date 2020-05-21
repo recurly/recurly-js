@@ -77,8 +77,8 @@ describe('Changing common property style tests for hosted-fields-card-distinct f
     it(`Test changing style fields individual fields for: ${PROPERTIES.map(p => p[0])}`, async function () {
         await browser.switchToFrame(0);
         const input = await $('.recurly-hosted-field-input');
-        for (const type of ['number', 'month', 'year', 'cvv']) {
-            for (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
+        for await (const type of ['number', 'month', 'year', 'cvv']) {
+            for await (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
                 await browser.switchToFrame(null);
                 const frame = await $(`.recurly-hosted-field-${type} iframe`);
                 const config = await styleHostedField(FIELD_TYPES[type.toUpperCase()], { [rjsProp]: newValue });
@@ -92,12 +92,12 @@ describe('Changing common property style tests for hosted-fields-card-distinct f
     it(`Test changing style fields individual fields for: GROUP_PROPERTIES`, async function () {
         await browser.switchToFrame(0);
         const input = await $('.recurly-hosted-field-input');
-        for (const type of ['number', 'month', 'year', 'cvv']) {
+        for await (const type of ['number', 'month', 'year', 'cvv']) {
             await browser.switchToFrame(null);
             const frame = await $(`.recurly-hosted-field-${type} iframe`);
             const config = await styleHostedField(FIELD_TYPES[type.toUpperCase()], GROUP_PROPERTIES); 
             
-            for (const [prop, value] of GROUP_PROPERTIES_VALUE) {
+            for await (const [prop, value] of GROUP_PROPERTIES_VALUE) {
                 await browser.switchToFrame(frame);
                 await assertStyleIs(input, prop, value);
                 await browser.switchToFrame(null);
