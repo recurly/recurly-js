@@ -85,7 +85,7 @@ describe('Changing common property style tests for hosted-fields-card-distinct f
 
         await browser.switchToFrame(frame);
         await assertStyleIs(input, cssProp, assertValue);
-      };
+      }
     }
   });
 
