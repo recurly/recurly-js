@@ -41,7 +41,7 @@ exports.config = {
   reporters: ['spec'],
   mochaOpts: {
     ui: 'bdd',
-    timeout: timeout * 4
+    timeout: timeout * 8
   },
   onPrepare: (config, capabilities) => {
     const server = require('./test/server');
