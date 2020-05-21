@@ -93,7 +93,7 @@ describe('Credit card number validation tests', async () => {
     });
   });
 
-  describe('when fixture is hosted-fields-card-distinct', async () => {
+  describe.only('when fixture is hosted-fields-card-distinct', async () => {
     beforeEach(init({ fixture: 'hosted-fields-card-distinct' }));  
 
     it(`3. Test all the good card numbers: ${GOOD_CARDS.map(p => p[1])}`, async function () {

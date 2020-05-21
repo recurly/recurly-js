@@ -37,7 +37,7 @@ describe('Changing common property style tests for invalids', async () => {
     describe('when changing hosted-fields-card fixture', async () => {
         beforeEach(init({ fixture: 'hosted-fields-card' })); 
 
-        it(`Test changing style fields.card.invalid for: ${PROPERTIES.map(p => p[0])}`, async function () {
+        it.only(`Test changing style fields.card.invalid for: ${PROPERTIES.map(p => p[0])}`, async function () {
             for await (const [rjsProp, cssProp, newValue, assertValue] of PROPERTIES) {
                 await browser.switchToFrame(null);
                 const config = await styleHostedField(FIELD_TYPES.CARD, { invalid: {[rjsProp]: newValue } });

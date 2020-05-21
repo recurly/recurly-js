@@ -106,7 +106,7 @@ describe('Unique options for format', async () => {
             
             const input = await $('.recurly-hosted-field-input');
 
-            for (const [field, setValue, expectValue] of ALL_DATA) {
+            for await (const [field, setValue, expectValue] of ALL_DATA) {
 
                 await browser.switchToFrame(null);
                 const frame = await $(`.recurly-hosted-field-${field} iframe`);
@@ -127,7 +127,7 @@ describe('Unique options for format', async () => {
             
             const input = await $('.recurly-hosted-field-input');
 
-            for (const [field, setValue, expectValue] of NUMBER_DATA) {
+            for await (const [field, setValue, expectValue] of NUMBER_DATA) {
 
                 await browser.switchToFrame(null);
                 const frame = await $(`.recurly-hosted-field-${field} iframe`);
@@ -148,7 +148,7 @@ describe('Unique options for format', async () => {
             
             const input = await $('.recurly-hosted-field-input');
 
-            for (const [field, setValue, expectValue] of MONTH_DATA) {
+            for await (const [field, setValue, expectValue] of MONTH_DATA) {
 
                 await browser.switchToFrame(null);
                 const frame = await $(`.recurly-hosted-field-${field} iframe`);
@@ -169,7 +169,7 @@ describe('Unique options for format', async () => {
             
             const input = await $('.recurly-hosted-field-input');
 
-            for (const [field, setValue, expectValue] of YEAR_DATA) {
+            for await (const [field, setValue, expectValue] of YEAR_DATA) {
 
                 await browser.switchToFrame(null);
                 const frame = await $(`.recurly-hosted-field-${field} iframe`);
@@ -180,7 +180,7 @@ describe('Unique options for format', async () => {
         });       
     });
 
-    describe('when fields.cvv.format is false', async () => {
+    describe.only('when fields.cvv.format is false', async () => {
         beforeEach(init({ 
             fixture: 'hosted-fields-card-distinct', 
             opts: { 'fields': {'cvv': {'format': false}} } 
@@ -190,7 +190,7 @@ describe('Unique options for format', async () => {
             
             const input = await $('.recurly-hosted-field-input');
 
-            for (const [field, setValue, expectValue] of CVV_DATA) {
+            for await (const [field, setValue, expectValue] of CVV_DATA) {
 
                 await browser.switchToFrame(null);
                 const frame = await $(`.recurly-hosted-field-${field} iframe`);
@@ -201,7 +201,7 @@ describe('Unique options for format', async () => {
         });       
     });
 
-    describe('when format is false for all fields separately', async () => {
+    describe.only('when format is false for all fields separately', async () => {
         beforeEach(init({ 
             fixture: 'hosted-fields-card-distinct', 
             opts: { 'fields': {
@@ -217,7 +217,7 @@ describe('Unique options for format', async () => {
             
             const input = await $('.recurly-hosted-field-input');
 
-            for (const [field, setValue, expectValue] of ALL_DATA) {
+            for await (const [field, setValue, expectValue] of ALL_DATA) {
 
                 await browser.switchToFrame(null);
                 const frame = await $(`.recurly-hosted-field-${field} iframe`);
@@ -228,7 +228,7 @@ describe('Unique options for format', async () => {
         });       
     });
 
-    describe('when format is false for all fields separately', async () => {
+    describe.only('when fields.number.format is true', async () => {
       beforeEach(init({ 
           fixture: 'hosted-fields-card-distinct', 
           opts: { 'fields': {'number': {'format': true}} } 
@@ -239,7 +239,7 @@ describe('Unique options for format', async () => {
           
           const input = await $('.recurly-hosted-field-input');
 
-          for (const [field, setValue, expectValue] of DEFAULT_DATA) {
+          for await (const [field, setValue, expectValue] of DEFAULT_DATA) {
 
               await browser.switchToFrame(null);
               const frame = await $(`.recurly-hosted-field-${field} iframe`);

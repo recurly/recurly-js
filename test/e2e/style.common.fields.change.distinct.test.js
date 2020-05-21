@@ -71,7 +71,7 @@ const GROUP_PROPERTIES_VALUE = [
 ]
 
 
-describe('Changing common property style tests for hosted-fields-card-distinct fixture', async () => {
+describe.only('Changing common property style tests for hosted-fields-card-distinct fixture', async () => {
     beforeEach(init({ fixture: 'hosted-fields-card-distinct' })); 
 
     it(`Test changing style fields individual fields for: ${PROPERTIES.map(p => p[0])}`, async function () {

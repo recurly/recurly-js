@@ -60,7 +60,7 @@ describe('Default common property style tests', async () => {
     });
   });
 
-  describe('when testing hosted-fields-card-distinct fixture', async () => {
+  describe.only('when testing hosted-fields-card-distinct fixture', async () => {
     beforeEach(init({ fixture: 'hosted-fields-card-distinct' }));  
 
     it(`Test distinct fields property defaults ${DISTINCT_PROP.map(p => p[0])}`, async function () {
