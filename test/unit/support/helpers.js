@@ -2,6 +2,7 @@ import bowser from 'bowser';
 import merge from 'lodash.merge';
 import { Recurly } from '../../../lib/recurly';
 import { BRAINTREE_CLIENT_VERSION } from '../../../lib/recurly/paypal/strategy/braintree';
+import Promise from 'promise';
 
 /**
  * initializes a Recurly instance designed for testing
@@ -55,10 +56,19 @@ export function stubBraintree () {
         }
       }
     });
+
+    const venmoCreate = (opt, cb) => cb(null, {
+      tokenize: () => Promise.resolve({}),
+      close: () => {}
+    });
+
     window.braintree = {
       client: {
         VERSION: BRAINTREE_CLIENT_VERSION,
         create
+      },
+      venmo: {
+        create: venmoCreate
       },
       paypal: { create },
       dataCollector: { create }
