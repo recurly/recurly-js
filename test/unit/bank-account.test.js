@@ -128,39 +128,77 @@ apiTest(function (requestMethod) {
               done();
             });
           });
+
+        describe('when given a valid Bacs', function () {
+          const validBacs = {
+            account_number: '55779911',
+            account_number_confirmation: '55779911',
+            branch_code: '200000',
+            name_on_account: 'Sir John Smith',
+            type: 'bacs'
+          };
+
+          it('yields a token', function (done) {
+            const { recurly } = this;
+            recurly.bankAccount.token(validBacs, (err, token) => {
+              assert(!err);
+              assert(token.id);
+              done();
+            });
+          });
+        });
         });
       }
     });
 
     describe('Recurly.bankAccount.bankInfo (' + requestMethod + ')', function () {
-      const valid = {
-        routingNumber: '123456780'
-      };
+      context('Bacs Bank Account', function () {
+        it('requires a account_number_confirmation', function (done) {
+          const invalidBacs = {
+            account_number: '55779911',
+            branch_code: '200000',
+            name_on_account: 'Sir John Smith',
+            type: 'bacs',
+          };
 
-      it('requires a callback', function () {
-        try {
-          recurly.bankAccount.bankInfo(valid);
-        } catch (e) {
-          assert(~e.message.indexOf('callback'));
-        }
-      });
-
-      it('requires a routingNumber', function () {
-        recurly.bankAccount.bankInfo({}, (err, bankInfo) => {
-          assert.strictEqual(err.code, 'validation');
-          assert.strictEqual(err.fields.length, 1);
-          assert.strictEqual(err.fields[0], 'routing_number');
-          assert(!bankInfo);
+          recurly.bankAccount.token(invalidBacs, (err, token) => {
+            assert(err);
+            assert(~err.message.indexOf('validating'));
+            done();
+          });
         });
       });
-    });
 
-    describe('when given a routingNumber', function () {
-      it('responds with bank info', function () {
-        const { recurly } = this;
-        recurly.bankAccount.bankInfo({ routingNumber: 'test-routing-number' }, (err, bankInfo) => {
-          assert.deepEqual(bankInfo, { bank_name: 'test-bank-name' });
-          assert(!err);
+      context('Bank Account', function () {
+        const valid = {
+          routingNumber: '123456780'
+        };
+
+        it('requires a callback', function () {
+          try {
+            recurly.bankAccount.bankInfo(valid);
+          } catch (e) {
+            assert(~e.message.indexOf('callback'));
+          }
+        });
+
+        it('requires a routingNumber', function () {
+          recurly.bankAccount.bankInfo({}, (err, bankInfo) => {
+            assert.strictEqual(err.code, 'validation');
+            assert.strictEqual(err.fields.length, 1);
+            assert.strictEqual(err.fields[0], 'routing_number');
+            assert(!bankInfo);
+          });
+        });
+      });
+
+      describe('when given a routingNumber', function () {
+        it('responds with bank info', function () {
+          const { recurly } = this;
+          recurly.bankAccount.bankInfo({ routingNumber: 'test-routing-number' }, (err, bankInfo) => {
+            assert.deepEqual(bankInfo, { bank_name: 'test-bank-name' });
+            assert(!err);
+          });
         });
       });
     });
