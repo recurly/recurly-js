@@ -43,7 +43,7 @@ ejs(app, { root: __dirname, layout: false, viewExt: 'html.ejs', cache: false });
 
 // Utility endpoints
 app.use(route.get('/build/:artifact', build));
-app.use(route.get('/e2e', e2e));
+app.use(route.get('/e2e*', e2e));
 app.use(route.get('/frame_mock', postMessage));
 app.use(route.get('/relay', html('relay')));
 app.use(route.get('/mock-404', ctx => ctx.status = 404));
@@ -98,8 +98,9 @@ async function build (ctx, artifact) {
 }
 
 async function e2e (ctx) {
+  const path = ctx.path.match(/e2e\/?$/) ? 'e2e/index' : ctx.path;
   setHeaders(ctx);
-  await ctx.render('views/e2e');
+  await ctx.render(`views/${path}`);
 }
 
 function html (view) {
