@@ -94,6 +94,11 @@ jobs:
     - <<: *e2e
       name: Android 7
       env: BROWSER=android_7 API_PROXY=http://bs-local.com:9877/api-proxy
+    - <<: *e2e
+      name: Electron
+      env: BROWSER=electron API_PROXY=http://bs-local.com:9877/api-proxy
+      services:
+        - xvfb
 
     - stage: Publish
       name: Publish Artifacts

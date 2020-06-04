@@ -1,4 +1,5 @@
 const { spawn } = require('child_process');
+const path = require('path');
 
 const {
   API,
@@ -20,6 +21,11 @@ if (DEBUG) {
   timeout = 24 * 60 * 60 * 1000;
   execArgv.concat(['--inspect']);
   chromeOptions.args = ['--auto-open-devtools-for-tabs'];
+}
+
+if (BROWSER === 'electron') {
+  browserName = 'chrome';
+  chromeOptions.binary = path.resolve(__dirname, "node_modules/.bin/electron");
 }
 
 exports.config = {
