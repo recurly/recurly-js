@@ -35,7 +35,7 @@ describe('Credit card number validation tests', async () => {
   describe('when fixture is hosted-fields-card', async () => {
     beforeEach(init({ fixture: 'hosted-fields-card' }));
 
-    it(`1. Test all the good card numbers: ${GOOD_CARDS.map(p => p[1])}`, async function () {
+    it(`Test all the good card numbers: ${GOOD_CARDS.map(p => p[1])}`, async function () {
       const iframe = await $(SEL.iframe);
       await (await $(SEL.firstName)).setValue(NAME.firstName);
       await (await $(SEL.lastName)).setValue(NAME.lastName);
@@ -50,20 +50,23 @@ describe('Credit card number validation tests', async () => {
         await expiry.setValue(EXPIRED)
         await cvv.setValue(cvc)
 
+
         assert.strictEqual(await number.getValue(), formatted)
         assert.strictEqual(await expiry.getValue(), EXPIRED)
         assert.strictEqual(await cvv.getValue(), cvc)
 
-        await browser.switchToFrame(null);
-        const [err, token] = await tokenize(SEL.form);
+        //Skip the below code to save time because it its covered in another test 
+        /* await browser.switchToFrame(null);
+          const [err, token] = await tokenize(SEL.form);
 
-        assert.strictEqual(err, null);
-        assertIsAToken(token);
-        await browser.switchToFrame(0);
+          assert.strictEqual(err, null);
+          assertIsAToken(token);
+          await browser.switchToFrame(0);
+        */
       }
     });
 
-    it(`2. Test all the bad card numbers: ${BAD_CARDS.map(p => p[1])}`, async function () {
+    it(`Test all the bad card numbers: ${BAD_CARDS.map(p => p[1])}`, async function () {
       const iframe = await $(SEL.iframe);
       await (await $(SEL.firstName)).setValue(NAME.firstName);
       await (await $(SEL.lastName)).setValue(NAME.lastName);
@@ -118,10 +121,13 @@ describe('Credit card number validation tests', async () => {
           await browser.switchToFrame(null);
         }
       }
-      const [err, token] = await tokenize(SEL.form);
-      assert.strictEqual(err, null);
-      assertIsAToken(token)
-      await browser.switchToFrame(0);
+
+       //Skip the below code to save time because it its covered in another test 
+      /* const [err, token] = await tokenize(SEL.form);
+        assert.strictEqual(err, null);
+        assertIsAToken(token)
+        await browser.switchToFrame(0);
+      */
     });
 
     it(`4. Test all the bad card numbers: ${BAD_CARDS.map(p => p[1])}`, async function () {
