@@ -565,7 +565,7 @@ describe('Element', function () {
       describe('when the new state differs from the existing state', function () {
         beforeEach(function () {
           this.element.onStateChange({ test: 'value' });
-          this.example = { test: 'value', john: 'rambo' };
+          this.example = { test: 'value', john: 'smith' };
         });
 
         it('updates the state when it has changed from the existing state', function () {
