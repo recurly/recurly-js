@@ -32,7 +32,7 @@ describe('Recurly.js', async () => {
     const iframe = await $(sel.iframe);
 
     await (await $(sel.firstName)).setValue('John');
-    await (await $(sel.lastName)).setValue('Rambo');
+    await (await $(sel.lastName)).setValue('Smith');
 
     await browser.switchToFrame(0);
 
