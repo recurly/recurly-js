@@ -69,25 +69,25 @@ describe('Recurly.js', async () => {
       iframe: '.recurly-hosted-field iframe',
       accountNumber: 'input[data-test="account-number"]',
       accountNumberConfirmation: 'input[data-test="account-number-confirmation"]',
-      branchCode: 'input[data-test="branch-code"]',
+      sortCode: 'input[data-test="sort-code"]',
     };
 
     it('creates a token', async function () {
       const iframe = await $(sel.iframe);
 
-      await (await $(sel.nameOnAccount)).setValue('John Rambo, OBE');
+      await (await $(sel.nameOnAccount)).setValue('John Smith, OBE');
 
       const accountNumber = await $(sel.accountNumber);
       const accountNumberConfirmation = await $(sel.accountNumberConfirmation);
-      const branchCode = await $(sel.branchCode);
+      const sortCode = await $(sel.sortCode);
 
       await accountNumber.setValue('55779911');
       await accountNumberConfirmation.setValue('55779911');
-      await branchCode.setValue('200000');
+      await sortCode.setValue('200000');
 
       assert.strictEqual(await accountNumber.getValue(), '55779911');
       assert.strictEqual(await accountNumberConfirmation.getValue(), '55779911');
-      assert.strictEqual(await branchCode.getValue(), '200000');
+      assert.strictEqual(await sortCode.getValue(), '200000');
 
       const [err, token] = await browser.executeAsync(function (sel, done) {
         recurly.bankAccount.token(document.querySelector(sel.form), function (err, token) {

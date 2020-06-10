@@ -133,7 +133,7 @@ apiTest(function (requestMethod) {
           const validBacs = {
             account_number: '55779911',
             account_number_confirmation: '55779911',
-            branch_code: '200000',
+            sort_code: '200000',
             name_on_account: 'Sir John Smith',
             type: 'bacs'
           };
@@ -156,7 +156,7 @@ apiTest(function (requestMethod) {
         it('requires a account_number_confirmation', function (done) {
           const invalidBacs = {
             account_number: '55779911',
-            branch_code: '200000',
+            sort_code: '200000',
             name_on_account: 'Sir John Smith',
             type: 'bacs',
           };
