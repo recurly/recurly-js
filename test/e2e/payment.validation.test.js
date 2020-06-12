@@ -9,7 +9,6 @@ const SEL_ACH = {
   output: '[data-test=output]',
   form: '[data-test=form]',
   nameOnAccount: '[data-test="name-on-account"]',
-  iframe: '.recurly-hosted-field iframe',
   routingNumber: 'input[data-test="routing-number"]',
   accountNumber: 'input[data-test="account-number"]',
   accountNumberConfirmation: 'input[data-test="account-number-confirmation"]',
@@ -22,7 +21,6 @@ describe('recurly.bankAccount payment validation tests', async () => {
     beforeEach(init({ fixture: 'bank-account-ach' }));
 
     it('gets token succesfully', async function () {
-
       await (await $(SEL_ACH.nameOnAccount)).setValue('John Rambo, OBE');
 
       const routingNumber = await $(SEL_ACH.routingNumber);
@@ -45,13 +43,8 @@ describe('recurly.bankAccount payment validation tests', async () => {
       assert.strictEqual(err, null);
       assertIsAToken(token, 'bank_account')
     });
-  });
-
-  describe('Bacs bank account', async function () {
-    beforeEach(init({ fixture: 'bank-account-ach' }));
 
     it('missing routing number', async function () {
-
       await (await $(SEL_ACH.nameOnAccount)).setValue('John Rambo, OBE');
 
       const accountNumber = await $(SEL_ACH.accountNumber);
