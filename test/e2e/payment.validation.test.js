@@ -16,6 +16,13 @@ const SEL_ACH = {
   country: 'input[data-test="country"]'
 };
 
+const SEL_SEPA = {
+  output: '[data-test=output]',
+  form: '[data-test=form]',
+  nameOnAccount: '[data-test="name-on-account"]',
+  iban: 'input[data-test="iban"]'
+};
+
 describe('recurly.bankAccount payment validation tests', async () => {
   describe('When it is a bank-account-ach', async function () {
     beforeEach(init({ fixture: 'bank-account-ach' }));
@@ -57,9 +64,6 @@ describe('recurly.bankAccount payment validation tests', async () => {
       await accountType.setValue('checking');
       await country.setValue('US');
 
-      assert.strictEqual(await accountNumber.getValue(), '111111111');
-      assert.strictEqual(await accountNumberConfirmation.getValue(), '111111111');
-
       const [err, token] = await tokenizeBankAccount(SEL_ACH)
 
       assert.strictEqual(err.message, 'There was an error validating your request.');
@@ -67,6 +71,48 @@ describe('recurly.bankAccount payment validation tests', async () => {
       assert.strictEqual(err.fields.length, 1);
       assert.strictEqual(token, null);
 
+    });
+  });
+
+  describe('When it is a bank-account-sepa', async function () {
+    beforeEach(init({ fixture: 'bank-account-sepa' }));
+
+    it('gets token succesfully', async function () {
+      const name = await $(SEL_SEPA.nameOnAccount)
+      const iban = await $(SEL_SEPA.iban);
+
+      await name.setValue('John Rambo, OBE');
+      await iban.setValue('FR1420041010050500013M02606');
+      assert.strictEqual(await iban.getValue(), 'FR1420041010050500013M02606');
+
+      const [err, token] = await tokenizeBankAccount(SEL_SEPA)
+
+      assert.strictEqual(err, null);
+      assertIsAToken(token, 'iban_bank_account')
+    });
+
+    it('missing iban', async function () {
+      const name = await $(SEL_SEPA.nameOnAccount)
+      await name.setValue('John Rambo, OBE');
+
+      const [err, token] = await tokenizeBankAccount(SEL_SEPA)
+
+      assert.strictEqual(err.message, 'There was an error validating your request.');
+      assert.strictEqual(err.fields[0], 'iban');
+      assert.strictEqual(err.fields.length, 1);
+      assert.strictEqual(token, null);
+    });
+
+    it('missing name_on_account', async function () {
+      const iban = await $(SEL_SEPA.iban);
+      await iban.setValue('FR1420041010050500013M02606');
+
+      const [err, token] = await tokenizeBankAccount(SEL_SEPA)
+
+      assert.strictEqual(err.message, 'There was an error validating your request.');
+      assert.strictEqual(err.fields[0], 'name_on_account');
+      assert.strictEqual(err.fields.length, 1);
+      assert.strictEqual(token, null);
     });
   });
 });
