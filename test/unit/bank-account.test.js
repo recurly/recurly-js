@@ -148,6 +148,27 @@ apiTest(function (requestMethod) {
           });
         });
         });
+
+        describe.only('when given a valid BECS', function () {
+          const validBecs = {
+            account_number: '012345678',
+            account_number_confirmation: '012345678',
+            name_on_account: 'John Smith',
+            bsb_code: '200-000',
+            type: 'becs',
+            country: 'AU'
+          };
+
+          it('yields a token', function (done) {
+            const { recurly } = this;
+            recurly.bankAccount.token(validBecs, (err, token) => {
+              console.log(err);
+              assert(!err);
+              assert(token.id);
+              done();
+            });
+          });
+        });
       }
     });
 
