@@ -235,6 +235,16 @@ describe('recurly.bankAccount payment validation tests', async () => {
       assert.strictEqual(err.fields.length, 1);
       assert.strictEqual(token, null);
     });
+
+    it('missing all fields', async function () {
+      const [err, token] = await tokenizeBankAccount(SEL_SEPA)
+
+      assert.strictEqual(err.message, 'There was an error validating your request.');
+      assert.strictEqual(err.fields[0], 'iban');
+      assert.strictEqual(err.fields[1], 'name_on_account');
+      assert.strictEqual(err.fields.length, 2);
+      assert.strictEqual(token, null);
+    });
   });
 });
 
