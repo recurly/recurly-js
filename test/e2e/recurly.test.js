@@ -66,15 +66,12 @@ describe('Recurly.js', async () => {
       output: '[data-test=output]',
       form: '[data-test=form]',
       nameOnAccount: '[data-test="name-on-account"]',
-      iframe: '.recurly-hosted-field iframe',
       accountNumber: 'input[data-test="account-number"]',
       accountNumberConfirmation: 'input[data-test="account-number-confirmation"]',
       sortCode: 'input[data-test="sort-code"]',
     };
 
     it('creates a token', async function () {
-      const iframe = await $(sel.iframe);
-
       await (await $(sel.nameOnAccount)).setValue('John Smith, OBE');
 
       const accountNumber = await $(sel.accountNumber);
