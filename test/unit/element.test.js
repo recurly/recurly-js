@@ -279,7 +279,7 @@ describe('Element', function () {
       this.element.update.restore();
     });
 
-    it('sets config according to a whitelist', function () {
+    it('sets config according to an allowlist', function () {
       const { element, validOptions } = this;
       element.configure(Object.assign({}, validOptions, {
         invalidOption: 'test'
