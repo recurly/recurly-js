@@ -1,5 +1,15 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.13.0
+
+* Adds support for Bacs bank account tokenization [#608][608]
+* Adds TypeScript types [#584][584]
+* Adds Electron support [#593][593]
+* Increases the reporting period [#594][594]
+* Adds PayPal#destroy method [#592][592]
+* Adds an error message when a requensted plan code is empty [#603][603]
+* Fixes Apple Pay currency limitation [#600][600]
+
 ### Version 4.12.0
 
 * Updates kount fraud integration to make use of the Kount JS SDK [#577][577]
@@ -307,6 +317,13 @@
 
 * Full rewrite for Billing Info tokenization
 
+[608]: https://github.com/recurly/recurly-js/commit/1bf8bae4d712de20ebb12e7f903a0e3ce326593e
+[603]: https://github.com/recurly/recurly-js/commit/c0c8b0808834a6fd1d0afbb0d0832b3a801bfb12
+[600]: https://github.com/recurly/recurly-js/commit/cb8dfb58fa42d829e4e0940c8e8c8776593a3a93
+[594]: https://github.com/recurly/recurly-js/commit/b2b2dbc03fc0ace18af332463c82653aad26d26c
+[593]: https://github.com/recurly/recurly-js/commit/ef7f9232c850164cbf558503c73a4f7ebae07dce
+[592]: https://github.com/recurly/recurly-js/commit/438785c402b0f14679a39faa46e76f86fd755943
+[584]: https://github.com/recurly/recurly-js/commit/8dce09d6a3b847531cf242f0f23ab318dae3bcdb
 [590]: https://github.com/recurly/recurly-js/commit/bca67e3f832c59336c4000642f9abd08b291b86d
 [573]: https://github.com/recurly/recurly-js/commit/42c06f62ddc86ce2bc9e5c5827ff1907ef4f441c
 [574]: https://github.com/recurly/recurly-js/commit/a8f31ee905c6d1cda6b1f738fc08334225b2f034
