@@ -10,10 +10,12 @@ const {
 } = process.env;
 
 let browserName = BROWSER || 'chrome';
+let services = ['chromedriver'];
 let maxInstances = 5;
 let timeout = 15000;
 let execArgv = [];
 let chromeOptions = {};
+let firefoxOptions = {};
 
 if (DEBUG) {
   browserName = 'chrome';
@@ -21,11 +23,16 @@ if (DEBUG) {
   timeout = 24 * 60 * 60 * 1000;
   execArgv.concat(['--inspect']);
   chromeOptions.args = ['--auto-open-devtools-for-tabs'];
+  firefoxOptions.args = ['-jsconsole'];
 }
 
 if (BROWSER === 'electron') {
   browserName = 'chrome';
   chromeOptions.binary = path.resolve(__dirname, "node_modules/.bin/electron");
+}
+
+if (browserName === 'firefox') {
+  services = ['geckodriver'];
 }
 
 exports.config = {
@@ -35,13 +42,17 @@ exports.config = {
     './test/e2e/**/*.test.js'
   ],
   maxInstances,
-  capabilities: [{ browserName, 'goog:chromeOptions': chromeOptions }],
+  capabilities: [{
+    browserName,
+    'goog:chromeOptions': chromeOptions,
+    'moz:firefoxOptions': firefoxOptions
+  }],
   execArgv,
   logLevel: 'info',
   baseUrl: 'http://localhost:9877',
   waitforTimeout: Math.round(timeout * 2/3),
   connectionRetryCount: 3,
-  services: ['chromedriver'],
+  services,
   framework: 'mocha',
   reporters: ['spec'],
   mochaOpts: {

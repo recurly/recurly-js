@@ -1,9 +1,11 @@
 const assert = require('assert');
 const {
+  BROWSERS,
   createElement,
-  init,
+  environmentIs,
   ELEMENT_TYPES,
-  FIELD_TYPES
+  FIELD_TYPES,
+  init
 } = require('./support/helpers');
 
 describe('Tabbing', async () => {
@@ -55,6 +57,11 @@ function tabsThroughTheForm () {
     while (!destinationReached) {
       await browser.keys('Tab');
       destinationReached = await lastInput.isFocused();
+    }
+
+    // IE11 cannot perform tab progression in reverse from within an <iframe>
+    if (environmentIs(BROWSERS.IE_11)) {
+      return;
     }
 
     destinationReached = false;

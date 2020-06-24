@@ -2,6 +2,10 @@ const assert = require('assert');
 
 const TOKEN_PATTERN = /^[\w-]{21,23}$/;
 
+const BROWSERS = {
+  IE_11: 'ie_11'
+};
+
 const ELEMENT_TYPES = {
   CardElement: 'CardElement',
   CardNumberElement: 'CardNumberElement',
@@ -30,12 +34,14 @@ const TOKEN_TYPES = {
 
 module.exports = {
   assertIsAToken,
+  BROWSERS,
   configureRecurly,
   createElement,
   ELEMENT_TYPES,
-  environment,
+  environmentIs,
   FIELD_TYPES,
   init,
+  recurlyEnvironment,
   tokenize,
   TOKEN_TYPES
 };
@@ -51,7 +57,7 @@ module.exports = {
 function init ({ fixture = '', opts = {} } = {}) {
   return async () => {
     await browser.url(`e2e/${fixture}`);
-    return await configureRecurly(Object.assign({}, environment(), opts));
+    return await configureRecurly(Object.assign({}, recurlyEnvironment(), opts));
   };
 }
 
@@ -124,7 +130,7 @@ function assertIsAToken (maybeToken, expectedType = TOKEN_TYPES.CREDIT_CARD) {
 
 // Utility
 
-function environment () {
+function recurlyEnvironment () {
   const {
     API: api,
     API_PROXY: apiProxy,
@@ -134,4 +140,24 @@ function environment () {
   opts.api = apiProxy || api || 'https://api.recurly.com/js/v1';
   opts.publicKey = publicKey || 'ewr1-zfJT5nPe1qW7jihI32LIRH';
   return opts;
+}
+
+/**
+ * Checks for matches in the test environment.
+ *
+ * Use this to skip tests which cannot run in a particular browser or device
+ *
+ * @param  {...string} conditions list containing values from `BROWSERS`
+ * @return {Boolean}
+ */
+function environmentIs (...conditions) {
+  for (condition of conditions) {
+    if (Object.values(BROWSERS).includes(condition)) {
+      if (process.env.BROWSER === condition) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
