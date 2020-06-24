@@ -35,7 +35,7 @@ test-ci: test-unit-ci test-e2e-ci
 test-unit: build build/test-unit.js
 	@$(karma) karma.conf.js
 test-unit-debug: build build/test.js
-	BROWSER=ChromeDebug $(KARMA) start karma.conf.js
+	BROWSER=ChromeDebug $(karma) karma.conf.js
 test-unit-ci: build build/test-unit.js
 	@$(karma) karma.ci.conf.js
 test-unit-cov-ci: export REPORT_COVERAGE = true

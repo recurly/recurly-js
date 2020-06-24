@@ -16,6 +16,7 @@ const commonFields = opts => `
 
 const elements = opts => `
   <form action="#" id="test-form">
+    <input type="text" id="test-focus-el">
     <input type="text" id="test-tab-prev">
     <div id="recurly-elements"></div>
     <div id="recurly-elements-two"></div>

@@ -2,6 +2,23 @@ const assert = require('assert');
 
 const TOKEN_PATTERN = /^[\w-]{21,23}$/;
 
+const ELEMENT_TYPES = {
+  CardElement: 'CardElement',
+  CardNumberElement: 'CardNumberElement',
+  CardMonthElement: 'CardMonthElement',
+  CardYearElement: 'CardYearElement',
+  CardCvvElement: 'CardCvvElement'
+};
+
+const FIELD_TYPES = {
+  ALL: 'all',
+  CARD: 'card',
+  NUMBER: 'number',
+  MONTH: 'month',
+  YEAR: 'year',
+  CVV: 'cvv'
+};
+
 const TOKEN_TYPES = {
   CREDIT_CARD: 'credit_card',
   PAYPAL: 'paypal',
@@ -14,7 +31,10 @@ const TOKEN_TYPES = {
 module.exports = {
   assertIsAToken,
   configureRecurly,
+  createElement,
+  ELEMENT_TYPES,
   environment,
+  FIELD_TYPES,
   init,
   tokenize,
   TOKEN_TYPES
@@ -50,6 +70,24 @@ async function configureRecurly (opts = {}) {
       done();
     });
   }, opts);
+}
+
+/**
+ * Creates an Element
+ *
+ * @param {String} elementClass one of ELEMENT_TYPES
+ */
+async function createElement (elementClass, config = {}) {
+  return await browser.executeAsync(function (elementClass, config, done) {
+    const elements = window.__e2e__.elements = window.__e2e__.elements || recurly.Elements();
+    const element = elements[elementClass](config);
+    const container = document.querySelector('.test-element-container');
+
+    element.on('attach', function () {
+      done();
+    });
+    element.attach(container);
+  }, elementClass, config);
 }
 
 // Action helpers
