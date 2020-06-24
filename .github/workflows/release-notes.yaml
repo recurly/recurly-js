@@ -19,7 +19,7 @@ jobs:
       - name: Prepare
         id: prep
         run: |
-          version=$(echo ${${{ github.ref }}/v/})
+          version=$(echo '${{ github.ref }}' | sed 's/^.*v//')
           changes=$(sed -n "/^### Version $version/,/^###/p" CHANGELOG.md | sed '$d' | sed '1d')
           links=$(cat CHANGELOG.md | grep '^\[')
           echo "::set-output name=name::$version"
