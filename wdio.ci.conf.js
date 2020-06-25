@@ -23,11 +23,6 @@ if (BROWSER === 'electron') {
   const config = exports.config = Object.assign({}, defaultConfig, {
     user,
     key,
-    browserstackLocal: true,
-    browserstackOpts: {
-      logfile: 'build/reports/e2e/log/browserstack.log',
-      localIdentifier
-    },
     capabilities: [
       {
         'bstack:options': Object.assign(
@@ -53,7 +48,13 @@ if (BROWSER === 'electron') {
     ],
     baseUrl: 'http://bs-local.com:9877',
     services: [
-      ['browserstack']
+      ['browserstack', {
+        browserstackLocal: true,
+        opts: {
+          logfile: 'build/reports/e2e/log/browserstack.log',
+          localIdentifier
+        }
+      }]
     ]
   });
 
