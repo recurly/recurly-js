@@ -1,5 +1,6 @@
 const { spawn } = require('child_process');
 const path = require('path');
+const { capabilities: bstackCapabilities } = require('./test/conf/browserstack');
 
 const {
   API,
@@ -9,7 +10,9 @@ const {
   PUBLIC_KEY
 } = process.env;
 
+let port;
 let browserName = BROWSER || 'chrome';
+let capabilities;
 let services = ['chromedriver'];
 let maxInstances = 5;
 let timeout = 15000;
@@ -35,6 +38,25 @@ if (browserName === 'firefox') {
   services = ['geckodriver'];
 }
 
+if (browserName.includes('ios')) {
+  services = [
+    ['appium', {
+      logPath : './build/reports/e2e/log/'
+    }]
+  ];
+  port = 4723;
+  capabilities = [{
+    maxInstances: 1,
+    platformName: 'iOS',
+    browserName: 'safari',
+    'appium:deviceName': 'iPhone 11 Pro',
+    'appium:platformVersion': bstackCapabilities[`bs_${browserName}`].osVersion,
+    'appium:orientation': 'PORTRAIT',
+    'appium:automationName': 'XCUITest',
+    // 'appium:newCommandTimeout': 240,
+  }];
+}
+
 exports.config = {
   runner: 'local',
   path: '/',
@@ -42,7 +64,7 @@ exports.config = {
     './test/e2e/**/*.test.js'
   ],
   maxInstances,
-  capabilities: [{
+  capabilities: capabilities || [{
     browserName,
     'goog:chromeOptions': chromeOptions,
     'moz:firefoxOptions': firefoxOptions
@@ -71,4 +93,6 @@ exports.config = {
   }
 };
 
-console.log(exports.config);
+if (port) {
+  exports.config.port = port;
+}
