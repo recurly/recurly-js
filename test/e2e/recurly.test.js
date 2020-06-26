@@ -7,7 +7,6 @@ const {
 } = require('./support/helpers');
 
 describe('Recurly.js', async () => {
-
   describe('credit card', async function () {
     beforeEach(init({ fixture: 'hosted-fields-card' }));
 

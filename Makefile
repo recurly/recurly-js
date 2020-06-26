@@ -57,7 +57,7 @@ lint-fix: build
 	@$(eslint) --fix
 
 node_modules: package.json
-	@npm install --silent
+	@npm install --silent --no-audit
 
 clean:
 	@rm -rf node_modules build

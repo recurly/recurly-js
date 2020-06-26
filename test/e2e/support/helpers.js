@@ -1,10 +1,16 @@
 const assert = require('assert');
+const memoize = require('memoize-one');
 
 const TOKEN_PATTERN = /^[\w-]{21,23}$/;
 
 const BROWSERS = {
   IE_11: 'ie_11'
 };
+
+const DEVICES = {
+  DESKTOP: 'desktop',
+  MOBILE: 'mobile'
+}
 
 const ELEMENT_TYPES = {
   CardElement: 'CardElement',
@@ -37,8 +43,9 @@ module.exports = {
   BROWSERS,
   configureRecurly,
   createElement,
+  DEVICES,
   ELEMENT_TYPES,
-  environmentIs,
+  environmentIs: memoize(environmentIs),
   FIELD_TYPES,
   init,
   recurlyEnvironment,
@@ -151,13 +158,95 @@ function recurlyEnvironment () {
  * @return {Boolean}
  */
 function environmentIs (...conditions) {
+  const browsers = Object.values(BROWSERS);
+  const devices = Object.values(DEVICES);
+
   for (condition of conditions) {
-    if (Object.values(BROWSERS).includes(condition)) {
+    if (browsers.includes(condition)) {
       if (process.env.BROWSER === condition) {
         return true;
       }
+    }
+
+    if (devices.includes(condition)) {
+      const { capabilities } = browser;
+      const isMobile = capabilities.realMobile === 'true' || ['iOS', 'Android'].includes(capabilities.platformName);
+      if (condition === DEVICES.MOBILE && isMobile) return true;
+      if (condition === DEVICES.DESKTOP && !isMobile) return true;
     }
   }
 
   return false;
 }
+
+
+// iOS 13
+//   webStorageEnabled: false,
+//   locationContextEnabled: false,
+//   browserName: 'safari',
+//   platform: 'MAC',
+//   javascriptEnabled: true,
+//   databaseEnabled: false,
+//   takesScreenshot: true,
+//   networkConnectionEnabled: false,
+//   platformName: 'iOS',
+//   newCommandTimeout: 0,
+//   realMobile: 'true',
+//   deviceName: 'iPhone XS',
+//   safariIgnoreFraudWarning: true,
+//   noReset: true,
+//   keychainPath: '/Users/app/Library/Keychains/Browserstack.keychain-db',
+//   keychainPassword: 'gushed7hiring',
+//   platformVersion: '12.1',
+//   useXctestrunFile: true,
+//   bootstrapPath: '/usr/local/.browserstack/config/wda_derived_data_00008020-001E75CE3CD3002E_1.16.0/Build/Products',
+//   orientation: 'PORTRAIT',
+//   'browserstack.isTargetBased': 'true',
+//   udid: '00008020-001E75CE3CD3002E'
+
+// Chrome MacOS
+//   acceptInsecureCerts: true,
+//   browserName: 'chrome',
+//   browserVersion: '83.0.4103.61',
+//   chrome: {
+//     chromedriverVersion: '83.0.4103.39 (ccbf011cb2d2b19b506d844400483861342c20cd-refs/branch-heads/4103@{#416})',
+//     userDataDir: '/var/folders/3y/zz_w6_s56sl__vcrf3r5bhzr0000hr/T/.com.google.Chrome.G4PQLx'
+//   },
+//   'goog:chromeOptions': { debuggerAddress: 'localhost:65231' },
+//   networkConnectionEnabled: false,
+//   pageLoadStrategy: 'normal',
+//   platformName: 'mac os x',
+//   proxy: {},
+//   setWindowRect: true,
+//   strictFileInteractability: false,
+//   timeouts: { implicit: 0, pageLoad: 300000, script: 30000 },
+//   unhandledPromptBehavior: 'dismiss and notify',
+//   'webauthn:virtualAuthenticators': true,
+//   'webdriver.remote.sessionid': '44dd9313b83ccd67873bd5888477a1da4d281d13'
+
+// IE 11
+//   acceptInsecureCerts: false,
+//   browserName: 'internet explorer',
+//   browserVersion: '11',
+//   pageLoadStrategy: 'normal',
+//   platformName: 'windows',
+//   proxy: {},
+//   'se:ieOptions': {
+//     browserAttachTimeout: 0,
+//     elementScrollBehavior: 0,
+//     enablePersistentHover: true,
+//     'ie.browserCommandLineSwitches': '',
+//     'ie.ensureCleanSession': false,
+//     'ie.fileUploadDialogTimeout': 3000,
+//     'ie.forceCreateProcessApi': false,
+//     ignoreProtectedModeSettings: false,
+//     ignoreZoomSetting: false,
+//     initialBrowserUrl: 'about:blank',
+//     nativeEvents: true,
+//     requireWindowFocus: false
+//   },
+//   setWindowRect: true,
+//   strictFileInteractability: false,
+//   timeouts: { implicit: 0, pageLoad: 300000, script: 30000 },
+//   unhandledPromptBehavior: 'dismiss and notify',
+//   'webdriver.remote.sessionid': 'c5f750f84fa59167aef74b758c81c5196ffa2287'

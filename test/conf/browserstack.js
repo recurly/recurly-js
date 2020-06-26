@@ -44,7 +44,7 @@ module.exports = {
     bs_ios_13: {
       deviceName: 'iPhone XS',
       os: 'ios',
-      osVersion: '13',
+      osVersion: '13.5',
       realMobile: true
     },
     bs_ios_12: {
