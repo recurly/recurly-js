@@ -12,6 +12,7 @@ const {
   BROWSER_STACK_ACCESS_KEY: key,
   TRAVIS_BUILD_NUMBER
 } = process.env;
+
 const localIdentifier = `${Math.round(Math.random() * 100)}-${Date.now()}`;
 const { timeout } = defaultConfig.mochaOpts;
 
@@ -32,7 +33,7 @@ if (BROWSER === 'electron') {
             projectName,
             buildName: `${TRAVIS_BUILD_NUMBER || `Local e2e [${branchName()}]`}`,
             seleniumVersion: '3.141.59',
-            appiumVersion: '1.16.0',
+            appiumVersion: '1.17.0',
             local: true,
             debug: true,
             networkLogs: true,

@@ -47,12 +47,12 @@ jobs:
       env: BROWSER=ios_12
     - name: iOS 13
       env: BROWSER=ios_13
+    - name: Android 10
+      env: BROWSER=android_10
     - name: Android 9
       env: BROWSER=android_9
     - name: Android 8
       env: BROWSER=android_8
-    - name: Android 7
-      env: BROWSER=android_7
     - name: Electron
       env: BROWSER=electron
       services:
@@ -82,14 +82,14 @@ jobs:
       name: iOS 12
       env: BROWSER=ios_12 API_PROXY=http://bs-local.com:9877/api-proxy
     - <<: *e2e
+      name: Android 10
+      env: BROWSER=android_10 API_PROXY=http://bs-local.com:9877/api-proxy
+    - <<: *e2e
       name: Android 9
       env: BROWSER=android_9 API_PROXY=http://bs-local.com:9877/api-proxy
     - <<: *e2e
       name: Android 8
       env: BROWSER=android_8 API_PROXY=http://bs-local.com:9877/api-proxy
-    - <<: *e2e
-      name: Android 7
-      env: BROWSER=android_7 API_PROXY=http://bs-local.com:9877/api-proxy
     - <<: *e2e
       name: Electron
       env: BROWSER=electron API_PROXY=http://bs-local.com:9877/api-proxy
