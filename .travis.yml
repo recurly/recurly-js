@@ -35,6 +35,10 @@ jobs:
       script: make test-unit-cov-ci
     - name: Chrome
       env: BROWSER=chrome
+      addons:
+        chrome: stable
+      services:
+        - xvfb
     - name: Firefox
       env: BROWSER=firefox
     - name: Safari

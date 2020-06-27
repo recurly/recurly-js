@@ -51,11 +51,9 @@ function tabsThroughTheForm () {
     let destinationReached = false;
     const firstInput = await $('[data-test=arbitrary-input-0]');
     const lastInput = await $('[data-test=arbitrary-input-1]');
-    await firstInput.click();
 
-    if (environmentIs(DEVICES.MOBILE)) {
-      // Mobile environments require that each iframe be interacted with before
-      // focus directives succeed
+    if (environmentIs(DEVICES.IOS)) {
+      // iOS requires that each iframe be interacted with before focus directives succeed
       const frames = await browser.$$('iframe');
       for (frame of frames) {
         await browser.switchToFrame(frame);
@@ -63,9 +61,12 @@ function tabsThroughTheForm () {
       }
     }
 
+    await browser.execute(function () {
+      document.querySelector('[data-test=arbitrary-input-0]').focus();
+    });
     assert(await firstInput.isFocused());
 
-    if (environmentIs(DEVICES.MOBILE)) {
+    if (environmentIs(DEVICES.IOS)) {
       const [appContext, webContext] = await driver.getContexts();
       await driver.switchContext(appContext);
       const next = await driver.$("//*[@label='Next']");
@@ -76,6 +77,12 @@ function tabsThroughTheForm () {
         destinationReached = await lastInput.isFocused();
         if (!destinationReached) await driver.switchContext(appContext);
       }
+    } else if (environmentIs(DEVICES.ANDROID)) {
+      const TAB_KEY = 61;
+      while (!destinationReached) {
+        await driver.pressKeyCode(TAB_KEY);
+        destinationReached = await lastInput.isFocused();
+      }
     } else {
       // Non-mobile is much simpler
       while (!destinationReached) {
@@ -85,13 +92,14 @@ function tabsThroughTheForm () {
     }
 
     // IE11 cannot perform tab progression in reverse from within an <iframe>
+    // Android devices do not support reverse tab progression
     if (environmentIs(BROWSERS.IE_11)) {
       return;
     }
 
     destinationReached = false;
 
-    if (environmentIs(DEVICES.MOBILE)) {
+    if (environmentIs(DEVICES.IOS)) {
       const [appContext, webContext] = await driver.getContexts();
       await driver.switchContext(appContext);
       const prev = await driver.$("//*[@label='Previous']");
@@ -101,6 +109,12 @@ function tabsThroughTheForm () {
         await driver.switchContext(webContext);
         destinationReached = await firstInput.isFocused();
         if (!destinationReached) await driver.switchContext(appContext);
+      }
+    } else if (environmentIs(DEVICES.ANDROID)) {
+      const TAB_KEY = 61;
+      while (!destinationReached) {
+        await driver.pressKeyCode(TAB_KEY, 1);
+        destinationReached = await lastInput.isFocused();
       }
     } else {
       while (!destinationReached) {

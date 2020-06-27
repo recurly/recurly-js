@@ -59,7 +59,7 @@ function capabilities () {
       'appium:platformVersion': bsCapabilities[`bs_${BROWSER}`].osVersion,
       'appium:orientation': 'PORTRAIT',
       'appium:automationName': 'XCUITest',
-    }]
+    }];
   }
 
   if (isAndroid()) {
