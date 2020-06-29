@@ -41,14 +41,22 @@ jobs:
         - xvfb
     - name: Firefox
       env: BROWSER=firefox
+      addons:
+        firefox: latest
+      services:
+        - xvfb
     - name: Safari
       env: BROWSER=safari
+      os: osx
+      # osx_image: xcode12
     - name: Edge
       env: BROWSER=edge
     - name: Internet Explorer 11
       env: BROWSER=ie_11
     - name: iOS 12
       env: BROWSER=ios_12
+      os: osx
+      osx_image: xcode12
     - name: iOS 13
       env: BROWSER=ios_13
     - name: Android 10

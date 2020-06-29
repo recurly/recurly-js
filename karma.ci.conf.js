@@ -43,9 +43,12 @@ function runner (config) {
         base: 'ChromeHeadless',
         flags: ['--no-sandbox']
       },
-      bs_electron: {
-        base: 'Electron'
-      }
+      // The following overrides will prompt the tests to run on the runner instance
+      // and not in BrowserStack
+      bs_chrome: { base: 'Chrome' },
+      bs_firefox: { base: 'Firefox' },
+      bs_safari: { base: 'Safari' },
+      bs_electron: { base: 'Electron' }
     },
     hostname: 'bs-local.com'
   });
