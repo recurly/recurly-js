@@ -55,12 +55,13 @@ function tabsThroughTheForm () {
     if (environmentIs(DEVICES.IOS)) {
       // iOS requires that each iframe be interacted with before focus directives succeed
       const frames = await browser.$$('iframe');
-      for (frame of frames) {
+      for (const frame of frames) {
         await browser.switchToFrame(frame);
         await browser.switchToFrame(null);
       }
     }
 
+    await firstInput.click();
     await browser.execute(function () {
       document.querySelector('[data-test=arbitrary-input-0]').focus();
     });
@@ -69,6 +70,8 @@ function tabsThroughTheForm () {
     if (environmentIs(DEVICES.IOS)) {
       const [appContext, webContext] = await driver.getContexts();
       await driver.switchContext(appContext);
+      await browser.pause(5000);
+      // return;
       const next = await driver.$("//*[@label='Next']");
 
       while (!destinationReached) {

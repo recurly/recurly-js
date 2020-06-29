@@ -4,7 +4,7 @@ const memoize = require('memoize-one');
 const TOKEN_PATTERN = /^[\w-]{21,23}$/;
 
 const BROWSERS = {
-  IE_11: 'ie_11'
+  IE_11: ['internet explorer', '11']
 };
 
 const DEVICES = {
@@ -160,16 +160,21 @@ function recurlyEnvironment () {
  * @return {Boolean}
  */
 function environmentIs (...conditions) {
-  const { platformName } = browser.capabilities;
+  const {
+    browserName,
+    browserVersion,
+    platformName
+  } = browser.capabilities;
   const browsers = Object.values(BROWSERS);
   const devices = Object.values(DEVICES);
   const isIos = platformName === 'iOS';
   const isAndroid = platformName === 'Android';
   const isMobile = isIos || isAndroid;
 
-  for (condition of conditions) {
+  for (const condition of conditions) {
     if (browsers.includes(condition)) {
-      if (process.env.BROWSER === condition) {
+      const [ name, version ] = condition;
+      if (name === browserName && version === browserVersion) {
         return true;
       }
     }

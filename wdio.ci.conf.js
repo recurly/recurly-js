@@ -1,24 +1,25 @@
 const { spawnSync } = require('child_process');
 const branchName = require('current-git-branch');
-const defaultConfig = require('./wdio.conf').config;
+const { config: defaultConfig, isMobile } = require('./wdio.conf');
 const {
   projectName,
-  capabilities
+  capabilities: browserStackCapabilities
 } = require('./test/conf/browserstack');
 
 const {
-  BROWSER,
+  BROWSER = 'BrowserStackChrome',
   BROWSER_STACK_USERNAME: user,
   BROWSER_STACK_ACCESS_KEY: key,
   TRAVIS_BUILD_NUMBER
 } = process.env;
 
+const BROWSER_STACK_CAPABILITY = browserStackCapabilities[BROWSER];
 const localIdentifier = `${Math.round(Math.random() * 100)}-${Date.now()}`;
 const { timeout } = defaultConfig.mochaOpts;
 
 spawnSync('mkdir', ['-p', 'build/reports/e2e/log'] );
 
-if (BROWSER === 'electron') {
+if (BROWSER === 'Electron') {
   exports.config = defaultConfig;
 } else {
   const config = exports.config = Object.assign({}, defaultConfig, {
@@ -28,7 +29,7 @@ if (BROWSER === 'electron') {
       {
         'bstack:options': Object.assign(
           {},
-          capabilities[`bs_${BROWSER || 'chrome'}`],
+          BROWSER_STACK_CAPABILITY,
           {
             projectName,
             buildName: `${TRAVIS_BUILD_NUMBER || `Local e2e [${branchName()}]`}`,
@@ -56,7 +57,13 @@ if (BROWSER === 'electron') {
           localIdentifier
         }
       }]
-    ]
+    ],
+    onPrepare: () => {
+      if (isMobile()) {
+        process.env.API_PROXY = 'http://bs-local.com:9877/api-proxy';
+      }
+      require('./test/server');
+    }
   });
 
   delete config.path;

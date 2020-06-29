@@ -1,12 +1,15 @@
 const { spawn } = require('child_process');
 const path = require('path');
-const { capabilities: bsCapabilities } = require('./test/conf/browserstack');
+const {
+  capabilities: browserStackCapabilities
+} = require('./test/conf/browserstack');
 
 const {
   API,
   API_PROXY,
-  BROWSER,
-  DEBUG,
+  BROWSER = 'chrome',
+  BROWSER_VERSION,
+  DEBUG = false,
   PUBLIC_KEY
 } = process.env;
 
@@ -35,10 +38,12 @@ exports.config = Object.assign({
     global.testEnvironment = { API, API_PROXY, PUBLIC_KEY };
     await browser.setTimeout({
       script: timeout(),
-      implicit: Math.round(timeout() * 1/3)
+      // implicit: Math.round(timeout() * 1/3)
     });
   }
 }, assignPort());
+
+exports.isMobile = isMobile;
 
 // attributes
 
@@ -56,7 +61,7 @@ function capabilities () {
       platformName: 'iOS',
       browserName: 'Safari',
       'appium:deviceName': 'iPhone 11 Pro',
-      'appium:platformVersion': bsCapabilities[`bs_${BROWSER}`].osVersion,
+      'appium:platformVersion': BROWSER_VERSION || '13.5',
       'appium:orientation': 'PORTRAIT',
       'appium:automationName': 'XCUITest',
     }];
@@ -67,7 +72,7 @@ function capabilities () {
       platformName: 'Android',
       browserName: 'Chrome',
       'appium:deviceName': 'Android Emulator',
-      'appium:platformVersion': bsCapabilities[`bs_${BROWSER}`].osVersion,
+      'appium:platformVersion': BROWSER_VERSION || '10.0',
       'appium:automationName': 'UIAutomator2',
       'appium:chromedriver_autodownload': true
     }];
@@ -119,13 +124,13 @@ function services () {
 }
 
 function assignPort () {
-  if (isMobile()) return { port: 4723 };
+  if (isMobile() && isLocal()) return { port: 4723 };
 }
 
 function browserName () {
   if (DEBUG || isElectron() || isAndroid()) return 'chrome';
   if (isIos()) return 'safari';
-  return BROWSER || 'chrome';
+  return BROWSER;
 }
 
 function chromeOptions () {
@@ -158,13 +163,17 @@ function isMobile () {
 }
 
 function isIos () {
-  return BROWSER.includes('ios');
+  return BROWSER.toLowerCase().includes('ios') || BROWSER === 'MobileSafari';
 }
 
 function isAndroid () {
-  return BROWSER.includes('android')
+  return BROWSER.toLowerCase().includes('android')
 }
 
 function isElectron () {
-  return BROWSER === 'electron';
+  return BROWSER.toLowerCase() === 'electron';
+}
+
+function isLocal () {
+  return !browserStackCapabilities[BROWSER];
 }
