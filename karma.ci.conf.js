@@ -48,6 +48,7 @@ function runner (config) {
       bs_chrome: { base: 'Chrome' },
       bs_firefox: { base: 'Firefox' },
       bs_safari: { base: 'Safari' },
+      bs_ios_12: { base: 'MobileSafari' },
       bs_electron: { base: 'Electron' }
     },
     hostname: 'bs-local.com'
