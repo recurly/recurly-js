@@ -50,6 +50,7 @@ test-e2e-ci: build $(src) $(tests)
 	@$(wdio) wdio.ci.conf.js
 test-types: types
 	$(dts) test/types
+	@$(dts) types
 lint: build
 	@$(eslint)
 lint-fix: build

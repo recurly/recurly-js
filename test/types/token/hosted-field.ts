@@ -1,13 +1,17 @@
 export default function hostedFieldToken() {
-  window.recurly.token(document.querySelector('form'), (err, token) => {
-    if (err) {
-      err.message;
-      err.code;
-    } else {
-      token.id;
-      token.type;
-    }
-  });
+  const form = document.querySelector('form');
+
+  if (form) {
+    window.recurly.token(form, (err, token) => {
+      if (err) {
+        err.message;
+        err.code;
+      } else {
+        token.id;
+        token.type;
+      }
+    });
+  }
 
   // $ExpectError
   window.recurly.token(document.querySelector('div'), () => {});

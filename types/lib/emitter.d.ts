@@ -11,4 +11,4 @@ interface Emitter<Event = string> {
 
 export {
   Emitter
-}
+};
