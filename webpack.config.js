@@ -5,6 +5,8 @@ const path = require('path');
 const minify = ~process.argv.indexOf('-p');
 const manifest = require('./package.json');
 
+const ATTRIBUTION_URL = 'https://docs.recurly.com/page/open-source-attribution';
+
 module.exports = {
   node: {
     global: false,
@@ -68,10 +70,13 @@ module.exports = {
       new TerserPlugin({
         terserOptions: {
           output: {
-            comments: false,
+            comments: false
           },
         },
-        extractComments: false
+        extractComments: {
+          condition: /@attribution/i,
+          banner: () => `License information available at ${ATTRIBUTION_URL}`
+        }
       }),
       new OptimizeCSSAssetsPlugin({})
     ]
