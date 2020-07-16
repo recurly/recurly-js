@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.13.1
+
+* Adds OSS attribution information [#623][623]
+
 ### Version 4.13.0
 
 * Adds support for Bacs bank account tokenization [#608][608]
@@ -317,6 +321,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[623]: https://github.com/recurly/recurly-js/commit/41559afe73c7b2f353afc1294c6b14aed4f23397
 [608]: https://github.com/recurly/recurly-js/commit/1bf8bae4d712de20ebb12e7f903a0e3ce326593e
 [603]: https://github.com/recurly/recurly-js/commit/c0c8b0808834a6fd1d0afbb0d0832b3a801bfb12
 [600]: https://github.com/recurly/recurly-js/commit/cb8dfb58fa42d829e4e0940c8e8c8776593a3a93
