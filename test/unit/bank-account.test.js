@@ -149,7 +149,7 @@ apiTest(function (requestMethod) {
         });
         });
 
-        describe.only('when given a valid BECS', function () {
+        describe('when given a valid BECS', function () {
           const validBecs = {
             account_number: '012345678',
             account_number_confirmation: '012345678',

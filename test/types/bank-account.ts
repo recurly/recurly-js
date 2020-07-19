@@ -84,7 +84,7 @@ export default function bankAccount() {
     account_number: "1234",
     account_number_confirmation: "1234",
     branch_code: "1234",
-    nameOnAccount: "1234",
+    name_on_account: "1234",
   };
 
   window.recurly.bankAccount.token(minimalBecsBillingInfo, (err, token) => {
@@ -117,6 +117,7 @@ export default function bankAccount() {
 
   const addressBecsBillingInfo = {
     type: "becs",
+    name_on_account: "1234",
     account_number: "1234",
     account_number_confirmation: "1234",
     sort_code: "1234",

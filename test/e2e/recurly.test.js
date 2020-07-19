@@ -72,14 +72,18 @@ describe('Recurly.js', async () => {
     };
 
     it('creates a token', async function () {
+      const accountNumber = await $(sel.accountNumber);
+      const accountNumberConfirmation = await $(sel.accountNumberConfirmation);
       const sortCode = await $(sel.sortCode);
 
-      await accountNumber.setValue('012345678');
-      await accountNumberConfirmation.setValue('012345678');
+      await (await $(sel.nameOnAccount)).setValue('John Smith of Australia');
+
+      await accountNumber.setValue('55779911');
+      await accountNumberConfirmation.setValue('55779911');
       await sortCode.setValue('200-000');
 
-      assert.strictEqual(await accountNumber.getValue(), '012345678');
-      assert.strictEqual(await accountNumberConfirmation.getValue(), '012345678');
+      assert.strictEqual(await accountNumber.getValue(), '55779911');
+      assert.strictEqual(await accountNumberConfirmation.getValue(), '55779911');
       assert.strictEqual(await sortCode.getValue(), '200-000');
 
       const [err, token] = await browser.executeAsync(function (sel, done) {
@@ -93,7 +97,7 @@ describe('Recurly.js', async () => {
     });
   });
 
-  describe.only('Becs bank account', async function () {
+  describe('Becs bank account', async function () {
     beforeEach(init({ fixture: 'bank-account-becs' }));
 
     const sel = {
@@ -107,8 +111,6 @@ describe('Recurly.js', async () => {
     };
 
     it('creates a token', async function () {
-      const iframe = await $(sel.iframe);
-
       await (await $(sel.nameOnAccount)).setValue('John Smith, OBE');
 
       const accountNumber = await $(sel.accountNumber);
