@@ -60,12 +60,14 @@ export interface CardElement extends Emitter<ElementEvent> {
   attach: Attach<CardElement>;
   remove: () => CardElement;
   configure: (options: CardElementOptions) => CardElement;
+  focus: () => CardElement;
 }
 
 export interface IndividualElement extends Emitter<ElementEvent> {
   attach: Attach<IndividualElement>;
-  remove: () => Element;
-  configure: (options: IndividualElementOptions) => Element;
+  remove: () => IndividualElement;
+  configure: (options: IndividualElementOptions) => IndividualElement;
+  focus: () => IndividualElement;
 }
 
 export type ElementsInstanceEvents = 'submit';
