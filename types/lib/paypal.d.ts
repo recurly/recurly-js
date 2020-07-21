@@ -1,5 +1,4 @@
 import { Emitter } from './emitter';
-import { TokenHandler } from './token';
 
 export type BraintreeConfig = {
   braintree: {
@@ -25,7 +24,6 @@ export type PayPalStartOptions = {
 
 export interface PayPalInstance extends Emitter<PayPalEvent> {
   start: (payPalStartOptions?: PayPalStartOptions) => void;
-  token: TokenHandler;
   destroy: VoidFunction;
 }
 
