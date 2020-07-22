@@ -60,8 +60,8 @@ function capabilities () {
     return [{
       platformName: 'iOS',
       browserName: 'Safari',
-      'appium:deviceName': 'iPhone 11 Pro',
-      'appium:platformVersion': BROWSER_VERSION || '13.5',
+      'appium:deviceName': 'iPhone 11',
+      'appium:platformVersion': BROWSER_VERSION || '13.6',
       'appium:orientation': 'PORTRAIT',
       'appium:automationName': 'XCUITest',
     }];
@@ -99,7 +99,7 @@ function baseUrl () {
 
 function timeout () {
   if (DEBUG) return 24 * 60 * 60 * 1000;
-  return 15000;
+  return 120000;
 }
 
 function onPrepare () {

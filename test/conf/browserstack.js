@@ -55,21 +55,18 @@ module.exports = {
     },
 
     BrowserStackAndroid10: {
-      browserName: 'android',
       deviceName: 'Google Pixel 3',
       os: 'android',
       osVersion: '10.0',
       realMobile: true
     },
     BrowserStackAndroid9: {
-      browserName: 'android',
       deviceName: 'Google Pixel 3',
       os: 'android',
       osVersion: '9.0',
       realMobile: true
     },
     BrowserStackAndroid8: {
-      browserName: 'android',
       deviceName: 'Samsung Galaxy Note 9',
       os: 'android',
       osVersion: '8.1',

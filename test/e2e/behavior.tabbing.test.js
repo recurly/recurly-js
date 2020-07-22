@@ -59,19 +59,26 @@ function tabsThroughTheForm () {
         await browser.switchToFrame(frame);
         await browser.switchToFrame(null);
       }
+
+      // This guarantees the presence of the software keyboard in iOS
+      const [appContext, webContext] = await driver.getContexts();
+      await driver.switchContext(appContext);
+      const address = await driver.$("//*[@label='arbitrary-input-0']");
+      await address.touchAction('tap');
+      await driver.switchContext(webContext);
+      await browser.pause(500);
+    } else {
+      await firstInput.click();
+      await browser.execute(function () {
+        document.querySelector('[data-test=arbitrary-input-0]').focus();
+      });
     }
 
-    await firstInput.click();
-    await browser.execute(function () {
-      document.querySelector('[data-test=arbitrary-input-0]').focus();
-    });
     assert(await firstInput.isFocused());
 
     if (environmentIs(DEVICES.IOS)) {
       const [appContext, webContext] = await driver.getContexts();
       await driver.switchContext(appContext);
-      await browser.pause(5000);
-      // return;
       const next = await driver.$("//*[@label='Next']");
 
       while (!destinationReached) {
