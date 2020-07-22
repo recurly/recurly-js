@@ -25,6 +25,14 @@ const BACS_BANK_ACCOUNT_TOKENS = Object.freeze({
     id: 'bacs-bank-account-token-id'
   }
 });
+
+const BECS_BANK_ACCOUNT_TOKENS = Object.freeze({
+  '012345678': {
+    type: 'becs_bank_account',
+    id: 'becs-bank-account-token-id'
+  }
+});
+
 const THREE_D_SECURE_ACTION_RESULT_TOKEN = Object.freeze({
   type: 'three_d_secure_action_result',
   id: '3dsart-id-test'
@@ -59,6 +67,8 @@ module.exports = function tokens () {
     token = BACS_BANK_ACCOUNT_TOKENS[params.account_number];
   } else if (type === 'three_d_secure_action_result') {
     token = THREE_D_SECURE_TOKENS[params.three_d_secure_action_token_id];
+  } else if (type === 'becs_bank_account') {
+    token = BECS_BANK_ACCOUNT_TOKENS[params.account_number];
   } else if ('account_number' in params) {
     token = BANK_ACCOUNT_TOKENS[params.account_number];
   }

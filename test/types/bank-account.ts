@@ -79,6 +79,24 @@ export default function bankAccount() {
     }
   });
 
+  const minimalBecsBillingInfo = {
+    type: "becs",
+    account_number: "1234",
+    account_number_confirmation: "1234",
+    branch_code: "1234",
+    name_on_account: "1234",
+  };
+
+  window.recurly.bankAccount.token(minimalBecsBillingInfo, (err, token) => {
+    if (err) {
+      err.message;
+      err.code;
+    } else {
+      token.id;
+      token.type;
+    }
+  });
+
   const missingNameOnAccountBacsBillingInfo = {
     type: 'bacs',
     account_number: "1234",
@@ -88,6 +106,31 @@ export default function bankAccount() {
 
   // $ExpectError
   window.recurly.bankAccount.token(missingNameOnAccountBacsBillingInfo, (err, token) => {
+    if (err) {
+      err.message;
+      err.code;
+    } else {
+      token.id;
+      token.type;
+    }
+  });
+
+  const addressBecsBillingInfo = {
+    type: "becs",
+    name_on_account: "1234",
+    account_number: "1234",
+    account_number_confirmation: "1234",
+    sort_code: "1234",
+    address1: "asdf",
+    address2: "asdf",
+    city: "asdf",
+    state: "asdf",
+    postal_code: "asdf",
+    country: "asdf",
+    vat_number: "asdf"
+  };
+
+  window.recurly.bankAccount.token(addressBecsBillingInfo, (err, token) => {
     if (err) {
       err.message;
       err.code;

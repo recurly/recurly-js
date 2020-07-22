@@ -72,19 +72,19 @@ describe('Recurly.js', async () => {
     };
 
     it('creates a token', async function () {
-      await (await $(sel.nameOnAccount)).setValue('John Smith, OBE');
-
       const accountNumber = await $(sel.accountNumber);
       const accountNumberConfirmation = await $(sel.accountNumberConfirmation);
       const sortCode = await $(sel.sortCode);
 
+      await (await $(sel.nameOnAccount)).setValue('John Smith of Australia');
+
       await accountNumber.setValue('55779911');
       await accountNumberConfirmation.setValue('55779911');
-      await sortCode.setValue('200000');
+      await sortCode.setValue('200-000');
 
       assert.strictEqual(await accountNumber.getValue(), '55779911');
       assert.strictEqual(await accountNumberConfirmation.getValue(), '55779911');
-      assert.strictEqual(await sortCode.getValue(), '200000');
+      assert.strictEqual(await sortCode.getValue(), '200-000');
 
       const [err, token] = await browser.executeAsync(function (sel, done) {
         recurly.bankAccount.token(document.querySelector(sel.form), function (err, token) {
@@ -94,6 +94,46 @@ describe('Recurly.js', async () => {
 
       assert.strictEqual(err, null);
       assertIsAToken(token, expectedType="bacs_bank_account");
+    });
+  });
+
+  describe('Becs bank account', async function () {
+    beforeEach(init({ fixture: 'bank-account-becs' }));
+
+    const sel = {
+      output: '[data-test=output]',
+      form: '[data-test=form]',
+      nameOnAccount: '[data-test="name-on-account"]',
+      iframe: '.recurly-hosted-field iframe',
+      accountNumber: 'input[data-test="account-number"]',
+      accountNumberConfirmation: 'input[data-test="account-number-confirmation"]',
+      bsbCode: 'input[data-test="bsb-code"]',
+    };
+
+    it('creates a token', async function () {
+      await (await $(sel.nameOnAccount)).setValue('John Smith, OBE');
+
+      const accountNumber = await $(sel.accountNumber);
+      const accountNumberConfirmation = await $(sel.accountNumberConfirmation);
+
+      const bsbCode = await $(sel.bsbCode);
+
+      await accountNumber.setValue('55779911');
+      await accountNumberConfirmation.setValue('55779911');
+      await bsbCode.setValue('200000');
+
+      assert.strictEqual(await accountNumber.getValue(), '55779911');
+      assert.strictEqual(await accountNumberConfirmation.getValue(), '55779911');
+      assert.strictEqual(await bsbCode.getValue(), '200000');
+
+      const [err, token] = await browser.executeAsync(function (sel, done) {
+        recurly.bankAccount.token(document.querySelector(sel.form), function (err, token) {
+          done([err, token]);
+        });
+      }, sel);
+
+      assert.strictEqual(err, null);
+      assertIsAToken(token, expectedType="becs_bank_account");
     });
   });
 });

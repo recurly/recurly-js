@@ -7,6 +7,7 @@ const TOKEN_TYPES = {
   PAYPAL: 'paypal',
   BANK_ACCOUNT: 'bank_account',
   IBAN_BANK_ACCOUNT: 'iban_bank_account',
+  BECS_BANK_ACCOUNT: 'becs_bank_account',
   THREE_D_SECURE_ACTION: 'three_d_secure_action',
   THREE_D_SECURE_ACTION_RESULT: 'three_d_secure_action_result'
 };

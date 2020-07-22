@@ -10,6 +10,7 @@ export type BillingInfo = {
   sort_code?: string;
   type?: string;
   iban?: string;
+  bsb_code?: string;
   address1?: string;
   address2?: string;
   city?: string;
