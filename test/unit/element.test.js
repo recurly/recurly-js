@@ -3,7 +3,7 @@ import { applyFixtures } from './support/fixtures';
 import assert from 'assert';
 import Element from '../../lib/recurly/element';
 import Elements from '../../lib/recurly/elements';
-import { initRecurly, createNativeEvent } from './support/helpers';
+import { initRecurly, createNativeEvent, stubAsNonMobileDevice, stubAsMobileDevice } from './support/helpers';
 import { Recurly } from '../../lib/recurly';
 
 describe('Element', function () {
@@ -386,12 +386,35 @@ describe('Element', function () {
       assert.strictEqual(element.container.className, element.classList);
     });
 
-    it('contains element.tabProxy and element.iframe as its sole children', function () {
-      const { element } = this;
-      const { children } = element.container;
-      assert.strictEqual(children.length, 2);
-      assert.strictEqual(children[0], element.tabProxy);
-      assert.strictEqual(children[1], element.iframe);
+    describe('when not using a mobile browser', function () {
+      stubAsNonMobileDevice();
+      beforeEach(function () {
+        this.element.destroy();
+        this.element = new Element(this.validOptions);
+      });
+
+      it('contains an element.iframe as its sole child', function () {
+        const { element } = this;
+        const { children } = element.container;
+        assert.strictEqual(children.length, 1);
+        assert.strictEqual(children[0], element.iframe);
+      });
+    });
+
+    describe('when using a mobile browser', function () {
+      stubAsMobileDevice();
+      beforeEach(function () {
+        this.element.destroy();
+        this.element = new Element(this.validOptions);
+      });
+
+      it('contains element.tabProxy and element.iframe as its sole children', function () {
+        const { element } = this;
+        const { children } = element.container;
+        assert.strictEqual(children.length, 2);
+        assert.strictEqual(children[0], element.tabProxy);
+        assert.strictEqual(children[1], element.iframe);
+      });
     });
   });
 
@@ -410,6 +433,7 @@ describe('Element', function () {
       const example = createNativeEvent('focus');
       sinon.spy(element, 'focus');
       element.tabProxy.dispatchEvent(example);
+      assert(element.focus.calledOnce);
       element.focus.restore();
     });
   });
@@ -622,22 +646,51 @@ describe('Element', function () {
         this.element.onTab.restore();
       });
 
-      it(`calls focus on the previous tabbable HTMLElement when called with 'previous'`, function () {
-        const { element } = this;
-        const example = document.querySelector('#test-tab-prev');
-        sinon.spy(example, 'focus');
-        element.onTab('previous')
-        assert(example.focus.calledOnce);
-        example.focus.restore();
+      describe('when not using a mobile browser', function () {
+        stubAsNonMobileDevice();
+        beforeEach(function () {
+          this.element.destroy();
+          this.element = new Element(this.validOptions);
+        });
+        attachElement();
+
+        it('does not move focus', function () {
+          const { element } = this;
+          const example = document.querySelector('#test-focus-el');
+          example.focus();
+          assert.strictEqual(window.document.activeElement, example);
+          element.onTab('previous');
+          assert.strictEqual(window.document.activeElement, example);
+          element.onTab('next');
+          assert.strictEqual(window.document.activeElement, example);
+        });
       });
 
-      it(`calls focus on the next tabbable HTMLElement when called with 'next'`, function () {
-        const { element } = this;
-        const example = document.querySelector('#test-tab-next');
-        sinon.spy(example, 'focus');
-        element.onTab('next')
-        assert(example.focus.calledOnce);
-        example.focus.restore();
+      describe('when using a mobile browser', function () {
+        stubAsMobileDevice();
+        beforeEach(function () {
+          this.element.destroy();
+          this.element = new Element(this.validOptions);
+        });
+        attachElement();
+
+        it(`calls focus on the previous tabbable HTMLElement when called with 'previous'`, function () {
+          const { element } = this;
+          const example = document.querySelector('#test-tab-prev');
+          sinon.spy(example, 'focus');
+          element.onTab('previous');
+          assert(example.focus.calledOnce);
+          example.focus.restore();
+        });
+
+        it(`calls focus on the next tabbable HTMLElement when called with 'next'`, function () {
+          const { element } = this;
+          const example = document.querySelector('#test-tab-next');
+          sinon.spy(example, 'focus');
+          element.onTab('next');
+          assert(example.focus.calledOnce);
+          example.focus.restore();
+        });
       });
 
       describe(`when the 'tab:previous' message is sent`, function () {

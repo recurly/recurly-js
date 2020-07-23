@@ -19,80 +19,88 @@ env:
 script: make test-unit-ci
 jobs:
   include:
-    - stage: Lint
-      name: ESLint
-      script: make lint
-
-    - stage: Typecheck
-      name: Check type definitions
+    - stage: Check
+      name: Lint
+      script:
+        - make lint
+    - stage: Check
+      name: Types
       script: make test-types
 
     - stage: Unit Test
       name: Coverage
       addons:
         chrome: stable
-      env: BROWSER=chrome_headless REPORT_COVERAGE=true
+      env: BROWSER=ChromeHeadlessCI REPORT_COVERAGE=true
       script: make test-unit-cov-ci
     - name: Chrome
-      env: BROWSER=chrome
+      env: BROWSER=Chrome
+      addons:
+        chrome: stable
+      services:
+        - xvfb
     - name: Firefox
-      env: BROWSER=firefox
+      env: BROWSER=Firefox
+      addons:
+        firefox: latest
+      services:
+        - xvfb
     - name: Safari
-      env: BROWSER=safari
+      env: BROWSER=BrowserStackSafari
     - name: Edge
-      env: BROWSER=edge
+      env: BROWSER=BrowserStackEdge
     - name: Internet Explorer 11
-      env: BROWSER=ie_11
-    - name: iOS 12
-      env: BROWSER=ios_12
+      env: BROWSER=BrowserStackIe11
     - name: iOS 13
-      env: BROWSER=ios_13
+      env: BROWSER=BrowserStackIos13
+    - name: iOS 12
+      env: BROWSER=BrowserStackIos12
+    - name: Android 10
+      env: BROWSER=BrowserStackAndroid10
     - name: Android 9
-      env: BROWSER=android_9
+      env: BROWSER=BrowserStackAndroid9
     - name: Android 8
-      env: BROWSER=android_8
-    - name: Android 7
-      env: BROWSER=android_7
+      env: BROWSER=BrowserStackAndroid8
     - name: Electron
-      env: BROWSER=electron
+      env: BROWSER=Electron
       services:
         - xvfb
 
     - &e2e
       stage: End-to-End Test
       name: Chrome
-      env: BROWSER=chrome
+      env: BROWSER=BrowserStackChrome
       script: make test-e2e-ci
     - <<: *e2e
       name: Firefox
-      env: BROWSER=firefox
+      env: BROWSER=BrowserStackFirefox
     - <<: *e2e
       name: Safari
-      env: BROWSER=safari
+      env: BROWSER=BrowserStackSafari
     - <<: *e2e
       name: Edge
-      env: BROWSER=edge
+      env: BROWSER=BrowserStackEdge
     - <<: *e2e
       name: Internet Explorer 11
-      env: BROWSER=ie_11
+      env: BROWSER=BrowserStackIe11
     - <<: *e2e
       name: iOS 13
-      env: BROWSER=ios_13 API_PROXY=http://bs-local.com:9877/api-proxy
+      env: BROWSER=BrowserStackIos13
     - <<: *e2e
       name: iOS 12
-      env: BROWSER=ios_12 API_PROXY=http://bs-local.com:9877/api-proxy
+      env: BROWSER=BrowserStackIos12
+    - <<: *e2e
+      name: Android 10
+      env: BROWSER=BrowserStackAndroid10
     - <<: *e2e
       name: Android 9
-      env: BROWSER=android_9 API_PROXY=http://bs-local.com:9877/api-proxy
+      env: BROWSER=BrowserStackAndroid9
     - <<: *e2e
       name: Android 8
-      env: BROWSER=android_8 API_PROXY=http://bs-local.com:9877/api-proxy
-    - <<: *e2e
-      name: Android 7
-      env: BROWSER=android_7 API_PROXY=http://bs-local.com:9877/api-proxy
+      env: BROWSER=BrowserStackAndroid8
     - <<: *e2e
       name: Electron
-      env: BROWSER=electron API_PROXY=http://bs-local.com:9877/api-proxy
+      env: BROWSER=Electron
       services:
         - xvfb
 

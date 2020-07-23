@@ -1,29 +1,33 @@
 const branchName = require('current-git-branch');
 const staticConfig = require('./karma.conf').staticConfig;
 const {
-  capabilities: launchers,
+  capabilities: browserStackCapabilities,
   projectName: project
 } = require('./test/conf/browserstack');
 
 const {
-  BROWSER,
-  REPORT_COVERAGE,
+  BROWSER = 'chrome',
+  REPORT_COVERAGE = false,
   TRAVIS_BUILD_NUMBER
 } = process.env;
 
-const localIdentifier = `${Math.round(Math.random() * 100)}-${Date.now()}`;
+const BROWSER_STACK_CAPABILITY = browserStackCapabilities[BROWSER];
 
 function runner (config) {
-  const reporters = ['mocha', 'BrowserStack'];
-  if (REPORT_COVERAGE) reporters.push('coverage');
-
-  const logLevel = config.LOG_INFO;
-  const launcherName = `bs_${BROWSER || 'chrome'}`;
   const cfg = Object.assign({}, staticConfig, {
-    reporters,
-    logLevel,
-    browsers: [launcherName],
-    browserStack: {
+    reporters: ['mocha'],
+    logLevel: config.LOG_INFO,
+    browsers: [BROWSER],
+    customLaunchers: customLaunchers(),
+    hostname: hostname()
+  });
+
+  if (REPORT_COVERAGE) {
+    cfg.reporters.push('coverage');
+  }
+
+  if (BROWSER_STACK_CAPABILITY) {
+    cfg.browserStack = {
       project,
       build: `${TRAVIS_BUILD_NUMBER || `local unit [${branchName()}]`}`,
       autoAcceptAlerts: true,
@@ -33,24 +37,14 @@ function runner (config) {
       'browserstack.console': 'verbose',
       'browserstack.networkLogs': true,
       captureTimeout: 1200,
-      localIdentifier,
+      localIdentifier: `${Math.round(Math.random() * 100)}-${Date.now()}`,
       pollingTimeout: 4000,
       timeout: 1200
-    },
-    customLaunchers: {
-      [launcherName]: toLegacyLauncher(launchers[launcherName]),
-      bs_chrome_headless: {
-        base: 'ChromeHeadless',
-        flags: ['--no-sandbox']
-      },
-      bs_electron: {
-        base: 'Electron'
-      }
-    },
-    hostname: 'bs-local.com'
-  });
+    };
+    cfg.reporters.push('BrowserStack');
+  }
 
-  console.log(cfg)
+  console.log(cfg);
 
   config.set(cfg);
 };
@@ -59,15 +53,30 @@ const server = require('./test/server');
 
 module.exports = runner;
 
+function customLaunchers () {
+  const launchers = {
+    ChromeHeadlessCI: {
+      base: 'ChromeHeadless',
+      flags: ['--no-sandbox']
+    }
+  };
+
+  if (BROWSER_STACK_CAPABILITY) {
+    launchers[BROWSER] = toLegacyLauncher(BROWSER_STACK_CAPABILITY);
+  }
+
+  return launchers;
+}
+
 /**
  * karma-browserstack-launcher only supports the legacy
  * JSONWP WebDriver protocol
  *
- * @param {Object} launcher
+ * @param {Object} capability
  * @return {Object}
  */
-function toLegacyLauncher (launcher) {
-  const capabilities = Object.assign({}, launcher);
+function toLegacyLauncher (capability) {
+  const capabilities = Object.assign({}, capability);
   const translations = {
     browserName: 'browser',
     browserVersion: 'browser_version',
@@ -96,4 +105,9 @@ function toLegacyLauncher (launcher) {
   }
 
   return capabilities;
+}
+
+function hostname () {
+  if (BROWSER_STACK_CAPABILITY) return 'bs-local.com';
+  return 'localhost';
 }

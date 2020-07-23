@@ -1,63 +1,179 @@
 const { spawn } = require('child_process');
 const path = require('path');
+const {
+  capabilities: browserStackCapabilities
+} = require('./test/conf/browserstack');
 
 const {
   API,
   API_PROXY,
-  BROWSER,
-  DEBUG,
+  BROWSER = 'chrome',
+  BROWSER_VERSION,
+  DEBUG = false,
   PUBLIC_KEY
 } = process.env;
 
-let browserName = BROWSER || 'chrome';
-let maxInstances = 5;
-let timeout = 15000;
-let execArgv = [];
-let chromeOptions = {};
-
-if (DEBUG) {
-  browserName = 'chrome';
-  maxInstances = 1;
-  timeout = 24 * 60 * 60 * 1000;
-  execArgv.concat(['--inspect']);
-  chromeOptions.args = ['--auto-open-devtools-for-tabs'];
-}
-
-if (BROWSER === 'electron') {
-  browserName = 'chrome';
-  chromeOptions.binary = path.resolve(__dirname, "node_modules/.bin/electron");
-}
-
-exports.config = {
+exports.config = Object.assign({
   runner: 'local',
   path: '/',
   specs: [
     './test/e2e/**/*.test.js'
   ],
-  maxInstances,
-  capabilities: [{ browserName, 'goog:chromeOptions': chromeOptions }],
-  execArgv,
+  maxInstances: maxInstances(),
+  capabilities: capabilities(),
+  execArgv: execArgv(),
   logLevel: 'info',
-  baseUrl: 'http://localhost:9877',
-  waitforTimeout: Math.round(timeout * 2/3),
+  baseUrl: baseUrl(),
+  waitforTimeout: Math.round(timeout() * 2/3),
   connectionRetryCount: 3,
-  services: ['chromedriver'],
+  services: services(),
   framework: 'mocha',
   reporters: ['spec'],
   mochaOpts: {
     ui: 'bdd',
-    timeout
+    timeout: timeout()
   },
-  onPrepare: (config, capabilities) => {
-    const server = require('./test/server');
-  },
-  before: () => {
+  onPrepare,
+  before: async () => {
     global.testEnvironment = { API, API_PROXY, PUBLIC_KEY };
-    browser.setTimeout({
-      script: timeout,
-      implicit: Math.round(timeout * 1/3)
+    await browser.setTimeout({
+      script: timeout(),
+      // implicit: Math.round(timeout() * 1/3)
     });
   }
-};
+}, assignPort());
 
-console.log(exports.config);
+exports.isMobile = isMobile;
+
+// attributes
+
+function maxInstances () {
+  if (DEBUG || isMobile()) {
+    return 1;
+  } else {
+    return 5;
+  }
+}
+
+function capabilities () {
+  if (isIos()) {
+    return [{
+      platformName: 'iOS',
+      browserName: 'Safari',
+      'appium:deviceName': 'iPhone 11',
+      'appium:platformVersion': BROWSER_VERSION || '13.6',
+      'appium:orientation': 'PORTRAIT',
+      'appium:automationName': 'XCUITest',
+    }];
+  }
+
+  if (isAndroid()) {
+    return [{
+      platformName: 'Android',
+      browserName: 'Chrome',
+      'appium:deviceName': 'Android Emulator',
+      'appium:platformVersion': BROWSER_VERSION || '10.0',
+      'appium:automationName': 'UIAutomator2',
+      'appium:chromedriver_autodownload': true
+    }];
+  }
+
+  return [{
+    browserName: browserName(),
+    'goog:chromeOptions': chromeOptions(),
+    'moz:firefoxOptions': firefoxOptions()
+  }];
+}
+
+function execArgv () {
+  if (DEBUG) {
+    return ['--inspect'];
+  }
+  return [];
+}
+
+function baseUrl () {
+  if (isAndroid()) return 'http://10.0.2.2:9877';
+  return 'http://localhost:9877';
+}
+
+function timeout () {
+  if (DEBUG) return 24 * 60 * 60 * 1000;
+  return 120000;
+}
+
+function onPrepare () {
+  if (isMobile()) {
+    process.env.API_PROXY = `${baseUrl()}/api-proxy`;
+  }
+  require('./test/server');
+}
+
+function services () {
+  if (browserName() === 'firefox') {
+    return ['geckodriver'];
+  }
+
+  if (isMobile()) {
+    return [['appium', {
+      logPath : './build/reports/e2e/log/'
+    }]];
+  }
+
+  return ['chromedriver'];
+}
+
+function assignPort () {
+  if (isMobile() && isLocal()) return { port: 4723 };
+}
+
+function browserName () {
+  if (DEBUG || isElectron() || isAndroid()) return 'chrome';
+  if (isIos()) return 'safari';
+  return BROWSER;
+}
+
+function chromeOptions () {
+  if (DEBUG) {
+    return {
+      args: ['--auto-open-devtools-for-tabs']
+    };
+  }
+  if (isElectron()) {
+    return {
+      binary: path.resolve(__dirname, 'node_modules/.bin/electron')
+    };
+  }
+  return {};
+}
+
+function firefoxOptions () {
+  if (DEBUG) {
+    return {
+      args: ['-jsconsole']
+    };
+  }
+  return {};
+}
+
+// utilities
+
+function isMobile () {
+  return isIos() || isAndroid();
+}
+
+function isIos () {
+  return BROWSER.toLowerCase().includes('ios') || BROWSER === 'MobileSafari';
+}
+
+function isAndroid () {
+  return BROWSER.toLowerCase().includes('android')
+}
+
+function isElectron () {
+  return BROWSER.toLowerCase() === 'electron';
+}
+
+function isLocal () {
+  return !browserStackCapabilities[BROWSER];
+}

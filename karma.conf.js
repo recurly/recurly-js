@@ -1,3 +1,9 @@
+const {
+  BROWSER,
+  VIRTUALBOX_EDGE_UUID,
+  VIRTUALBOX_IE11_UUID
+} = process.env;
+
 const staticConfig = {
   basePath: '',
   frameworks: ['mocha', 'sinon', 'source-map-support'],
@@ -12,7 +18,7 @@ const staticConfig = {
   port: 9876,
   colors: true,
   autoWatch: true,
-  browsers: [process.env.BROWSER || 'ChromeHeadless'],
+  browsers: [BROWSER || 'ChromeHeadless'],
   singleRun: true,
   concurrency: Infinity,
   browserDisconnectTimeout: 800000,
@@ -31,12 +37,12 @@ const staticConfig = {
     VirtualBoxEdgeWin10: {
       base: 'VirtualBoxEdge',
       keepAlive: true,
-      uuid: process.env.VIRTUALBOX_EDGE_UUID
+      uuid: VIRTUALBOX_EDGE_UUID
     },
     VirtualBoxIE11Win7: {
       base: 'VirtualBoxIE11',
       keepAlive: true,
-      uuid: process.env.VIRTUALBOX_IE11_UUID
+      uuid: VIRTUALBOX_IE11_UUID
     }
   },
   client: {

@@ -1,13 +1,12 @@
 const assert = require('assert');
 const {
   assertIsAToken,
-  environment,
   init,
+  recurlyEnvironment,
   tokenize
 } = require('./support/helpers');
 
 describe('Recurly.js', async () => {
-
   describe('credit card', async function () {
     beforeEach(init({ fixture: 'hosted-fields-card' }));
 
@@ -27,7 +26,7 @@ describe('Recurly.js', async () => {
       const iframe = await $(sel.iframe);
       const url = await iframe.getAttribute('src');
 
-      assert.strictEqual(url.substring(0, url.indexOf('#')), `${environment().api}/field.html`);
+      assert.strictEqual(url.substring(0, url.indexOf('#')), `${recurlyEnvironment().api}/field.html`);
     });
 
     it('creates a token', async function () {
