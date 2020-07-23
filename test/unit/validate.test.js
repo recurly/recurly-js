@@ -69,11 +69,11 @@ describe('Recurly.validate', function () {
     });
 
     it('should parse ELO', function () {
-
+      assert.strictEqual(recurly.validate.cardType('5066991111111118'), 'elo');
     });
 
-    it('should parse Hipercard', function() {
-
+    it('should parse Hipercard', function () {
+      assert.strictEqual(recurly.validate.cardType('6062828888666688'), 'hipercard');
     });
 
     it('should parse unknown', function () {

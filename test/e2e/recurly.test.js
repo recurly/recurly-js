@@ -58,13 +58,13 @@ describe('Recurly.js', async () => {
       assertIsAToken(token);
     });
 
-    describe.only('with a tax identifier', async function() {
+    describe('with a tax identifier', async function () {
       beforeEach(() => {
         init({ fixture: 'hosted-fields-card-tax-identifier' });
-        sel.taxIdentifier: '[data-test="tax-identifier"]';
+        sel.taxIdentifier = '[data-test="tax-identifier"]';
       });
 
-      it('creates a token', async function() {
+      it('creates a token', async function () {
         const iframe = await $(sel.iframe);
 
         await (await $(sel.firstName)).setValue('John');
@@ -129,7 +129,7 @@ describe('Recurly.js', async () => {
       }, sel);
 
       assert.strictEqual(err, null);
-      assertIsAToken(token, expectedType="bacs_bank_account");
+      assertIsAToken(token, expectedType='bacs_bank_account');
     });
   });
 
@@ -169,7 +169,7 @@ describe('Recurly.js', async () => {
       }, sel);
 
       assert.strictEqual(err, null);
-      assertIsAToken(token, expectedType="becs_bank_account");
+      assertIsAToken(token, expectedType='becs_bank_account');
     });
   });
-}
+});
