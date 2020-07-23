@@ -136,7 +136,7 @@ async function postMessage (ctx) {
 
 function fixture (ctx) {
   const f = require(`./fixtures${ctx.request.path}`);
-  if (typeof f === 'function') return f.apply(ctx)
+  if (typeof f === 'function') return f.apply(ctx);
   return f;
 }
 
