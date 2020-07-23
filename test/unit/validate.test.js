@@ -68,6 +68,14 @@ describe('Recurly.validate', function () {
       assert.strictEqual(recurly.validate.cardType('372546612345678'), 'american_express');
     });
 
+    it('should parse ELO', function () {
+
+    });
+
+    it('should parse Hipercard', function() {
+
+    });
+
     it('should parse unknown', function () {
       assert.strictEqual(recurly.validate.cardType('867-5309-jenny'), 'unknown');
     });

@@ -57,6 +57,42 @@ describe('Recurly.js', async () => {
       assert.strictEqual(err, null);
       assertIsAToken(token);
     });
+
+    describe.only('with a tax identifier', async function() {
+      beforeEach(() => {
+        init({ fixture: 'hosted-fields-card-tax-identifier' });
+        sel.taxIdentifier: '[data-test="tax-identifier"]';
+      });
+
+      it('creates a token', async function() {
+        const iframe = await $(sel.iframe);
+
+        await (await $(sel.firstName)).setValue('John');
+        await (await $(sel.lastName)).setValue('Rambo');
+        await (await $(sel.taxIdentifier)).setValue('979.856.951-25');
+
+        await browser.switchToFrame(0);
+
+        const number = await $(sel.number);
+        const expiry = await $(sel.expiry);
+        const cvv = await $(sel.cvv);
+
+        await number.setValue('4111111111111111');
+        await expiry.setValue('1028');
+        await cvv.setValue('123');
+
+        assert.strictEqual(await number.getValue(), '4111 1111 1111 1111');
+        assert.strictEqual(await expiry.getValue(), '10 / 28');
+        assert.strictEqual(await cvv.getValue(), '123');
+
+        await browser.switchToFrame(null);
+
+        const [err, token] = await tokenize(sel.form);
+
+        assert.strictEqual(err, null);
+        assertIsAToken(token);
+      });
+    });
   });
 
   describe('Bacs bank account', async function () {
@@ -136,4 +172,4 @@ describe('Recurly.js', async () => {
       assertIsAToken(token, expectedType="becs_bank_account");
     });
   });
-});
+}
