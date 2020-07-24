@@ -7,21 +7,21 @@ const {
 } = require('./support/helpers');
 
 describe('Recurly.js', async () => {
+  const sel = {
+    output: '[data-test=output]',
+    form: '[data-test=form]',
+    submit: '[data-test=submit]',
+    firstName: '[data-test="first-name"]',
+    lastName: '[data-test="last-name"]',
+    iframe: '.recurly-hosted-field iframe',
+    number: 'input[placeholder="Card number"]',
+    expiry: 'input[placeholder="MM / YY"]',
+    cvv: 'input[placeholder="CVV"]',
+    hostedFieldInput: '.recurly-hosted-field-input'
+  };
+
   describe('credit card', async function () {
     beforeEach(init({ fixture: 'hosted-fields-card' }));
-
-    const sel = {
-      output: '[data-test=output]',
-      form: '[data-test=form]',
-      submit: '[data-test=submit]',
-      firstName: '[data-test="first-name"]',
-      lastName: '[data-test="last-name"]',
-      iframe: '.recurly-hosted-field iframe',
-      number: 'input[placeholder="Card number"]',
-      expiry: 'input[placeholder="MM / YY"]',
-      cvv: 'input[placeholder="CVV"]',
-      hostedFieldInput: '.recurly-hosted-field-input'
-    };
 
     describe('when configured with defaults', async function () {
       beforeEach(init({ fixture: 'hosted-fields-card' }));
@@ -102,19 +102,7 @@ describe('Recurly.js', async () => {
 
   describe('credit card with tax identifier', async function () {
     beforeEach(init({ fixture: 'hosted-fields-card-tax-identifier' }));
-
-    const sel = {
-      output: '[data-test=output]',
-      form: '[data-test=form]',
-      submit: '[data-test=submit]',
-      firstName: '[data-test="first-name"]',
-      lastName: '[data-test="last-name"]',
-      taxIdentifier: '[data-test="tax-identifier"]',
-      iframe: '.recurly-hosted-field iframe',
-      number: 'input[placeholder="Card number"]',
-      expiry: 'input[placeholder="MM / YY"]',
-      cvv: 'input[placeholder="CVV"]'
-    };
+    sel.taxIdentifier = '[data-test="tax-identifier"]';
 
     it('creates a token', async function () {
       const iframe = await $(sel.iframe);
