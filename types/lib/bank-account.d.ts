@@ -21,10 +21,16 @@ export type BillingInfo = {
 };
 
 export type BankInfoOptions = {
+  /**
+   * The routing number for a bank (ex: ‘123456780’)
+   */
   routingNumber: string;
 };
 
 export type BankInfoPayload = {
+  /**
+   * Bank institution name (ex: Bank of Recurly)
+   */
   bank_name: string;
 };
 
@@ -33,6 +39,13 @@ export type BankInfoHandler = (err: RecurlyError, bankInfo: BankInfoPayload) => 
 export type BankInfo = (bankInfoOptions: BankInfoOptions, BankInfoHandler: BankInfoHandler) => void;
 
 export type BankAccount = {
+  /**
+   * @see {@link https://developers.recurly.com/reference/recurly-js/index.html#getting-a-token-1|Getting a token}
+   */
   token: (data: HTMLFormElement | BillingInfo, tokenHandler: TokenHandler) => void;
+
+  /**
+   * @see {@link https://developers.recurly.com/reference/recurly-js/index.html#recurlybankaccountbankinfo|BankInfo}
+   */
   bankInfo: BankInfo;
 };

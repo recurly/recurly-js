@@ -1,6 +1,35 @@
 const assert = require('assert');
+const memoize = require('memoize-one');
 
 const TOKEN_PATTERN = /^[\w-]{21,23}$/;
+
+const BROWSERS = {
+  IE_11: ['internet explorer', '11']
+};
+
+const DEVICES = {
+  DESKTOP: 'desktop',
+  MOBILE: 'mobile',
+  IOS: 'ios',
+  ANDROID: 'android'
+}
+
+const ELEMENT_TYPES = {
+  CardElement: 'CardElement',
+  CardNumberElement: 'CardNumberElement',
+  CardMonthElement: 'CardMonthElement',
+  CardYearElement: 'CardYearElement',
+  CardCvvElement: 'CardCvvElement'
+};
+
+const FIELD_TYPES = {
+  ALL: 'all',
+  CARD: 'card',
+  NUMBER: 'number',
+  MONTH: 'month',
+  YEAR: 'year',
+  CVV: 'cvv'
+};
 
 const TOKEN_TYPES = {
   CREDIT_CARD: 'credit_card',
@@ -14,9 +43,15 @@ const TOKEN_TYPES = {
 
 module.exports = {
   assertIsAToken,
+  BROWSERS,
   configureRecurly,
-  environment,
+  createElement,
+  DEVICES,
+  ELEMENT_TYPES,
+  environmentIs: memoize(environmentIs),
+  FIELD_TYPES,
   init,
+  recurlyEnvironment,
   tokenize,
   TOKEN_TYPES
 };
@@ -32,7 +67,7 @@ module.exports = {
 function init ({ fixture = '', opts = {} } = {}) {
   return async () => {
     await browser.url(`e2e/${fixture}`);
-    return await configureRecurly(Object.assign({}, environment(), opts));
+    return await configureRecurly(Object.assign({}, recurlyEnvironment(), opts));
   };
 }
 
@@ -51,6 +86,24 @@ async function configureRecurly (opts = {}) {
       done();
     });
   }, opts);
+}
+
+/**
+ * Creates an Element
+ *
+ * @param {String} elementClass one of ELEMENT_TYPES
+ */
+async function createElement (elementClass, config = {}) {
+  return await browser.executeAsync(function (elementClass, config, done) {
+    const elements = window.__e2e__.elements = window.__e2e__.elements || recurly.Elements();
+    const element = elements[elementClass](config);
+    const container = document.querySelector('.test-element-container');
+
+    element.on('attach', function () {
+      done();
+    });
+    element.attach(container);
+  }, elementClass, config);
 }
 
 // Action helpers
@@ -87,7 +140,7 @@ function assertIsAToken (maybeToken, expectedType = TOKEN_TYPES.CREDIT_CARD) {
 
 // Utility
 
-function environment () {
+function recurlyEnvironment () {
   const {
     API: api,
     API_PROXY: apiProxy,
@@ -97,4 +150,43 @@ function environment () {
   opts.api = apiProxy || api || 'https://api.recurly.com/js/v1';
   opts.publicKey = publicKey || 'ewr1-zfJT5nPe1qW7jihI32LIRH';
   return opts;
+}
+
+/**
+ * Checks for matches in the test environment.
+ *
+ * Use this to skip tests which cannot run in a particular browser or device
+ *
+ * @param  {...string} conditions list containing values from `BROWSERS`
+ * @return {Boolean}
+ */
+function environmentIs (...conditions) {
+  const {
+    browserName,
+    browserVersion,
+    platformName
+  } = browser.capabilities;
+  const browsers = Object.values(BROWSERS);
+  const devices = Object.values(DEVICES);
+  const isIos = platformName === 'iOS';
+  const isAndroid = platformName === 'Android';
+  const isMobile = isIos || isAndroid;
+
+  for (const condition of conditions) {
+    if (browsers.includes(condition)) {
+      const [ name, version ] = condition;
+      if (name === browserName && version === browserVersion) {
+        return true;
+      }
+    }
+
+    if (devices.includes(condition)) {
+      if (condition === DEVICES.ANDROID && isAndroid) return true;
+      if (condition === DEVICES.IOS && isIos) return true;
+      if (condition === DEVICES.MOBILE && isMobile) return true;
+      if (condition === DEVICES.DESKTOP && !isMobile) return true;
+    }
+  }
+
+  return false;
 }
