@@ -546,6 +546,22 @@ apiTest(requestMethod => {
           });
         });
       });
+
+      describe('when a tax_identifier is provided', function() {
+        beforeEach(function() {
+          valid.tax_identifier = '808.279.191-82';
+          valid.tax_identifier_type = 'cpf';
+        });
+        prepareExample(valid, builder);
+
+        it('yields a token', function (done) {
+          this.subject((err, token) => {
+            assert(!err);
+            assert(token.id);
+            done();
+          });
+        });
+      });
     }
 
     function tokenAllMarkupSuite (builder) {
