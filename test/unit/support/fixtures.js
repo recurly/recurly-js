@@ -22,6 +22,8 @@ const elements = opts => `
     <div id="recurly-elements-two"></div>
     <input type="text" id="test-tab-next">
     ${commonFields(opts)}
+    <input type="text" data-recurly="tax_identifier" value="${opts.tax_identifier || ''}">
+    <input type="text" data-recurly="tax_identifier_type" value="cpf">
     <input type="hidden" data-recurly="token" name="recurly-token">
   </form>
 `;
@@ -34,6 +36,8 @@ const minimal = opts => `
     <div data-recurly="cvv"></div>
     <input type="text" data-recurly="first_name" value="${opts.first_name || ''}">
     <input type="text" data-recurly="last_name" value="${opts.last_name || ''}">
+    <input type="text" data-recurly="tax_identifier" value="${opts.tax_identifier || ''}">
+    <input type="text" data-recurly="tax_identifier_type" value="cpf">
     <input type="hidden" data-recurly="token" name="recurly-token">
   </form>
 `;
@@ -45,6 +49,8 @@ const all = opts => `
     <div data-recurly="year"></div>
     <div data-recurly="cvv"></div>
     ${commonFields(opts)}
+    <input type="text" data-recurly="tax_identifier" value="${opts.tax_identifier || ''}">
+    <input type="text" data-recurly="tax_identifier_type" value="cpf">
   </form>
 `;
 

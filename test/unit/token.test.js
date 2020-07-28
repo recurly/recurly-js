@@ -546,6 +546,42 @@ apiTest(requestMethod => {
           });
         });
       });
+
+      describe('when a tax_identifier is provided', function () {
+        prepareExample(Object.assign({}, valid, {
+          tax_identifier: '808.279.191-82',
+          tax_identifier_type: 'cpf'
+        }), builder);
+
+        it('yields a token', function (done) {
+          this.subject((err, token) => {
+            assert(!err);
+            assert(token.id);
+            done();
+          });
+        });
+      });
+
+      describe('when a tax_identifier is invalid', function () {
+        prepareExample(Object.assign({}, valid, {
+          tax_identifier: '111.111.111-00',
+          tax_identifier_type: 'abc'
+        }), builder);
+
+        it('produces a validation error', function (done) {
+          this.subject((err, token) => {
+            assert.strictEqual(err.code, 'validation');
+            assert.strictEqual(err.fields.length, 1);
+            assert(~err.fields.indexOf('tax_identifier_type'));
+            assert.strictEqual(err.details.length, 1);
+            assert.strictEqual(err.details[0].field, 'tax_identifier_type');
+            assert.strictEqual(err.details[0].messages.length, 1);
+            assert.strictEqual(err.details[0].messages[0], 'Tax identifier type must be one of the following: ["cpf"]');
+            assert(!token);
+            done();
+          });
+        });
+      });
     }
 
     function tokenAllMarkupSuite (builder) {
