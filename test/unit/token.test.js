@@ -570,16 +570,14 @@ apiTest(requestMethod => {
 
         it('produces a validation error', function (done) {
           this.subject((err, token) => {
-            if (err) {
-              assert.strictEqual(err.code, 'validation');
-              assert.strictEqual(err.fields.length, 1);
-              assert(~err.fields.indexOf('tax_identifier_type'));
-              assert.strictEqual(err.details.length, 1);
-              assert.strictEqual(err.details[0].field, 'tax_identifier_type');
-              assert.strictEqual(err.details[0].messages.length, 1);
-              assert.strictEqual(err.details[0].messages[0], 'Tax identifier type must be one of the following: ["cpf"]');
-              assert(!token);
-            }
+            assert.strictEqual(err.code, 'validation');
+            assert.strictEqual(err.fields.length, 1);
+            assert(~err.fields.indexOf('tax_identifier_type'));
+            assert.strictEqual(err.details.length, 1);
+            assert.strictEqual(err.details[0].field, 'tax_identifier_type');
+            assert.strictEqual(err.details[0].messages.length, 1);
+            assert.strictEqual(err.details[0].messages[0], 'Tax identifier type must be one of the following: ["cpf"]');
+            assert(!token);
             done();
           });
         });
