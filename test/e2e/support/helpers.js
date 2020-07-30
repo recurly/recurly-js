@@ -48,12 +48,72 @@ module.exports = {
   createElement,
   DEVICES,
   ELEMENT_TYPES,
+  elementAndFieldSuite,
   environmentIs: memoize(environmentIs),
   FIELD_TYPES,
   init,
   recurlyEnvironment,
   tokenize,
   TOKEN_TYPES
+};
+
+// suite helpers
+
+/**
+ * Builds a test suite which will execute a test against
+ * the cohorts of the following implementations:
+ *   - CardElement
+ *   - distinct CardElements: number, month, year, cvv
+ *   - Card Hosted field
+ *   - distinct Card Hosted fields: number, month, year, cvv
+ *
+ * Use this when testing a behavior which is expected to apply
+ * across all of these implementations
+ *
+ * @param {Function} tests A callback which executes the tests
+ */
+function elementAndFieldSuite (tests) {
+  const { VARIANTS } = elementAndFieldSuite;
+
+  return () => {
+    describe('when using Elements', function () {
+      beforeEach(init());
+
+      describe('CardElement', function () {
+        beforeEach(async () => {
+          await createElement(ELEMENT_TYPES.CardElement);
+        });
+        tests(VARIANTS.CardElement);
+      });
+
+      describe('distinct card Elements', function () {
+        beforeEach(async () => {
+          await createElement(ELEMENT_TYPES.CardNumberElement);
+          await createElement(ELEMENT_TYPES.CardMonthElement);
+          await createElement(ELEMENT_TYPES.CardYearElement);
+          await createElement(ELEMENT_TYPES.CardCvvElement);
+        });
+        tests(VARIANTS.DistinctCardElements);
+      });
+    });
+
+    describe('when using a Card Hosted Field', function () {
+      beforeEach(init({ fixture: 'hosted-fields-card' }));
+      tests(VARIANTS.CardHostedField);
+    });
+
+    describe('when using distinct card Hosted Fields', function () {
+      beforeEach(init({ fixture: 'hosted-fields-card-distinct' }));
+      tests(VARIANTS.DistinctCardHostedFields);
+    });
+  };
+}
+
+elementAndFieldSuite.VARIANTS = {
+  CardElement: 0,
+  DistinctCardElements: 1,
+  CardHostedField: 2,
+  DistinctCardHostedFields: 3
 };
 
 // Setup helpers
@@ -103,6 +163,7 @@ async function createElement (elementClass, config = {}) {
       done();
     });
     element.attach(container);
+    window.__e2e__.elementReferences.push(element);
   }, elementClass, config);
 }
 
