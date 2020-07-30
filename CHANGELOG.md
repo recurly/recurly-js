@@ -1,5 +1,11 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.14.0
+
+* Adds support for Becs tokenization [#614][614]
+* Adds support for tax_identifier tokenization [#629][629]
+* Fixes previous tabbing for Elements on non-mobile browsers [#618][618]
+
 ### Version 4.13.1
 
 * Adds OSS attribution information [#623][623]
@@ -321,6 +327,9 @@
 
 * Full rewrite for Billing Info tokenization
 
+[629]: https://github.com/recurly/recurly-js/commit/43a47cbf783fdcbec07a85fa033297a1575c5364
+[618]: https://github.com/recurly/recurly-js/commit/35f44db4e38a89bc20e1673501bea385b77eb0bf
+[614]: https://github.com/recurly/recurly-js/commit/f04390afba8bbb651879a6a85ab0e40492b3e106
 [623]: https://github.com/recurly/recurly-js/commit/41559afe73c7b2f353afc1294c6b14aed4f23397
 [608]: https://github.com/recurly/recurly-js/commit/1bf8bae4d712de20ebb12e7f903a0e3ce326593e
 [603]: https://github.com/recurly/recurly-js/commit/c0c8b0808834a6fd1d0afbb0d0832b3a801bfb12
