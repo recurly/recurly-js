@@ -21,8 +21,7 @@ jobs:
   include:
     - stage: Check
       name: Lint
-      script:
-        - make lint
+      script: make lint
     - stage: Check
       name: Types
       script: make test-types
@@ -65,6 +64,12 @@ jobs:
       env: BROWSER=Electron
       services:
         - xvfb
+    - name: react-recurly
+      env: RECURLY_JS_SHA=$TRAVIS_COMMIT
+      script:
+        - mkdir -p vendor && cd vendor
+        - git clone https://github.com/recurly/react-recurly.git && cd react-recurly
+        - make test
 
     - &e2e
       stage: End-to-End Test
