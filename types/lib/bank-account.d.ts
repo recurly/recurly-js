@@ -1,16 +1,8 @@
 import { RecurlyError } from './error';
 import { TokenHandler } from './token';
 
-export type BillingInfo = {
+export type BillingInfoCommonFields = {
   name_on_account: string;
-  routing_number?: string;
-  account_number?: string;
-  account_number_confirmation?: string;
-  account_type?: string;
-  sort_code?: string;
-  type?: string;
-  iban?: string;
-  bsb_code?: string;
   address1?: string;
   address2?: string;
   city?: string;
@@ -19,6 +11,41 @@ export type BillingInfo = {
   country?: string;
   vat_number?: string;
 };
+
+export type SepaBillingInfo = BillingInfoCommonFields & {
+  name_on_account: string;
+
+  /**
+   * The International Bank Account Number, up to 34 alphanumeric characters comprising a country code; two check
+   * digits; and a number that includes the domestic bank account number, branch identifier, and potential routing
+   * information.
+   */
+  iban: string;
+};
+
+export type AccountInfo = BillingInfoCommonFields & {
+  account_number: string;
+  account_number_confirmation: string;
+};
+
+export type BacsBillingInfo = AccountInfo & {
+  type: 'bacs';
+  /**
+   * Bank identifier code for UK based banks.
+   */
+  sort_code: string;
+};
+
+export type BecsBillingInfo = AccountInfo & {
+  type: 'becs';
+  branch_code: string;
+};
+
+export type BankAccountBillingInfo = AccountInfo & {
+  routing_number: string;
+};
+
+export type BillingInfo = SepaBillingInfo | BacsBillingInfo | BecsBillingInfo | BankAccountBillingInfo;
 
 export type BankInfoOptions = {
   /**
