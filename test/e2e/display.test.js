@@ -5,6 +5,11 @@ const {
   createElement,
 } = require('./support/helpers');
 
+const {
+  BROWSER,
+} = process.env;
+
+
 const sel = {
   hostedFieldInput: '.recurly-hosted-field-input',
   number: 'input[placeholder="Card number"]',
@@ -55,17 +60,19 @@ describe('Display', function () {
       });
     });
 
-    describe("distinct elements", async function () {
-      beforeEach(init({ fixture: 'hosted-fields-card-distinct', opts: config }));
+    if (BROWSER !== 'BrowserStackEdge') {
+      describe("distinct elements", async function () {
+        beforeEach(init({ fixture: 'hosted-fields-card-distinct', opts: config }));
 
-      it('matches distinct elements baseline', async function () {
-        await enterDistinctFieldValues();
-        await browser.switchToFrame(null);
-        await clickBody();
+        it('matches distinct elements baseline', async function () {
+          await enterDistinctFieldValues();
+          await browser.switchToFrame(null);
+          await clickBody();
 
-        assert.strictEqual(await browser.checkFullPageScreen('hosted-fields/distinct-elements-pacifico'), 0);
+          assert.strictEqual(await browser.checkFullPageScreen('hosted-fields/distinct-elements-pacifico'), 0);
+        });
       });
-    });
+    }
   });
 });
 
