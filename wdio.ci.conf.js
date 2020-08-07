@@ -1,6 +1,6 @@
 const { spawnSync } = require('child_process');
 const branchName = require('current-git-branch');
-const { config: defaultConfig, isMobile } = require('./wdio.conf');
+const { config: defaultConfig, isMobile, imageComparisonService } = require('./wdio.conf');
 const {
   projectName,
   capabilities: browserStackCapabilities
@@ -18,6 +18,17 @@ const localIdentifier = `${Math.round(Math.random() * 100)}-${Date.now()}`;
 const { timeout } = defaultConfig.mochaOpts;
 
 spawnSync('mkdir', ['-p', 'build/reports/e2e/log'] );
+
+const services = [
+  ['browserstack', {
+    browserstackLocal: true,
+    opts: {
+      logfile: 'build/reports/e2e/log/browserstack.log',
+      localIdentifier
+    }
+  }],
+  imageComparisonService()
+]
 
 if (BROWSER === 'Electron') {
   exports.config = defaultConfig;
@@ -49,15 +60,7 @@ if (BROWSER === 'Electron') {
       }
     ],
     baseUrl: 'http://bs-local.com:9877',
-    services: [
-      ['browserstack', {
-        browserstackLocal: true,
-        opts: {
-          logfile: 'build/reports/e2e/log/browserstack.log',
-          localIdentifier
-        }
-      }]
-    ],
+    services,
     onPrepare: () => {
       if (isMobile()) {
         process.env.API_PROXY = 'http://bs-local.com:9877/api-proxy';

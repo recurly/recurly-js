@@ -26,7 +26,7 @@ exports.config = Object.assign({
   baseUrl: baseUrl(),
   waitforTimeout: Math.round(timeout() * 2/3),
   connectionRetryCount: 3,
-  services: services(),
+  services: [services(), imageComparisonService()],
   framework: 'mocha',
   reporters: ['spec'],
   mochaOpts: {
@@ -44,6 +44,7 @@ exports.config = Object.assign({
 }, assignPort());
 
 exports.isMobile = isMobile;
+exports.imageComparisonService = imageComparisonService;
 
 // attributes
 
@@ -121,6 +122,38 @@ function services () {
   }
 
   return ['chromedriver'];
+}
+
+/**
+ * Configuration options for wdio-image-comparison-service
+ * @see https://github.com/wswebcreation/webdriver-image-comparison/blob/master/docs/OPTIONS.md#plugin-options
+ */
+function imageComparisonService() {
+  const service = [
+    'image-comparison',
+    {
+      baselineFolder: path.resolve(__dirname, './test/e2e/.snapshots/'),
+
+      // path to dump screenshots taken during tests
+      screenshotPath: path.resolve(__dirname, './build/.tmp/'),
+
+      // Output diff if a visual regression test is failing
+      diffPath: path.resolve(__dirname, './build/.tmp/diff'),
+
+      formatImageName: `${BROWSER}/{tag}-{width}x{height}`,
+
+      // Save screenshots on every test run in screenshotPath dir
+      savePerInstance: true,
+
+      // Needs to be false to prevent false positives in CI.
+      // Change to true and remove snapshots to generate new baselines
+      autoSaveBaseline: false,
+      blockOutStatusBar: true,
+      blockOutToolBar: true,
+    }
+  ]
+
+  return service;
 }
 
 function assignPort () {
