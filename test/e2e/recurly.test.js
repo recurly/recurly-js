@@ -174,7 +174,36 @@ describe('Recurly.js', async () => {
       }, sel);
 
       assert.strictEqual(err, null);
-      assertIsAToken(token, expectedType="becs_bank_account");
+    });
+  });
+
+  describe('fraud', async function () {
+    beforeEach(async function () {
+      await browser.url(`e2e`);
+      await browser.executeAsync((recurlyEnvironment, done) => {
+        const form = document.querySelector('form');
+        recurly.configure({
+          ...recurlyEnvironment,
+          fraud: { kount: { dataCollector: true, form } },
+        });
+        recurly.ready(() => {
+          done();
+        });
+      }, recurlyEnvironment());
+    });
+
+    it('attaches an input with fraud session ID', async () => {
+      const script = await $('form script');
+      await script.waitForExist(2000);
+
+      const scriptSrc = await script.getAttribute('src');
+      const kaxsdc = await $('.kaxsdc');
+      const fraudSessionIdInput= await $('input[data-recurly="fraud_session_id"]');
+      const sessionId = await fraudSessionIdInput.getValue();
+
+      await assert.strictEqual(sessionId.length, 32);
+      await assert.strictEqual(scriptSrc, `https://tst.kaptcha.com/collect/sdk?m=740001&s=${sessionId}`);
+      await assert.strictEqual(await kaxsdc.isExisting(), true);
     });
   });
 });
