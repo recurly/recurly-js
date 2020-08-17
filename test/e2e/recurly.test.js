@@ -180,13 +180,19 @@ describe('Recurly.js', async () => {
   describe('fraud', async function () {
     beforeEach(async function () {
       await browser.url(`e2e`);
-      await browser.executeAsync((recurlyEnvironment, done) => {
-        const form = document.querySelector('form');
-        recurly.configure({
-          ...recurlyEnvironment,
-          fraud: { kount: { dataCollector: true, form } },
-        });
-        recurly.ready(() => {
+      await browser.executeAsync(function (recurlyEnvironment, done) {
+        const config = {
+          api: recurlyEnvironment.api,
+          publicKey: recurlyEnvironment.publicKey,
+          fraud: {
+            kount: {
+              dataCollector: true,
+              form: document.querySelector('form')
+            }
+          }
+        };
+        recurly.configure(config);
+        recurly.ready(function () {
           done();
         });
       }, recurlyEnvironment());

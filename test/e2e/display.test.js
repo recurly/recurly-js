@@ -47,7 +47,7 @@ if (BROWSER !== 'Electron') {
           await clickBody();
 
           const diff = await browser.checkFullPageScreen('elements/distinct-elements-pacifico');
-          if (BROWSER === 'BrowserStackIos12') {
+          if (BROWSER.includes('BrowserStackIos')) {
             assert(diff <= 0.01);
           } else {
             assert.strictEqual(diff, 0);
