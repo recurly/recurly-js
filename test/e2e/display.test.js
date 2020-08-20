@@ -3,6 +3,8 @@ const {
   init,
   ELEMENT_TYPES,
   createElement,
+  DEVICES,
+  environmentIs
 } = require('./support/helpers');
 
 const {
@@ -29,7 +31,7 @@ if (BROWSER !== 'Electron') {
           await clickBody();
 
           const diff = await browser.checkFullPageScreen('elements/card-element-pacifico');
-          if (BROWSER.includes('BrowserStackIos')) {
+          if (environmentIs(DEVICES.IOS)) {
             assert(diff <= 0.01);
           } else {
             assert.strictEqual(diff, 0);
@@ -47,7 +49,7 @@ if (BROWSER !== 'Electron') {
           await clickBody();
 
           const diff = await browser.checkFullPageScreen('elements/distinct-elements-pacifico');
-          if (BROWSER.includes('BrowserStackIos')) {
+          if (environmentIs(DEVICES.IOS)) {
             assert(diff <= 0.01);
           } else {
             assert.strictEqual(diff, 0);
