@@ -24,20 +24,22 @@ if (BROWSER !== 'Electron') {
     describe('when configured with elements', async function () {
       beforeEach(init());
 
-      describe('CardElement', async function () {
-        it('matches CardElement baseline', async function () {
-          await createElement(ELEMENT_TYPES.CardElement, { style: { fontFamily: 'Pacifico' }});
-          await enterCardValues();
-          await clickBody();
+      if (BROWSER !== 'BrowserStackAndroid10') {
+        describe('CardElement', async function () {
+          it('matches CardElement baseline', async function () {
+            await createElement(ELEMENT_TYPES.CardElement, { style: { fontFamily: 'Pacifico' }});
+            await enterCardValues();
+            await clickBody();
 
-          const diff = await browser.checkFullPageScreen('elements/card-element-pacifico');
-          if (environmentIs(DEVICES.IOS)) {
-            assert(diff <= 0.01);
-          } else {
-            assert.strictEqual(diff, 0);
-          }
+            const diff = await browser.checkFullPageScreen('elements/card-element-pacifico');
+            if (environmentIs(DEVICES.IOS)) {
+              assert(diff <= 0.01);
+            } else {
+              assert.strictEqual(diff, 0);
+            }
+          });
         });
-      });
+      }
 
       describe('distinct elements', async function () {
         it('matches distinct elements baseline', async function () {
