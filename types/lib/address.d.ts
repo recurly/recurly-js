@@ -40,12 +40,12 @@ export type Address = {
   country?: string;
 
   /**
-   * 	Phone number
+   * Phone number
    */
   phone?: string;
 
   /**
-   * 	Customer VAT number. Used for VAT exclusion
+   * Customer VAT number. Used for VAT exclusion
    */
   vat_number?: string;
 };

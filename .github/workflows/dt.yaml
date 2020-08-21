@@ -25,6 +25,8 @@ jobs:
           git config user.password ${{ secrets.DEFINITELY_TYPED_PR_GITHUB_ACCESS_TOKEN }}
           git remote set-url origin https://github.com/dbrudner/DefinitelyTyped
           git fetch --unshallow -p origin
+          git remote add upstream https://github.com/DefinitelyTyped/DefinitelyTyped.git
+          git pull upstream master
       - name: Add DefinitelyTyped header
         run: |
           version=$(cat recurly-js/package.json | jq '.version' -r | sed -ne 's/^\([0-9]*\.[0-9]*\).*/\1/p')
