@@ -1,0 +1,20 @@
+<%- include('_head'); -%>
+  <section id="my-checkout">
+    <select data-recurly="plan">
+      <option value="basic">Basic</option>
+      <option value="notbasic">Not Basic</option>
+    </select>
+    <input type="text" data-recurly="coupon">
+    <input type="text" data-recurly="gift_card">
+
+    <div type="text" data-recurly="total_now"></div>
+    <div type="text" data-recurly="subtotal_now"></div>
+    <div type="text" data-recurly="subscriptions_now"></div>
+    <div type="text" data-recurly="adjustments_now"></div>
+    <div type="text" data-recurly="discount_now"></div>
+    <div type="text" data-recurly="taxes_now"></div>
+    <div type="text" data-recurly="gift_card_now"></div>
+    <div type="text" data-recurly="currency_code"></div>
+    <div type="text" data-recurly="currency_symbol"></div>
+  </section>
+<%- include('_foot'); -%>
