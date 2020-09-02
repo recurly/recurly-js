@@ -4,15 +4,16 @@ const memoize = require('memoize-one');
 const TOKEN_PATTERN = /^[\w-]{21,23}$/;
 
 const BROWSERS = {
-  IE_11: ['internet explorer', '11']
+  IE_11: ['internet explorer', '11'],
+  ELECTRON: ['chrome', 'electron']
 };
 
 const DEVICES = {
   DESKTOP: 'desktop',
   MOBILE: 'mobile',
   IOS: 'ios',
-  ANDROID: 'android'
-}
+  ANDROID: 'android',
+};
 
 const ELEMENT_TYPES = {
   CardElement: 'CardElement',
@@ -234,6 +235,13 @@ function environmentIs (...conditions) {
   const isMobile = isIos || isAndroid;
 
   for (const condition of conditions) {
+    if (condition === BROWSERS.ELECTRON) {
+      const [ name, binaryName ] = condition;
+      if (name === browserName && browser.capabilities['goog:chromeOptions']?.binary.includes('electron')) {
+        return true;
+      }
+    }
+
     if (browsers.includes(condition)) {
       const [ name, version ] = condition;
       if (name === browserName && version === browserVersion) {
