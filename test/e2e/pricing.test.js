@@ -7,9 +7,16 @@ const PRICING = {
     plan: '#my-checkout > select'
 };
 
-const INPUTS = [
-  ['coupon',      'input[data-recurly="coupon"]',     'code1'           ],
-  ['gift_card',   'input[data-recurly="gift_card"]',  '1I2QUYWXAP7FZ3GL']
+const INPUTS= [
+  ['plan_quantity',   'input[data-recurly="plan_quantity"]',    '1'               ],
+  ['coupon',          'input[data-recurly="coupon"]',           'code1'           ],
+  ['gift_card',       'input[data-recurly="gift_card"]',        'P4701UT9OKW6XFYN'],
+  ['tax_code',        'input[data-recurly="tax_code"]',         ''                ],
+  ['postal_code',     'input[data-recurly="postal_code"]',      '94110'           ],
+  ['country',         'input[data-recurly="country"]',          'US'              ],
+  ['vat_number',      'input[data-recurly="vat_number"]',       'vat1'            ],
+  ['tax_amount_now',  'input[data-recurly="tax_amount_now"]',   '1.99'            ],
+  ['tax_amount_next', 'input[data-recurly="tax_amount_next"]',  '2.01'            ]
 ];
 
 // index 0 is the selector and index 1 is the default value.
@@ -22,7 +29,14 @@ const OUTPUTS = [
   ['[data-recurly=taxes_now]',          '0.00'  ],
   ['[data-recurly=gift_card_now]',      '0.00'  ],
   ['[data-recurly=currency_code]',      ''      ],
-  ['[data-recurly=currency_symbol]',    ''      ]
+  ['[data-recurly=currency_symbol]',    ''      ],
+  ['[data-recurly=total_next]',         '0.00'  ],
+  ['[data-recurly=subtotal_next]',      '0.00'  ],
+  ['[data-recurly=subscriptions_next]', '0.00'  ],
+  ['[data-recurly=adjustments_next]',   '0.00'  ],
+  ['[data-recurly=discount_next]',      '0.00'  ],
+  ['[data-recurly=taxes_next]',         '0.00'  ],
+  ['[data-recurly=gift_card_next]',     '0.00'  ]
 ];
 
 describe('Pricing test', async () => {
@@ -34,6 +48,7 @@ describe('Pricing test', async () => {
       await browser.execute(function () {
         var checkoutPricing = recurly.Pricing.Checkout();
         checkoutPricing.attach('#my-checkout');
+        window.checkoutPricing = checkoutPricing;
       });
 
       const plan = await $(PRICING.plan);
@@ -50,9 +65,8 @@ describe('Pricing test', async () => {
       for (const [selector, value] of OUTPUTS) {
         const output = await $(selector)
         await browser.waitUntil(() => output.getText() !== value);
-        assert.notEqual(output, value)
+        // assert.notEqual(await output.getText(), value)
       }
 
     });
-
 });
