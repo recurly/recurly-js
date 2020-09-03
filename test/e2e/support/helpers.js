@@ -5,7 +5,9 @@ const TOKEN_PATTERN = /^[\w-]{21,23}$/;
 
 const BROWSERS = {
   IE_11: ['internet explorer', '11'],
-  ELECTRON: ['chrome', 'electron']
+  EDGE: ['MicrosoftEdge'],
+  ELECTRON: ['chrome', 'electron'],
+  SAFARI: ['Safari']
 };
 
 const DEVICES = {
@@ -237,15 +239,17 @@ function environmentIs (...conditions) {
   for (const condition of conditions) {
     if (condition === BROWSERS.ELECTRON) {
       const [ name, binaryName ] = condition;
-      if (name === browserName && browser.capabilities['goog:chromeOptions']?.binary.includes('electron')) {
+      const chromeOptions = browser.capabilities['goog:chromeOptions'];
+      if (name === browserName && chromeOptions?.binary.includes('electron')) {
         return true;
       }
     }
 
     if (browsers.includes(condition)) {
       const [ name, version ] = condition;
-      if (name === browserName && version === browserVersion) {
-        return true;
+      if (name === browserName) {
+        if (version) return version === browserVersion;
+        else return true;
       }
     }
 

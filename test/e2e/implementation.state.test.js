@@ -42,7 +42,6 @@ function displaysStateOutput (variant) {
       case VARIANTS.DistinctCardElements:
         await browser.execute(function (sel) {
           var output = document.querySelector(sel.output);
-          var cardElement = window.__e2e__.elementReferences[0];
 
           window.__e2e__.elementReferences.forEach(function (el) {
             el.on('change', function (state) {
@@ -56,15 +55,13 @@ function displaysStateOutput (variant) {
     // Assertions
     switch (variant) {
       case VARIANTS.CardElement:
-        return;
         await assertCombinedCardBehavior();
       break;
       case VARIANTS.CardHostedField:
-        return;
         await assertCombinedCardBehavior({ wrap: card => ({ fields: { card } }) });
       break;
       case VARIANTS.DistinctCardElements:
-        return;
+        const focus = environmentIs(BROWSERS.EDGE);
         await assertDistinctCardBehavior(
           // number
           {
@@ -74,69 +71,64 @@ function displaysStateOutput (variant) {
             brand: 'visa',
             length: 16,
             empty: false,
-            focus: true
+            focus: false
           },
           // month
           {
             empty: false,
             length: 2,
-            focus: true,
+            focus: false,
             valid: true
           },
           // year
           {
             empty: false,
             length: 2,
-            focus: true,
+            focus: false,
             valid: true
           },
           // cvv
           {
             empty: false,
             length: 3,
-            focus: true,
+            focus: false,
             valid: true
           }
         );
       break;
       case VARIANTS.DistinctCardHostedFields:
-        const number = focus => ({
+        const number = {
           valid: true,
           firstSix: '411111',
           lastFour: '1111',
           brand: 'visa',
           length: 16,
           empty: false,
-          focus
-        });
-        const month = focus => ({
+          focus: false
+        };
+        const month = {
           empty: false,
           length: 2,
-          focus,
+          focus: false,
           valid: true
-        });
-        const year = focus => ({
+        };
+        const year = {
           empty: false,
           length: 2,
-          focus,
+          focus: false,
           valid: true,
-        });
-        const cvv = focus => ({
+        };
+        const cvv = {
           empty: false,
           length: 3,
-          focus,
+          focus: false,
           valid: true
-        });
+        };
         await assertDistinctCardBehavior(
-          hostedFieldState({ number: number(true) }),
-          hostedFieldState({ number: number(false), month: month(true) }),
-          hostedFieldState({ number: number(false), month: month(false), year: year(true) }),
-          hostedFieldState({
-            number: number(false),
-            month: month(false),
-            year: year(false),
-            cvv: cvv(true)
-          })
+          hostedFieldState({ number }),
+          hostedFieldState({ number, month }),
+          hostedFieldState({ number, month, year }),
+          hostedFieldState({ number, month, year, cvv })
         );
       break;
     }
@@ -183,6 +175,7 @@ async function assertDistinctCardBehavior (...expectations) {
     '28',
     '123'
   ];
+  const firstName = await $(sel.firstName);
   const output = await $(sel.output);
   const actual = async () => JSON.parse(await output.getText());
   const assertStateOutputIs = async expect => assert.deepStrictEqual(
@@ -190,13 +183,14 @@ async function assertDistinctCardBehavior (...expectations) {
     expect
   );
 
-  let i = 0;
-  const frames = await browser.$$('iframe');
-  for (const frame of frames) {
-    await browser.switchToFrame(frame);
-    await (await $('input')).setValue(entries[i]);
+  for (const entry of entries) {
+    const i = entries.indexOf(entry);
+    await browser.switchToFrame(i);
+    const input = await $('.recurly-hosted-field-input');
+    await input.setValue(entry);
     await browser.switchToFrame(null);
-    await assertStateOutputIs(expectations[i++]);
+    await firstName.click();
+    await assertStateOutputIs(expectations[i]);
   }
 }
 
@@ -225,6 +219,7 @@ async function assertCombinedCardBehavior ({ wrap = obj => obj } = {}) {
     }
   };
 
+  const firstName = await $(sel.firstName);
   const output = await $(sel.output);
   const actual = async () => JSON.parse(await output.getText());
   const assertStateOutputIs = async changes => assert.deepStrictEqual(
@@ -232,12 +227,10 @@ async function assertCombinedCardBehavior ({ wrap = obj => obj } = {}) {
     wrap(Object.assign({}, expect, changes))
   );
 
-  assertStateOutputIs(expect);
-
   await browser.switchToFrame(0);
   await (await $(sel.number)).setValue('4111111111111111');
   await browser.switchToFrame(null);
-  await (await $(sel.firstName)).click();
+  await firstName.click();
 
   await assertStateOutputIs({
     firstSix: '411111',
@@ -255,13 +248,14 @@ async function assertCombinedCardBehavior ({ wrap = obj => obj } = {}) {
   await browser.switchToFrame(0);
   await (await $(sel.expiry)).setValue('1028');
   await browser.switchToFrame(null);
+  await firstName.click();
 
   await assertStateOutputIs({
     firstSix: '411111',
     lastFour: '1111',
     brand: 'visa',
     empty: false,
-    focus: true,
+    focus: false,
     number: {
       empty: false,
       focus: false,
@@ -269,7 +263,7 @@ async function assertCombinedCardBehavior ({ wrap = obj => obj } = {}) {
     },
     expiry: {
       empty: false,
-      focus: true,
+      focus: false,
       valid: true
     }
   });
@@ -277,32 +271,7 @@ async function assertCombinedCardBehavior ({ wrap = obj => obj } = {}) {
   await browser.switchToFrame(0);
   await (await $(sel.cvv)).setValue('123');
   await browser.switchToFrame(null);
-
-  await assertStateOutputIs({
-    firstSix: '411111',
-    lastFour: '1111',
-    brand: 'visa',
-    empty: false,
-    focus: true,
-    valid: true,
-    number: {
-      empty: false,
-      focus: false,
-      valid: true
-    },
-    expiry: {
-      empty: false,
-      focus: false,
-      valid: true
-    },
-    cvv: {
-      empty: false,
-      focus: true,
-      valid: true
-    }
-  });
-
-  await (await $(sel.arbitrary)).click();
+  await firstName.click();
 
   await assertStateOutputIs({
     firstSix: '411111',

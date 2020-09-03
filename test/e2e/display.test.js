@@ -84,7 +84,7 @@ maybeDescribe('Display', function () {
       beforeEach(init({ fixture: 'hosted-fields-card-distinct', opts: config }));
 
       it('matches distinct elements baseline', async function () {
-        if (environmentIs(BROWSERS.IE_11)) return this.skip();
+        if (environmentIs(BROWSERS.EDGE)) return this.skip();
 
         await enterDistinctFieldValues();
         await browser.switchToFrame(null);
