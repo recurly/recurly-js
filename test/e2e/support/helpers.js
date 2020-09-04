@@ -73,51 +73,49 @@ module.exports = {
  * Use this when testing a behavior which is expected to apply
  * across all of these implementations
  *
- * @param {Function} tests A callback which executes the tests
+ * @param {Object}   tests An object with members for each element and field type
+ * @param {Function} [tests.cardElement]
+ * @param {Function} [tests.distinctCardElements]
+ * @param {Function} [tests.cardHostedField]
+ * @param {Function} [tests.distinctCardHostedFields]
+ * @param {Function} [tests.any] Will run if any of the other members are not defined
  */
 function elementAndFieldSuite (tests) {
-  const { VARIANTS } = elementAndFieldSuite;
-
   return () => {
-    describe('when using Elements', function () {
+    const maybeRun = maybe => (maybe || tests.any)();
+
+    describe('when using Elements', () => {
       beforeEach(init());
 
-      describe('CardElement', function () {
+      describe('CardElement', async () => {
         beforeEach(async () => {
           await createElement(ELEMENT_TYPES.CardElement);
         });
-        tests(VARIANTS.CardElement);
+        maybeRun(tests.cardElement);
       });
 
-      describe('distinct card Elements', function () {
+      describe('distinct card Elements', async () => {
         beforeEach(async () => {
           await createElement(ELEMENT_TYPES.CardNumberElement);
           await createElement(ELEMENT_TYPES.CardMonthElement);
           await createElement(ELEMENT_TYPES.CardYearElement);
           await createElement(ELEMENT_TYPES.CardCvvElement);
         });
-        tests(VARIANTS.DistinctCardElements);
+        maybeRun(tests.distinctCardElements);
       });
     });
 
-    describe('when using a Card Hosted Field', function () {
+    describe('when using a card Hosted Field', async () => {
       beforeEach(init({ fixture: 'hosted-fields-card' }));
-      tests(VARIANTS.CardHostedField);
+      maybeRun(tests.cardHostedField);
     });
 
-    describe('when using distinct card Hosted Fields', function () {
+    describe('when using distinct card Hosted Fields', async () => {
       beforeEach(init({ fixture: 'hosted-fields-card-distinct' }));
-      tests(VARIANTS.DistinctCardHostedFields);
+      maybeRun(tests.distinctCardHostedFields);
     });
   };
 }
-
-elementAndFieldSuite.VARIANTS = {
-  CardElement: 0,
-  DistinctCardElements: 1,
-  CardHostedField: 2,
-  DistinctCardHostedFields: 3
-};
 
 // Setup helpers
 
@@ -238,9 +236,8 @@ function environmentIs (...conditions) {
 
   for (const condition of conditions) {
     if (condition === BROWSERS.ELECTRON) {
-      const [ name, binaryName ] = condition;
-      const chromeOptions = browser.capabilities['goog:chromeOptions'];
-      if (name === browserName && chromeOptions?.binary.includes('electron')) {
+      const [ name, envName ] = condition;
+      if (name === browserName && process.env.BROWSER?.toLowerCase() === envName) {
         return true;
       }
     }

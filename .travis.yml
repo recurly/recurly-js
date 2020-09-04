@@ -62,6 +62,8 @@ jobs:
       env: BROWSER=BrowserStackAndroid8
     - name: Electron
       env: BROWSER=Electron
+      addons:
+        chrome: stable
       services:
         - xvfb
     - name: react-recurly
@@ -106,6 +108,8 @@ jobs:
     - <<: *e2e
       name: Electron
       env: BROWSER=Electron
+      addons:
+        chrome: stable
       services:
         - xvfb
 

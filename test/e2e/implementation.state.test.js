@@ -14,90 +14,26 @@ const sel = {
   firstName: '[data-test="first-name"]',
   number: 'input[placeholder="Card number"]',
   expiry: 'input[placeholder="MM / YY"]',
-  cvv: 'input[placeholder="CVV"]',
-  arbitrary: 'input[data-test="arbitrary-input-0"]'
+  cvv: 'input[placeholder="CVV"]'
 };
 
-describe('Field State', elementAndFieldSuite(variant => {
-  it(...displaysStateOutput(variant));
-}));
-
-function displaysStateOutput (variant) {
-  const { VARIANTS } = elementAndFieldSuite;
-
-  return ['displays field state on the page', async () => {
-    // Setup
-    switch (variant) {
-      case VARIANTS.CardHostedField:
-      case VARIANTS.DistinctCardHostedFields:
-        await browser.execute(function (sel) {
-          var output = document.querySelector(sel.output);
-
-          recurly.on('change', function (state) {
-            output.innerText = JSON.stringify(state);
-          });
-        }, sel);
-      break;
-      case VARIANTS.CardElement:
-      case VARIANTS.DistinctCardElements:
-        await browser.execute(function (sel) {
-          var output = document.querySelector(sel.output);
-
-          window.__e2e__.elementReferences.forEach(function (el) {
-            el.on('change', function (state) {
-              output.innerText = JSON.stringify(state);
-            });
-          });
-        }, sel);
-      break;
-    }
-
-    // Assertions
-    switch (variant) {
-      case VARIANTS.CardElement:
-        await assertCombinedCardBehavior();
-      break;
-      case VARIANTS.CardHostedField:
-        await assertCombinedCardBehavior({ wrap: card => ({ fields: { card } }) });
-      break;
-      case VARIANTS.DistinctCardElements:
-        const focus = environmentIs(BROWSERS.EDGE);
-        await assertDistinctCardBehavior(
-          // number
-          {
-            valid: true,
-            firstSix: '411111',
-            lastFour: '1111',
-            brand: 'visa',
-            length: 16,
-            empty: false,
-            focus: false
-          },
-          // month
-          {
-            empty: false,
-            length: 2,
-            focus: false,
-            valid: true
-          },
-          // year
-          {
-            empty: false,
-            length: 2,
-            focus: false,
-            valid: true
-          },
-          // cvv
-          {
-            empty: false,
-            length: 3,
-            focus: false,
-            valid: true
-          }
-        );
-      break;
-      case VARIANTS.DistinctCardHostedFields:
-        const number = {
+describe('Field State', elementAndFieldSuite({
+  cardElement: () => {
+    it('displays field state on the page', async function () {
+      // Skip Electron due to element blur incompatibility
+      if (environmentIs(BROWSERS.ELECTRON)) {
+        return this.skip();
+      }
+      await setupElementsStateOutput();
+      await assertCardBehavior();
+    });
+  },
+  distinctCardElements: async () => {
+    it('displays field state on the page', async function () {
+      await setupElementsStateOutput();
+      await assertDistinctCardBehavior(
+        // number
+        {
           valid: true,
           firstSix: '411111',
           lastFour: '1111',
@@ -105,96 +41,104 @@ function displaysStateOutput (variant) {
           length: 16,
           empty: false,
           focus: false
-        };
-        const month = {
+        },
+        // month
+        {
           empty: false,
           length: 2,
           focus: false,
           valid: true
-        };
-        const year = {
+        },
+        // year
+        {
           empty: false,
           length: 2,
           focus: false,
-          valid: true,
-        };
-        const cvv = {
+          valid: true
+        },
+        // cvv
+        {
           empty: false,
           length: 3,
           focus: false,
           valid: true
-        };
-        await assertDistinctCardBehavior(
-          hostedFieldState({ number }),
-          hostedFieldState({ number, month }),
-          hostedFieldState({ number, month, year }),
-          hostedFieldState({ number, month, year, cvv })
-        );
-      break;
-    }
-  }];
-}
-
-function hostedFieldState ({ number, month, year, cvv }) {
-  return {
-    fields: {
-      number: Object.assign({
-        brand: 'unknown',
-        empty: true,
-        firstSix: '',
+        }
+      );
+    });
+  },
+  cardHostedField: async function () {
+    it('displays field state on the page', async function () {
+      // Skip Electron due to element blur incompatibility
+      if (environmentIs(BROWSERS.ELECTRON)) {
+        return this.skip();
+      }
+      await setupHostedFieldStateOutput();
+      await assertCardBehavior({ wrap: card => ({ fields: { card } }) });
+    });
+  },
+  distinctCardHostedFields: async () => {
+    it('displays field state on the page', async function () {
+      await setupHostedFieldStateOutput();
+      const number = {
+        valid: true,
+        firstSix: '411111',
+        lastFour: '1111',
+        brand: 'visa',
+        length: 16,
+        empty: false,
+        focus: false
+      };
+      const month = {
+        empty: false,
+        length: 2,
         focus: false,
-        lastFour: '',
-        length: 0,
-        valid: false
-      }, number),
-      month: Object.assign({
-        empty: true,
+        valid: true
+      };
+      const year = {
+        empty: false,
+        length: 2,
         focus: false,
-        length: 0
-      }, month),
-      year: Object.assign({
-        empty: true,
+        valid: true,
+      };
+      const cvv = {
+        empty: false,
+        length: 3,
         focus: false,
-        length: 0,
-        valid: false
-      }, year),
-      cvv: Object.assign({
-        empty: true,
-        focus: false,
-        length: 0,
-        valid: false
-      }, cvv)
-    }
-  };
-}
-
-async function assertDistinctCardBehavior (...expectations) {
-  const entries = [
-    '4111111111111111',
-    '10',
-    '28',
-    '123'
-  ];
-  const firstName = await $(sel.firstName);
-  const output = await $(sel.output);
-  const actual = async () => JSON.parse(await output.getText());
-  const assertStateOutputIs = async expect => assert.deepStrictEqual(
-    await actual(),
-    expect
-  );
-
-  for (const entry of entries) {
-    const i = entries.indexOf(entry);
-    await browser.switchToFrame(i);
-    const input = await $('.recurly-hosted-field-input');
-    await input.setValue(entry);
-    await browser.switchToFrame(null);
-    await firstName.click();
-    await assertStateOutputIs(expectations[i]);
+        valid: true
+      };
+      await assertDistinctCardBehavior(
+        hostedFieldState({ number }),
+        hostedFieldState({ number, month }),
+        hostedFieldState({ number, month, year }),
+        hostedFieldState({ number, month, year, cvv })
+      );
+    });
   }
+}));
+
+async function setupElementsStateOutput () {
+  return await browser.execute(function (sel) {
+    var output = document.querySelector(sel.output);
+
+    window.__e2e__.elementReferences.forEach(function (el) {
+      el.on('change', function (state) {
+        output.innerText = JSON.stringify(state);
+      });
+    });
+  }, sel);
 }
 
-async function assertCombinedCardBehavior ({ wrap = obj => obj } = {}) {
+async function setupHostedFieldStateOutput () {
+  return await browser.execute(function (sel) {
+    var output = document.querySelector(sel.output);
+
+    recurly.on('change', function (state) {
+      output.innerText = JSON.stringify(state);
+    });
+  }, sel);
+}
+
+async function assertCardBehavior ({ wrap = obj => obj } = {}) {
   const expect = {
     valid: false,
     firstSix: '',
@@ -296,4 +240,64 @@ async function assertCombinedCardBehavior ({ wrap = obj => obj } = {}) {
       valid: true
     }
   });
+}
+
+async function assertDistinctCardBehavior (...expectations) {
+  const entries = [
+    '4111111111111111',
+    '10',
+    '28',
+    '123'
+  ];
+  const firstName = await $(sel.firstName);
+  const output = await $(sel.output);
+  const actual = async () => JSON.parse(await output.getText());
+  const assertStateOutputIs = async expect => assert.deepStrictEqual(
+    await actual(),
+    expect
+  );
+
+  for (const entry of entries) {
+    const i = entries.indexOf(entry);
+    await browser.switchToFrame(i);
+    const input = await $('.recurly-hosted-field-input');
+    await input.setValue(entry);
+    await browser.pause(500);
+    await browser.switchToFrame(null);
+    await firstName.click();
+    await assertStateOutputIs(expectations[i]);
+  }
+}
+
+function hostedFieldState ({ number, month, year, cvv }) {
+  return {
+    fields: {
+      number: Object.assign({
+        brand: 'unknown',
+        empty: true,
+        firstSix: '',
+        focus: false,
+        lastFour: '',
+        length: 0,
+        valid: false
+      }, number),
+      month: Object.assign({
+        empty: true,
+        focus: false,
+        length: 0
+      }, month),
+      year: Object.assign({
+        empty: true,
+        focus: false,
+        length: 0,
+        valid: false
+      }, year),
+      cvv: Object.assign({
+        empty: true,
+        focus: false,
+        length: 0,
+        valid: false
+      }, cvv)
+    }
+  };
 }

@@ -6,8 +6,8 @@ const {
   environmentIs,
 } = require('./support/helpers');
 
-describe('Tabbing', elementAndFieldSuite(() => {
-  it(...tabsThroughTheForm());
+describe('Tabbing', elementAndFieldSuite({
+  any: () => it(...tabsThroughTheForm())
 }));
 
 function tabsThroughTheForm () {

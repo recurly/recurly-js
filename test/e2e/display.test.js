@@ -14,6 +14,7 @@ const {
 
 
 const sel = {
+  firstName: '[data-test="first-name"]',
   hostedFieldInput: '.recurly-hosted-field-input',
   number: 'input[placeholder="Card number"]',
   expiry: 'input[placeholder="MM / YY"]',
@@ -30,13 +31,15 @@ maybeDescribe('Display', function () {
       it('matches CardElement baseline', async function () {
         await createElement(ELEMENT_TYPES.CardElement, { style: { fontFamily: 'Pacifico' }});
         await enterCardValues();
-        await clickBody();
+        await clickFirstName();
 
         const diff = await browser.checkFullPageScreen('elements/card-element-pacifico');
         if (environmentIs(DEVICES.ANDROID)) {
-          assert(diff <= 0.05);
+          assert(diff <= 0.5, `${diff} is above the threshold of 0.5`);
+        } else if (environmentIs(BROWSERS.EDGE)) {
+          assert(diff <= 0.05, `${diff} is above the threshold of 0.05`);
         } else if (environmentIs(DEVICES.IOS)) {
-          assert(diff <= 0.01);
+          assert(diff <= 0.01, `${diff} is above the threshold of 0.01`);
         } else {
           assert.strictEqual(diff, 0);
         }
@@ -50,13 +53,15 @@ maybeDescribe('Display', function () {
           await createElement(element, { style: { fontFamily: 'Pacifico' }});
         }
         await enterDistinctFieldValues();
-        await clickBody();
+        await clickFirstName();
 
         const diff = await browser.checkFullPageScreen('elements/distinct-elements-pacifico');
         if (environmentIs(DEVICES.ANDROID)) {
-          assert(diff <= 0.05);
+          assert(diff <= 0.5, `${diff} is above the threshold of 0.5`);
+        } else if (environmentIs(BROWSERS.EDGE)) {
+          assert(diff <= 0.05, `${diff} is above the threshold of 0.05`);
         } else if (environmentIs(DEVICES.IOS)) {
-          assert(diff <= 0.01);
+          assert(diff <= 0.01, `${diff} is above the threshold of 0.01`);
         } else {
           assert.strictEqual(diff, 0);
         }
@@ -73,7 +78,7 @@ maybeDescribe('Display', function () {
       it('matches CardElement baseline', async function () {
         await enterCardValues();
         await browser.switchToFrame(null);
-        await clickBody();
+        await clickFirstName();
 
         const diff = await browser.checkFullPageScreen('hosted-fields/card-element-pacifico');
         assert.strictEqual(diff, 0);
@@ -88,7 +93,7 @@ maybeDescribe('Display', function () {
 
         await enterDistinctFieldValues();
         await browser.switchToFrame(null);
-        await clickBody();
+        await clickFirstName();
 
         const diff =  await browser.checkFullPageScreen('hosted-fields/distinct-elements-pacifico');
         assert.strictEqual(diff, 0);
@@ -97,9 +102,9 @@ maybeDescribe('Display', function () {
   });
 });
 
-async function clickBody () {
-  const body = await $('body');
-  await body.click();
+async function clickFirstName () {
+  const firstName = await $(sel.firstName);
+  await firstName.click();
 }
 
 async function enterCardValues () {
