@@ -11,7 +11,7 @@ describe('Tabbing', elementAndFieldSuite({
 }));
 
 function tabsThroughTheForm () {
-  return ['tabs across the form', async () => {
+  return ['tabs across the form', async function () {
     let destinationReached = false;
     const firstInput = await $('[data-test=arbitrary-input-0]');
     const lastInput = await $('[data-test=arbitrary-input-1]');

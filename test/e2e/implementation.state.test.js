@@ -6,6 +6,8 @@ const {
   ELEMENT_TYPES,
   elementAndFieldSuite,
   environmentIs,
+  EXAMPLES,
+  fillCardElement,
   init
 } = require('./support/helpers');
 
@@ -171,9 +173,15 @@ async function assertCardBehavior ({ wrap = obj => obj } = {}) {
     wrap(Object.assign({}, expect, changes))
   );
 
-  await browser.switchToFrame(0);
-  await (await $(sel.number)).setValue('4111111111111111');
-  await browser.switchToFrame(null);
+  // await browser.switchToFrame(0);
+  // const number = await $(sel.number);
+  // await number.setValue(EXAMPLES.NUMBER);
+  // await browser.waitUntil(async () => (await number.getValue()).length >= 19);
+  // await browser.switchToFrame(null);
+  await fillCardElement({
+    expiry: '',
+    cvv: ''
+  });
   await firstName.click();
 
   await assertStateOutputIs({
@@ -189,9 +197,9 @@ async function assertCardBehavior ({ wrap = obj => obj } = {}) {
     }
   });
 
-  await browser.switchToFrame(0);
-  await (await $(sel.expiry)).setValue('1028');
-  await browser.switchToFrame(null);
+  await fillCardElement({
+    cvv: ''
+  });
   await firstName.click();
 
   await assertStateOutputIs({
@@ -212,9 +220,10 @@ async function assertCardBehavior ({ wrap = obj => obj } = {}) {
     }
   });
 
-  await browser.switchToFrame(0);
-  await (await $(sel.cvv)).setValue('123');
-  await browser.switchToFrame(null);
+  // await browser.switchToFrame(0);
+  // await (await $(sel.cvv)).addValue(EXAMPLES.CVV);
+  // await browser.switchToFrame(null);
+  await fillCardElement();
   await firstName.click();
 
   await assertStateOutputIs({
@@ -261,7 +270,7 @@ async function assertDistinctCardBehavior (...expectations) {
     const i = entries.indexOf(entry);
     await browser.switchToFrame(i);
     const input = await $('.recurly-hosted-field-input');
-    await input.setValue(entry);
+    await input.addValue(entry);
     await browser.pause(500);
     await browser.switchToFrame(null);
     await firstName.click();

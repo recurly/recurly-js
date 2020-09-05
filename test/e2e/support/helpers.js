@@ -44,6 +44,25 @@ const TOKEN_TYPES = {
   THREE_D_SECURE_ACTION_RESULT: 'three_d_secure_action_result'
 };
 
+const SELECTORS = {
+  HOSTED_FIELD_INPUT: '.recurly-hosted-field-input',
+  CARD_ELEMENT: {
+    NUMBER: 'input[placeholder="Card number"]',
+    EXPIRY: 'input[placeholder="MM / YY"]',
+    CVV: 'input[placeholder="CVV"]'
+  }
+};
+
+const EXAMPLES = {
+  NUMBER: '4111111111111111',
+  NUMBER_FORMATTED: '4111 1111 1111 1111',
+  MONTH: '10',
+  YEAR: '28',
+  CVV: '123'
+};
+EXAMPLES.EXPIRY = `${EXAMPLES.MONTH}${EXAMPLES.YEAR}`;
+EXAMPLES.EXPIRY_FORMATTED = `${EXAMPLES.MONTH} / ${EXAMPLES.YEAR}`;
+
 module.exports = {
   assertIsAToken,
   BROWSERS,
@@ -53,7 +72,10 @@ module.exports = {
   ELEMENT_TYPES,
   elementAndFieldSuite,
   environmentIs: memoize(environmentIs),
+  EXAMPLES,
   FIELD_TYPES,
+  fillCardElement,
+  fillDistinctCardElements,
   init,
   recurlyEnvironment,
   tokenize,
@@ -73,46 +95,52 @@ module.exports = {
  * Use this when testing a behavior which is expected to apply
  * across all of these implementations
  *
- * @param {Object}   tests An object with members for each element and field type
- * @param {Function} [tests.cardElement]
- * @param {Function} [tests.distinctCardElements]
- * @param {Function} [tests.cardHostedField]
- * @param {Function} [tests.distinctCardHostedFields]
- * @param {Function} [tests.any] Will run if any of the other members are not defined
+ * @param {Object}   options An object with members for each element and field type
+ * @param {Function} [options.cardElement]
+ * @param {Function} [options.distinctCardElements]
+ * @param {Function} [options.cardHostedField]
+ * @param {Function} [options.distinctCardHostedFields]
+ * @param {Function} [options.any] Will run if any of the other members are not defined
  */
-function elementAndFieldSuite (tests) {
+function elementAndFieldSuite ({
+  cardElement,
+  distinctCardElements,
+  cardHostedField,
+  distinctCardHostedFields,
+  any
+}) {
   return () => {
-    const maybeRun = maybe => (maybe || tests.any)();
+    const maybeRun = maybe => (maybe || any)();
 
-    describe('when using Elements', () => {
+    describe('when using Elements', function () {
       beforeEach(init());
 
-      describe('CardElement', async () => {
-        beforeEach(async () => {
+      describe('CardElement', function () {
+        beforeEach(async function () {
           await createElement(ELEMENT_TYPES.CardElement);
         });
-        maybeRun(tests.cardElement);
+        maybeRun(cardElement);
       });
 
-      describe('distinct card Elements', async () => {
-        beforeEach(async () => {
+      describe('distinct card Elements', function () {
+        beforeEach(async function () {
           await createElement(ELEMENT_TYPES.CardNumberElement);
           await createElement(ELEMENT_TYPES.CardMonthElement);
           await createElement(ELEMENT_TYPES.CardYearElement);
           await createElement(ELEMENT_TYPES.CardCvvElement);
         });
-        maybeRun(tests.distinctCardElements);
+        maybeRun(distinctCardElements);
       });
     });
 
-    describe('when using a card Hosted Field', async () => {
+    describe('when using a card Hosted Field', function () {
       beforeEach(init({ fixture: 'hosted-fields-card' }));
-      maybeRun(tests.cardHostedField);
+      maybeRun(cardHostedField);
     });
 
-    describe('when using distinct card Hosted Fields', async () => {
+    describe('when using distinct card Hosted Fields', function () {
       beforeEach(init({ fixture: 'hosted-fields-card-distinct' }));
-      maybeRun(tests.distinctCardHostedFields);
+      maybeRun(distinctCardHostedFields);
     });
   };
 }
@@ -166,6 +194,55 @@ async function createElement (elementClass, config = {}) {
     element.attach(container);
     window.__e2e__.elementReferences.push(element);
   }, elementClass, config);
+}
+
+/**
+ * Fills a CardElement or card Hosted Field with given values
+ *
+ * @param  {String} options.number
+ * @param  {String} options.expiry
+ * @param  {String} options.cvv
+ */
+async function fillCardElement ({
+  number = EXAMPLES.NUMBER,
+  expiry = EXAMPLES.EXPIRY,
+  cvv = EXAMPLES.CVV
+} = {}) {
+  await browser.switchToFrame(0);
+
+  const numberInput = await $(SELECTORS.CARD_ELEMENT.NUMBER);
+  const expiryInput = await $(SELECTORS.CARD_ELEMENT.EXPIRY);
+  const cvvInput = await $(SELECTORS.CARD_ELEMENT.CVV);
+
+  await numberInput.setValue(number);
+  await expiryInput.setValue(expiry);
+  await cvvInput.setValue(cvv);
+
+  await browser.switchToFrame(null);
+}
+
+/**
+ * Fills distinct card Elements or Hosted Fields with the given values
+ *
+ * @param  {String} options.number
+ * @param  {String} options.month
+ * @param  {String} options.year
+ * @param  {String} options.cvv
+ */
+async function fillDistinctCardElements ({
+  number = EXAMPLES.NUMBER,
+  month = EXAMPLES.MONTH,
+  year = EXAMPLES.YEAR,
+  cvv = EXAMPLES.CVV
+} = {}) {
+  const examples = [number, month, year, cvv];
+  for (const example of examples) {
+    const i = examples.indexOf(example);
+    await browser.switchToFrame(i);
+    const input = await $(SELECTORS.HOSTED_FIELD_INPUT);
+    await input.setValue(example);
+    await browser.switchToFrame(null);
+  }
 }
 
 // Action helpers

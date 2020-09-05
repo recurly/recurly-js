@@ -1,36 +1,29 @@
 const assert = require('assert');
 const {
-  init,
-  ELEMENT_TYPES,
+  BROWSERS,
   createElement,
   DEVICES,
-  BROWSERS,
-  environmentIs
+  ELEMENT_TYPES,
+  environmentIs,
+  fillCardElement,
+  fillDistinctCardElements,
+  init
 } = require('./support/helpers');
 
-const {
-  BROWSER
-} = process.env;
-
-
 const sel = {
-  firstName: '[data-test="first-name"]',
-  hostedFieldInput: '.recurly-hosted-field-input',
-  number: 'input[placeholder="Card number"]',
-  expiry: 'input[placeholder="MM / YY"]',
-  cvv: 'input[placeholder="CVV"]'
+  firstName: '[data-test="first-name"]'
 };
 
 const maybeDescribe = environmentIs(BROWSERS.ELECTRON) ? describe.skip : describe;
 
-maybeDescribe('Display', function () {
-  describe('when configured with elements', async function () {
+maybeDescribe('Display', () => {
+  describe('when configured with Elements', async function () {
     beforeEach(init());
 
     describe('CardElement', async function () {
       it('matches CardElement baseline', async function () {
         await createElement(ELEMENT_TYPES.CardElement, { style: { fontFamily: 'Pacifico' }});
-        await enterCardValues();
+        await fillCardElement();
         await clickFirstName();
 
         const diff = await browser.checkFullPageScreen('elements/card-element-pacifico');
@@ -52,7 +45,7 @@ maybeDescribe('Display', function () {
         for (const element in distinctElements) {
           await createElement(element, { style: { fontFamily: 'Pacifico' }});
         }
-        await enterDistinctFieldValues();
+        await fillDistinctCardElements();
         await clickFirstName();
 
         const diff = await browser.checkFullPageScreen('elements/distinct-elements-pacifico');
@@ -69,35 +62,31 @@ maybeDescribe('Display', function () {
     });
   });
 
-  describe('when configured with fields', async function () {
-    const config = { fields: { all: { style: { fontFamily: 'Pacifico' } } } };
+  const hostedFieldOpts = { fields: { all: { style: { fontFamily: 'Pacifico' } } } };
 
-    describe('CardElement', async function () {
-      beforeEach(init({ fixture: 'hosted-fields-card', opts: config }));
+  describe('when using a card Hosted Field', async function () {
+    beforeEach(init({ fixture: 'hosted-fields-card', opts: hostedFieldOpts }));
 
-      it('matches CardElement baseline', async function () {
-        await enterCardValues();
-        await browser.switchToFrame(null);
-        await clickFirstName();
+    it('matches CardElement baseline', async function () {
+      await fillCardElement();
+      await clickFirstName();
 
-        const diff = await browser.checkFullPageScreen('hosted-fields/card-element-pacifico');
-        assert.strictEqual(diff, 0);
-      });
+      const diff = await browser.checkFullPageScreen('hosted-fields/card-element-pacifico');
+      assert.strictEqual(diff, 0);
     });
+  });
 
-    describe('distinct elements', async function () {
-      beforeEach(init({ fixture: 'hosted-fields-card-distinct', opts: config }));
+  describe('when using distinct card Hosted Fields', async function () {
+    beforeEach(init({ fixture: 'hosted-fields-card-distinct', opts: hostedFieldOpts }));
 
-      it('matches distinct elements baseline', async function () {
-        if (environmentIs(BROWSERS.EDGE)) return this.skip();
+    it('matches distinct elements baseline', async function () {
+      if (environmentIs(BROWSERS.EDGE)) return this.skip();
 
-        await enterDistinctFieldValues();
-        await browser.switchToFrame(null);
-        await clickFirstName();
+      await fillDistinctCardElements();
+      await clickFirstName();
 
-        const diff =  await browser.checkFullPageScreen('hosted-fields/distinct-elements-pacifico');
-        assert.strictEqual(diff, 0);
-      });
+      const diff =  await browser.checkFullPageScreen('hosted-fields/distinct-elements-pacifico');
+      assert.strictEqual(diff, 0);
     });
   });
 });
@@ -105,40 +94,4 @@ maybeDescribe('Display', function () {
 async function clickFirstName () {
   const firstName = await $(sel.firstName);
   await firstName.click();
-}
-
-async function enterCardValues () {
-  await browser.switchToFrame(0);
-
-  const number = await $(sel.number);
-  const expiry = await $(sel.expiry);
-  const cvv = await $(sel.cvv);
-
-  await number.setValue('4111111111111111');
-  await expiry.setValue('1028');
-  await cvv.setValue('123');
-
-  await browser.switchToFrame(null);
-}
-
-async function enterDistinctFieldValues () {
-  const withCvv = [
-    ['4111111111111111', '4111 1111 1111 1111'],
-    ['10', '10'],
-    ['28', '28'],
-    ['123', '123']
-  ];
-
-  await fill(withCvv);
-}
-
-async function fill (examples) {
-  let i = 0;
-  for (const [value, expect] of examples) {
-    await browser.switchToFrame(i++);
-    const input = await $(sel.hostedFieldInput);
-    await input.setValue(value);
-    assert.strictEqual(await input.getValue(), expect);
-    await browser.switchToFrame(null);
-  }
 }
