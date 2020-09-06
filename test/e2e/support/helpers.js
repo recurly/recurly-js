@@ -214,7 +214,15 @@ async function fillCardElement ({
   const expiryInput = await $(SELECTORS.CARD_ELEMENT.EXPIRY);
   const cvvInput = await $(SELECTORS.CARD_ELEMENT.CVV);
 
-  await numberInput.setValue(number);
+  // setvalue's underlying elementSendKeys is slow to act on Android
+  if (environmentIs(DEVICES.ANDROID)) {
+    await browser.waitUntil(async () => {
+      if ((await numberInput.getValue()).replace(/ /g, '') === number) return true;
+      await numberInput.setValue(number);
+    }, { interval: 4000 });
+  } else {
+    await numberInput.setValue(number);
+  }
   await expiryInput.setValue(expiry);
   await cvvInput.setValue(cvv);
 
