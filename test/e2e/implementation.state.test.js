@@ -168,10 +168,12 @@ async function assertCardBehavior ({ wrap = obj => obj } = {}) {
   const firstName = await $(sel.firstName);
   const output = await $(sel.output);
   const actual = async () => JSON.parse(await output.getText());
-  const assertStateOutputIs = async changes => assert.deepStrictEqual(
-    await actual(),
-    wrap(Object.assign({}, expect, changes))
-  );
+  const assertStateOutputIs = async changes => {
+    assert.deepStrictEqual(
+      await actual(),
+      wrap(Object.assign({}, expect, changes))
+    );
+  };
 
   // await browser.switchToFrame(0);
   // const number = await $(sel.number);
@@ -271,7 +273,9 @@ async function assertDistinctCardBehavior (...expectations) {
     await browser.switchToFrame(i);
     const input = await $('.recurly-hosted-field-input');
     await input.addValue(entry);
-    await browser.pause(500);
+    if (environmentIs(BROWSERS.EDGE)) {
+      await browser.waitUntil(async () => (await input.getValue()).replace(/ /g, '') === entry);
+    }
     await browser.switchToFrame(null);
     await firstName.click();
     await assertStateOutputIs(expectations[i]);

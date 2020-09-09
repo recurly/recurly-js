@@ -67,7 +67,7 @@ maybeDescribe('Display', () => {
   describe('when using a card Hosted Field', async function () {
     beforeEach(init({ fixture: 'hosted-fields-card', opts: hostedFieldOpts }));
 
-    it('matches CardElement baseline', async function () {
+    it('matches card Hosted Field baseline', async function () {
       await fillCardElement();
       await clickFirstName();
 
@@ -79,7 +79,7 @@ maybeDescribe('Display', () => {
   describe('when using distinct card Hosted Fields', async function () {
     beforeEach(init({ fixture: 'hosted-fields-card-distinct', opts: hostedFieldOpts }));
 
-    it('matches distinct elements baseline', async function () {
+    it('matches distinct card Hosted Field baseline', async function () {
       if (environmentIs(BROWSERS.EDGE)) return this.skip();
 
       await fillDistinctCardElements();
