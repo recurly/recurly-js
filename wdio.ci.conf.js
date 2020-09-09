@@ -45,7 +45,7 @@ if (BROWSER === 'Electron') {
             projectName,
             buildName: `${TRAVIS_BUILD_NUMBER || `Local e2e [${branchName()}]`}`,
             seleniumVersion: '3.141.59',
-            appiumVersion: '1.18.0',
+            appiumVersion: '1.17.0',
             local: true,
             debug: true,
             networkLogs: true,
