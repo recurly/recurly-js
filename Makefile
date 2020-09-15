@@ -60,7 +60,7 @@ node_modules: package.json
 	@npm install --silent --no-audit
 
 clean:
-	@rm -rf node_modules build
+	@rm -rf node_modules build tmp
 
 .PHONY: server server-http
 .PHONY: test-ci test-unit test-unit-ci test-unit-cov-ci test-e2e test-e2e-ci test-types

@@ -1,136 +1,97 @@
 const assert = require('assert');
 const {
-  init,
-  ELEMENT_TYPES,
+  BROWSERS,
   createElement,
   DEVICES,
-  environmentIs
+  ELEMENT_TYPES,
+  environmentIs,
+  fillCardElement,
+  fillDistinctCardElements,
+  init
 } = require('./support/helpers');
 
-const {
-  BROWSER,
-} = process.env;
-
-
 const sel = {
-  hostedFieldInput: '.recurly-hosted-field-input',
-  number: 'input[placeholder="Card number"]',
-  expiry: 'input[placeholder="MM / YY"]',
-  cvv: 'input[placeholder="CVV"]'
+  firstName: '[data-test="first-name"]'
 };
 
-if (BROWSER !== 'Electron') {
-  describe('Display', function () {
-    describe('when configured with elements', async function () {
-      beforeEach(init());
+const maybeDescribe = environmentIs(BROWSERS.ELECTRON) ? describe.skip : describe;
 
-      if (BROWSER !== 'BrowserStackAndroid10') {
-        describe('CardElement', async function () {
-          it('matches CardElement baseline', async function () {
-            await createElement(ELEMENT_TYPES.CardElement, { style: { fontFamily: 'Pacifico' }});
-            await enterCardValues();
-            await clickBody();
+maybeDescribe('Display', () => {
+  describe('when configured with Elements', async function () {
+    beforeEach(init());
 
-            const diff = await browser.checkFullPageScreen('elements/card-element-pacifico');
-            if (environmentIs(DEVICES.IOS)) {
-              assert(diff <= 0.01);
-            } else {
-              assert.strictEqual(diff, 0);
-            }
-          });
-        });
-      }
+    describe('CardElement', async function () {
+      it('matches CardElement baseline', async function () {
+        await createElement(ELEMENT_TYPES.CardElement, { style: { fontFamily: 'Pacifico' }});
+        await fillCardElement();
+        await clickFirstName();
 
-      describe('distinct elements', async function () {
-        it('matches distinct elements baseline', async function () {
-          const { CardElement, ...distinctElements } = ELEMENT_TYPES;
-          for (const element in distinctElements) {
-            await createElement(element, { style: { fontFamily: 'Pacifico' }});
-          }
-          await enterDistinctFieldValues();
-          await clickBody();
-
-          const diff = await browser.checkFullPageScreen('elements/distinct-elements-pacifico');
-          if (environmentIs(DEVICES.IOS)) {
-            assert(diff <= 0.01);
-          } else {
-            assert.strictEqual(diff, 0);
-          }
-        });
+        const diff = await browser.checkFullPageScreen('elements/card-element-pacifico');
+        if (environmentIs(DEVICES.ANDROID)) {
+          assert(diff <= 0.5, `${diff} is above the threshold of 0.5`);
+        } else if (environmentIs(BROWSERS.EDGE)) {
+          assert(diff <= 0.05, `${diff} is above the threshold of 0.05`);
+        } else if (environmentIs(DEVICES.IOS)) {
+          assert(diff <= 0.01, `${diff} is above the threshold of 0.01`);
+        } else {
+          assert.strictEqual(diff, 0);
+        }
       });
     });
 
-    describe('when configured with fields', async function () {
-      const config = { fields: { all: { style: { fontFamily: "Pacifico" } } } };
+    describe('distinct elements', async function () {
+      it('matches distinct elements baseline', async function () {
+        const { CardElement, ...distinctElements } = ELEMENT_TYPES;
+        for (const element in distinctElements) {
+          await createElement(element, { style: { fontFamily: 'Pacifico' }});
+        }
+        await fillDistinctCardElements();
+        await clickFirstName();
 
-      describe('CardElement', async function () {
-        beforeEach(init({ fixture: 'hosted-fields-card', opts: config }));
-
-        it('matches CardElement baseline', async function () {
-          await enterCardValues();
-          await browser.switchToFrame(null);
-          await clickBody();
-
-          const diff = await browser.checkFullPageScreen('hosted-fields/card-element-pacifico');
+        const diff = await browser.checkFullPageScreen('elements/distinct-elements-pacifico');
+        if (environmentIs(DEVICES.ANDROID)) {
+          assert(diff <= 0.5, `${diff} is above the threshold of 0.5`);
+        } else if (environmentIs(BROWSERS.EDGE)) {
+          assert(diff <= 0.05, `${diff} is above the threshold of 0.05`);
+        } else if (environmentIs(DEVICES.IOS)) {
+          assert(diff <= 0.01, `${diff} is above the threshold of 0.01`);
+        } else {
           assert.strictEqual(diff, 0);
-        });
+        }
       });
-
-      if (BROWSER !== 'BrowserStackEdge') {
-        describe("distinct elements", async function () {
-          beforeEach(init({ fixture: 'hosted-fields-card-distinct', opts: config }));
-
-          it('matches distinct elements baseline', async function () {
-            await enterDistinctFieldValues();
-            await browser.switchToFrame(null);
-            await clickBody();
-
-            const diff =  await browser.checkFullPageScreen('hosted-fields/distinct-elements-pacifico');
-            assert.strictEqual(diff, 0);
-          });
-        });
-      }
     });
   });
-}
 
-  async function clickBody() {
-    const body = await $("body");
-    await body.click();
-  }
+  const hostedFieldOpts = { fields: { all: { style: { fontFamily: 'Pacifico' } } } };
 
-  async function enterCardValues() {
-    await browser.switchToFrame(0);
+  describe('when using a card Hosted Field', async function () {
+    beforeEach(init({ fixture: 'hosted-fields-card', opts: hostedFieldOpts }));
 
-    const number = await $(sel.number);
-    const expiry = await $(sel.expiry);
-    const cvv = await $(sel.cvv);
+    it('matches card Hosted Field baseline', async function () {
+      await fillCardElement();
+      await clickFirstName();
 
-    await number.setValue('4111111111111111');
-    await expiry.setValue('1028');
-    await cvv.setValue('123');
+      const diff = await browser.checkFullPageScreen('hosted-fields/card-element-pacifico');
+      assert.strictEqual(diff, 0);
+    });
+  });
 
-    await browser.switchToFrame(null);
-  }
+  describe('when using distinct card Hosted Fields', async function () {
+    beforeEach(init({ fixture: 'hosted-fields-card-distinct', opts: hostedFieldOpts }));
 
-  async function enterDistinctFieldValues() {
-    const withCvv = [
-      ['4111111111111111', '4111 1111 1111 1111'],
-      ['10', '10'],
-      ['28', '28'],
-    ['123', '123']
-  ];
+    it('matches distinct card Hosted Field baseline', async function () {
+      if (environmentIs(BROWSERS.EDGE)) return this.skip();
 
-  await fill(withCvv);
-}
+      await fillDistinctCardElements();
+      await clickFirstName();
 
-async function fill (examples) {
-  let i = 0;
-  for (const [value, expect] of examples) {
-    await browser.switchToFrame(i++);
-    const input = await $(sel.hostedFieldInput);
-    await input.setValue(value);
-    assert.strictEqual(await input.getValue(), expect);
-    await browser.switchToFrame(null);
-  }
+      const diff =  await browser.checkFullPageScreen('hosted-fields/distinct-elements-pacifico');
+      assert.strictEqual(diff, 0);
+    });
+  });
+});
+
+async function clickFirstName () {
+  const firstName = await $(sel.firstName);
+  await firstName.click();
 }

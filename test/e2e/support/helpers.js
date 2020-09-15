@@ -4,15 +4,18 @@ const memoize = require('memoize-one');
 const TOKEN_PATTERN = /^[\w-]{21,23}$/;
 
 const BROWSERS = {
-  IE_11: ['internet explorer', '11']
+  IE_11: ['internet explorer', '11'],
+  EDGE: ['MicrosoftEdge'],
+  ELECTRON: ['chrome', 'electron'],
+  SAFARI: ['Safari']
 };
 
 const DEVICES = {
   DESKTOP: 'desktop',
   MOBILE: 'mobile',
   IOS: 'ios',
-  ANDROID: 'android'
-}
+  ANDROID: 'android',
+};
 
 const ELEMENT_TYPES = {
   CardElement: 'CardElement',
@@ -41,6 +44,25 @@ const TOKEN_TYPES = {
   THREE_D_SECURE_ACTION_RESULT: 'three_d_secure_action_result'
 };
 
+const SELECTORS = {
+  HOSTED_FIELD_INPUT: '.recurly-hosted-field-input',
+  CARD_ELEMENT: {
+    NUMBER: 'input[placeholder="Card number"]',
+    EXPIRY: 'input[placeholder="MM / YY"]',
+    CVV: 'input[placeholder="CVV"]'
+  }
+};
+
+const EXAMPLES = {
+  NUMBER: '4111111111111111',
+  NUMBER_FORMATTED: '4111 1111 1111 1111',
+  MONTH: '10',
+  YEAR: '28',
+  CVV: '123'
+};
+EXAMPLES.EXPIRY = `${EXAMPLES.MONTH}${EXAMPLES.YEAR}`;
+EXAMPLES.EXPIRY_FORMATTED = `${EXAMPLES.MONTH} / ${EXAMPLES.YEAR}`;
+
 module.exports = {
   assertIsAToken,
   BROWSERS,
@@ -48,13 +70,80 @@ module.exports = {
   createElement,
   DEVICES,
   ELEMENT_TYPES,
+  elementAndFieldSuite,
   environmentIs: memoize(environmentIs),
+  EXAMPLES,
   FIELD_TYPES,
+  fillCardElement,
+  fillDistinctCardElements,
   init,
   recurlyEnvironment,
   tokenize,
   TOKEN_TYPES
 };
+
+// suite helpers
+
+/**
+ * Builds a test suite which will execute a test against
+ * the cohorts of the following implementations:
+ *   - CardElement
+ *   - distinct CardElements: number, month, year, cvv
+ *   - Card Hosted field
+ *   - distinct Card Hosted fields: number, month, year, cvv
+ *
+ * Use this when testing a behavior which is expected to apply
+ * across all of these implementations
+ *
+ * @param {Object}   options An object with members for each element and field type
+ * @param {Function} [options.cardElement]
+ * @param {Function} [options.distinctCardElements]
+ * @param {Function} [options.cardHostedField]
+ * @param {Function} [options.distinctCardHostedFields]
+ * @param {Function} [options.any] Will run if any of the other members are not defined
+ */
+function elementAndFieldSuite ({
+  cardElement,
+  distinctCardElements,
+  cardHostedField,
+  distinctCardHostedFields,
+  any
+}) {
+  return () => {
+    const maybeRun = maybe => (maybe || any)();
+
+    describe('when using Elements', function () {
+      beforeEach(init());
+
+      describe('CardElement', function () {
+        beforeEach(async function () {
+          await createElement(ELEMENT_TYPES.CardElement);
+        });
+        maybeRun(cardElement);
+      });
+
+      describe('distinct card Elements', function () {
+        beforeEach(async function () {
+          await createElement(ELEMENT_TYPES.CardNumberElement);
+          await createElement(ELEMENT_TYPES.CardMonthElement);
+          await createElement(ELEMENT_TYPES.CardYearElement);
+          await createElement(ELEMENT_TYPES.CardCvvElement);
+        });
+        maybeRun(distinctCardElements);
+      });
+    });
+
+    describe('when using a card Hosted Field', function () {
+      beforeEach(init({ fixture: 'hosted-fields-card' }));
+      maybeRun(cardHostedField);
+    });
+
+    describe('when using distinct card Hosted Fields', function () {
+      beforeEach(init({ fixture: 'hosted-fields-card-distinct' }));
+      maybeRun(distinctCardHostedFields);
+    });
+  };
+}
 
 // Setup helpers
 
@@ -103,7 +192,70 @@ async function createElement (elementClass, config = {}) {
       done();
     });
     element.attach(container);
+    window.__e2e__.elementReferences.push(element);
   }, elementClass, config);
+}
+
+/**
+ * Fills a CardElement or card Hosted Field with given values
+ *
+ * @param  {String} options.number
+ * @param  {String} options.expiry
+ * @param  {String} options.cvv
+ */
+async function fillCardElement ({
+  number = EXAMPLES.NUMBER,
+  expiry = EXAMPLES.EXPIRY,
+  cvv = EXAMPLES.CVV
+} = {}) {
+  await browser.switchToFrame(0);
+
+  const numberInput = await $(SELECTORS.CARD_ELEMENT.NUMBER);
+  const expiryInput = await $(SELECTORS.CARD_ELEMENT.EXPIRY);
+  const cvvInput = await $(SELECTORS.CARD_ELEMENT.CVV);
+
+  // setvalue's underlying elementSendKeys is slow to act on Android. Thus we chunk the input.
+  if (environmentIs(DEVICES.ANDROID)) {
+    await numberInput.clearValue();
+    for (const chunk of number.match(/.{1,2}/g)) {
+      await numberInput.addValue(chunk);
+    }
+  } else {
+    await numberInput.setValue(number);
+  }
+
+  if (environmentIs(BROWSERS.EDGE)) {
+    await browser.waitUntil(async () => (await numberInput.getValue()).replace(/ /g, '') === number);
+  }
+
+  await expiryInput.setValue(expiry);
+  await cvvInput.setValue(cvv);
+
+  await browser.switchToFrame(null);
+}
+
+/**
+ * Fills distinct card Elements or Hosted Fields with the given values
+ *
+ * @param  {String} options.number
+ * @param  {String} options.month
+ * @param  {String} options.year
+ * @param  {String} options.cvv
+ */
+async function fillDistinctCardElements ({
+  number = EXAMPLES.NUMBER,
+  month = EXAMPLES.MONTH,
+  year = EXAMPLES.YEAR,
+  cvv = EXAMPLES.CVV
+} = {}) {
+  const examples = [number, month, year, cvv];
+  for (const example of examples) {
+    const i = examples.indexOf(example);
+    await browser.switchToFrame(i);
+    const input = await $(SELECTORS.HOSTED_FIELD_INPUT);
+    await input.setValue(example);
+    await browser.switchToFrame(null);
+  }
 }
 
 // Action helpers
@@ -173,10 +325,18 @@ function environmentIs (...conditions) {
   const isMobile = isIos || isAndroid;
 
   for (const condition of conditions) {
+    if (condition === BROWSERS.ELECTRON) {
+      const [ name, envName ] = condition;
+      if (name === browserName && process.env.BROWSER?.toLowerCase() === envName) {
+        return true;
+      }
+    }
+
     if (browsers.includes(condition)) {
       const [ name, version ] = condition;
-      if (name === browserName && version === browserVersion) {
-        return true;
+      if (name === browserName) {
+        if (version) return version === browserVersion;
+        else return true;
       }
     }
 
