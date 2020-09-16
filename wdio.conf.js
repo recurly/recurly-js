@@ -26,7 +26,7 @@ exports.config = Object.assign({
   baseUrl: baseUrl(),
   waitforTimeout: Math.round(timeout() * 2/3),
   connectionRetryCount: 3,
-  services: [services(), imageComparisonService()],
+  services: services(),
   framework: 'mocha',
   reporters: ['spec'],
   mochaOpts: {
@@ -111,40 +111,39 @@ function onPrepare () {
 }
 
 function services () {
+  const definition = [];
+
   if (browserName() === 'firefox') {
-    return ['geckodriver'];
-  }
-
-  if (isMobile()) {
-    return [['appium', {
+    definition.push('geckodriver');
+  } else if (isMobile()) {
+    definition.push(['appium', {
       logPath : './build/reports/e2e/log/'
-    }]];
+    }]);
+  } else {
+    definition.push('chromedriver');
   }
 
-  return ['chromedriver'];
+  definition.push(imageComparisonService());
+
+  return definition;
 }
 
 /**
  * Configuration options for wdio-image-comparison-service
  * @see https://github.com/wswebcreation/webdriver-image-comparison/blob/master/docs/OPTIONS.md#plugin-options
  */
-function imageComparisonService() {
+function imageComparisonService () {
   const service = [
     'image-comparison',
     {
-      baselineFolder: path.resolve(__dirname, './test/e2e/.snapshots/'),
-
+      baselineFolder: path.resolve(__dirname, './test/e2e/support/snapshots'),
       // path to dump screenshots taken during tests
-      screenshotPath: path.resolve(__dirname, './build/.tmp/'),
-
+      screenshotPath: path.resolve(__dirname, './tmp'),
       // Output diff if a visual regression test is failing
-      diffPath: path.resolve(__dirname, './build/.tmp/diff'),
-
+      diffPath: path.resolve(__dirname, './tmp/diff'),
       formatImageName: `${BROWSER}/{tag}-{width}x{height}`,
-
       // Save screenshots on every test run in screenshotPath dir
       savePerInstance: true,
-
       // Needs to be false to prevent false positives in CI.
       // Change to true and remove snapshots to generate new baselines
       autoSaveBaseline: false,
@@ -200,7 +199,7 @@ function isIos () {
 }
 
 function isAndroid () {
-  return BROWSER.toLowerCase().includes('android')
+  return BROWSER.toLowerCase().includes('android');
 }
 
 function isElectron () {

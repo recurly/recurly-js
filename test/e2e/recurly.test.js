@@ -1,12 +1,13 @@
 const assert = require('assert');
 const {
   assertIsAToken,
+  EXAMPLES,
   init,
   recurlyEnvironment,
   tokenize
 } = require('./support/helpers');
 
-describe('Recurly.js', async () => {
+describe('Recurly.js', async function () {
   describe('credit card', async function () {
     beforeEach(init({ fixture: 'hosted-fields-card' }));
 
@@ -43,13 +44,13 @@ describe('Recurly.js', async () => {
         const expiry = await $(sel.expiry);
         const cvv = await $(sel.cvv);
 
-        await number.setValue('4111111111111111');
-        await expiry.setValue('1028');
-        await cvv.setValue('123');
+        await number.setValue(EXAMPLES.NUMBER);
+        await expiry.setValue(EXAMPLES.EXPIRY);
+        await cvv.setValue(EXAMPLES.CVV);
 
-        assert.strictEqual(await number.getValue(), '4111 1111 1111 1111');
-        assert.strictEqual(await expiry.getValue(), '10 / 28');
-        assert.strictEqual(await cvv.getValue(), '123');
+        assert.strictEqual(await number.getValue(), EXAMPLES.NUMBER_FORMATTED);
+        assert.strictEqual(await expiry.getValue(), EXAMPLES.EXPIRY_FORMATTED);
+        assert.strictEqual(await cvv.getValue(), EXAMPLES.CVV);
 
         await browser.switchToFrame(null);
 

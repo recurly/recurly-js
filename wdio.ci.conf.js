@@ -60,6 +60,7 @@ if (BROWSER === 'Electron') {
       }
     ],
     baseUrl: 'http://bs-local.com:9877',
+    maxInstances: 1,
     services,
     onPrepare: () => {
       if (isMobile()) {
