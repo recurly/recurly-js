@@ -2,7 +2,7 @@ name: DefinitelyTyped
 on:
   release:
     types:
-      - created
+      - published
 
 jobs:
   DefinitelyTyped:
