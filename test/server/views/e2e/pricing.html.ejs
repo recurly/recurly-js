@@ -15,12 +15,70 @@
     tax_amount_now<input type="text" data-recurly="tax_amount_now">
     tax_amount_next<input type="text" data-recurly="tax_amount_next">
 
-    My product x
+    Quantity adjustment
     <input type="text"
          data-recurly="adjustment"
-         data-recurly-adjustment="my-adjustment-0"
+         data-recurly-adjustment="my-quantity-adjustment"
          data-recurly-adjustment-item-code="item1"
-         value="10">
+         value="20">
+
+    $2.99 adjustment
+    <input type="checkbox"
+          data-recurly="adjustment"
+          data-recurly-adjustment="my-2.99-adjustment"
+          data-recurly-adjustment-amount="2.99"
+          data-recurly-adjustment-currency="USD"
+          data-recurly-adjustment-tax-code="digital"
+          data-recurly-adjustment-tax-exempt="true"
+          value="5">
+
+    <!-- Subscription 1
+  <select data-recurly="plan" data-recurly-subscription="0">
+    <option value="basic">Basic</option>
+    <option value="notbasic">Not Basic</option>
+  </select> -->
+
+  <!-- Subscription 1 Add-ons
+  <span data-recurly="addon_price" data-recurly-subscription="0" data-recurly-addon="my_addon_code_1"></span>
+  <input type="text" data-recurly="addon" data-recurly-subscription="0" data-recurly-addon="my_addon_code_1" value="0"> -->
+
+  <!-- Subscription 2
+  <select data-recurly="plan" data-recurly-subscription="1">
+    <option value="basic">Basic</option>
+    <option value="notbasic">Not Basic</option>
+  </select> -->
+
+  <!-- <input type="hidden" data-recurly="tax_code" data-recurly-subscription="1" value="my_tax_code_0">
+    My product
+    x
+    <input type="text"
+          data-recurly="adjustment"
+          data-recurly-adjustment="10"
+          data-recurly-adjustment-item-code="item1"
+          value="10">
+          
+    $10 adjustment
+    x
+    <input type="text"
+           data-recurly="adjustment"
+           data-recurly-adjustment="my-adjustment-0"
+           data-recurly-adjustment-amount="10"
+           data-recurly-adjustment-currency="USD"
+           data-recurly-adjustment-tax-code="my_tax_code_1"
+           data-recurly-adjustment-tax-exempt="false"
+           value="10">
+   -->
+
+
+    <!-- $2.99 adjustment
+    <input type="checkbox"
+           data-recurly="adjustment"
+           data-recurly-adjustment="my-adjustment-1"
+           data-recurly-adjustment-amount="2.99"
+           data-recurly-adjustment-currency="USD"
+           data-recurly-adjustment-tax-code="my_tax_code_2"
+           data-recurly-adjustment-tax-exempt="true"
+           value="1"> -->
 
     total_now<div type="text" data-recurly="total_now"></div>
     subtotal_now<div type="text" data-recurly="subtotal_now"></div>
