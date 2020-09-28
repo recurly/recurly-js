@@ -1,12 +1,12 @@
 import assert from 'assert';
 import { applyFixtures } from '../../../support/fixtures';
-import { initRecurly, testBed } from '../../../support/helpers';
-import WorldpayStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/worldpay';
-import actionToken from '../../../../server/fixtures/tokens/action-token-worldpay.json';
+import { initRecurly, apiTest, testBed } from '../../../support/helpers';
+import CybersourceStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/cybersource';
+import actionToken from '../../../../server/fixtures/tokens/action-token-cybersource.json';
 import Promise from 'promise';
 import { Frame } from '../../../../../lib/recurly/frame';
 
-describe('WorldpayStrategy', function () {
+describe.only('CybersourceStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
 
   applyFixtures();
@@ -20,8 +20,8 @@ describe('WorldpayStrategy', function () {
     this.sandbox = sinon.createSandbox();
     this.sandbox.spy(recurly, 'Frame');
 
-    this.Strategy = WorldpayStrategy;
-    this.strategy = new WorldpayStrategy({ threeDSecure, actionToken });
+    this.Strategy = CybersourceStrategy;
+    this.strategy = new CybersourceStrategy({ threeDSecure, actionToken });
     this.strategy.whenReady(() => done());
   });
 
@@ -31,14 +31,17 @@ describe('WorldpayStrategy', function () {
     sandbox.restore();
   });
 
-  describe('WorldpayStrategy.preflight', function () {
+  describe('CybersourceStrategy.preflight', function () {
     beforeEach(function () {
       const { recurly } = this;
-      this.sessionId = 'test-worldpay-session-id';
+      this.sessionId = 'test-cybersource-session-id';
       this.number = '4111111111111111';
+      this.month = '01';
+      this.year = '2023';
+      this.gateway_code = 'test-gateway-code';
       this.jwt = 'test-preflight-jwt';
       this.simulatePreflightResponse = () => {
-        // Stubs expected message format from Worldpay DDC
+        // Stubs expected message format from Cybersource DDC
         recurly.bus.emit('raw-message', {
           data: JSON.stringify({
             MessageType: 'profile.completed',
@@ -49,37 +52,40 @@ describe('WorldpayStrategy', function () {
     });
 
     it('returns a promise', function (done) {
-      const { recurly, Strategy, number, jwt, simulatePreflightResponse } = this;
-      const retValue = Strategy.preflight({ recurly, number, jwt }).then(() => done());
-      assert(retValue instanceof Promise);
+      const { recurly, Strategy, number, month, year, gateway_code, simulatePreflightResponse } = this;
+      const retValue = Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => done());
+
       simulatePreflightResponse();
+      assert(retValue instanceof Promise);
     });
 
     it('constructs a frame to collect a session id', function (done) {
-      const { recurly, Strategy, number, jwt, simulatePreflightResponse } = this;
+      const { recurly, Strategy, number, month, year, gateway_code, jwt, simulatePreflightResponse } = this;
 
-      Strategy.preflight({ recurly, number, jwt }).then(() => done());
+      Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
+        sinon.assert.callCount(recurly.Frame, 1);
+        assert(recurly.Frame.calledWithMatch({
+          path: '/risk/data_collector',
+          payload: {
+            jwt,
+            redirect_url: 'https://centinelapistag.cardinalcommerce.com/V1/Cruise/Collect'
+          },
+          type: Frame.TYPES.IFRAME,
+          height: 0,
+          width: 0
+        }));
 
-      assert(recurly.Frame.calledOnce);
-      assert(recurly.Frame.calledWithMatch({
-        path: '/risk/data_collector',
-        payload: {
-          bin: number.substr(0,6),
-          jwt,
-          redirect_url: 'https://secure-test.worldpay.com/shopper/3ds/ddc.html'
-        },
-        type: Frame.TYPES.IFRAME,
-        height: 0,
-        width: 0
-      }));
+        done();
+      });
 
       simulatePreflightResponse();
     });
 
     it('resolves when a session id is received', function (done) {
-      const { recurly, Strategy, number, jwt, sessionId, simulatePreflightResponse } = this;
+      const { recurly, Strategy, sessionId, number, month, year, gateway_code, jwt, simulatePreflightResponse } = this;
 
-      Strategy.preflight({ recurly, number, jwt }).then(preflightResponse => {
+      Strategy.preflight({ recurly, number, month, year, gateway_code }).then(preflightResponse => {
+
         assert.strictEqual(preflightResponse.session_id, sessionId);
         done();
       });
