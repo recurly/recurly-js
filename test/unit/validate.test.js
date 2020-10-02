@@ -69,6 +69,9 @@ describe('Recurly.validate', function () {
     });
 
     it('should parse ELO', function () {
+      assert.strictEqual(recurly.validate.cardType('6363681111111115'), 'elo');
+      assert.strictEqual(recurly.validate.cardType('5041751111111116'), 'elo');
+      assert.strictEqual(recurly.validate.cardType('6362971111111117'), 'elo');
       assert.strictEqual(recurly.validate.cardType('5066991111111118'), 'elo');
     });
 
