@@ -9,24 +9,29 @@ const {
 
 const SEL_PAYPAL = {
   btnPayPal: '[data-test=paypal-button]',
-  title1: 'Log in to your PayPal account',
-  email: '#email',
-  btnNext: '#btnNext',
-  password: '#password',
-  btnLogin: '#btnLogin',
-  title2: 'PayPal',
-  fundingInstrument: '#FundingInstrument > nth-child(1)',
-  fiSubmitButton: '#fiSubmitButton',
-  consentButton: '#consentButton',
+  popup1: {
+    title: 'Log in to your PayPal account',
+    email: '#email',
+    btnNext: '#btnNext'
+  },
+  popup2: {
+    title: 'Log in to your PayPal account',
+    password: '#password',
+    btnLogin: '#btnLogin'
+  },
+  popup3: {
+    // title: 'PayPal',
+    title: 'PayPal Checkout',
+    // title: 'PayPal Checkout - Review your payment',
+    consentButton: '#consentButton'
+  },
   tokenOutput: '[data-test=token-output]'
 };
 
-
 describe('PayPal test', async () => {
-  beforeEach(init({ fixture: 'paypal' }));
+  beforeEach(init({ fixture: 'paypal', opts: { publicKey: 'ewr1-meEliTpqgZN2SrdWXABGai'} }));
 
-  // Skip test for now. Need password encryption
-  it.skip('invalid-public-key', async function () {
+  it('Get PayPal token', async function () {
     await browser.switchToFrame(null);
 
     await browser.execute(function () {
@@ -46,37 +51,33 @@ describe('PayPal test', async () => {
     const btnPayPal = await $(SEL_PAYPAL.btnPayPal)
     await btnPayPal.click();
 
-    // Expects first Popup window
-    await browser.switchWindow(SEL_PAYPAL.title1)
-    const email = await $(SEL_PAYPAL.email)
-    await email.setValue('atom+samsmith@recurly.com')
-    const btnNext = await $(SEL_PAYPAL.btnNext)
+    // Expects Popup 1 window
+    await browser.switchWindow(SEL_PAYPAL.popup1.title)
+    const email = await $(SEL_PAYPAL.popup1.email)
+    await email.setValue(process.env.PAYPAL_TEST_EMAIL)
+    const btnNext = await $(SEL_PAYPAL.popup1.btnNext)
     await btnNext.click();
 
-    // Expects second Popup window
-//     await browser.switchWindow(SEL_PAYPAL.title1)
-    const password = await $(SEL_PAYPAL.password)
-    await password.setValue('needToEncrypt')
-    const btnLogin = await $(SEL_PAYPAL.btnLogin)
+    // Expects Popup 2 window
+    await browser.switchWindow(SEL_PAYPAL.popup2.title)
+    const password = await $(SEL_PAYPAL.popup2.password)
+    await password.setValue(process.env.PAYPAL_TEST_PASS)
+    const btnLogin = await $(SEL_PAYPAL.popup2.btnLogin)
     await btnLogin.click();
 
-    // Expects third Popup window
-    await browser.switchWindow(SEL_PAYPAL.title2)
-    const fiSubmitButton = await $(SEL_PAYPAL.fiSubmitButton)
-    await fiSubmitButton.scrollIntoView();
-    await fiSubmitButton.click();
-      
-    const consentButton = await $(SEL_PAYPAL.consentButton)
+    // Expects Popup 3 window
+    await browser.switchWindow(SEL_PAYPAL.popup3.title)
+    const consentButton = await $(SEL_PAYPAL.popup3.consentButton)
     await consentButton.scrollIntoView();
     await consentButton.click();
 
-    await browser.switchWindow('e2e-test');
+    // Expects token in output field
+    await browser.switchWindow('e2e-test')
     const output = await $(SEL_PAYPAL.tokenOutput);
     await output.waitForEnabled();
-
     const token = JSON.parse(await output.getValue());
 
-    assertIsAToken(token, TOKEN_TYPES.PAYPAL);
+    assertIsAToken(token, TOKEN_TYPES.PAYPAL)
 
   });
 });
