@@ -30,7 +30,7 @@ jobs:
       - name: Add DefinitelyTyped header
         run: |
           version=$(cat recurly-js/package.json | jq '.version' -r | sed -ne 's/^\([0-9]*\.[0-9]*\).*/\1/p')
-          echo "// Type definitions for non-npm package recurly__recurly-js $version
+          echo "// Type definitions for non-npm package @recurly/recurly-js $version
           // Project: https://github.com/recurly/recurly-js
           // Definitions by: Dave Brudner <https://github.com/dbrudner>
           //                 Chris Rogers <https://github.com/chrissrogers>

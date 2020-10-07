@@ -9,7 +9,7 @@
     "types": [],
     "baseUrl": "../../types",
     "paths": {
-      "recurly__recurly-js": ["./"]
+      "@recurly/recurly-js": ["./"]
     }
   }
 }
