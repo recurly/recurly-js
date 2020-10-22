@@ -1,0 +1,20 @@
+{
+  "type": "three_d_secure_action",
+  "id": "action-token-stripe",
+  "gateway": {
+    "code": "1234567890",
+    "type": "stripe",
+    "credentials": {
+      "publishable_key": "test-stripe-publishable-key"
+    }
+  },
+  "transaction": {
+    "amount": 50,
+    "amount_in_cents": 5000
+  },
+  "three_d_secure": {
+    "params": {
+      "client_secret": "seti-test-stripe-client-secret"
+    }
+  }
+}
