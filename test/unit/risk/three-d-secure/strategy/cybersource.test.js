@@ -6,7 +6,7 @@ import actionToken from '../../../../server/fixtures/tokens/action-token-cyberso
 import Promise from 'promise';
 import { Frame } from '../../../../../lib/recurly/frame';
 
-describe.only('CybersourceStrategy', function () {
+describe('CybersourceStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
 
   applyFixtures();
@@ -40,7 +40,7 @@ describe.only('CybersourceStrategy', function () {
       this.year = '2023';
       this.gateway_code = 'test-gateway-code';
       this.jwt = 'test-preflight-jwt';
-      this.simulatePreflightResponse = () => {
+      this.poll = setInterval(() => {
         // Stubs expected message format from Cybersource DDC
         recurly.bus.emit('raw-message', {
           data: JSON.stringify({
@@ -48,19 +48,22 @@ describe.only('CybersourceStrategy', function () {
             SessionId: this.sessionId
           })
         });
-      };
+      }, 10);
     });
 
     it('returns a promise', function (done) {
-      const { recurly, Strategy, number, month, year, gateway_code, simulatePreflightResponse } = this;
-      const retValue = Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => done());
+      const { recurly, Strategy, number, month, year, gateway_code, poll } = this;
 
-      simulatePreflightResponse();
+      const retValue = Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
+        clearInterval(poll);
+        done();
+      });
+
       assert(retValue instanceof Promise);
     });
 
     it('constructs a frame to collect a session id', function (done) {
-      const { recurly, Strategy, number, month, year, gateway_code, jwt, simulatePreflightResponse } = this;
+      const { recurly, Strategy, number, month, year, gateway_code, jwt, poll } = this;
 
       Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
         sinon.assert.callCount(recurly.Frame, 1);
@@ -75,22 +78,20 @@ describe.only('CybersourceStrategy', function () {
           width: 0
         }));
 
+        clearInterval(poll);
         done();
       });
-
-      simulatePreflightResponse();
     });
 
     it('resolves when a session id is received', function (done) {
-      const { recurly, Strategy, sessionId, number, month, year, gateway_code, jwt, simulatePreflightResponse } = this;
+      const { recurly, Strategy, sessionId, number, month, year, gateway_code, jwt, poll } = this;
 
       Strategy.preflight({ recurly, number, month, year, gateway_code }).then(preflightResponse => {
-
         assert.strictEqual(preflightResponse.session_id, sessionId);
+
+        clearInterval(poll);
         done();
       });
-
-      simulatePreflightResponse();
     });
   });
 
