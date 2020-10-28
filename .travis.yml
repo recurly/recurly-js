@@ -136,4 +136,4 @@ jobs:
         - openssl aes-256-cbc -K $encrypted_7a8336da16e8_key -iv $encrypted_7a8336da16e8_iv -in gcs.json.enc -out gcs.json -d
         - gcloud auth activate-service-account --key-file=gcs.json
         - make build
-        - gsutil cp -z build/* $GCS_BUCKET_URL/$TRAVIS_COMMIT/
+        - gsutil cp -Z build/* $GCS_BUCKET_URL/$TRAVIS_COMMIT/
