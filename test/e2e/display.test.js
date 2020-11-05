@@ -27,15 +27,7 @@ maybeDescribe('Display', () => {
         await clickFirstName();
 
         const diff = await browser.checkFullPageScreen('elements/card-element-pacifico');
-        if (environmentIs(DEVICES.ANDROID)) {
-          assert(diff <= 0.5, `${diff} is above the threshold of 0.5`);
-        } else if (environmentIs(BROWSERS.EDGE)) {
-          assert(diff <= 0.05, `${diff} is above the threshold of 0.05`);
-        } else if (environmentIs(DEVICES.IOS)) {
-          assert(diff <= 0.01, `${diff} is above the threshold of 0.01`);
-        } else {
-          assert.strictEqual(diff, 0);
-        }
+        assertDiffThresholdMet(diff);
       });
     });
 
@@ -49,15 +41,7 @@ maybeDescribe('Display', () => {
         await clickFirstName();
 
         const diff = await browser.checkFullPageScreen('elements/distinct-elements-pacifico');
-        if (environmentIs(DEVICES.ANDROID)) {
-          assert(diff <= 0.5, `${diff} is above the threshold of 0.5`);
-        } else if (environmentIs(BROWSERS.EDGE)) {
-          assert(diff <= 0.05, `${diff} is above the threshold of 0.05`);
-        } else if (environmentIs(DEVICES.IOS)) {
-          assert(diff <= 0.01, `${diff} is above the threshold of 0.01`);
-        } else {
-          assert.strictEqual(diff, 0);
-        }
+        assertDiffThresholdMet(diff);
       });
     });
   });
@@ -72,7 +56,7 @@ maybeDescribe('Display', () => {
       await clickFirstName();
 
       const diff = await browser.checkFullPageScreen('hosted-fields/card-element-pacifico');
-      assert.strictEqual(diff, 0);
+      assertDiffThresholdMet(diff);
     });
   });
 
@@ -86,10 +70,23 @@ maybeDescribe('Display', () => {
       await clickFirstName();
 
       const diff =  await browser.checkFullPageScreen('hosted-fields/distinct-elements-pacifico');
-      assert.strictEqual(diff, 0);
+      assertDiffThresholdMet(diff);
     });
   });
 });
+
+function assertDiffThresholdMet (diff) {
+  let threshold;
+  if (environmentIs(DEVICES.ANDROID)) {
+    threshold = 0.5;
+  } else if (environmentIs(DEVICES.IOS)) {
+    threshold = 0.25;
+  } else if (environmentIs(BROWSERS.EDGE)) {
+    threshold = 0.05;
+  }
+  if (threshold) assert(diff <= threshold, `${diff} is above the threshold of ${threshold}`);
+  else assert.strictEqual(diff, 0);
+}
 
 async function clickFirstName () {
   const firstName = await $(sel.firstName);
