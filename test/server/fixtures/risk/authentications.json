@@ -1,0 +1,4 @@
+{
+  "jwt":"test-preflight-jwt",
+  "deviceDataCollectionUrl":"https://centinelapistag.cardinalcommerce.com/V1/Cruise/Collect"
+}
