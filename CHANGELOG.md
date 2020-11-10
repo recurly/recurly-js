@@ -2,6 +2,11 @@
 
 ### Version 4.14.0
 
+* Adds 3-D Secure support for CyberSource [#652][652]
+* Fixes BIN detection for ELO cards [#647][647]
+
+### Version 4.14.0
+
 * Adds support for Becs tokenization [#614][614]
 * Adds support for tax_identifier tokenization [#629][629]
 * Fixes previous tabbing for Elements on non-mobile browsers [#618][618]
@@ -327,6 +332,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[652]: https://github.com/recurly/recurly-js/commit/f023fade9de12c4f7851cbeb7308704bc474edee
+[647]: https://github.com/recurly/recurly-js/commit/aa44887032073e162e059a11f9322f7c9495276d
 [629]: https://github.com/recurly/recurly-js/commit/43a47cbf783fdcbec07a85fa033297a1575c5364
 [618]: https://github.com/recurly/recurly-js/commit/35f44db4e38a89bc20e1673501bea385b77eb0bf
 [614]: https://github.com/recurly/recurly-js/commit/f04390afba8bbb651879a6a85ab0e40492b3e106
