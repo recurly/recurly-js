@@ -14,7 +14,7 @@
   },
   "three_d_secure": {
     "params": {
-      "client_secret": "test-stripe-client-secret"
+      "client_secret": "pi-test-stripe-client-secret"
     }
   }
 }

@@ -2,7 +2,8 @@ import assert from 'assert';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import StripeStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/stripe';
-import actionToken from '../../../../server/fixtures/tokens/action-token-stripe.json';
+import actionTokenPaymentIntent from '../../../../server/fixtures/tokens/action-token-stripe-pi.json';
+import actionTokenSetupIntent from '../../../../server/fixtures/tokens/action-token-stripe-seti.json';
 import Promise from 'promise';
 
 describe('StripeStrategy', function () {
@@ -10,7 +11,7 @@ describe('StripeStrategy', function () {
 
   applyFixtures();
 
-  beforeEach(function (done) {
+  beforeEach(function () {
     const recurly = this.recurly = initRecurly();
     const risk = recurly.Risk();
     const threeDSecure = this.threeDSecure = risk.ThreeDSecure({ actionTokenId: 'action-token-test' });
@@ -19,16 +20,17 @@ describe('StripeStrategy', function () {
     this.isIE = !!document.documentMode;
 
     if (this.isIE) window.Promise = Promise;
-    this.exampleResult = {
-      paymentIntent: { id: 'test-id', test: 'result', consistingOf: 'arbitrary-values' }
+    this.paymentIntentResult = {
+      paymentIntent: { id: 'pi-test-id', test: 'result', consistingOf: 'arbitrary-values' }
+    };
+    this.setupIntentResult = {
+      setupIntent: { id: 'seti-test-id', test: 'result', consistingOf: 'arbitrary-values' }
     };
     this.stripe = {
-      handleCardAction: sinon.stub().resolves(this.exampleResult)
+      handleCardAction: sinon.stub().resolves(this.paymentIntentResult),
+      confirmCardSetup: sinon.stub().resolves(this.setupIntentResult)
     };
     window.Stripe = sinon.spy(publishableKey => this.stripe);
-
-    this.strategy = new StripeStrategy({ threeDSecure, actionToken });
-    this.strategy.whenReady(() => done());
   });
 
   afterEach(function () {
@@ -39,7 +41,10 @@ describe('StripeStrategy', function () {
   });
 
   it('instantiates Stripe.js with the Stripe publishable key', function (done) {
-    const { strategy } = this;
+    window.Stripe = sinon.spy(publishableKey => this.stripe);
+    const { threeDSecure } = this;
+    const strategy = new StripeStrategy({ threeDSecure, actionToken: actionTokenPaymentIntent });
+
     strategy.whenReady(() => {
       assert(window.Stripe.calledOnce);
       assert(window.Stripe.calledWithExactly('test-stripe-publishable-key'));
@@ -52,7 +57,7 @@ describe('StripeStrategy', function () {
       const { sandbox, threeDSecure } = this;
       sandbox.stub(StripeStrategy, 'libUrl').get(() => '/api/mock-404');
       delete window.Stripe;
-      this.strategy = new StripeStrategy({ threeDSecure, actionToken });
+      this.strategy = new StripeStrategy({ threeDSecure, actionToken: actionTokenPaymentIntent });
     });
 
     it('emits an error on threeDSecure', function (done) {
@@ -66,37 +71,87 @@ describe('StripeStrategy', function () {
   });
 
   describe('attach', function () {
-    it('instructs Stripe.js to handle the card action using the client secret', function () {
-      const { strategy, target, stripe } = this;
-      strategy.attach(target);
-      assert(stripe.handleCardAction.calledOnce);
-      assert(stripe.handleCardAction.calledWithExactly('test-stripe-client-secret'));
-    });
-
-    it('emits done with the paymentIntent result', function (done) {
-      const { strategy, target, exampleResult: { paymentIntent: { id } } } = this;
-      strategy.on('done', result => {
-        assert.deepEqual(result, { id });
-        done();
-      });
-      strategy.attach(target);
-    });
-
-    describe('when Stripe.js produces an authentication error', function () {
-      beforeEach(function () {
-        const { strategy } = this;
-        this.exampleResult = { error: { example: 'error', for: 'testing' } };
-        strategy.stripe.handleCardAction = sinon.stub().resolves(this.exampleResult);
+    describe('payment intents', function () {
+      beforeEach(function (done) {
+        const { threeDSecure } = this;
+        this.strategy = new StripeStrategy({ threeDSecure, actionToken: actionTokenPaymentIntent });
+        this.strategy.whenReady(() => done());
       });
 
-      it('emits an error on threeDSecure', function (done) {
-        const { threeDSecure, strategy, target, exampleResult: { error: example } } = this;
-        threeDSecure.on('error', error => {
-          assert.strictEqual(error.code, '3ds-auth-error');
-          assert.deepEqual(error.cause, example);
+      it('instructs Stripe.js to handle the card action using the client secret', function () {
+        const { strategy, target, stripe } = this;
+        strategy.attach(target);
+        assert(stripe.handleCardAction.calledOnce);
+        assert(stripe.handleCardAction.calledWithExactly('pi-test-stripe-client-secret'));
+      });
+
+      it('emits done with the paymentIntent result', function (done) {
+        const { strategy, target, paymentIntentResult: { paymentIntent: { id } } } = this;
+        strategy.on('done', result => {
+          assert.deepEqual(result, { id });
           done();
         });
         strategy.attach(target);
+      });
+
+      describe('when Stripe.js produces an authentication error', function () {
+        beforeEach(function () {
+          const { strategy } = this;
+          this.exampleResult = { error: { example: 'error', for: 'testing' } };
+          strategy.stripe.handleCardAction = sinon.stub().resolves(this.exampleResult);
+        });
+
+        it('emits an error on threeDSecure', function (done) {
+          const { threeDSecure, strategy, target, exampleResult: { error: example } } = this;
+          threeDSecure.on('error', error => {
+            assert.strictEqual(error.code, '3ds-auth-error');
+            assert.deepEqual(error.cause, example);
+            done();
+          });
+          strategy.attach(target);
+        });
+      });
+    });
+
+    describe('setup intents', function () {
+      beforeEach(function (done) {
+        const { threeDSecure } = this;
+        this.strategy = new StripeStrategy({ threeDSecure, actionToken: actionTokenSetupIntent });
+        this.strategy.whenReady(() => done());
+      });
+
+      it('instructs Stripe.js to handle the card action using the client secret', function () {
+        const { strategy, target, stripe } = this;
+        strategy.attach(target);
+        assert(stripe.confirmCardSetup.calledOnce);
+        assert(stripe.confirmCardSetup.calledWithExactly('seti-test-stripe-client-secret'));
+      });
+
+      it('emits done with the setupIntent result', function (done) {
+        const { strategy, target, setupIntentResult: { setupIntent: { id } } } = this;
+        strategy.on('done', result => {
+          assert.deepEqual(result, { id });
+          done();
+        });
+        strategy.attach(target);
+      });
+
+      describe('when Stripe.js produces an authentication error', function () {
+        beforeEach(function () {
+          const { strategy } = this;
+          this.exampleResult = { error: { example: 'error', for: 'testing' } };
+          strategy.stripe.confirmCardSetup = sinon.stub().resolves(this.exampleResult);
+        });
+
+        it('emits an error on threeDSecure', function (done) {
+          const { threeDSecure, strategy, target, exampleResult: { error: example } } = this;
+          threeDSecure.on('error', error => {
+            assert.strictEqual(error.code, '3ds-auth-error');
+            assert.deepEqual(error.cause, example);
+            done();
+          });
+          strategy.attach(target);
+        });
       });
     });
   });
