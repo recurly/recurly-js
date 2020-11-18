@@ -41,21 +41,27 @@ module.exports = {
       }
     },
 
-    BrowserStackIos13: {
-      deviceName: 'iPhone XS',
+    BrowserStackIos14: {
+      deviceName: 'iPhone 11',
       os: 'ios',
-      osVersion: '13.5',
+      osVersion: '14',
       realMobile: true
     },
-    BrowserStackIos12: {
-      deviceName: 'iPhone XS',
+    BrowserStackIos13: {
+      deviceName: 'iPhone 11',
       os: 'ios',
-      osVersion: '12.4',
+      osVersion: '13',
       realMobile: true
     },
 
+    BrowserStackAndroid11: {
+      deviceName: 'Google Pixel 4',
+      os: 'android',
+      osVersion: '11.0',
+      realMobile: true
+    },
     BrowserStackAndroid10: {
-      deviceName: 'Google Pixel 3',
+      deviceName: 'Google Pixel 4',
       os: 'android',
       osVersion: '10.0',
       realMobile: true
@@ -64,12 +70,6 @@ module.exports = {
       deviceName: 'Google Pixel 3',
       os: 'android',
       osVersion: '9.0',
-      realMobile: true
-    },
-    BrowserStackAndroid8: {
-      deviceName: 'Samsung Galaxy Note 9',
-      os: 'android',
-      osVersion: '8.1',
       realMobile: true
     }
   }

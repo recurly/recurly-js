@@ -51,16 +51,16 @@ jobs:
       env: BROWSER=BrowserStackEdge
     - name: Internet Explorer 11
       env: BROWSER=BrowserStackIe11
+    - name: iOS 14
+      env: BROWSER=BrowserStackIos14
     - name: iOS 13
       env: BROWSER=BrowserStackIos13
-    - name: iOS 12
-      env: BROWSER=BrowserStackIos12
+    - name: Android 11
+      env: BROWSER=BrowserStackAndroid11
     - name: Android 10
       env: BROWSER=BrowserStackAndroid10
     - name: Android 9
       env: BROWSER=BrowserStackAndroid9
-    - name: Android 8
-      env: BROWSER=BrowserStackAndroid8
     - name: Electron
       env: BROWSER=Electron
       addons:
@@ -93,20 +93,20 @@ jobs:
       name: Internet Explorer 11
       env: BROWSER=BrowserStackIe11
     - <<: *e2e
+      name: iOS 14
+      env: BROWSER=BrowserStackIos14
+    - <<: *e2e
       name: iOS 13
       env: BROWSER=BrowserStackIos13
     - <<: *e2e
-      name: iOS 12
-      env: BROWSER=BrowserStackIos12
+      name: Android 11
+      env: BROWSER=BrowserStackAndroid11
     - <<: *e2e
       name: Android 10
       env: BROWSER=BrowserStackAndroid10
     - <<: *e2e
       name: Android 9
       env: BROWSER=BrowserStackAndroid9
-    - <<: *e2e
-      name: Android 8
-      env: BROWSER=BrowserStackAndroid8
     - <<: *e2e
       name: Electron
       env: BROWSER=Electron
