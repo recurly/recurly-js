@@ -68,7 +68,7 @@ jobs:
       services:
         - xvfb
     - name: react-recurly
-      if: env(TRAVIS_PULL_REQUEST) IS false
+      if: type != pull_request
       env: RECURLY_JS_SHA=$TRAVIS_COMMIT
       script:
         - mkdir -p vendor && cd vendor
