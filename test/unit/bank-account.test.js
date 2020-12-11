@@ -162,7 +162,6 @@ apiTest(function (requestMethod) {
           it('yields a token', function (done) {
             const { recurly } = this;
             recurly.bankAccount.token(validBecs, (err, token) => {
-              console.log(err);
               assert(!err);
               assert(token.id);
               done();

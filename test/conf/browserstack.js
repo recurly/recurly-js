@@ -61,7 +61,7 @@ module.exports = {
       realMobile: true
     },
     BrowserStackAndroid10: {
-      deviceName: 'Google Pixel 4',
+      deviceName: 'Samsung Galaxy S20',
       os: 'android',
       osVersion: '10.0',
       realMobile: true
