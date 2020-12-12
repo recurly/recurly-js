@@ -11,8 +11,6 @@ before_install:
   - bash .travis-pre.sh
 env:
   global:
-    - secure: U0dvpEjblZ3i+knw/cOWWgLvHUz/L9vN7Kv5VKDJ5ydvLy/1Tcueokp4hL7jhu4zwzlJto6MdFG1uKXr97zs+ETV9clYtRFBF/4YlAGs8sQcvPu4BOyH9pUJ77tnNR2ZX62wik9UFl6LmJOBpCjVkp+kh6it44QJm4Zv03Yx47w=
-    - secure: wrAUnHRseJQrRUqoKWCY/Sw8Wd21kssvYiQ26HpjNc8Q3+uQY6IAMwyyyRRbr65nwHnYrk6KJfSEHYgmQbMeie/3+LseXbDGd9BmWAvujI2ZXNPjFxhSA4gmBvVtT/57fZaCdc8pAnGLb8OwiBSgQN0UJ55Kr59Yjhi3ehBZd1Q=
     - secure: yIrHdkLhWtO37N24cRU71PK80zvkPzlJ1Jm+1MS3C6/icgJ8At1N/UgpBdxuBs1tlJm1O7Ahk+/MhpGWlspx9tCF7Hzw9Rj0xpKhqsvM155zgH582xNPwNebiCr/tmsH2/ELgFBBgC9sCW5luzeKx9nyuedGA4fmD2fK5Phc5EE=
     - secure: fGRo+RTDcnWNnYjSgDtHIRFrkXDxYzFrF0JaGs73ZunLXoYbJ5FclaM9+wjw8BbGEEsVbyBYMSHyy8E2Y0VRggal/XlFkKaqQQHSDVuslcM5YdAkcLC8jFSuSzP32X6cY+L9fKszFVaO+vn84lXwiQnqgpOHAtN32/eB//5Ky1s=
     - secure: m9ylFoxkeoOjBTYi7IF93Rqq95uJkL95onYJc5k1Xo2wNCDrAfvZ8cv6o70Qr/lpWqvgxPueDP6VXjxKAmSueQnx9uGKyigFCpMH4zl7+7n7l4382Eeyex2uE6kCh/lA4EjkmE3QdIW6l8YCGJD1IoHqVSKPZ67ZSdnapTgGPYQ=
@@ -51,16 +49,16 @@ jobs:
       env: BROWSER=BrowserStackEdge
     - name: Internet Explorer 11
       env: BROWSER=BrowserStackIe11
+    - name: iOS 14
+      env: BROWSER=BrowserStackIos14
     - name: iOS 13
       env: BROWSER=BrowserStackIos13
-    - name: iOS 12
-      env: BROWSER=BrowserStackIos12
+    - name: Android 11
+      env: BROWSER=BrowserStackAndroid11
     - name: Android 10
       env: BROWSER=BrowserStackAndroid10
     - name: Android 9
       env: BROWSER=BrowserStackAndroid9
-    - name: Android 8
-      env: BROWSER=BrowserStackAndroid8
     - name: Electron
       env: BROWSER=Electron
       addons:
@@ -68,7 +66,7 @@ jobs:
       services:
         - xvfb
     - name: react-recurly
-      if: env(TRAVIS_PULL_REQUEST) IS false
+      if: type != pull_request
       env: RECURLY_JS_SHA=$TRAVIS_COMMIT
       script:
         - mkdir -p vendor && cd vendor
@@ -93,20 +91,20 @@ jobs:
       name: Internet Explorer 11
       env: BROWSER=BrowserStackIe11
     - <<: *e2e
+      name: iOS 14
+      env: BROWSER=BrowserStackIos14
+    - <<: *e2e
       name: iOS 13
       env: BROWSER=BrowserStackIos13
     - <<: *e2e
-      name: iOS 12
-      env: BROWSER=BrowserStackIos12
+      name: Android 11
+      env: BROWSER=BrowserStackAndroid11
     - <<: *e2e
       name: Android 10
       env: BROWSER=BrowserStackAndroid10
     - <<: *e2e
       name: Android 9
       env: BROWSER=BrowserStackAndroid9
-    - <<: *e2e
-      name: Android 8
-      env: BROWSER=BrowserStackAndroid8
     - <<: *e2e
       name: Electron
       env: BROWSER=Electron
@@ -117,17 +115,6 @@ jobs:
 
     - stage: Publish
       name: Publish Artifacts
-      addons:
-        artifacts:
-          paths:
-            - build
-          target_paths:
-            - artifacts/$TRAVIS_COMMIT
-          s3_region: us-west-1
-          permissions: public-read
-      env: ARTIFACTS_BUCKET=recurly-js
-      script: make build
-    - name: Publish Artifacts
       addons:
         apt:
           packages:

@@ -1,7 +1,9 @@
 const {
   BROWSER,
   VIRTUALBOX_EDGE_UUID,
-  VIRTUALBOX_IE11_UUID
+  VIRTUALBOX_IE11_UUID,
+  ANDROID_HOME,
+  ANDROID_AVD_NAME
 } = process.env;
 
 const staticConfig = {
@@ -14,6 +16,7 @@ const staticConfig = {
   proxies: {
     '/api': 'http://localhost:9877'
   },
+  hostname: (BROWSER.includes('Android') ? '10.0.2.2' : 'localhost'),
   reporters: ['mocha', 'coverage'],
   port: 9876,
   colors: true,
@@ -43,6 +46,11 @@ const staticConfig = {
       base: 'VirtualBoxIE11',
       keepAlive: true,
       uuid: VIRTUALBOX_IE11_UUID
+    },
+    Android10: {
+      base: 'AndroidEmulator',
+      avdName: ANDROID_AVD_NAME || 'Pixel_3_API_29',
+      sdkHome: ANDROID_HOME
     }
   },
   client: {
