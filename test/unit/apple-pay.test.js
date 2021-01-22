@@ -126,13 +126,13 @@ apiTest(function (requestMethod) {
 
       describe('when given options.pricing', function () {
         beforeEach(function () {
-          let pricing = this.pricing = this.recurly.Pricing.Checkout();
+          const pricing = this.pricing = this.recurly.Pricing.Checkout();
           this.applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing }));
         });
 
         it('binds a pricing instance', function (done) {
           this.applePay.ready(() => {
-            assert(this.applePay.config.pricing === this.pricing);
+            assert.strictEqual(this.applePay.config.pricing, this.pricing);
             done();
           });
         });
@@ -144,8 +144,33 @@ apiTest(function (requestMethod) {
           });
         });
 
+        describe('when options.pricing is a PricingPromise', () => {
+          beforeEach(function () {
+            const { recurly } = this;
+            const pricing = this.pricing = recurly.Pricing.Checkout();
+            const pricingPromise = this.pricingPromise = pricing.reprice();
+            this.applePay = recurly.ApplePay(merge({}, validOpts, { pricing: pricingPromise }));
+          });
+
+          it('uses the underlying Pricing instance', function (done) {
+            const { pricingPromise, pricing, applePay } = this;
+            applePay.ready(() => {
+              assert.strictEqual(applePay.config.pricing, pricing);
+              assert.strictEqual(applePay.config.total, pricing.totalNow);
+              assert.strictEqual(applePay.config.total, '0.00');
+
+              pricing.adjustment({ amount: 10 }).done(() => {
+                assert.strictEqual(applePay.config.total, pricing.totalNow);
+                assert.strictEqual(applePay.config.total, '10.00');
+                done();
+              });
+            });
+          });
+        });
+
         describe('when the pricing instance includes several items', () => {
           beforeEach(function (done) {
+            this.timeout(10000);
             this.subscription = this.recurly.Pricing.Subscription()
               .plan('basic')
               .address({ country: 'US', postalCode: '94117' })
@@ -164,7 +189,7 @@ apiTest(function (requestMethod) {
             const discount = this.applePay.lineItems[1];
             const giftCard = this.applePay.lineItems[2];
             const total = this.applePay.totalLineItem;
-            assert.equal(this.applePay.lineItems.length, 3);
+            assert.strictEqual(this.applePay.lineItems.length, 3);
             assert.strictEqual(subtotal.label, this.applePay.config.i18n.subtotalLineItemLabel);
             assert.strictEqual(discount.label, this.applePay.config.i18n.discountLineItemLabel);
             assert.strictEqual(giftCard.label, this.applePay.config.i18n.giftCardLineItemLabel);
