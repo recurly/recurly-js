@@ -1,5 +1,10 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.16.0
+
+* Adds Venmo support [#661][661]
+* Coerce a pricing instance from the PricingPromise for ApplePay [#665][665]
+
 ### Version 4.15.1
 
 * Adds 3-D Secure support for Stripe Setup Intents [#653][653]
@@ -336,6 +341,8 @@
 
 * Full rewrite for Billing Info tokenization
 
+[665]: https://github.com/recurly/recurly-js/commit/38324296fc36e05d07553a3ce0ee1e9a0f2923e6
+[661]: https://github.com/recurly/recurly-js/commit/2775177e863f7497d57c906eff15396bbe16ad70
 [653]: https://github.com/recurly/recurly-js/commit/2964da29335a57c6ade58149604a122782b9ca30
 [652]: https://github.com/recurly/recurly-js/commit/f023fade9de12c4f7851cbeb7308704bc474edee
 [647]: https://github.com/recurly/recurly-js/commit/aa44887032073e162e059a11f9322f7c9495276d
