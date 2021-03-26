@@ -137,16 +137,14 @@ function imageComparisonService () {
     'image-comparison',
     {
       baselineFolder: path.resolve(__dirname, './test/e2e/support/snapshots'),
-      // path to dump screenshots taken during tests
       screenshotPath: path.resolve(__dirname, './tmp'),
-      // Output diff if a visual regression test is failing
       diffPath: path.resolve(__dirname, './tmp/diff'),
       formatImageName: `${BROWSER}/{tag}-{width}x{height}`,
-      // Save screenshots on every test run in screenshotPath dir
       savePerInstance: true,
-      // Needs to be false to prevent false positives in CI.
+
       // Change to true and remove snapshots to generate new baselines
       autoSaveBaseline: false,
+
       blockOutStatusBar: true,
       blockOutToolBar: true,
     }

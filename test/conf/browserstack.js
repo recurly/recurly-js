@@ -22,7 +22,7 @@ module.exports = {
 
     BrowserStackEdge: {
       browserName: 'Edge',
-      browserVersion: '18.0',
+      browserVersion: 'latest',
       os: 'Windows',
       osVersion: '10',
       edge: {

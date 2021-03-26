@@ -55,7 +55,7 @@
     "@wdio/spec-reporter": "^6.8.1",
     "@wdio/sync": "^6.8.0",
     "ajv": "^6.12.6",
-    "appium": "^1.19.0",
+    "appium": "^1.20.2",
     "appium-webdriveragent": "^2.31.0",
     "assert": "^2.0.0",
     "babel-eslint": "^10.0.3",
