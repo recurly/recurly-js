@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+# Usage
+#
+# ./prepare-release major|minor|patch [--notes-out <path>] [--tag-out <path>]
+#
+
+set -e
+
+if [ -n "$(git status --porcelain)" ]; then
+  echo "Working directory is not clean. Aborting."
+  exit 1
+fi
+
+if [ -z "$GITHUB_TOKEN" ]; then
+  echo "GITHUB_TOKEN must be set. Aborting."
+  exit 1
+fi
+
+LIB_ARTIFACT=./build/recurly.min.js
+VERSION_FILE=./lib/recurly/version.js
+
+# Bump version
+old_version=$(cat package.json | jq -r '.version')
+npm --no-git-tag-version version ${1}
+new_version=$(cat package.json | jq -r '.version')
+echo "$(sed "s/$old_version/$new_version/" $VERSION_FILE)" > $VERSION_FILE
+
+# Generate Changelog
+github_changelog_generator -t $GITHUB_TOKEN --future-release "v$new_version"
+
+# Compute hashes
+make build
+md5_checksum=$(md5sum $LIB_ARTIFACT)
+sri_hash=$(openssl dgst -sha384 -binary $LIB_ARTIFACT | openssl base64 -A)
+
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    # Create release notes artifact
+    -n|--notes-out)
+      echo "$new_version
+
+      $(cat CHANGELOG.md | sed -n "/^## \[v$new_version\]/,/^##/p" | sed '$d;1d')
+
+      ##### Minified MD5 Checksum
+      \`\`\`
+      ${md5_checksum}
+      \`\`\`
+      ##### [SRI Hash](https://www.srihash.org/)
+      \`\`\`
+      ${sri_hash}
+      \`\`\`" | awk '{$1=$1};1' > $2
+      shift
+      ;;
+
+    # Create release notes artifact
+    -t|--tag-out)
+      echo "v$new_version" > $2
+      ;;
+  esac
+  shift
+done
