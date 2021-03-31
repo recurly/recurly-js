@@ -68,7 +68,7 @@ describe('Recurly.js', async function () {
         await (await $(sel.lastName)).setValue('Doe');
 
         const withCvv = [
-          ['4111111111111111', '4111 1111 1111 1111'],
+          ['4111111111111111', '4111 1111 1111 1111 '],
           ['10', '10'],
           ['28', '28'],
           ['123', '123']
