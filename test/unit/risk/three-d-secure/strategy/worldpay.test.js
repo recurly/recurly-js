@@ -89,7 +89,7 @@ describe('WorldpayStrategy', function () {
 
     describe('device data collection disabled', function () {
       beforeEach(function() {
-        this.recurly.config.risk.threeDSecure.preflightDeviceDataCollection = false;
+        this.recurly.config.risk.threeDSecure.preflightDeviceDataCollector = false;
       });
 
       it('does not construct a frame to collect a session id', function (done) {

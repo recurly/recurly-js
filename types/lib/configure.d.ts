@@ -19,7 +19,7 @@ export type RecurlyOptions = {
   };
   risk?: {
     threeDSecure?: {
-      deviceDataCollection?: boolean;
+      preflightDeviceDataCollector?: boolean;
     }
   };
 
