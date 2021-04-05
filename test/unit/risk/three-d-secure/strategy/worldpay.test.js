@@ -86,6 +86,21 @@ describe('WorldpayStrategy', function () {
 
       simulatePreflightResponse();
     });
+
+    describe('device data collection disabled', function () {
+      beforeEach(function() {
+        this.recurly.config.risk.threeDSecure.preflightDeviceDataCollector = false;
+      });
+
+      it('does not construct a frame to collect a session id', function (done) {
+        const { recurly, Strategy, number, month, year, gateway_code, jwt, poll } = this;
+
+        Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
+          sinon.assert.callCount(recurly.Frame, 0);
+          done();
+        });
+      });
+    });
   });
 
   describe('attach', function () {
