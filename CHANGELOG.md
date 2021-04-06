@@ -1,5 +1,9 @@
 ## Recurly.js CHANGELOG
 
+### Version 4.16.1
+
+* Adds support to disable 3ds2 preflight device data collection [#671][671]
+
 ### Version 4.16.0
 
 * Adds Venmo support [#661][661]
@@ -341,6 +345,7 @@
 
 * Full rewrite for Billing Info tokenization
 
+[671]: https://github.com/recurly/recurly-js/commit/47f224e6cb39a9e05613520c8200e7b21a519c6b
 [665]: https://github.com/recurly/recurly-js/commit/38324296fc36e05d07553a3ce0ee1e9a0f2923e6
 [661]: https://github.com/recurly/recurly-js/commit/2775177e863f7497d57c906eff15396bbe16ad70
 [653]: https://github.com/recurly/recurly-js/commit/2964da29335a57c6ade58149604a122782b9ca30
