@@ -17,17 +17,23 @@ if [ -z "$GITHUB_TOKEN" ]; then
   exit 1
 fi
 
+part=${1}
+if [ "$part" != "patch" ] && [ "$part" != "minor" ] && [ "$part" != "major" ]; then
+  echo "'$part' is not a valid option: major|minor|patch"
+  exit 1
+fi
+
 LIB_ARTIFACT=./build/recurly.min.js
 VERSION_FILE=./lib/recurly/version.js
 
 # Bump version
 old_version=$(cat package.json | jq -r '.version')
-npm --no-git-tag-version version ${1}
+npm --no-git-tag-version version ${part}
 new_version=$(cat package.json | jq -r '.version')
 echo "$(sed "s/$old_version/$new_version/" $VERSION_FILE)" > $VERSION_FILE
 
 # Generate Changelog
-github_changelog_generator -t $GITHUB_TOKEN --future-release "v$new_version"
+changelogly --future-release "$new_version"
 
 # Compute hashes
 make build

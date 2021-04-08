@@ -1,7 +1,0 @@
-user=recurly
-project=recurly-js
-unreleased=true
-exclude-labels=question,bug?,internal,dependency,documentation,tests & build
-issues-wo-labels=false
-verbose=false
-since-tag=v2.6.0

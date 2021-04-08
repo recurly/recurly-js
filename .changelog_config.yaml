@@ -1,0 +1,12 @@
+---
+owner: recurly
+repo: recurly-js
+tag_matcher: ^v[34]\..*
+exclude_labels:
+  - bug?
+  - internal
+  - duplicate
+  - question
+  - dependency
+  - documentation
+  - tests & build
