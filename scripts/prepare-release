@@ -33,7 +33,7 @@ new_version=$(cat package.json | jq -r '.version')
 echo "$(sed "s/$old_version/$new_version/" $VERSION_FILE)" > $VERSION_FILE
 
 # Generate Changelog
-changelogly --future-release "$new_version"
+changelogly --future-release "v$new_version"
 
 # Compute hashes
 make build
