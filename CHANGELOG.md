@@ -1,14 +1,5 @@
 # Changelog
 
-## [v4.16.2](https://github.com/recurly/recurly-js/tree/v4.16.2) (2021-05-04)
-
-[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.16.1...v4.16.2)
-
-
-**Merged Pull Requests**
-
-- Venmo Desktop [#670](https://github.com/recurly/recurly-js/pull/670) ([efeygelson](https://github.com/efeygelson))
-
 ## [v4.16.1](https://github.com/recurly/recurly-js/tree/v4.16.1) (2021-04-07)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.16.0...v4.16.1)
