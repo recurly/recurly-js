@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.16.2](https://github.com/recurly/recurly-js/tree/v4.16.2) (2021-05-05)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.16.1...v4.16.2)
+
+
+**Merged Pull Requests**
+
+- Venmo Desktop [#670](https://github.com/recurly/recurly-js/pull/670) ([efeygelson](https://github.com/efeygelson))
+
+
+
 ## [v4.16.1](https://github.com/recurly/recurly-js/tree/v4.16.1) (2021-04-07)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.16.0...v4.16.1)
@@ -204,17 +215,15 @@
 
 ## [v4.10.0](https://github.com/recurly/recurly-js/tree/v4.10.0) (2019-06-21)
 
-[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.10.0-beta...v4.10.0)
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.9.7...v4.10.0)
 
 
+**Merged Pull Requests**
 
-
-
-## [v4.10.0-beta](https://github.com/recurly/recurly-js/tree/v4.10.0-beta) (2019-06-18)
-
-[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.9.7...v4.10.0-beta)
-
-
+- Updates StripeStrategy to resolve only the PaymentIntent.id [#531](https://github.com/recurly/recurly-js/pull/531) ([chrissrogers](https://github.com/chrissrogers))
+- Corrects ApplePay completeShippingMethodSelection call signature [#529](https://github.com/recurly/recurly-js/pull/529) ([chrissrogers](https://github.com/chrissrogers))
+- 3D Secure 2.0 [#527](https://github.com/recurly/recurly-js/pull/527) ([chrissrogers](https://github.com/chrissrogers))
+- Use handleCardAction for post SCA [#524](https://github.com/recurly/recurly-js/pull/524) ([jpgnotgif](https://github.com/jpgnotgif))
 
 
 
