@@ -1,0 +1,57 @@
+name: Publish types to DefinitelyTyped
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  Publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Recurly-js
+        uses: actions/checkout@v2
+        with:
+          path: recurly-js
+      - name: Checkout DefinitelyTyped
+        uses: actions/checkout@v2
+        with:
+          repository: DefinitelyTyped/DefinitelyTyped
+          ref: master
+          path: DefinitelyTyped
+          fetch-depth: 1
+      - name: Create changes
+        id: create-changes
+        run: |
+          version=$(cat recurly-js/package.json | jq '.version' -r | sed -ne 's/^\([0-9]*\.[0-9]*\).*/\1/p')
+          echo "// Type definitions for non-npm package @recurly/recurly-js $version
+          // Project: https://github.com/recurly/recurly-js
+          // Definitions by: Christopher Rogers <https://github.com/chrissrogers>
+          // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+          // TypeScript Version: 3.1
+          $(cat recurly-js/types/index.d.ts)" > recurly-js/types/index.d.ts
+
+          rm recurly-js/test/types/tsconfig.json \
+             recurly-js/test/types/index.d.ts \
+             recurly-js/types/tsconfig.json \
+             recurly-js/types/tslint.json
+
+          cp -R recurly-js/types/* DefinitelyTyped/types/recurly__recurly-js
+          cp -R recurly-js/test/types/* DefinitelyTyped/types/recurly__recurly-js/test
+
+          out_version=$(cat recurly-js/package.json | jq '.version' -r )
+          echo ::set-output name=version::$out_version
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          path: DefinitelyTyped
+          commit-message: Updates recurly-js types
+          branch: update-recurly-js-${{ steps.create-changes.outputs.version }}
+          push-to-fork: recurly/DefinitelyTyped
+          token: ${{ secrets.DEFINITELY_TYPED_PR_GITHUB_ACCESS_TOKEN }}
+          title: Updates types for Recurly.js v${{ steps.create-changes.outputs.version }}
+          body: |
+            # Updates types for Recurly.js v${{ steps.create-changes.outputs.version }}
+
+            View the full recurly-js release [here](https://github.com/recurly/recurly-js/releases/tag/v${{ steps.create-changes.outputs.version }})
+
+            Note: This is an automated pull request. For more info, see the [Recurly.js](https://github.com/recurly/recurly-js) repository or [documentation](https://developers.recurly.com/reference/recurly-js/index.html).
