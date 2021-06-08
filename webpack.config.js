@@ -83,7 +83,6 @@ module.exports = {
   },
   devServer: {
     disableHostCheck: true,
-    host: 'js.lvh.me',
     headers: {
       'Cross-Origin-Resource-Policy': 'cross-origin'
     }
