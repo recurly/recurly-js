@@ -548,16 +548,25 @@ apiTest(requestMethod => {
       });
 
       describe('when a tax_identifier is provided', function () {
-        prepareExample(Object.assign({}, valid, {
-          tax_identifier: '808.279.191-82',
-          tax_identifier_type: 'cpf'
-        }), builder);
-
-        it('yields a token', function (done) {
-          this.subject((err, token) => {
-            assert(!err);
-            assert(token.id);
-            done();
+        [
+          {
+            tax_identifier: '808.279.191-82',
+            tax_identifier_type: 'cpf'
+          },
+          {
+            tax_identifier: '20-12345678-6',
+            tax_identifier_type: 'cuit'
+          }
+        ].forEach(taxIdentifierValues => {
+          describe(taxIdentifierValues.tax_identifier_type, function () {
+            prepareExample(Object.assign({}, valid, taxIdentifierValues), builder);
+            it('yields a token', function (done) {
+              this.subject((err, token) => {
+                assert(!err);
+                assert(token.id);
+                done();
+              });
+            });
           });
         });
       });
@@ -576,7 +585,7 @@ apiTest(requestMethod => {
             assert.strictEqual(err.details.length, 1);
             assert.strictEqual(err.details[0].field, 'tax_identifier_type');
             assert.strictEqual(err.details[0].messages.length, 1);
-            assert.strictEqual(err.details[0].messages[0], 'Tax identifier type must be one of the following: ["cpf"]');
+            assert.strictEqual(err.details[0].messages[0], 'Tax identifier type must be one of the following: ["cpf", "cuit"]');
             assert(!token);
             done();
           });
