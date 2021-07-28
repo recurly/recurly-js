@@ -87,7 +87,11 @@ describe('Recurly.Frame', function () {
 
   describe('when given a default event name', function () {
     it('listens for the default event name', function () {
-      this.frame = this.recurly.Frame({ path, payload, defaultEventName: 'testing-frame' });
+      this.frame = this.recurly.Frame({
+        path,
+        payload,
+        defaultEventName: 'testing-frame'
+      });
       assert(this.frame.hasListeners('testing-frame'));
     });
   });
