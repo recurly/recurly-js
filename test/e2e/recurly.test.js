@@ -1,6 +1,8 @@
 const assert = require('assert');
 const {
   assertIsAToken,
+  DEVICES,
+  environmentIs,
   EXAMPLES,
   init,
   recurlyEnvironment,
@@ -35,6 +37,9 @@ describe('Recurly.js', async function () {
       });
 
       it('creates a token', async function () {
+        if (environmentIs(DEVICES.ANDROID)) {
+          return this.skip();
+        }
         await (await $(sel.firstName)).setValue('John');
         await (await $(sel.lastName)).setValue('Doe');
 
@@ -64,6 +69,9 @@ describe('Recurly.js', async function () {
       beforeEach(init({ fixture: 'hosted-fields-card-distinct', opts: { required: ['cvv'] } }));
 
       it('creates a token only when a cvv is provided', async function () {
+        if (environmentIs(DEVICES.ANDROID)) {
+          return this.skip();
+        }
         await (await $(sel.firstName)).setValue('John');
         await (await $(sel.lastName)).setValue('Doe');
 
@@ -114,6 +122,9 @@ describe('Recurly.js', async function () {
     };
 
     it('creates a token', async function () {
+      if (environmentIs(DEVICES.ANDROID)) {
+        return this.skip();
+      }
       const accountNumber = await $(sel.accountNumber);
       const accountNumberConfirmation = await $(sel.accountNumberConfirmation);
       const sortCode = await $(sel.sortCode);
@@ -153,6 +164,9 @@ describe('Recurly.js', async function () {
     };
 
     it('creates a token', async function () {
+      if (environmentIs(DEVICES.ANDROID)) {
+        return this.skip();
+      }
       await (await $(sel.nameOnAccount)).setValue('John Smith, OBE');
 
       const accountNumber = await $(sel.accountNumber);
