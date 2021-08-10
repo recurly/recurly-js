@@ -1,9 +1,8 @@
 const assert = require('assert');
 const {
   assertIsAToken,
-  DEVICES,
-  environmentIs,
   EXAMPLES,
+  getValue,
   init,
   recurlyEnvironment,
   tokenize
@@ -37,9 +36,6 @@ describe('Recurly.js', async function () {
       });
 
       it('creates a token', async function () {
-        if (environmentIs(DEVICES.ANDROID)) {
-          return this.skip();
-        }
         await (await $(sel.firstName)).setValue('John');
         await (await $(sel.lastName)).setValue('Doe');
 
@@ -53,9 +49,9 @@ describe('Recurly.js', async function () {
         await expiry.setValue(EXAMPLES.EXPIRY);
         await cvv.setValue(EXAMPLES.CVV);
 
-        assert.strictEqual(await number.getValue(), EXAMPLES.NUMBER_FORMATTED);
-        assert.strictEqual(await expiry.getValue(), EXAMPLES.EXPIRY_FORMATTED);
-        assert.strictEqual(await cvv.getValue(), EXAMPLES.CVV);
+        assert.strictEqual(await getValue(number), EXAMPLES.NUMBER_FORMATTED);
+        assert.strictEqual(await getValue(expiry), EXAMPLES.EXPIRY_FORMATTED);
+        assert.strictEqual(await getValue(cvv), EXAMPLES.CVV);
 
         await browser.switchToFrame(null);
 
@@ -69,9 +65,6 @@ describe('Recurly.js', async function () {
       beforeEach(init({ fixture: 'hosted-fields-card-distinct', opts: { required: ['cvv'] } }));
 
       it('creates a token only when a cvv is provided', async function () {
-        if (environmentIs(DEVICES.ANDROID)) {
-          return this.skip();
-        }
         await (await $(sel.firstName)).setValue('John');
         await (await $(sel.lastName)).setValue('Doe');
 
@@ -89,7 +82,7 @@ describe('Recurly.js', async function () {
             await browser.switchToFrame(i++);
             const input = await $(sel.hostedFieldInput);
             await input.setValue(value);
-            assert.strictEqual(await input.getValue(), expect);
+            assert.strictEqual(await getValue(input), expect);
             await browser.switchToFrame(null);
           }
         }
@@ -122,9 +115,6 @@ describe('Recurly.js', async function () {
     };
 
     it('creates a token', async function () {
-      if (environmentIs(DEVICES.ANDROID)) {
-        return this.skip();
-      }
       const accountNumber = await $(sel.accountNumber);
       const accountNumberConfirmation = await $(sel.accountNumberConfirmation);
       const sortCode = await $(sel.sortCode);
@@ -135,9 +125,9 @@ describe('Recurly.js', async function () {
       await accountNumberConfirmation.setValue('55779911');
       await sortCode.setValue('200-000');
 
-      assert.strictEqual(await accountNumber.getValue(), '55779911');
-      assert.strictEqual(await accountNumberConfirmation.getValue(), '55779911');
-      assert.strictEqual(await sortCode.getValue(), '200-000');
+      assert.strictEqual(await getValue(accountNumber), '55779911');
+      assert.strictEqual(await getValue(accountNumberConfirmation), '55779911');
+      assert.strictEqual(await getValue(sortCode), '200-000');
 
       const [err, token] = await browser.executeAsync(function (sel, done) {
         recurly.bankAccount.token(document.querySelector(sel.form), function (err, token) {
@@ -164,9 +154,6 @@ describe('Recurly.js', async function () {
     };
 
     it('creates a token', async function () {
-      if (environmentIs(DEVICES.ANDROID)) {
-        return this.skip();
-      }
       await (await $(sel.nameOnAccount)).setValue('John Smith, OBE');
 
       const accountNumber = await $(sel.accountNumber);
@@ -178,9 +165,9 @@ describe('Recurly.js', async function () {
       await accountNumberConfirmation.setValue('55779911');
       await bsbCode.setValue('200000');
 
-      assert.strictEqual(await accountNumber.getValue(), '55779911');
-      assert.strictEqual(await accountNumberConfirmation.getValue(), '55779911');
-      assert.strictEqual(await bsbCode.getValue(), '200000');
+      assert.strictEqual(await getValue(accountNumber), '55779911');
+      assert.strictEqual(await getValue(accountNumberConfirmation), '55779911');
+      assert.strictEqual(await getValue(bsbCode), '200000');
 
       const [err, token] = await browser.executeAsync(function (sel, done) {
         recurly.bankAccount.token(document.querySelector(sel.form), function (err, token) {
