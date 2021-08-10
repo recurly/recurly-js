@@ -352,10 +352,10 @@ function environmentIs (...conditions) {
   return false;
 }
 
-function getValue (attribute) {
+function getValue (selector) {
   if (environmentIs(DEVICES.ANDROID)) {
-    return attribute.getProperty('value');
+    return selector.getProperty('value');
   } else {
-    return attribute.getValue();
+    return selector.getValue();
   }
 }
