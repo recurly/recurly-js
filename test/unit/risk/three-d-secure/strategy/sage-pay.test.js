@@ -42,7 +42,8 @@ describe('SagePayStrategy', function () {
           md: 'test-sage-pay-md',
           creq: 'test-sage-pay-creq',
           three_d_secure_action_token_id: 'action-token-sage-pay'
-        }
+        },
+        defaultEventName: 'sagepay-3ds-challenge'
       }));
     });
   });

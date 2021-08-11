@@ -76,6 +76,7 @@ module.exports = {
   FIELD_TYPES,
   fillCardElement,
   fillDistinctCardElements,
+  getValue,
   init,
   recurlyEnvironment,
   tokenize,
@@ -349,4 +350,12 @@ function environmentIs (...conditions) {
   }
 
   return false;
+}
+
+function getValue (selector) {
+  if (environmentIs(DEVICES.ANDROID)) {
+    return selector.getProperty('value');
+  } else {
+    return selector.getValue();
+  }
 }
