@@ -1,5 +1,24 @@
 # Changelog
 
+## [v4.17.0](https://github.com/recurly/recurly-js/tree/v4.17.0) (2021-08-12)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.16.2...v4.17.0)
+
+
+**Merged Pull Requests**
+
+- Revert "add security to github CODEOWNER file" [#688](https://github.com/recurly/recurly-js/pull/688) ([eternal44](https://github.com/eternal44))
+- Add support to SagePay 3DS2 [#687](https://github.com/recurly/recurly-js/pull/687) ([cyberxander90](https://github.com/cyberxander90))
+- add security to github CODEOWNER file [#685](https://github.com/recurly/recurly-js/pull/685) ([eternal44](https://github.com/eternal44))
+- Add test to support cuit tax identifiers [#684](https://github.com/recurly/recurly-js/pull/684) ([cyberxander90](https://github.com/cyberxander90))
+- Add fields and details types to RecurlyError [#680](https://github.com/recurly/recurly-js/pull/680) ([cyberxander90](https://github.com/cyberxander90))
+
+**Closed Issues**
+
+- Add a line item for trial in apple pay payment sheet  [#686](https://github.com/recurly/recurly-js/issues/686)
+- Better validation on fly ? [#679](https://github.com/recurly/recurly-js/issues/679)
+
+
 ## [v4.16.2](https://github.com/recurly/recurly-js/tree/v4.16.2) (2021-05-05)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.16.1...v4.16.2)
