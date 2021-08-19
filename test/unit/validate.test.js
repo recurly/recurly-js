@@ -79,6 +79,11 @@ describe('Recurly.validate', function () {
       assert.strictEqual(recurly.validate.cardType('6062828888666688'), 'hipercard');
     });
 
+    it('should parse Tarjeta Naranja', function () {
+      assert.strictEqual(recurly.validate.cardType('5895620000000002'), 'tarjeta_naranja');
+      assert.strictEqual(recurly.validate.cardType('5895629999999999'), 'tarjeta_naranja');
+    });
+
     it('should parse unknown', function () {
       assert.strictEqual(recurly.validate.cardType('867-5309-jenny'), 'unknown');
     });
