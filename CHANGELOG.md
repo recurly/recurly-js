@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.17.1](https://github.com/recurly/recurly-js/tree/v4.17.1) (2021-08-19)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.17.0...v4.17.1)
+
+
+**Merged Pull Requests**
+
+- Add BIN range for Tarjeta Naranja [#689](https://github.com/recurly/recurly-js/pull/689) ([efeygelson](https://github.com/efeygelson))
+
+
+
 ## [v4.17.0](https://github.com/recurly/recurly-js/tree/v4.17.0) (2021-08-12)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.16.2...v4.17.0)
