@@ -1589,8 +1589,8 @@ describe('CheckoutPricing', function () {
         it('applies taxes to the price', function (done) {
           this.pricing.reprice().done(price => {
             assert.equal(price.now.subtotal, 61.99); // 21.99 + 20 + 20
-            assert.equal(price.now.taxes, 5.43); // 8.75% of 61.99
-            assert.equal(price.now.total, 67.42);
+            assert.equal(price.now.taxes, 5.42); // 8.75% of 61.99
+            assert.equal(price.now.total, 67.41);
             assert.equal(price.next.subtotal, 19.99);
             assert.equal(price.next.taxes, 1.75); // 8.75% of 19.99
             assert.equal(price.next.total, 21.74);
