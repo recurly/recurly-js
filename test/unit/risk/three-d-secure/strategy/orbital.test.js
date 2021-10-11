@@ -23,9 +23,8 @@ describe('OrbitalStrategy', function () {
   });
 
   afterEach(function () {
-    const { sandbox, strategy } = this;
-    strategy.remove();
-    sandbox.restore();
+    this.strategy.remove();
+    this.sandbox.restore();
   });
 
   describe('attach', function () {
