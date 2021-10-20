@@ -1,5 +1,18 @@
 # Changelog
 
+## [v4.18.0](https://github.com/recurly/recurly-js/tree/v4.18.0) (2021-10-20)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.17.1...v4.18.0)
+
+
+**Merged Pull Requests**
+
+- Add elements to fix failing e2e tests [#696](https://github.com/recurly/recurly-js/pull/696) ([efeygelson](https://github.com/efeygelson))
+- Update jsdoc [#695](https://github.com/recurly/recurly-js/pull/695) ([cyberxander90](https://github.com/cyberxander90))
+- Add chase orbital 3ds strategy [#692](https://github.com/recurly/recurly-js/pull/692) ([cyberxander90](https://github.com/cyberxander90))
+
+
+
 ## [v4.17.1](https://github.com/recurly/recurly-js/tree/v4.17.1) (2021-08-19)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.17.0...v4.17.1)
