@@ -46,7 +46,7 @@ describe('Recurly.Pricing.Subscription', function () {
         })
         .giftcard("hundred-dollar-card")
         .done(function (price) {
-          assert.equal(price.now.gift_card, '23.92');
+          assert.equal(price.now.gift_card, '23.91');
           assert.equal(price.next.gift_card, '21.74');
           assert.equal(price.now.total, '0.00');
           assert.equal(price.next.total, '0.00');
@@ -65,7 +65,7 @@ describe('Recurly.Pricing.Subscription', function () {
           assert.equal(price.taxes.length, 1);
           assert.equal(price.taxes[0].type, 'us');
           assert.equal(price.taxes[0].rate, '0.0875');
-          assert.equal(price.now.tax, '1.93');
+          assert.equal(price.now.tax, '1.92');
           assert.equal(price.next.tax, '1.75');
           done();
         });
@@ -99,7 +99,7 @@ describe('Recurly.Pricing.Subscription', function () {
           assert.equal(price.taxes[0].type, 'us');
           assert.equal(price.taxes[0].rate, '0.0875');
           assert.equal(price.taxes[0].region, 'CA');
-          assert.equal(price.now.tax, '1.93');
+          assert.equal(price.now.tax, '1.92');
           assert.equal(price.next.tax, '1.75');
           done();
         });
@@ -151,7 +151,7 @@ describe('Recurly.Pricing.Subscription', function () {
             assert.equal(price.taxes.length, 1);
             assert.equal(price.taxes[0].type, 'us');
             assert.equal(price.taxes[0].rate, '0.0875');
-            assert.equal(price.now.tax, '1.93');
+            assert.equal(price.now.tax, '1.92');
             assert.equal(price.next.tax, '1.75');
             done();
           });
@@ -172,7 +172,7 @@ describe('Recurly.Pricing.Subscription', function () {
             assert.equal(price.taxes.length, 1);
             assert.equal(price.taxes[0].type, 'us');
             assert.equal(price.taxes[0].rate, '0.0875');
-            assert.equal(price.now.tax, '1.93');
+            assert.equal(price.now.tax, '1.92');
             assert.equal(price.next.tax, '1.75');
             done();
           });
