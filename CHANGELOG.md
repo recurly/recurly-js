@@ -1,5 +1,19 @@
 # Changelog
 
+## [v4.18.1](https://github.com/recurly/recurly-js/tree/v4.18.1) (2021-11-09)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.18.0...v4.18.1)
+
+
+**Merged Pull Requests**
+
+- Round tax amount instead of ceil [#690](https://github.com/recurly/recurly-js/pull/690) ([judith](https://github.com/judith))
+
+**Closed Issues**
+
+- Outdated types on DefinitelyTyped [#694](https://github.com/recurly/recurly-js/issues/694)
+
+
 ## [v4.18.0](https://github.com/recurly/recurly-js/tree/v4.18.0) (2021-10-20)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.17.1...v4.18.0)
