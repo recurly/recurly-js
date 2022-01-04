@@ -300,7 +300,7 @@ function recurlyEnvironment () {
     PUBLIC_KEY: publicKey
   } = global.testEnvironment;
   const opts = {};
-  opts.api = apiProxy || api || 'https://api.recurly.com/js/v1';
+  opts.api = apiProxy || api || selectDataCenter(publicKey);
   opts.publicKey = publicKey || 'ewr1-zfJT5nPe1qW7jihI32LIRH';
   return opts;
 }
@@ -358,4 +358,11 @@ function getValue (selector) {
   } else {
     return selector.getValue();
   }
+}
+
+function selectDataCenter(publicKey) {
+  if (publicKey.startsWith('fra-')) {
+    return 'https://api.eu.recurly.com/js/v1'
+  }
+  return 'https://api.recurly.com/js/v1'
 }
