@@ -123,6 +123,30 @@ describe('Recurly', function () {
         });
       });
     });
+    describe('when publicKey of merchant is from us', function () {
+      it('returns the eu api url', function () {
+        const { recurly } = this;
+        initRecurly(recurly);
+        recurly.configure({ publicKey: 'ewr-1test1' });
+        assert(recurly.config.api == 'https://api.recurly.com/js/v1');
+      });
+    });
+    describe('when publicKey of merchant is from europe', function () {
+      it('returns the us api url', function () {
+        const { recurly } = this;
+        initRecurly(recurly);
+        recurly.configure({ publicKey: 'fra-2test2' });
+        assert(recurly.config.api == 'https://api.eu.recurly.com/js/v1');
+      });
+    });
+    describe('when publicKey is not passed', function () {
+      it('returns the default api url', function () {
+        const { recurly } = this;
+        initRecurly(recurly);
+        recurly.configure({ publicKey: 'ewr-3test3' });
+        assert(recurly.config.api == 'https://api.recurly.com/js/v1');
+      });
+    });
   });
 
   describe('destroy', function () {
