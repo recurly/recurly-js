@@ -123,32 +123,49 @@ describe('Recurly', function () {
         });
       });
     });
-    
+
     describe('when switching form different keyspaces', function () {
       const DEFAULT_API_URL = 'https://api.recurly.com/js/v1';
       const DEFAULT_API_URL_EU = 'https://api.eu.recurly.com/js/v1';
+      const SAMPLE_API = 'https://api.test.com';
       describe('when publicKey of merchant is from us', function () {
         it('returns the eu api url', function () {
           const { recurly } = this;
           initRecurly(recurly);
-          recurly.configure({ publicKey: 'ewr-1test1' });
-          assert(recurly.config.api == DEFAULT_API_URL);
+          recurly.configure({ publicKey: 'ewr-1test1', api: '' });
+          assert.strictEqual(recurly.config.api, DEFAULT_API_URL);
         });
       });
       describe('when publicKey of merchant is from europe', function () {
         it('returns the us api url', function () {
           const { recurly } = this;
           initRecurly(recurly);
-          recurly.configure({ publicKey: 'fra-2test2' });
-          assert(recurly.config.api == DEFAULT_API_URL_EU);
+          recurly.configure({ publicKey: 'fra-2test2', api: '' });
+          assert.strictEqual(recurly.config.api, DEFAULT_API_URL_EU);
         });
       });
       describe('when publicKey is not passed', function () {
         it('returns the default api url', function () {
           const { recurly } = this;
           initRecurly(recurly);
-          recurly.configure({ publicKey: 'ewr-3test3' });
-          assert(recurly.config.api == DEFAULT_API_URL);
+          recurly.configure({ publicKey: 'ewr-3test3', api: '' });
+          assert.strictEqual(recurly.config.api, DEFAULT_API_URL);
+        });
+      });
+      describe('when publicKey is from eu and api is passed', function () {
+        it('returns the default api url', function () {
+          const { recurly } = this;
+          initRecurly(recurly);
+          recurly.configure({ publicKey: 'ewr-3test3', api: SAMPLE_API });
+          assert.strictEqual(recurly.config.api, SAMPLE_API);
+        });
+      });
+      describe('when publicKey is from us and api is passed', function () {
+        it('returns the default api url', function () {
+          const { recurly } = this;
+          initRecurly(recurly);
+          recurly.configure({ publicKey: 'ewr-3test3', api: SAMPLE_API });
+          assert.strictEqual(recurly.config.api, SAMPLE_API);
         });
       });
     });
