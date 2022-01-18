@@ -15,6 +15,7 @@ export * from './lib/pricing/index';
 export * from './lib/3d-secure';
 export * from './lib/address';
 export * from './lib/adyen';
+export * from './lib/bank-redirect';
 export * from './lib/apple-pay';
 export * from './lib/bank-account';
 export * from './lib/configure';
