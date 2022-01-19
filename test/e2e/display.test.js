@@ -82,7 +82,7 @@ function assertDiffThresholdMet (diff) {
   } else if (environmentIs(DEVICES.IOS)) {
     threshold = 0.25;
   } else if (environmentIs(BROWSERS.EDGE)) {
-    threshold = 0.09;
+    threshold = 0.05;
   }
   if (threshold) assert(diff <= threshold, `${diff} is above the threshold of ${threshold}`);
   else assert.strictEqual(diff, 0);
