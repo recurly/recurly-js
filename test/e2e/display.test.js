@@ -83,6 +83,8 @@ function assertDiffThresholdMet (diff) {
     threshold = 0.25;
   } else if (environmentIs(BROWSERS.EDGE)) {
     threshold = 0.05;
+  } else if (environmentIs(BROWSERS.FIREFOX)) {
+   threshold = 0.1;
   }
   if (threshold) assert(diff <= threshold, `${diff} is above the threshold of ${threshold}`);
   else assert.strictEqual(diff, 0);
