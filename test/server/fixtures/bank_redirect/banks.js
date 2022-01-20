@@ -1,7 +1,7 @@
 module.exports = function banks () {
   const payload = this.query;
 
-  if (payload.payment_method_type === 'ideal') {
+  if (payload.paymentMethodType === 'ideal') {
     if (payload.error) {
       return {
         error: {

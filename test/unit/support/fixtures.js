@@ -186,9 +186,9 @@ const threeDSecure = () => `<div id="three-d-secure-container"></div>`;
 
 const emptyForm = () => `<form id="test-form"></form>`;
 
-const selectBanks = () => '<select id="issuer_id" name="issuer_id"></select>';
+const selectBanks = () => '<select id="issuerId" name="issuerId"></select>';
 
-const selectBanksFull = banks => `<select id="issuer_id" name="issuer_id">${banks.map(({ id, name }) => `<option value="${id}">${name}</option>`).join('')}</select>`;
+const selectBanksFull = banks => `<select id="issuerId" name="issuerId">${banks.map(({ id, name }) => `<option value="${id}">${name}</option>`).join('')}</select>`;
 
 const empty = '';
 

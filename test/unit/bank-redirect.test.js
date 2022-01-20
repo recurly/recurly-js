@@ -13,7 +13,7 @@ describe('Recurly.BankRedirect', function () {
     describe('loadBanks', function () {
       beforeEach(function () {
         this.banksPayload = {
-          payment_method_type: 'ideal',
+          paymentMethodType: 'ideal',
         };
       });
 
@@ -22,12 +22,12 @@ describe('Recurly.BankRedirect', function () {
       });
 
       it('raises an error for a missing type', function (done) {
-        this.banksPayload.payment_method_type = undefined;
+        this.banksPayload.paymentMethodType = undefined;
 
         this.bankRedirect.on('error', (error) => {
           assert.ok(error);
           assert.equal(error.code, 'validation');
-          assert.equal(error.fields[0], 'payment_method_type can\'t be blank');
+          assert.equal(error.fields[0], 'paymentMethodType cannot be blank');
           done();
         });
         this.bankRedirect.on('banks', assert.fail);
@@ -36,12 +36,12 @@ describe('Recurly.BankRedirect', function () {
       });
 
       it('raises an error for an invalid type', function (done) {
-        this.banksPayload.payment_method_type = 'wrong';
+        this.banksPayload.paymentMethodType = 'wrong';
 
         this.bankRedirect.on('error', (error) => {
           assert.ok(error);
           assert.equal(error.code, 'validation');
-          assert.equal(error.fields[0], 'invalid payment_method_type');
+          assert.equal(error.fields[0], 'invalid paymentMethodType');
           done();
         });
         this.bankRedirect.on('banks', assert.fail);
@@ -74,12 +74,12 @@ describe('Recurly.BankRedirect', function () {
 
       it('attach the banks to a select element', function (done) {
         fixture('selectBanks');
-        const $select = testBed().querySelector('#issuer_id');
+        const $select = testBed().querySelector('#issuerId');
 
         this.bankRedirect.on('error', () => assert.fail);
         this.bankRedirect.on('banks', () => {
           assert.ok(new RegExp([
-            '<select (id|name)="issuer_id" (id|name)="issuer_id">',
+            '<select (id|name)="issuerId" (id|name)="issuerId">',
             '<option value="bank1">Bank 1</option>',
             '<option value="bank2">Bank 2</option>',
             '</select>'
@@ -87,17 +87,17 @@ describe('Recurly.BankRedirect', function () {
           done();
         });
 
-        this.bankRedirect.loadBanks(this.banksPayload, '#issuer_id');
+        this.bankRedirect.loadBanks(this.banksPayload, '#issuerId');
       });
 
       it('attach the banks to a select element after cleanup the select', function (done) {
         fixture('selectBanksFull', [{ id: 'bank99', name: 'Bank 99' }]);
-        const $select = testBed().querySelector('#issuer_id');
+        const $select = testBed().querySelector('#issuerId');
 
         this.bankRedirect.on('error', () => assert.fail);
         this.bankRedirect.on('banks', () => {
           assert.ok(new RegExp([
-            '<select (id|name)="issuer_id" (id|name)="issuer_id">',
+            '<select (id|name)="issuerId" (id|name)="issuerId">',
             '<option value="bank1">Bank 1</option>',
             '<option value="bank2">Bank 2</option>',
             '</select>'
@@ -105,7 +105,7 @@ describe('Recurly.BankRedirect', function () {
           done();
         });
 
-        this.bankRedirect.loadBanks(this.banksPayload, '#issuer_id');
+        this.bankRedirect.loadBanks(this.banksPayload, '#issuerId');
       });
 
       it('attach the banks to a select element into a container', function (done) {
@@ -116,7 +116,7 @@ describe('Recurly.BankRedirect', function () {
         this.bankRedirect.on('banks', () => {
           assert.ok(new RegExp([
             '<form id="test-form">',
-            '<select (id|name)="issuer_id" (id|name)="issuer_id">',
+            '<select (id|name)="issuerId" (id|name)="issuerId">',
             '<option value="bank1">Bank 1</option>',
             '<option value="bank2">Bank 2</option>',
             '</select>',
@@ -132,8 +132,9 @@ describe('Recurly.BankRedirect', function () {
     describe('start', function () {
       beforeEach(function () {
         this.startPayload = {
-          payment_method_type: 'ideal',
-          issuer_id: 'issuer123'
+          paymentMethodType: 'ideal',
+          issuerId: 'issuer123',
+          invoiceUuid: 'invoice123',
         };
 
         this.sandbox = sinon.createSandbox();
@@ -145,12 +146,12 @@ describe('Recurly.BankRedirect', function () {
       });
 
       it('raises an error for a missing type', function (done) {
-        this.startPayload.payment_method_type = undefined;
+        this.startPayload.paymentMethodType = undefined;
 
         this.bankRedirect.on('error', (error) => {
           assert.ok(error);
           assert.equal(error.code, 'validation');
-          assert.equal(error.fields[0], 'payment_method_type can\'t be blank');
+          assert.equal(error.fields[0], 'paymentMethodType cannot be blank');
           done();
         });
         this.bankRedirect.on('token', assert.fail);
@@ -159,12 +160,12 @@ describe('Recurly.BankRedirect', function () {
       });
 
       it('raises an error for an invalid type', function (done) {
-        this.startPayload.payment_method_type = 'wrong';
+        this.startPayload.paymentMethodType = 'wrong';
 
         this.bankRedirect.on('error', (error) => {
           assert.ok(error);
           assert.equal(error.code, 'validation');
-          assert.equal(error.fields[0], 'invalid payment_method_type');
+          assert.equal(error.fields[0], 'invalid paymentMethodType');
           done();
         });
         this.bankRedirect.on('token', assert.fail);
@@ -172,13 +173,27 @@ describe('Recurly.BankRedirect', function () {
         this.bankRedirect.start(this.startPayload);
       });
 
-      it('raises an error for a missing issuer_id', function (done) {
-        this.startPayload.issuer_id = '';
+      it('raises an error for a missing issuerId', function (done) {
+        this.startPayload.issuerId = '';
 
         this.bankRedirect.on('error', (error) => {
           assert.ok(error);
           assert.equal(error.code, 'validation');
-          assert.equal(error.fields[0], 'issuer_id can\'t be blank');
+          assert.equal(error.fields[0], 'issuerId cannot be blank');
+          done();
+        });
+        this.bankRedirect.on('token', assert.fail);
+
+        this.bankRedirect.start(this.startPayload);
+      });
+
+      it('raises an error for a missing invoiceUuid', function (done) {
+        this.startPayload.invoiceUuid = '';
+
+        this.bankRedirect.on('error', (error) => {
+          assert.ok(error);
+          assert.equal(error.code, 'validation');
+          assert.equal(error.fields[0], 'invoiceUuid cannot be blank');
           done();
         });
         this.bankRedirect.on('token', assert.fail);
@@ -195,8 +210,8 @@ describe('Recurly.BankRedirect', function () {
           height: 600,
           path: '/bank_redirect/start',
           payload: {
-            payment_method_type: 'ideal',
-            issuer_id: 'issuer123'
+            paymentMethodType: 'ideal',
+            issuerId: 'issuer123'
           }
         }));
       });

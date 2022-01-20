@@ -8,19 +8,24 @@ export type BankRedirectOptions = {
   /**
    * Token Payment method type.
    */
-  payment_method_type: PaymentMethodType;
+  paymentMethodType: PaymentMethodType;
 
   /**
    * Issuer Id for iDeal Payment methods.
    */
-  issuer_id?: string;
+  issuerId?: string;
+
+  /**
+   * Invoice Uuid from PendingPurchase
+   */
+  invoiceUuid: string;
 };
 
 export type LoadBankOptions = {
   /**
    * Token Payment method type.
    */
-  payment_method_type: PaymentMethodType;
+  paymentMethodType: PaymentMethodType;
 };
 
 export interface BankRedirectInstance extends Emitter<BankRedirectEvent> {
