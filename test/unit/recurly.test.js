@@ -123,6 +123,38 @@ describe('Recurly', function () {
         });
       });
     });
+
+    describe('when switching form different keyspaces', function () {
+      const DEFAULT_API_URL = 'https://api.recurly.com/js/v1';
+      const DEFAULT_API_URL_EU = 'https://api.eu.recurly.com/js/v1';
+      const SAMPLE_API = 'https://api.test.com';
+      describe('when publicKey of merchant is from eu', function () {
+        it('returns the eu api url', function () {
+          const recurly = new Recurly;
+          recurly.configure({ publicKey: 'fra-2test2' });
+          assert.strictEqual(recurly.config.api, DEFAULT_API_URL_EU);
+        });
+      });
+      describe('when publicKey of merchant is from us', function () {
+        it('returns the us api url', function () {
+          const recurly = new Recurly;
+          recurly.configure({ publicKey: 'ewr-1test1' });
+          assert.strictEqual(recurly.config.api, DEFAULT_API_URL);
+        });
+      });
+      describe('when publicKey is from eu and api is passed', function () {
+        it('returns the default api url', function () {
+          const recurly = initRecurly({ publicKey: 'fra-3test3', api: SAMPLE_API });
+          assert.strictEqual(recurly.config.api, SAMPLE_API);
+        });
+      });
+      describe('when publicKey is from us and api is passed', function () {
+        it('returns the default api url', function () {
+          const recurly = initRecurly({ publicKey: 'ewr-3test3', api: SAMPLE_API });
+          assert.strictEqual(recurly.config.api, SAMPLE_API);
+        });
+      });
+    });
   });
 
   describe('destroy', function () {

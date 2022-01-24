@@ -7,7 +7,8 @@ const BROWSERS = {
   IE_11: ['internet explorer', '11'],
   EDGE: ['MicrosoftEdge'],
   ELECTRON: ['chrome', 'electron'],
-  SAFARI: ['Safari']
+  SAFARI: ['Safari'],
+  FIREFOX: ['firefox']
 };
 
 const DEVICES = {
