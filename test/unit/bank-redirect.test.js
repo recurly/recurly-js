@@ -27,7 +27,7 @@ describe('Recurly.BankRedirect', function () {
         this.bankRedirect.on('error', (error) => {
           assert.ok(error);
           assert.equal(error.code, 'validation');
-          assert.equal(error.fields[0], 'payment_method_type can\'t be blank');
+          assert.equal(error.fields[0], 'payment_method_type cannot be blank');
           done();
         });
         this.bankRedirect.on('banks', assert.fail);
@@ -133,7 +133,8 @@ describe('Recurly.BankRedirect', function () {
       beforeEach(function () {
         this.startPayload = {
           payment_method_type: 'ideal',
-          issuer_id: 'issuer123'
+          issuer_id: 'issuer123',
+          invoice_uuid: 'invoice123'
         };
 
         this.sandbox = sinon.createSandbox();
@@ -150,7 +151,7 @@ describe('Recurly.BankRedirect', function () {
         this.bankRedirect.on('error', (error) => {
           assert.ok(error);
           assert.equal(error.code, 'validation');
-          assert.equal(error.fields[0], 'payment_method_type can\'t be blank');
+          assert.equal(error.fields[0], 'payment_method_type cannot be blank');
           done();
         });
         this.bankRedirect.on('token', assert.fail);
@@ -178,11 +179,24 @@ describe('Recurly.BankRedirect', function () {
         this.bankRedirect.on('error', (error) => {
           assert.ok(error);
           assert.equal(error.code, 'validation');
-          assert.equal(error.fields[0], 'issuer_id can\'t be blank');
+          assert.equal(error.fields[0], 'issuer_id cannot be blank');
           done();
         });
         this.bankRedirect.on('token', assert.fail);
 
+        this.bankRedirect.start(this.startPayload);
+      });
+
+      it('raises an error for a missing invoice_uuid', function (done) {
+        this.startPayload.invoice_uuid = '';
+
+        this.bankRedirect.on('error', (error) => {
+          assert.ok(error);
+          assert.equal(error.code, 'validation');
+          assert.equal(error.fields[0], 'invoice_uuid cannot be blank');
+          done();
+        });
+        this.bankRedirect.on('token', assert.fail);
         this.bankRedirect.start(this.startPayload);
       });
 

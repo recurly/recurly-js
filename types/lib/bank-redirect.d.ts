@@ -14,6 +14,11 @@ export type BankRedirectOptions = {
    * Issuer Id for iDeal Payment methods.
    */
   issuer_id?: string;
+
+  /**
+   * Invoice Uuid from PendingPurchase
+   */
+   invoice_uuid: string;
 };
 
 export type LoadBankOptions = {
