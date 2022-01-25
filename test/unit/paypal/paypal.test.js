@@ -3,7 +3,12 @@ import after from 'lodash.after';
 import { PayPal } from '../../../lib/recurly/paypal';
 import { DirectStrategy } from '../../../lib/recurly/paypal/strategy/direct';
 import { BraintreeStrategy } from '../../../lib/recurly/paypal/strategy/braintree';
-import { initRecurly, apiTest, stubBraintree, stubWindowOpen } from '../support/helpers';
+import {
+  initRecurly,
+  apiTest,
+  stubBraintree,
+  stubWindowOpen
+} from '../support/helpers';
 
 apiTest(function (requestMethod) {
   describe(`Recurly.PayPal (${requestMethod})`, function () {

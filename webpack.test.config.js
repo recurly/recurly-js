@@ -13,7 +13,7 @@ if (shouldInstrument()) {
 }
 
 module.exports = {
-  entry: glob.sync('./test/unit/**/*.test.js'),
+  entry: ['./test/unit/support/init.js', ...glob.sync('./test/unit/**/*.test.js')],
   mode: 'development',
   output: {
     path: path.join(__dirname, 'build'),

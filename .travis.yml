@@ -46,8 +46,10 @@ jobs:
       env: BROWSER=BrowserStackSafari
     - name: Edge
       env: BROWSER=BrowserStackEdge
-    - name: Internet Explorer 11
-      env: BROWSER=BrowserStackIe11
+    - name: Internet Explorer 11 A
+      env: BROWSER=BrowserStackIe11 SUITE_PARTITION=A
+    - name: Internet Explorer 11 B
+      env: BROWSER=BrowserStackIe11 SUITE_PARTITION=B
     - name: iOS 14
       env: BROWSER=BrowserStackIos14
     - name: iOS 13

@@ -1,5 +1,10 @@
 import assert from 'assert';
-import { initRecurly, apiTest, stubBraintree, stubWindowOpen } from '../../support/helpers';
+import {
+  initRecurly,
+  apiTest,
+  stubBraintree,
+  stubWindowOpen
+} from '../../support/helpers';
 
 apiTest(function (requestMethod) {
   describe(`BraintreeStrategy (${requestMethod})`, function () {

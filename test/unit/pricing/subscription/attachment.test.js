@@ -1,6 +1,6 @@
 import assert from 'assert';
-import {applyFixtures} from '../../support/fixtures';
-import {initRecurly} from '../../support/helpers';
+import { applyFixtures } from '../../support/fixtures';
+import { initRecurly } from '../../support/helpers';
 import PricingAttachment from '../../../../lib/recurly/pricing/subscription/attachment'
 
 describe('Recurly.Pricing.attach', function () {
