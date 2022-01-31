@@ -16,6 +16,10 @@ const staticConfig = {
   proxies: {
     '/api': 'http://localhost:9877'
   },
+  preprocessors: {
+    '**/*.js': ['env']
+  },
+  envPreprocessor: ['SUITE_PARTITION'],
   hostname: (BROWSER.includes('Android') ? '10.0.2.2' : 'localhost'),
   reporters: ['mocha', 'coverage'],
   port: 9876,
