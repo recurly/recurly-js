@@ -3,7 +3,7 @@ import assert from 'assert';
 import { fixture, clearFixture } from './support/fixtures';
 import { initRecurly, testBed } from './support/helpers';
 
-describe('Recurly.BankRedirect', function () {
+describe.skip('Recurly.BankRedirect', function () {
   beforeEach(function () {
     this.recurly = initRecurly({ });
     this.bankRedirect = this.recurly.BankRedirect();
