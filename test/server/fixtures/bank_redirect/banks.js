@@ -6,7 +6,7 @@ module.exports = function banks () {
       return {
         error: {
           code: 'api-error',
-          message: 'Api error'
+          message: 'Api error',
         }
       };
     }
