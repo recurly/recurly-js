@@ -3,10 +3,15 @@ import assert from 'assert';
 import { fixture, clearFixture } from './support/fixtures';
 import { initRecurly, testBed } from './support/helpers';
 
-describe.skip('Recurly.BankRedirect', function () {
-  beforeEach(function () {
+describe('Recurly.BankRedirect', function () {
+  beforeEach(function (done) {
     this.recurly = initRecurly({ });
     this.bankRedirect = this.recurly.BankRedirect();
+    this.recurly.ready(() => done());
+  });
+
+  afterEach(function () {
+    this.recurly.destroy();
   });
 
   describe('iDeal', function () {
