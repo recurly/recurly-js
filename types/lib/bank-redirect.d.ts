@@ -43,6 +43,8 @@ export interface BankRedirectInstance extends Emitter<BankRedirectEvent> {
    * Load the banks.
    */
   loadBanks: (data: LoadBankOptions, attachTo?: string) => void;
+
+  loadCountries: (attachTo?: string) => void;
 }
 
 export type BankRedirect = () => BankRedirectInstance;
