@@ -95,7 +95,7 @@ describe('Recurly.BankRedirect', function () {
         this.bankRedirect.loadBanks(this.banksPayload, '#issuer_id');
       });
 
-      it('attach the banks to a select element after cleanup the select', function (done) {
+      it.only('attach the banks to a select element after cleanup the select', function (done) {
         fixture('selectListsFull', [{ id: 'bank99', name: 'Bank 99' }], 'issuer_id');
         const $select = testBed().querySelector('#issuer_id');
 
@@ -280,7 +280,7 @@ describe('Recurly.BankRedirect', function () {
         this.bankRedirect.loadCountries('#country_code');
       })
 
-      it('attach the countries to a select element after cleanup the select', function (done) {
+      it.only('attach the countries to a select element after cleanup the select', function (done) {
         const list = [
           { name: "Austria", id: "AT" },
           { name: "Belgium", id: "BE" },
