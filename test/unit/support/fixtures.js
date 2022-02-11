@@ -188,7 +188,10 @@ const emptyForm = () => `<form id="test-form"></form>`;
 
 const selectLists = (name) => `<select id="${name}" name="${name}"></select>`;
 
-const selectListsFull = (list, name) => `<select id="${name}" name="${name}">${list.map(({ id, name }) => `<option value="${id}">${name}</option>`).join('')}</select>`;
+const selectListsFull = ({ list, selectId }) => {
+  const options = list.map(({ id, name }) => `<option value="${id}">${name}</option>`).join('');
+  return `<select id="${selectId}" name="${selectId}">${options}</select>`;
+};
 
 const empty = '';
 

@@ -17,7 +17,7 @@ describe('Recurly.BankRedirect', function () {
   describe('iDeal', function () {
     describe('loadBanks', function () {
       beforeEach(function () {
-        this.banksPayload = {
+        this.payload = {
           payment_method_type: 'ideal',
         };
       });
@@ -27,7 +27,7 @@ describe('Recurly.BankRedirect', function () {
       });
 
       it('raises an error for a missing type', function (done) {
-        this.banksPayload.payment_method_type = undefined;
+        this.payload.payment_method_type = undefined;
 
         this.bankRedirect.on('error', (error) => {
           assert.ok(error);
@@ -37,11 +37,11 @@ describe('Recurly.BankRedirect', function () {
         });
         this.bankRedirect.on('banks', assert.fail);
 
-        this.bankRedirect.loadBanks(this.banksPayload);
+        this.bankRedirect.loadBanks(this.payload);
       });
 
       it('raises an error for an invalid type', function (done) {
-        this.banksPayload.payment_method_type = 'wrong';
+        this.payload.payment_method_type = 'wrong';
 
         this.bankRedirect.on('error', (error) => {
           assert.ok(error);
@@ -51,11 +51,11 @@ describe('Recurly.BankRedirect', function () {
         });
         this.bankRedirect.on('banks', assert.fail);
 
-        this.bankRedirect.loadBanks(this.banksPayload);
+        this.bankRedirect.loadBanks(this.payload);
       });
 
       it('raises an error for a failed api request', function (done) {
-        this.banksPayload.error = true;
+        this.payload.error = true;
 
         this.bankRedirect.on('error', (error) => {
           assert.ok(error);
@@ -64,24 +64,24 @@ describe('Recurly.BankRedirect', function () {
         });
         this.bankRedirect.on('banks', assert.fail);
 
-        this.bankRedirect.loadBanks(this.banksPayload);
+        this.bankRedirect.loadBanks(this.payload);
       });
 
       it('emit the banks without error for a successfully api request', function (done) {
-        this.bankRedirect.on('error', () => assert.fail);
+        this.bankRedirect.on('error', assert.fail);
         this.bankRedirect.on('banks', banks => {
           assert.ok(banks);
           done();
         });
 
-        this.bankRedirect.loadBanks(this.banksPayload);
+        this.bankRedirect.loadBanks(this.payload);
       });
 
       it('attach the banks to a select element', function (done) {
         fixture('selectLists', 'issuer_id');
         const $select = testBed().querySelector('#issuer_id');
 
-        this.bankRedirect.on('error', () => assert.fail);
+        this.bankRedirect.on('error', assert.fail);
         this.bankRedirect.on('banks', () => {
           assert.ok(new RegExp([
             '<select (id|name)="issuer_id" (id|name)="issuer_id">',
@@ -92,14 +92,14 @@ describe('Recurly.BankRedirect', function () {
           done();
         });
 
-        this.bankRedirect.loadBanks(this.banksPayload, '#issuer_id');
+        this.bankRedirect.loadBanks(this.payload, '#issuer_id');
       });
 
-      it.only('attach the banks to a select element after cleanup the select', function (done) {
-        fixture('selectListsFull', [{ id: 'bank99', name: 'Bank 99' }], 'issuer_id');
+      it('attach the banks to a select element after cleanup the select', function (done) {
+        fixture('selectListsFull', { list: [{ id: 'bank99', name: 'Bank 99' }], selectId: 'issuer_id' });
         const $select = testBed().querySelector('#issuer_id');
 
-        this.bankRedirect.on('error', () => assert.fail);
+        this.bankRedirect.on('error', assert.fail);
         this.bankRedirect.on('banks', () => {
           assert.ok(new RegExp([
             '<select (id|name)="issuer_id" (id|name)="issuer_id">',
@@ -110,14 +110,14 @@ describe('Recurly.BankRedirect', function () {
           done();
         });
 
-        this.bankRedirect.loadBanks(this.banksPayload, '#issuer_id');
+        this.bankRedirect.loadBanks(this.payload, '#issuer_id');
       });
 
       it('attach the banks to a select element into a container', function (done) {
         fixture('emptyForm');
         const $form = testBed().querySelector('#test-form');
 
-        this.bankRedirect.on('error', () => assert.fail);
+        this.bankRedirect.on('error', assert.fail);
         this.bankRedirect.on('banks', () => {
           assert.ok(new RegExp([
             '<form id="test-form">',
@@ -130,7 +130,7 @@ describe('Recurly.BankRedirect', function () {
           done();
         });
 
-        this.bankRedirect.loadBanks(this.banksPayload, '#test-form');
+        this.bankRedirect.loadBanks(this.payload, '#test-form');
       });
     });
 
@@ -150,8 +150,26 @@ describe('Recurly.BankRedirect', function () {
         this.sandbox.restore();
       });
 
+      validateBankRedirectStart({
+        requiredFields: ['payment_method_type', 'invoice_uuid', 'issuer_id'],
+      });
+    });
+  });
+
+  describe('sofort', function () {
+    describe('loadCountries', function () {
+      beforeEach(function () {
+        this.payload = {
+          payment_method_type: 'sofort',
+        };
+      });
+
+      afterEach(function () {
+        clearFixture();
+      });
+
       it('raises an error for a missing type', function (done) {
-        this.startPayload.payment_method_type = undefined;
+        this.payload.payment_method_type = undefined;
 
         this.bankRedirect.on('error', (error) => {
           assert.ok(error);
@@ -159,13 +177,13 @@ describe('Recurly.BankRedirect', function () {
           assert.equal(error.fields[0], 'payment_method_type cannot be blank');
           done();
         });
-        this.bankRedirect.on('token', assert.fail);
+        this.bankRedirect.on('banks', assert.fail);
 
-        this.bankRedirect.start(this.startPayload);
+        this.bankRedirect.loadCountries(this.payload);
       });
 
       it('raises an error for an invalid type', function (done) {
-        this.startPayload.payment_method_type = 'wrong';
+        this.payload.payment_method_type = 'wrong';
 
         this.bankRedirect.on('error', (error) => {
           assert.ok(error);
@@ -173,96 +191,26 @@ describe('Recurly.BankRedirect', function () {
           assert.equal(error.fields[0], 'invalid payment_method_type');
           done();
         });
-        this.bankRedirect.on('token', assert.fail);
+        this.bankRedirect.on('banks', assert.fail);
 
-        this.bankRedirect.start(this.startPayload);
+        this.bankRedirect.loadCountries(this.payload);
       });
 
-      it('raises an error for a missing issuer_id', function (done) {
-        this.startPayload.issuer_id = '';
-
-        this.bankRedirect.on('error', (error) => {
-          assert.ok(error);
-          assert.equal(error.code, 'validation');
-          assert.equal(error.fields[0], 'issuer_id cannot be blank');
-          done();
-        });
-        this.bankRedirect.on('token', assert.fail);
-
-        this.bankRedirect.start(this.startPayload);
-      });
-
-      it('raises an error for a missing invoice_uuid', function (done) {
-        this.startPayload.invoice_uuid = '';
-
-        this.bankRedirect.on('error', (error) => {
-          assert.ok(error);
-          assert.equal(error.code, 'validation');
-          assert.equal(error.fields[0], 'invoice_uuid cannot be blank');
-          done();
-        });
-        this.bankRedirect.on('token', assert.fail);
-        this.bankRedirect.start(this.startPayload);
-      });
-
-      it('create the iframe to make the payment', function () {
-        // debugger
-        this.bankRedirect.start(this.startPayload);
-
-        assert(this.recurly.Frame.calledOnce);
-        assert(this.recurly.Frame.calledWithMatch({
-          height: 600,
-          path: '/bank_redirect/start',
-          payload: {
-            payment_method_type: 'ideal',
-            issuer_id: 'issuer123'
-          }
-        }));
-      });
-
-      it('emit an error if the iframe emits errors', function (done) {
-        this.bankRedirect.on('error', (error) => {
-          assert.ok(error);
-          assert.equal(error.code, 'bank-redirect-error');
-          assert.equal(error.cause, 'my-error');
-          done();
-        });
-        this.bankRedirect.on('token', assert.fail);
-
-        const frame = this.bankRedirect.start(this.startPayload);
-        frame.emit('error', 'my-error');
-      });
-
-      it('emit a token if the iframe is done successfully', function (done) {
+      it('emits the countries without error', function (done) {
         this.bankRedirect.on('error', assert.fail);
-        this.bankRedirect.on('token', token => {
-          assert(token, 'my-token');
-          done();
-        });
-
-        const frame = this.bankRedirect.start(this.startPayload);
-        frame.emit('done', 'my-token');
-      });
-    });
-  });
-
-  describe('sofort', function () {
-    describe('loadCountries', function () {
-      it('emits the countries without error for a successful api request', function (done) {
-        this.bankRedirect.on('error', () => assert.fail);
         this.bankRedirect.on('countries', countries => {
           assert.ok(countries);
           done();
         });
 
-        this.bankRedirect.loadCountries();
+        this.bankRedirect.loadCountries(this.payload);
       });
 
       it('attach the countries to a select element', function (done) {
         fixture('selectLists', 'country_code');
         const $select = testBed().querySelector('#country_code');
 
-        this.bankRedirect.on('error', () => assert.fail);
+        this.bankRedirect.on('error', assert.fail);
         this.bankRedirect.on('countries', () => {
           assert.ok(new RegExp([
             '<select (id|name)="country_code" (id|name)="country_code">',
@@ -277,22 +225,14 @@ describe('Recurly.BankRedirect', function () {
           done();
         });
 
-        this.bankRedirect.loadCountries('#country_code');
-      })
+        this.bankRedirect.loadCountries(this.payload, '#country_code');
+      });
 
-      it.only('attach the countries to a select element after cleanup the select', function (done) {
-        const list = [
-          { name: "Austria", id: "AT" },
-          { name: "Belgium", id: "BE" },
-          { name: "Germany", id: "DE" },
-          { name: "Italy", id: "IT" },
-          { name: "Spain", id: "ES" },
-          { name: "The Netherlands", id: "NL" }
-        ]
-        fixture('selectListsFull', list, 'country_code');
+      it('attach the countries to a select element after cleanup the select', function (done) {
+        fixture('selectListsFull', { list: [{ id: 'UY', name: 'Uruguay' }], selectId: 'country_code' });
         const $select = testBed().querySelector('#country_code');
 
-        this.bankRedirect.on('error', () => assert.fail);
+        this.bankRedirect.on('error', assert.fail);
         this.bankRedirect.on('countries', () => {
           assert.ok(new RegExp([
             '<select (id|name)="country_code" (id|name)="country_code">',
@@ -307,14 +247,14 @@ describe('Recurly.BankRedirect', function () {
           done();
         });
 
-        this.bankRedirect.loadCountries('#country_code');
-      })
+        this.bankRedirect.loadCountries(this.payload, '#country_code');
+      });
 
       it('attach the countries to a select element into a container', function (done) {
         fixture('emptyForm');
         const $form = testBed().querySelector('#test-form');
 
-        this.bankRedirect.on('error', () => assert.fail);
+        this.bankRedirect.on('error', assert.fail);
         this.bankRedirect.on('countries', () => {
           assert.ok(new RegExp([
             '<form id="test-form">',
@@ -330,11 +270,11 @@ describe('Recurly.BankRedirect', function () {
           ].join('')).test($form.outerHTML));
           done();
         });
-        this.bankRedirect.loadCountries('#test-form');
-      })
-    })
+        this.bankRedirect.loadCountries(this.payload, '#test-form');
+      });
+    });
 
-    describe('start', function() {
+    describe('start', function () {
       beforeEach(function () {
         this.startPayload = {
           payment_method_type: 'sofort',
@@ -350,33 +290,75 @@ describe('Recurly.BankRedirect', function () {
         this.sandbox.restore();
       });
 
-      it('raises an error when country_code is missing', function (done) {
-        this.startPayload.country_code = '';
-
-        this.bankRedirect.on('error', (error) => {
-          assert.ok(error);
-          assert.equal(error.code, 'validation');
-          assert.equal(error.fields[0], 'country_code cannot be blank');
-          done();
-        });
-        this.bankRedirect.on('token', assert.fail);
-
-        this.bankRedirect.start(this.startPayload);
-      })
-
-      it('creates the iframe to make the payment', function () {
-        this.bankRedirect.start(this.startPayload);
-
-        assert(this.recurly.Frame.calledOnce);
-        assert(this.recurly.Frame.calledWithMatch({
-          height: 600,
-          path: '/bank_redirect/start',
-          payload: {
-            payment_method_type: 'sofort',
-            country_code: 'NA'
-          }
-        }));
-      })
-    })
-  })
+      validateBankRedirectStart({
+        requiredFields: ['payment_method_type', 'invoice_uuid', 'country_code'],
+      });
+    });
+  });
 });
+
+function validateBankRedirectStart ({ requiredFields = [] } = {}) {
+  it('raises an error for an invalid type', function (done) {
+    this.startPayload.payment_method_type = 'wrong';
+
+    this.bankRedirect.on('error', (error) => {
+      assert.ok(error);
+      assert.equal(error.code, 'validation');
+      assert.equal(error.fields[0], 'invalid payment_method_type');
+      done();
+    });
+    this.bankRedirect.on('token', assert.fail);
+
+    this.bankRedirect.start(this.startPayload);
+  });
+
+  for(const requiredField of requiredFields) {
+    it(`raises an error for a missing ${requiredField}`, function (done) {
+      this.startPayload[requiredField] = '';
+
+      this.bankRedirect.on('error', (error) => {
+        assert.ok(error);
+        assert.equal(error.code, 'validation');
+        assert.equal(error.fields[0], `${requiredField} cannot be blank`);
+        done();
+      });
+      this.bankRedirect.on('token', assert.fail);
+      this.bankRedirect.start(this.startPayload);
+    });
+  }
+
+  it('creates the iframe to make the payment', function () {
+    this.bankRedirect.start(this.startPayload);
+
+    assert(this.recurly.Frame.calledOnce);
+    assert(this.recurly.Frame.calledWithMatch({
+      height: 600,
+      path: '/bank_redirect/start',
+      payload: this.startPayload
+    }));
+  });
+
+  it('emit an error if the iframe emits errors', function (done) {
+    this.bankRedirect.on('error', (error) => {
+      assert.ok(error);
+      assert.equal(error.code, 'bank-redirect-error');
+      assert.equal(error.cause, 'my-error');
+      done();
+    });
+    this.bankRedirect.on('token', assert.fail);
+
+    const frame = this.bankRedirect.start(this.startPayload);
+    frame.emit('error', 'my-error');
+  });
+
+  it('emit a token if the iframe is done successfully', function (done) {
+    this.bankRedirect.on('error', assert.fail);
+    this.bankRedirect.on('token', token => {
+      assert(token, 'my-token');
+      done();
+    });
+
+    const frame = this.bankRedirect.start(this.startPayload);
+    frame.emit('done', 'my-token');
+  });
+}
