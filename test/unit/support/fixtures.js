@@ -186,9 +186,12 @@ const threeDSecure = () => `<div id="three-d-secure-container"></div>`;
 
 const emptyForm = () => `<form id="test-form"></form>`;
 
-const selectBanks = () => '<select id="issuer_id" name="issuer_id"></select>';
+const selectLists = (name) => `<select id="${name}" name="${name}"></select>`;
 
-const selectBanksFull = banks => `<select id="issuer_id" name="issuer_id">${banks.map(({ id, name }) => `<option value="${id}">${name}</option>`).join('')}</select>`;
+const selectListsFull = ({ list, selectId }) => {
+  const options = list.map(({ id, name }) => `<option value="${id}">${name}</option>`).join('');
+  return `<select id="${selectId}" name="${selectId}">${options}</select>`;
+};
 
 const empty = '';
 
@@ -204,8 +207,8 @@ const FIXTURES = {
   threeDSecure,
   empty,
   emptyForm,
-  selectBanks,
-  selectBanksFull,
+  selectLists,
+  selectListsFull,
 };
 
 export function applyFixtures () {

@@ -1,8 +1,8 @@
 import { Emitter } from './emitter';
 
-export type BankRedirectEvent = 'token' | 'banks' | 'error';
+export type BankRedirectEvent = 'token' | 'banks' | 'error' | 'countries';
 
-export type PaymentMethodType = 'ideal';
+export type PaymentMethodType = 'ideal' | 'sofort';
 
 export type BankRedirectOptions = {
   /**
@@ -16,9 +16,14 @@ export type BankRedirectOptions = {
   issuer_id?: string;
 
   /**
+   * Country Code for sofort Payment methods.
+   */
+  country_code?: string;
+
+  /**
    * Invoice Uuid from PendingPurchase
    */
-   invoice_uuid: string;
+  invoice_uuid: string;
 };
 
 export type LoadBankOptions = {
@@ -38,6 +43,8 @@ export interface BankRedirectInstance extends Emitter<BankRedirectEvent> {
    * Load the banks.
    */
   loadBanks: (data: LoadBankOptions, attachTo?: string) => void;
+
+  loadCountries: (attachTo?: string) => void;
 }
 
 export type BankRedirect = () => BankRedirectInstance;
