@@ -21,17 +21,19 @@ export type BankRedirectOptions = {
   country_code?: string;
 
   /**
-   * Invoice Uuid from PendingPurchase
+   * Invoice Uuid from PendingPurchase.
    */
   invoice_uuid: string;
 };
 
-export type LoadBankOptions = {
+export type LoadBanksOptions = {
   /**
    * Token Payment method type.
    */
   payment_method_type: PaymentMethodType;
 };
+
+export type LoadCountriesOptions = LoadBanksOptions;
 
 export interface BankRedirectInstance extends Emitter<BankRedirectEvent> {
   /**
@@ -40,11 +42,14 @@ export interface BankRedirectInstance extends Emitter<BankRedirectEvent> {
   start: (data: BankRedirectOptions) => void;
 
   /**
-   * Load the banks.
+   * Load the banks for the specified payment method type.
    */
-  loadBanks: (data: LoadBankOptions, attachTo?: string) => void;
+  loadBanks: (data: LoadBanksOptions, attachTo?: string) => void;
 
-  loadCountries: (attachTo?: string) => void;
+  /**
+   * Load the countries for the specified payment method type.
+   */
+  loadCountries: (data: LoadCountriesOptions, attachTo?: string) => void;
 }
 
 export type BankRedirect = () => BankRedirectInstance;
