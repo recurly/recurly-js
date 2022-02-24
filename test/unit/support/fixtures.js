@@ -186,6 +186,13 @@ const threeDSecure = () => `<div id="three-d-secure-container"></div>`;
 
 const emptyForm = () => `<form id="test-form"></form>`;
 
+const selectLists = (name) => `<select id="${name}" name="${name}"></select>`;
+
+const selectListsFull = ({ list, selectId }) => {
+  const options = list.map(({ id, name }) => `<option value="${id}">${name}</option>`).join('');
+  return `<select id="${selectId}" name="${selectId}">${options}</select>`;
+};
+
 const empty = '';
 
 const FIXTURES = {
@@ -199,7 +206,9 @@ const FIXTURES = {
   iframe,
   threeDSecure,
   empty,
-  emptyForm
+  emptyForm,
+  selectLists,
+  selectListsFull,
 };
 
 export function applyFixtures () {
@@ -210,16 +219,20 @@ export function applyFixtures () {
 
   afterEach(function () {
     if (!this.currentTest.ctx.fixture) return;
-    const bed = testBed();
-    while (bed.lastChild) {
-      bed.removeChild(bed.lastChild);
-    }
+    clearFixture();
   });
 }
 
 export function fixture (name, opts = {}) {
   const tpl = FIXTURES[name] || (() => {});
   testBed().innerHTML = tpl(opts);
+}
+
+export function clearFixture () {
+  const bed = testBed();
+  while (bed.lastChild) {
+    bed.removeChild(bed.lastChild);
+  }
 }
 
 /**
