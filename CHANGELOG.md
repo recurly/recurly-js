@@ -1,5 +1,21 @@
 # Changelog
 
+## [v4.19.0](https://github.com/recurly/recurly-js/tree/v4.19.0) (2022-02-24)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.18.1...v4.19.0)
+
+
+**Merged Pull Requests**
+
+- [FK-1277] Added Sofort selection form and validations [#707](https://github.com/recurly/recurly-js/pull/707) ([gilv93](https://github.com/gilv93))
+- IDeal and Sofort [#701](https://github.com/recurly/recurly-js/pull/701) ([cyberxander90](https://github.com/cyberxander90))
+- Adding the eu api url for eu on rjs [#700](https://github.com/recurly/recurly-js/pull/700) ([flaviomuller](https://github.com/flaviomuller))
+
+**Closed Issues**
+
+- Error during 3DS fingerprint check with Stripe [#706](https://github.com/recurly/recurly-js/issues/706)
+
+
 ## [v4.18.1](https://github.com/recurly/recurly-js/tree/v4.18.1) (2021-11-09)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.18.0...v4.18.1)
@@ -732,17 +748,112 @@
 
 ## [v4.4.1](https://github.com/recurly/recurly-js/tree/v4.4.1) (2017-02-10)
 
-[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.4.0...v4.4.1)
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v3.1.1...v4.4.1)
 
 
 **Merged Pull Requests**
 
 - Also send name, address, etc fields for apple pay token creation [#320](https://github.com/recurly/recurly-js/pull/320) ([snodgrass23](https://github.com/snodgrass23))
+- Apple Pay part 2 [#315](https://github.com/recurly/recurly-js/pull/315) ([chrissrogers](https://github.com/chrissrogers))
+- Revert "Add support for tabbing in a Mobile browser." [#314](https://github.com/recurly/recurly-js/pull/314) ([chrissrogers](https://github.com/chrissrogers))
+- Apple Pay [#313](https://github.com/recurly/recurly-js/pull/313) ([chrissrogers](https://github.com/chrissrogers))
+- Include the responseText when json is invalid [#307](https://github.com/recurly/recurly-js/pull/307) ([geoffdutton](https://github.com/geoffdutton))
+- Ensures configuration objects are not externally mutable [#303](https://github.com/recurly/recurly-js/pull/303) ([chrissrogers](https://github.com/chrissrogers))
+- Fixes issue with address attachment [#302](https://github.com/recurly/recurly-js/pull/302) ([chrissrogers](https://github.com/chrissrogers))
+- Fixes issue with config coercion [#301](https://github.com/recurly/recurly-js/pull/301) ([chrissrogers](https://github.com/chrissrogers))
+- Adds support for shipping address [#300](https://github.com/recurly/recurly-js/pull/300) ([chrissrogers](https://github.com/chrissrogers))
+- Restructures config object to nest fields more logically [#297](https://github.com/recurly/recurly-js/pull/297) ([chrissrogers](https://github.com/chrissrogers))
+- Sends initial field config over hash instead of query [#295](https://github.com/recurly/recurly-js/pull/295) ([chrissrogers](https://github.com/chrissrogers))
+- Add support for tabbing in a Mobile browser. [#293](https://github.com/recurly/recurly-js/pull/293) ([SteveDugas](https://github.com/SteveDugas))
+- Fixes bug with pricing attachment of addons [#288](https://github.com/recurly/recurly-js/pull/288) ([chrissrogers](https://github.com/chrissrogers))
+- Adds safety check to dom value get method [#282](https://github.com/recurly/recurly-js/pull/282) ([chrissrogers](https://github.com/chrissrogers))
+- Allows a label tag paired to a field container to defer focus to the field [#279](https://github.com/recurly/recurly-js/pull/279) ([chrissrogers](https://github.com/chrissrogers))
+- Fixes expiry validation for invalid input [#278](https://github.com/recurly/recurly-js/pull/278) ([chrissrogers](https://github.com/chrissrogers))
+- Add giftcard support. [#275](https://github.com/recurly/recurly-js/pull/275) ([SteveDugas](https://github.com/SteveDugas))
+- Refactors Pricing into class pattern [#273](https://github.com/recurly/recurly-js/pull/273) ([chrissrogers](https://github.com/chrissrogers))
+- Don't try to calculate addons if there aren't any addons defined for … [#272](https://github.com/recurly/recurly-js/pull/272) ([SteveDugas](https://github.com/SteveDugas))
+- Enables CORS by default [#269](https://github.com/recurly/recurly-js/pull/269) ([chrissrogers](https://github.com/chrissrogers))
+- Remove UsageAddons from Calculations [#268](https://github.com/recurly/recurly-js/pull/268) ([SteveDugas](https://github.com/SteveDugas))
+- Multiple instances [#267](https://github.com/recurly/recurly-js/pull/267) ([chrissrogers](https://github.com/chrissrogers))
+- Fixes bug around initial pricing not respecting coupons [#264](https://github.com/recurly/recurly-js/pull/264) ([chrissrogers](https://github.com/chrissrogers))
+- Emits a pricing error when a coupon is not found [#263](https://github.com/recurly/recurly-js/pull/263) ([chrissrogers](https://github.com/chrissrogers))
+- Version 4.0.4 [#258](https://github.com/recurly/recurly-js/pull/258) ([snodgrass23](https://github.com/snodgrass23))
+- Adding data-collector module for fraud checking [#254](https://github.com/recurly/recurly-js/pull/254) ([snodgrass23](https://github.com/snodgrass23))
+- Version 4.0.3 [#251](https://github.com/recurly/recurly-js/pull/251) ([chrissrogers](https://github.com/chrissrogers))
+- Updates discount type indication [#250](https://github.com/recurly/recurly-js/pull/250) ([chrissrogers](https://github.com/chrissrogers))
+- Fixes issue with trial ext coupon not zeroing totals [#249](https://github.com/recurly/recurly-js/pull/249) ([chrissrogers](https://github.com/chrissrogers))
+- Version 4.0.2 [#247](https://github.com/recurly/recurly-js/pull/247) ([chrissrogers](https://github.com/chrissrogers))
+- Adds pricing case for trial extension coupons [#246](https://github.com/recurly/recurly-js/pull/246) ([chrissrogers](https://github.com/chrissrogers))
 
 **Closed Issues**
 
+- REXML::ParseException: #<REXML::ParseException: Missing end tag for 'meta' ﴾got "head"﴿ [#318](https://github.com/recurly/recurly-js/issues/318)
 -  Tokenization error by recurly.token is not user friendly  [#316](https://github.com/recurly/recurly-js/issues/316)
+- Is there a reason the tax estimation always rounds up partial cents? [#312](https://github.com/recurly/recurly-js/issues/312)
 - Recurly 4.3.0 broken reinitialize: visibility:hidden on fields afterwards [#311](https://github.com/recurly/recurly-js/issues/311)
+- Error in iFrame? [#310](https://github.com/recurly/recurly-js/issues/310)
+- Allow first_name and last_name as text input [#308](https://github.com/recurly/recurly-js/issues/308)
+- Help me : Could not verify Recurly's SSL certificate. [#306](https://github.com/recurly/recurly-js/issues/306)
+- [4.3.0] Card fields invisible [#305](https://github.com/recurly/recurly-js/issues/305)
+- Support for Amazon Payments [#304](https://github.com/recurly/recurly-js/issues/304)
+- npm deployment or a commonjs build [#299](https://github.com/recurly/recurly-js/issues/299)
+- Recurly js hosted field  iframe style visibility set to hidden [#298](https://github.com/recurly/recurly-js/issues/298)
+- User-facing validation messages [#294](https://github.com/recurly/recurly-js/issues/294)
+- Display validation messages next to hosted fields [#292](https://github.com/recurly/recurly-js/issues/292)
+- Recurly returns a token when the credit card is valid and cvv is not present [#291](https://github.com/recurly/recurly-js/issues/291)
+- Generic font family is requested from Google Web Fonts [#289](https://github.com/recurly/recurly-js/issues/289)
+- Letter spacing css property [#287](https://github.com/recurly/recurly-js/issues/287)
+- 'field:submit' event is not emitted when the enter key is pressed on a hosted field [#285](https://github.com/recurly/recurly-js/issues/285)
+- Official NodeJS client [#284](https://github.com/recurly/recurly-js/issues/284)
+- Allow setting textAlign via recurly.configure() [#281](https://github.com/recurly/recurly-js/issues/281)
+- Onchange event crashes browser [#280](https://github.com/recurly/recurly-js/issues/280)
+- hosted month/year fields incorrectly validate [#277](https://github.com/recurly/recurly-js/issues/277)
+- Testing with WebDriver, but trouble with PhantomJsDriver [#274](https://github.com/recurly/recurly-js/issues/274)
+- Focus input fields on click, tap, and focus within field containers [#271](https://github.com/recurly/recurly-js/issues/271)
+- Surface coupon not-found errors [#262](https://github.com/recurly/recurly-js/issues/262)
+- Include appropriate currency separator for prices over $999 USD [#261](https://github.com/recurly/recurly-js/issues/261)
+- Set CSS padding via recurly.configure() [#260](https://github.com/recurly/recurly-js/issues/260)
+- Configuring tax with recurly.Pricing() [#259](https://github.com/recurly/recurly-js/issues/259)
+- V4 does not work when month and year fields are <select> items [#256](https://github.com/recurly/recurly-js/issues/256)
+- Provide a NPM package or SRI signatures [#255](https://github.com/recurly/recurly-js/issues/255)
+- recurly.configure does not reinject iframes. [#253](https://github.com/recurly/recurly-js/issues/253)
+- Placeholder font color does not get set in chrome [#252](https://github.com/recurly/recurly-js/issues/252)
+- Basic usage of library doesn't work. [#248](https://github.com/recurly/recurly-js/issues/248)
+- Incorrect information when using recurly.Pricing in Chrome Beta Version 50.0.2661.57 beta (64-bit) [#245](https://github.com/recurly/recurly-js/issues/245)
+- Incorrect information when using recurly.Pricing in Chrome Beta Version 50.0.2661.57 beta (64-bit) [#244](https://github.com/recurly/recurly-js/issues/244)
+- Styling for Recurly fields [#241](https://github.com/recurly/recurly-js/issues/241)
+- Is it possible to programmatically focus field in iframe? [#240](https://github.com/recurly/recurly-js/issues/240)
+- Add DOM state check to configure call [#239](https://github.com/recurly/recurly-js/issues/239)
+- Add max length support to hosted fields [#238](https://github.com/recurly/recurly-js/issues/238)
+- iframe form divs empty [#235](https://github.com/recurly/recurly-js/issues/235)
+- NPM package [#227](https://github.com/recurly/recurly-js/issues/227)
+- Credit card validation bug [#226](https://github.com/recurly/recurly-js/issues/226)
+- get coupon description - hosted_description [#225](https://github.com/recurly/recurly-js/issues/225)
+- Example of how to implement backend-less recurly usage with CORS [#224](https://github.com/recurly/recurly-js/issues/224)
+- allow `catch` a pricePromise after `done` [#223](https://github.com/recurly/recurly-js/issues/223)
+- Add safety check to valueGet function [#220](https://github.com/recurly/recurly-js/issues/220)
+- Token not updated when using recurly.paypal [#219](https://github.com/recurly/recurly-js/issues/219)
+- Billing info form defaults to 'United States' regardless of country specified. [#218](https://github.com/recurly/recurly-js/issues/218)
+- Update account details with v3 [#217](https://github.com/recurly/recurly-js/issues/217)
+- Bower support [#216](https://github.com/recurly/recurly-js/issues/216)
+- discount_next not shown correctly with coupon [#209](https://github.com/recurly/recurly-js/issues/209)
+- Coupon handling suggestion [#203](https://github.com/recurly/recurly-js/issues/203)
+- Enforce String passage of credit card number [#200](https://github.com/recurly/recurly-js/issues/200)
+- Update cardType to validate new MasterCard BIN ranges [#185](https://github.com/recurly/recurly-js/issues/185)
+- Single use coupons are included in `discount_next` calculation [#167](https://github.com/recurly/recurly-js/issues/167)
+- Lack of VAT rate in Pricing API output [#163](https://github.com/recurly/recurly-js/issues/163)
+- Strip `name` attributes out of PCI-concerned fields [#133](https://github.com/recurly/recurly-js/issues/133)
+
+
+## [v3.1.1](https://github.com/recurly/recurly-js/tree/v3.1.1) (2017-02-09)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.4.0...v3.1.1)
+
+
+**Merged Pull Requests**
+
+- fix test that is now failing because expiry isn’t a future date anymore [#321](https://github.com/recurly/recurly-js/pull/321) ([snodgrass23](https://github.com/snodgrass23))
+
 
 
 ## [v4.4.0](https://github.com/recurly/recurly-js/tree/v4.4.0) (2017-01-25)
@@ -932,7 +1043,7 @@
 
 ## [v4.0.0](https://github.com/recurly/recurly-js/tree/v4.0.0) (2016-01-14)
 
-[Full Changelog](https://github.com/recurly/recurly-js/compare/v3.1.1...v4.0.0)
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v3.1.0...v4.0.0)
 
 
 
@@ -942,75 +1053,6 @@
 - discount_next not shown correctly with coupon [#209](https://github.com/recurly/recurly-js/issues/209)
 - Coupon handling suggestion [#203](https://github.com/recurly/recurly-js/issues/203)
 - Single use coupons are included in `discount_next` calculation [#167](https://github.com/recurly/recurly-js/issues/167)
-
-
-## [v3.1.1](https://github.com/recurly/recurly-js/tree/v3.1.1) (2017-02-09)
-
-[Full Changelog](https://github.com/recurly/recurly-js/compare/v3.1.0...v3.1.1)
-
-
-**Merged Pull Requests**
-
-- fix test that is now failing because expiry isn’t a future date anymore [#321](https://github.com/recurly/recurly-js/pull/321) ([snodgrass23](https://github.com/snodgrass23))
-
-**Closed Issues**
-
-- REXML::ParseException: #<REXML::ParseException: Missing end tag for 'meta' ﴾got "head"﴿ [#318](https://github.com/recurly/recurly-js/issues/318)
--  Tokenization error by recurly.token is not user friendly  [#316](https://github.com/recurly/recurly-js/issues/316)
-- Is there a reason the tax estimation always rounds up partial cents? [#312](https://github.com/recurly/recurly-js/issues/312)
-- Recurly 4.3.0 broken reinitialize: visibility:hidden on fields afterwards [#311](https://github.com/recurly/recurly-js/issues/311)
-- Error in iFrame? [#310](https://github.com/recurly/recurly-js/issues/310)
-- Allow first_name and last_name as text input [#308](https://github.com/recurly/recurly-js/issues/308)
-- Help me : Could not verify Recurly's SSL certificate. [#306](https://github.com/recurly/recurly-js/issues/306)
-- [4.3.0] Card fields invisible [#305](https://github.com/recurly/recurly-js/issues/305)
-- Support for Amazon Payments [#304](https://github.com/recurly/recurly-js/issues/304)
-- npm deployment or a commonjs build [#299](https://github.com/recurly/recurly-js/issues/299)
-- Recurly js hosted field  iframe style visibility set to hidden [#298](https://github.com/recurly/recurly-js/issues/298)
-- User-facing validation messages [#294](https://github.com/recurly/recurly-js/issues/294)
-- Display validation messages next to hosted fields [#292](https://github.com/recurly/recurly-js/issues/292)
-- Recurly returns a token when the credit card is valid and cvv is not present [#291](https://github.com/recurly/recurly-js/issues/291)
-- Generic font family is requested from Google Web Fonts [#289](https://github.com/recurly/recurly-js/issues/289)
-- Letter spacing css property [#287](https://github.com/recurly/recurly-js/issues/287)
-- 'field:submit' event is not emitted when the enter key is pressed on a hosted field [#285](https://github.com/recurly/recurly-js/issues/285)
-- Official NodeJS client [#284](https://github.com/recurly/recurly-js/issues/284)
-- Allow setting textAlign via recurly.configure() [#281](https://github.com/recurly/recurly-js/issues/281)
-- Onchange event crashes browser [#280](https://github.com/recurly/recurly-js/issues/280)
-- hosted month/year fields incorrectly validate [#277](https://github.com/recurly/recurly-js/issues/277)
-- Testing with WebDriver, but trouble with PhantomJsDriver [#274](https://github.com/recurly/recurly-js/issues/274)
-- Focus input fields on click, tap, and focus within field containers [#271](https://github.com/recurly/recurly-js/issues/271)
-- Surface coupon not-found errors [#262](https://github.com/recurly/recurly-js/issues/262)
-- Include appropriate currency separator for prices over $999 USD [#261](https://github.com/recurly/recurly-js/issues/261)
-- Set CSS padding via recurly.configure() [#260](https://github.com/recurly/recurly-js/issues/260)
-- Configuring tax with recurly.Pricing() [#259](https://github.com/recurly/recurly-js/issues/259)
-- V4 does not work when month and year fields are <select> items [#256](https://github.com/recurly/recurly-js/issues/256)
-- Provide a NPM package or SRI signatures [#255](https://github.com/recurly/recurly-js/issues/255)
-- recurly.configure does not reinject iframes. [#253](https://github.com/recurly/recurly-js/issues/253)
-- Placeholder font color does not get set in chrome [#252](https://github.com/recurly/recurly-js/issues/252)
-- Basic usage of library doesn't work. [#248](https://github.com/recurly/recurly-js/issues/248)
-- Incorrect information when using recurly.Pricing in Chrome Beta Version 50.0.2661.57 beta (64-bit) [#245](https://github.com/recurly/recurly-js/issues/245)
-- Incorrect information when using recurly.Pricing in Chrome Beta Version 50.0.2661.57 beta (64-bit) [#244](https://github.com/recurly/recurly-js/issues/244)
-- Styling for Recurly fields [#241](https://github.com/recurly/recurly-js/issues/241)
-- Is it possible to programmatically focus field in iframe? [#240](https://github.com/recurly/recurly-js/issues/240)
-- Add DOM state check to configure call [#239](https://github.com/recurly/recurly-js/issues/239)
-- Add max length support to hosted fields [#238](https://github.com/recurly/recurly-js/issues/238)
-- iframe form divs empty [#235](https://github.com/recurly/recurly-js/issues/235)
-- NPM package [#227](https://github.com/recurly/recurly-js/issues/227)
-- Credit card validation bug [#226](https://github.com/recurly/recurly-js/issues/226)
-- get coupon description - hosted_description [#225](https://github.com/recurly/recurly-js/issues/225)
-- Example of how to implement backend-less recurly usage with CORS [#224](https://github.com/recurly/recurly-js/issues/224)
-- allow `catch` a pricePromise after `done` [#223](https://github.com/recurly/recurly-js/issues/223)
-- Add safety check to valueGet function [#220](https://github.com/recurly/recurly-js/issues/220)
-- Token not updated when using recurly.paypal [#219](https://github.com/recurly/recurly-js/issues/219)
-- Billing info form defaults to 'United States' regardless of country specified. [#218](https://github.com/recurly/recurly-js/issues/218)
-- Update account details with v3 [#217](https://github.com/recurly/recurly-js/issues/217)
-- Bower support [#216](https://github.com/recurly/recurly-js/issues/216)
-- discount_next not shown correctly with coupon [#209](https://github.com/recurly/recurly-js/issues/209)
-- Coupon handling suggestion [#203](https://github.com/recurly/recurly-js/issues/203)
-- Enforce String passage of credit card number [#200](https://github.com/recurly/recurly-js/issues/200)
-- Update cardType to validate new MasterCard BIN ranges [#185](https://github.com/recurly/recurly-js/issues/185)
-- Single use coupons are included in `discount_next` calculation [#167](https://github.com/recurly/recurly-js/issues/167)
-- Lack of VAT rate in Pricing API output [#163](https://github.com/recurly/recurly-js/issues/163)
-- Strip `name` attributes out of PCI-concerned fields [#133](https://github.com/recurly/recurly-js/issues/133)
 
 
 ## [v3.1.0](https://github.com/recurly/recurly-js/tree/v3.1.0) (2015-05-07)
