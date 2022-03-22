@@ -37,6 +37,7 @@ describe('WorldpayStrategy', function () {
       this.sessionId = 'test-worldpay-session-id';
       this.number = '4111111111111111';
       this.jwt = 'test-preflight-jwt';
+      this.deviceDataCollectionUrl = "https://secure-test.worldpay.com/shopper/3ds/ddc.html";
       this.simulatePreflightResponse = () => {
         // Stubs expected message format from Worldpay DDC
         recurly.bus.emit('raw-message', {
@@ -49,16 +50,16 @@ describe('WorldpayStrategy', function () {
     });
 
     it('returns a promise', function (done) {
-      const { recurly, Strategy, number, jwt, simulatePreflightResponse } = this;
-      const retValue = Strategy.preflight({ recurly, number, jwt }).then(() => done());
+      const { recurly, Strategy, number, jwt, deviceDataCollectionUrl, simulatePreflightResponse } = this;
+      const retValue = Strategy.preflight({ recurly, number, jwt, deviceDataCollectionUrl }).then(() => done());
       assert(retValue instanceof Promise);
       simulatePreflightResponse();
     });
 
     it('constructs a frame to collect a session id', function (done) {
-      const { recurly, Strategy, number, jwt, simulatePreflightResponse } = this;
+      const { recurly, Strategy, number, jwt, deviceDataCollectionUrl, simulatePreflightResponse } = this;
 
-      Strategy.preflight({ recurly, number, jwt }).then(() => done());
+      Strategy.preflight({ recurly, number, jwt, deviceDataCollectionUrl }).then(() => done());
 
       assert(recurly.Frame.calledOnce);
       assert(recurly.Frame.calledWithMatch({
@@ -66,7 +67,7 @@ describe('WorldpayStrategy', function () {
         payload: {
           bin: number.substr(0,6),
           jwt,
-          redirect_url: 'https://secure-test.worldpay.com/shopper/3ds/ddc.html'
+          redirect_url: deviceDataCollectionUrl
         },
         type: Frame.TYPES.IFRAME,
         height: 0,
@@ -77,9 +78,9 @@ describe('WorldpayStrategy', function () {
     });
 
     it('resolves when a session id is received', function (done) {
-      const { recurly, Strategy, number, jwt, sessionId, simulatePreflightResponse } = this;
+      const { recurly, Strategy, number, jwt, deviceDataCollectionUrl, sessionId, simulatePreflightResponse } = this;
 
-      Strategy.preflight({ recurly, number, jwt }).then(preflightResponse => {
+      Strategy.preflight({ recurly, number, jwt, deviceDataCollectionUrl }).then(preflightResponse => {
         assert.strictEqual(preflightResponse.session_id, sessionId);
         done();
       });
