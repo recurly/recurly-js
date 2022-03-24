@@ -82,7 +82,7 @@ function assertDiffThresholdMet (diff) {
   } else if (environmentIs(DEVICES.IOS)) {
     threshold = 0.25;
   } else if (environmentIs(BROWSERS.EDGE)) {
-    threshold = 0.05;
+    threshold = 0.06;
   } else if (environmentIs(BROWSERS.FIREFOX)) {
    threshold = 0.1;
   }
