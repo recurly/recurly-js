@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.19.1](https://github.com/recurly/recurly-js/tree/v4.19.1) (2022-03-31)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.19.0...v4.19.1)
+
+
+**Merged Pull Requests**
+
+- Worldpay 3ds prod fix [#717](https://github.com/recurly/recurly-js/pull/717) ([smagdicatrecurly](https://github.com/smagdicatrecurly))
+- remove redirectURL from WorldpayStrategy [#714](https://github.com/recurly/recurly-js/pull/714) ([ajkelso](https://github.com/ajkelso))
+
+
+
 ## [v4.19.0](https://github.com/recurly/recurly-js/tree/v4.19.0) (2022-02-24)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.18.1...v4.19.0)
