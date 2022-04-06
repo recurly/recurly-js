@@ -4,12 +4,19 @@ import find from 'component-find';
 import merge from 'lodash.merge';
 import omit from 'lodash.omit';
 import Emitter from 'component-emitter';
+import Promise from 'promise';
 import { Recurly } from '../../lib/recurly';
 import { initRecurly, apiTest, nextTick } from './support/helpers';
+import { ApplePayBraintree } from '../../lib/recurly/apple-pay/apple-pay.braintree';
 
 import infoFixture from '../server/fixtures/apple_pay/info';
 import startFixture from '../server/fixtures/apple_pay/start';
 import tokenFixture from '../server/fixtures/apple_pay/token';
+
+const INTEGRATION = {
+  DIRECT: 'Direct Integration',
+  BRAINTREE: 'Braintree Integration',
+};
 
 class ApplePaySessionStub extends Emitter {
   constructor () {
@@ -44,22 +51,61 @@ class ApplePaySessionStub extends Emitter {
 };
 ApplePaySessionStub.canMakePayments = () => true;
 
-apiTest(function (requestMethod) {
-  describe(`Recurly.ApplePay (${requestMethod})`, function () {
+const getBraintreeStub = () => ({
+  client: {
+    VERSION: '3.76.0',
+    create: sinon.stub().resolves('CLIENT'),
+  },
+  dataCollector: {
+    create: sinon.stub().resolves({ deviceData: 'DEVICE_DATA' }),
+  },
+  applePay: {
+    create: sinon.stub().resolves({
+      performValidation: sinon.stub().resolves('MERCHANT_SESSION'),
+      tokenize: sinon.stub().resolves('TOKENIZED_PAYLOAD'),
+      teardown: sinon.stub().resolves('TEARDOWN'),
+    }),
+  },
+});
+
+apiTest(applePayTest.bind(null, INTEGRATION.DIRECT));
+apiTest(applePayTest.bind(null, INTEGRATION.BRAINTREE));
+
+function applePayTest (integrationType, requestMethod) {
+  const isDirectIntegration = integrationType === INTEGRATION.DIRECT;
+  const isBraintreeIntegration = integrationType === INTEGRATION.BRAINTREE;
+
+  describe(`Recurly.ApplePay ${integrationType} (${requestMethod})`, function () {
     let validOpts = {
       country: 'US',
       currency: 'USD',
       label: 'Apple Pay test',
       total: '3.49',
-      form: {}
+      form: {},
+      ...(isBraintreeIntegration && { braintree: { clientAuthorization: 'valid' } }),
     };
 
     beforeEach(function () {
+      this.sandbox = sinon.createSandbox();
+      this.isIE = !!document.documentMode;
+      if (this.isIE) {
+        window.Promise = Promise;
+      }
       this.recurly = initRecurly({ cors: requestMethod === 'cors' });
       window.ApplePaySession = ApplePaySessionStub;
+      if (isBraintreeIntegration) {
+        window.braintree = getBraintreeStub();
+      }
     });
 
-    afterEach(() => delete window.ApplePaySession);
+    afterEach(function () {
+      this.sandbox.restore();
+      if (this.isIE) {
+        delete window.Promise;
+      }
+      delete window.ApplePaySession;
+      delete window.braintree;
+    });
 
     describe('Constructor', function () {
       describe('when Apple Pay is not supported', function () {
@@ -104,15 +150,28 @@ apiTest(function (requestMethod) {
         });
       });
 
-      it('requires options.label', function () {
+      it('requires options.label', function (done) {
         let applePay = this.recurly.ApplePay(omit(validOpts, 'label'));
-        assertInitError(applePay, 'apple-pay-config-missing', { opt: 'label' });
+
+        applePay.on('error', function (err) {
+          nextTick(() => {
+            assert.equal(err, applePay.initError);
+            assertInitError(applePay, 'apple-pay-config-missing', { opt: 'label' });
+            done();
+          });
+        });
       });
 
       describe('when not given options.pricing', function () {
-        it('requires options.total', function () {
+        it('requires options.total', function (done) {
           let applePay = this.recurly.ApplePay(omit(validOpts, 'total'));
-          assertInitError(applePay, 'apple-pay-config-missing', { opt: 'total' });
+          applePay.on('error', function (err) {
+            nextTick(() => {
+              assert.equal(err, applePay.initError);
+              assertInitError(applePay, 'apple-pay-config-missing', { opt: 'total' });
+              done();
+            });
+          });
         });
 
         it('stores options.total', function (done) {
@@ -201,24 +260,26 @@ apiTest(function (requestMethod) {
 
           describe('when the line item labels are customized', () => {
             beforeEach(function () {
-              const pricing = this.pricing;
-              const i18n = this.exampleI18n = {
+              this.exampleI18n = {
                 authorizationLineItemLabel: 'Custom card authorization label',
                 subtotalLineItemLabel: 'Custom subtotal label',
                 discountLineItemLabel: 'Custom discount label',
                 taxLineItemLabel: 'Custom tax label',
                 giftCardLineItemLabel: 'Custom Gift card label'
               };
-              this.applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing, i18n }));
             });
 
-            it('displays those labels', function () {
-              const subtotal = this.applePay.lineItems[0];
-              const discount = this.applePay.lineItems[1];
-              const giftCard = this.applePay.lineItems[2];
-              assert.equal(subtotal.label, this.exampleI18n.subtotalLineItemLabel);
-              assert.equal(discount.label, this.exampleI18n.discountLineItemLabel);
-              assert.equal(giftCard.label, this.exampleI18n.giftCardLineItemLabel);
+            it('displays those labels', function (done) {
+              const applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing: this.pricing, i18n: this.exampleI18n }));
+              applePay.on('ready', () => {
+                const subtotal = applePay.lineItems[0];
+                const discount = applePay.lineItems[1];
+                const giftCard = applePay.lineItems[2];
+                assert.equal(subtotal.label, this.exampleI18n.subtotalLineItemLabel);
+                assert.equal(discount.label, this.exampleI18n.discountLineItemLabel);
+                assert.equal(giftCard.label, this.exampleI18n.giftCardLineItemLabel);
+                done();
+              });
             });
           });
 
@@ -255,6 +316,7 @@ apiTest(function (requestMethod) {
         let applePay = this.recurly.ApplePay(merge({}, validOpts, { country: invalid }));
         applePay.on('error', (err) => {
           nextTick(() => {
+            assert.equal(err, applePay.initError);
             assertInitError(applePay, 'apple-pay-config-invalid', { opt: 'country' });
             done();
           });
@@ -266,6 +328,7 @@ apiTest(function (requestMethod) {
         let applePay = this.recurly.ApplePay(merge({}, validOpts, { currency: invalid }));
         applePay.on('error', (err) => {
           nextTick(() => {
+            assert.equal(err, applePay.initError);
             assertInitError(applePay, 'apple-pay-config-invalid', { opt: 'currency' });
             done();
           });
@@ -295,6 +358,78 @@ apiTest(function (requestMethod) {
       it('emits ready when done', function (done) {
         this.recurly.ApplePay(validOpts).on('ready', done);
       });
+
+      if (isBraintreeIntegration) {
+        describe('when the libs are not loaded', function () {
+          beforeEach(function () {
+            delete window.braintree;
+            this.sandbox.stub(ApplePayBraintree, 'libUrl').returns('/api/mock-200');
+          });
+
+          it('load the libs', function (done) {
+            const applePay = this.recurly.ApplePay(validOpts);
+            applePay.on('error', () => {
+              assert.equal(ApplePayBraintree.libUrl.callCount, 3);
+              assert.equal(ApplePayBraintree.libUrl.getCall(0).args[0], 'client');
+              assert.equal(ApplePayBraintree.libUrl.getCall(1).args[0], 'applePay');
+              assert.equal(ApplePayBraintree.libUrl.getCall(2).args[0], 'dataCollector');
+              done();
+            });
+          });
+        });
+
+        const requiredBraintreeLibs = ['client', 'dataCollector', 'applePay'];
+        requiredBraintreeLibs.forEach(requiredLib => {
+          describe(`when failed to load the braintree ${requiredLib} lib`, function () {
+            beforeEach(function () {
+              delete window.braintree;
+              this.sandbox.stub(ApplePayBraintree, 'libUrl').withArgs(requiredLib).returns('/api/mock-404');
+            });
+
+            it('register an initialization error', function (done) {
+              const applePay = this.recurly.ApplePay(validOpts);
+
+              applePay.on('error', (err) => {
+                nextTick(() => {
+                  assert.equal(err, applePay.initError);
+                  assertInitError(applePay, 'apple-pay-init-error');
+                  done();
+                });
+              });
+            });
+          });
+
+          describe(`when failed to create the ${requiredLib} instance`, function () {
+            beforeEach(function () {
+              window.braintree[requiredLib].create = sinon.stub().rejects('error');
+            });
+
+            it('register an initialization error', function (done) {
+              const applePay = this.recurly.ApplePay(validOpts);
+
+              applePay.on('error', (err) => {
+                nextTick(() => {
+                  assert.equal(err, applePay.initError);
+                  assertInitError(applePay, 'apple-pay-init-error');
+                  done();
+                });
+              });
+            });
+          });
+        });
+
+        it('assigns the braintree configuration', function (done) {
+          const applePay = this.recurly.ApplePay(validOpts);
+
+          applePay.on('ready', () => {
+            nextTick(() => {
+              assert.ok(applePay.braintree.dataCollector);
+              assert.ok(applePay.braintree.applePay);
+              done();
+            });
+          });
+        });
+      }
     });
 
     describe('ApplePay.ready', function () {
@@ -313,16 +448,22 @@ apiTest(function (requestMethod) {
         assert.equal(result.err.code, applePay.initError.code);
       });
 
-      it('establishes a session and initiates it', function () {
+      it('establishes a session and initiates it', function (done) {
         let applePay = this.recurly.ApplePay(validOpts);
-        applePay.begin();
-        assert(applePay.session instanceof ApplePaySessionStub);
+        applePay.on('ready', function () {
+          applePay.begin();
+          assert(applePay.session instanceof ApplePaySessionStub);
+          done();
+        });
       });
 
-      it('establishes a session and initiates it without options.form', function () {
+      it('establishes a session and initiates it without options.form', function (done) {
         let applePay = this.recurly.ApplePay(omit(validOpts, 'form'));
-        applePay.begin();
-        assert(applePay.session instanceof ApplePaySessionStub);
+        applePay.on('ready', function () {
+          applePay.begin();
+          assert(applePay.session instanceof ApplePaySessionStub);
+          done();
+        });
       });
     });
 
@@ -416,14 +557,63 @@ apiTest(function (requestMethod) {
       });
 
       describe('onValidateMerchant', function () {
-        it('calls the merchant validation endpoint and passes the result to the ApplePaySession', function (done) {
-          this.applePay.session.on('completeMerchantValidation', () => {
-            assert.equal(typeof this.applePay.session.merchantSession, 'object');
-            assert.equal(this.applePay.session.merchantSession.merchantSessionIdentifier, startFixture.ok.merchantSessionIdentifier);
-            done();
+        if (isDirectIntegration) {
+          it('calls the merchant validation endpoint and passes the result to the ApplePaySession', function (done) {
+            this.applePay.session.on('completeMerchantValidation', () => {
+              assert.equal(typeof this.applePay.session.merchantSession, 'object');
+              assert.equal(this.applePay.session.merchantSession.merchantSessionIdentifier, startFixture.ok.merchantSessionIdentifier);
+              done();
+            });
+            this.applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
           });
-          this.applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
-        });
+        }
+
+        if (isBraintreeIntegration) {
+          beforeEach(function () {
+            this.spyStartRequest = this.sandbox.spy(this.recurly.request, 'post');
+          });
+
+          it('do not call the merchant validation start endpoint', function (done) {
+            this.applePay.session.on('completeMerchantValidation', () => {
+              assert.equal(this.spyStartRequest.called, false);
+              done();
+            });
+            this.applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
+          });
+
+          it('calls the braintree performValidation with the validation url', function (done) {
+            this.applePay.session.on('completeMerchantValidation', () => {
+              assert.ok(this.applePay.braintree.applePay.performValidation.calledWith({
+                validationURL: 'valid-test-url',
+                displayName: 'My Store'
+              }));
+              done();
+            });
+            this.applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
+          });
+
+          it('calls the completeMerchantValidation with the merchant session', function (done) {
+            const completeMerchantValidationSpy = this.sandbox.spy(this.applePay.session, 'completeMerchantValidation');
+            this.applePay.session.on('completeMerchantValidation', () => {
+              assert.ok(completeMerchantValidationSpy.calledWith('MERCHANT_SESSION'));
+              done();
+            });
+            this.applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
+          });
+
+          it('emits an error if the braintree performValidation fails', function (done) {
+            this.applePay.braintree.applePay.performValidation = this.sandbox.stub().rejects('error');
+            const completeMerchantValidationSpy = this.sandbox.spy(this.applePay.session, 'completeMerchantValidation');
+
+            this.applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
+
+            this.applePay.on('error', err => {
+              assert.equal(completeMerchantValidationSpy.called, false);
+              assert.equal(err, 'error');
+              done();
+            });
+          });
+        }
       });
 
       describe('onPaymentMethodSelected', function () {
@@ -485,7 +675,8 @@ apiTest(function (requestMethod) {
         const validAuthorizeEvent = {
           payment: {
             token: {
-              paymentData: 'valid-payment-data'
+              paymentData: 'valid-payment-data',
+              paymentMethod: 'valid-payment-method'
             }
           }
         };
@@ -515,6 +706,45 @@ apiTest(function (requestMethod) {
           this.applePay.session.onpaymentauthorized(example);
         });
 
+        if (isDirectIntegration) {
+          it('pass the expected parameters to create the token', function (done) {
+            this.spyTokenRequest = this.sandbox.spy(this.recurly.request, 'post');
+
+            this.applePay.session.onpaymentauthorized(clone(validAuthorizeEvent));
+            this.applePay.on('token', () => {
+              const args = this.spyTokenRequest.getCall(0).args[0];
+              assert.deepEqual(args.data, {
+                paymentData: 'valid-payment-data',
+                paymentMethod: 'valid-payment-method',
+              });
+              done();
+            });
+          });
+        }
+
+        if (isBraintreeIntegration) {
+          it('pass the expected parameters to create the token', function (done) {
+            this.spyTokenRequest = this.sandbox.spy(this.recurly.request, 'post');
+
+            this.applePay.session.onpaymentauthorized(clone(validAuthorizeEvent));
+            this.applePay.on('token', () => {
+              const args = this.spyTokenRequest.getCall(0).args[0];
+              assert.deepEqual(args.data, {
+                type: 'braintree',
+                payload: {
+                  deviceData: 'DEVICE_DATA',
+                  tokenizePayload: 'TOKENIZED_PAYLOAD',
+                  applePayPayment: {
+                    paymentData: 'valid-payment-data',
+                    paymentMethod: 'valid-payment-method',
+                  },
+                }
+              });
+              done();
+            });
+          });
+        }
+
         describe('when payment data is invalid', function (done) {
           const invalidAuthorizeEvent = {
             payment: {
@@ -541,6 +771,27 @@ apiTest(function (requestMethod) {
             });
           });
         });
+      });
+
+      describe('onCancel', function () {
+        it('emits onCancel', function (done) {
+          const example = { test: 'event' };
+          this.applePay.on('cancel', event => {
+            assert.deepEqual(event, example);
+            done();
+          });
+          this.applePay.session.oncancel(example);
+        });
+
+        if (isBraintreeIntegration) {
+          it('teardown braintree', function (done) {
+            this.applePay.on('cancel', () => {
+              assert.ok(this.applePay.braintree.applePay.teardown.called);
+              done();
+            });
+            this.applePay.session.oncancel('event');
+          });
+        }
       });
     });
 
@@ -587,7 +838,7 @@ apiTest(function (requestMethod) {
       });
     });
   });
-});
+}
 
 function assertInitError(applePay, code, other) {
   assert.equal(applePay._ready, false);

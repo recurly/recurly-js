@@ -11,8 +11,10 @@ const error = {
 
 function token () {
   const params = this.method === 'GET' ? this.query : this.request.body;
-  if (params.paymentData === 'valid-payment-data') return ok;
-  else return error;
+  const isValid = params.paymentData === 'valid-payment-data' ||
+    params?.payload?.applePayPayment?.paymentData === 'valid-payment-data';
+
+  return isValid ? ok : error;
 }
 
 token.ok = ok;
