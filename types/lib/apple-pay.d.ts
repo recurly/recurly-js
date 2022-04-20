@@ -36,13 +36,6 @@ export type ApplePayConfig = {
    * compatible fields.
    */
   form?: HTMLFormElement;
-
-  /**
-   * If provided, will use Braintree to process the ApplePay transaction.
-   */
-  braintree?: {
-    clientAuthorization: string;
-  };
 };
 
 export type ApplePayEvent =
