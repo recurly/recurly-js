@@ -36,43 +36,12 @@ jobs:
         chrome: stable
       services:
         - xvfb
-    - name: Firefox
-      env: BROWSER=Firefox
-      addons:
-        firefox: latest
-      services:
-        - xvfb
     - name: Safari
       env: BROWSER=BrowserStackSafari
-    - name: Edge
-      env: BROWSER=BrowserStackEdge
-    - name: Internet Explorer 11 A
-      env: BROWSER=BrowserStackIe11 SUITE_PARTITION=A
-    - name: Internet Explorer 11 B
-      env: BROWSER=BrowserStackIe11 SUITE_PARTITION=B
     - name: iOS 14
       env: BROWSER=BrowserStackIos14
     - name: iOS 13
       env: BROWSER=BrowserStackIos13
-    - name: Android 11
-      env: BROWSER=BrowserStackAndroid11
-    - name: Android 10
-      env: BROWSER=BrowserStackAndroid10
-    - name: Android 9
-      env: BROWSER=BrowserStackAndroid9
-    - name: Electron
-      env: BROWSER=Electron
-      addons:
-        chrome: stable
-      services:
-        - xvfb
-    - name: react-recurly
-      if: type != pull_request
-      env: RECURLY_JS_SHA=$TRAVIS_COMMIT
-      script:
-        - mkdir -p vendor && cd vendor
-        - git clone https://github.com/recurly/react-recurly.git && cd react-recurly
-        - make test
 
     - &e2e
       stage: End-to-End Test
@@ -80,39 +49,14 @@ jobs:
       env: BROWSER=BrowserStackChrome
       script: make test-e2e-ci
     - <<: *e2e
-      name: Firefox
-      env: BROWSER=BrowserStackFirefox
-    - <<: *e2e
       name: Safari
       env: BROWSER=BrowserStackSafari
-    - <<: *e2e
-      name: Edge
-      env: BROWSER=BrowserStackEdge
-    - <<: *e2e
-      name: Internet Explorer 11
-      env: BROWSER=BrowserStackIe11
     - <<: *e2e
       name: iOS 14
       env: BROWSER=BrowserStackIos14
     - <<: *e2e
       name: iOS 13
       env: BROWSER=BrowserStackIos13
-    - <<: *e2e
-      name: Android 11
-      env: BROWSER=BrowserStackAndroid11
-    - <<: *e2e
-      name: Android 10
-      env: BROWSER=BrowserStackAndroid10
-    - <<: *e2e
-      name: Android 9
-      env: BROWSER=BrowserStackAndroid9
-    - <<: *e2e
-      name: Electron
-      env: BROWSER=Electron
-      addons:
-        chrome: stable
-      services:
-        - xvfb
 
     - stage: Publish
       name: Publish Artifacts
