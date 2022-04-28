@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.20.0](https://github.com/recurly/recurly-js/tree/v4.20.0) (2022-04-28)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.19.1...v4.20.0)
+
+
+**Merged Pull Requests**
+
+- ApplePay through Braintree [#715](https://github.com/recurly/recurly-js/pull/715) ([cyberxander90](https://github.com/cyberxander90))
+
+
+
 ## [v4.19.1](https://github.com/recurly/recurly-js/tree/v4.19.1) (2022-03-31)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.19.0...v4.19.1)
@@ -19,7 +30,7 @@
 
 **Merged Pull Requests**
 
-- [FK-1277] Added Sofort selection form and validations [#707](https://github.com/recurly/recurly-js/pull/707) ([gilv93](https://github.com/gilv93))
+- Added Sofort selection form and validations [#707](https://github.com/recurly/recurly-js/pull/707) ([gilv93](https://github.com/gilv93))
 - IDeal and Sofort [#701](https://github.com/recurly/recurly-js/pull/701) ([cyberxander90](https://github.com/cyberxander90))
 - Adding the eu api url for eu on rjs [#700](https://github.com/recurly/recurly-js/pull/700) ([flaviomuller](https://github.com/flaviomuller))
 
