@@ -86,6 +86,7 @@ describe('BraintreeStrategy', function () {
           amount: 50,
           nonce: "test-braintree-nonce",
           bin: "test-braintree-bin",
+          challengeRequested: true,
           onLookupComplete: sinon.match.func
         }));
 
