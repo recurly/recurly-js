@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.20.1](https://github.com/recurly/recurly-js/tree/v4.20.1) (2022-05-04)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.20.0...v4.20.1)
+
+
+**Merged Pull Requests**
+
+- add gateway suggested field to braintree 3ds flow [#724](https://github.com/recurly/recurly-js/pull/724) ([isaacvance1027](https://github.com/isaacvance1027))
+
+
+
 ## [v4.20.0](https://github.com/recurly/recurly-js/tree/v4.20.0) (2022-04-28)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.19.1...v4.20.0)
