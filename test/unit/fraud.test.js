@@ -124,4 +124,31 @@ describe('Recurly.fraud', function () {
       });
     });
   });
+
+  describe('#params', function () {
+    it('gets the fraud params presented for kount', function () {
+      const recurly = initRecurly({
+        fraud: {
+          kount: {
+            dataCollector: true,
+            form: testBed().querySelector('#test-form'),
+            udf: {
+              UDF_1: 'VALUE_1',
+              UDF_2: 'VALUE_2',
+            }
+          }
+        }
+      });
+      const params = recurly.fraud.params({ fraud_session_id: 'FRAUD_123' });
+
+      assert.deepEqual(params, [{
+        processor: 'kount',
+        session_id: 'FRAUD_123',
+        udf: [
+          { label: 'UDF_1', value: 'VALUE_1' },
+          { label: 'UDF_2', value: 'VALUE_2' },
+        ]
+      }]);
+    });
+  });
 });
