@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.20.2](https://github.com/recurly/recurly-js/tree/v4.20.2) (2022-05-09)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.20.1...v4.20.2)
+
+
+**Merged Pull Requests**
+
+- Accepts custom udf on kount [#720](https://github.com/recurly/recurly-js/pull/720) ([cyberxander90](https://github.com/cyberxander90))
+
+
+
 ## [v4.20.1](https://github.com/recurly/recurly-js/tree/v4.20.1) (2022-05-04)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.20.0...v4.20.1)
