@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.21.0](https://github.com/recurly/recurly-js/tree/v4.21.0) (2022-05-21)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.20.2...v4.21.0)
+
+
+**Merged Pull Requests**
+
+- Fix snapshots for android10 [#728](https://github.com/recurly/recurly-js/pull/728) ([cyberxander90](https://github.com/cyberxander90))
+- Select PayPal gateway [#727](https://github.com/recurly/recurly-js/pull/727) ([rlew421](https://github.com/rlew421))
+
+
+
 ## [v4.20.2](https://github.com/recurly/recurly-js/tree/v4.20.2) (2022-05-09)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.20.1...v4.20.2)
@@ -223,7 +235,7 @@
 
 **Merged Pull Requests**
 
-- Use more inclusive terms [#616](https://github.com/recurly/recurly-js/pull/616) ([aaron-suarez](https://github.com/aaron-suarez))
+- Use more inclusive terms [#616](https://github.com/recurly/recurly-js/pull/616) ([aaron-junot](https://github.com/aaron-junot))
 - Fixes BankAccount type test [#615](https://github.com/recurly/recurly-js/pull/615) ([dbrudner](https://github.com/dbrudner))
 - Updates dependencies [#613](https://github.com/recurly/recurly-js/pull/613) ([dbrudner](https://github.com/dbrudner))
 - Adds e2e tests for electron [#610](https://github.com/recurly/recurly-js/pull/610) ([dbrudner](https://github.com/dbrudner))
@@ -308,7 +320,7 @@
 - adds error emission instead of throwing in Fraud [#546](https://github.com/recurly/recurly-js/pull/546) ([dbrudner](https://github.com/dbrudner))
 - implement CIT for sagepay [#543](https://github.com/recurly/recurly-js/pull/543) ([calebbarde](https://github.com/calebbarde))
 - Adds 'aria-hidden' tag to hidden input field [#542](https://github.com/recurly/recurly-js/pull/542) ([dbrudner](https://github.com/dbrudner))
-- Emit PayPal cancel event on frame close [#525](https://github.com/recurly/recurly-js/pull/525) ([aaron-suarez](https://github.com/aaron-suarez))
+- Emit PayPal cancel event on frame close [#525](https://github.com/recurly/recurly-js/pull/525) ([aaron-junot](https://github.com/aaron-junot))
 
 **Closed Issues**
 
