@@ -507,7 +507,23 @@ function applePayTest (integrationType, requestMethod) {
         city: '',
         state: '',
         postal_code: '',
-        country: ''
+        country: '',
+        tax_identifier: '',
+        tax_identifier_type: '',
+      };
+      const inputAddressFields = {
+        first_name: 'Marty',
+        last_name: 'McFly',
+        address1: 'Av 1',
+        address2: 'Av 2',
+        city: 'Versalles',
+        state: 'Paris',
+        postal_code: '123',
+        country: 'fr',
+      };
+      const inputNotAddressFields = {
+        tax_identifier: 'tax123',
+        tax_identifier_type: 'cpf',
       };
 
       it('maps the apple pay token and address info into the inputs', function () {
@@ -525,25 +541,44 @@ function applePayTest (integrationType, requestMethod) {
         assert.equal('CA', inputs.state);
         assert.equal('91103', inputs.postal_code);
         assert.equal('us', inputs.country);
+        assert.equal('', inputs.tax_identifier);
+        assert.equal('', inputs.tax_identifier_type);
       });
 
-      it('prioritizes existing input data from the payment form', function () {
-        let applePay = this.recurly.ApplePay();
-        let data = clone(applePayData);
-        let inputs = clone(inputsDefault);
-        inputs.first_name = 'Marty';
-        inputs.last_name = 'McFly';
+      it('prioritizes existing input data from the payment form when contains any address info', function () {
+        const applePay = this.recurly.ApplePay();
+        const data = clone(applePayData);
+        const addressFields = Object.keys(inputAddressFields);
+
+        addressFields.forEach((key) => {
+          const inputs = clone(inputsDefault);
+          inputs[key] = inputAddressFields[key];
+          applePay.mapPaymentData(inputs, data);
+
+          assert.equal('apple pay token', inputs.paymentData);
+          assert.equal('card info', inputs.paymentMethod);
+          addressFields.forEach(k => assert.equal(k === key ? inputAddressFields[k] : '', inputs[k]));
+        });
+      });
+
+      it('maps the apple pay data into the inputs when do not contains address info', function () {
+        const applePay = this.recurly.ApplePay();
+        const data = clone(applePayData);
+        const inputs = clone(inputNotAddressFields);
         applePay.mapPaymentData(inputs, data);
+
         assert.equal('apple pay token', inputs.paymentData);
         assert.equal('card info', inputs.paymentMethod);
-        assert.equal('Marty', inputs.first_name);
-        assert.equal('McFly', inputs.last_name);
-        assert.equal('', inputs.address1);
-        assert.equal('', inputs.address2);
-        assert.equal('', inputs.city);
-        assert.equal('', inputs.state);
-        assert.equal('', inputs.postal_code);
-        assert.equal('', inputs.country);
+        assert.equal('Emmet', inputs.first_name);
+        assert.equal('Brown', inputs.last_name);
+        assert.equal('1640 Riverside Drive', inputs.address1);
+        assert.equal('Suite 1', inputs.address2);
+        assert.equal('Hill Valley', inputs.city);
+        assert.equal('CA', inputs.state);
+        assert.equal('91103', inputs.postal_code);
+        assert.equal('us', inputs.country);
+        assert.equal('tax123', inputs.tax_identifier);
+        assert.equal('cpf', inputs.tax_identifier_type);
       });
     });
 
