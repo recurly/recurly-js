@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.21.1](https://github.com/recurly/recurly-js/tree/v4.21.1) (2022-05-26)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.21.0...v4.21.1)
+
+
+**Merged Pull Requests**
+
+- ApplePay tokenize tax fields [#730](https://github.com/recurly/recurly-js/pull/730) ([cyberxander90](https://github.com/cyberxander90))
+- Allow CNPJ as new tax id [#729](https://github.com/recurly/recurly-js/pull/729) ([horozcorecurly](https://github.com/horozcorecurly))
+
+
+
 ## [v4.21.0](https://github.com/recurly/recurly-js/tree/v4.21.0) (2022-05-21)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.20.2...v4.21.0)
