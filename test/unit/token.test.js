@@ -554,6 +554,10 @@ apiTest(requestMethod => {
             tax_identifier_type: 'cpf'
           },
           {
+            tax_identifier: '41.381.074/6738-65',
+            tax_identifier_type: 'cnpj'
+          },
+          {
             tax_identifier: '20-12345678-6',
             tax_identifier_type: 'cuit'
           }
@@ -585,7 +589,7 @@ apiTest(requestMethod => {
             assert.strictEqual(err.details.length, 1);
             assert.strictEqual(err.details[0].field, 'tax_identifier_type');
             assert.strictEqual(err.details[0].messages.length, 1);
-            assert.strictEqual(err.details[0].messages[0], 'Tax identifier type must be one of the following: ["cpf", "cuit"]');
+            assert.strictEqual(err.details[0].messages[0], 'Tax identifier type must be one of the following: ["cpf", "cnpj", "cuit"]');
             assert(!token);
             done();
           });
