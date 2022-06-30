@@ -133,3 +133,70 @@ export function createNativeEvent (name) {
   event.initEvent(name, true, true);
   return event;
 }
+
+export function assertDone (done, assertCb) {
+  try {
+    assertCb();
+    done();
+  } catch (err) {
+    done(err);
+  }
+}
+
+export function stubPromise () {
+  const isIE = !!document.documentMode;
+
+  if (isIE) {
+    window.Promise = Promise;
+  }
+}
+
+export function stubGooglePaymentAPI (options) {
+  options.loadLibs ||= Promise.resolve(true);
+  options.isReadyToPay ||= Promise.resolve({ result: true });
+  options.loadPaymentData ||= Promise.resolve({
+    paymentMethodData: {
+      description: 'Visa •••• 1111',
+      tokenizationData: {
+        type: 'PAYMENT_GATEWAY',
+        token: '{"id": "tok_123"}',
+      },
+      type: 'CARD',
+      info: {
+        cardNetwork: 'VISA',
+        cardDetails: '1111',
+        billingAddress: {
+          address3: '',
+          sortingCode: '',
+          address2: '',
+          countryCode: 'US',
+          address1: '1600 Amphitheatre Parkway',
+          postalCode: '94043',
+          name: 'John Smith',
+          locality: 'Mountain View',
+          administrativeArea: 'CA',
+        },
+      },
+    },
+  });
+  const { dom, loadLibs, isReadyToPay, loadPaymentData } = options;
+
+  const sandBox = sinon.createSandbox();
+
+  const PaymentsClient = sandBox.stub();
+  PaymentsClient.prototype.isReadyToPay = sandBox.stub().resolves(isReadyToPay);
+  PaymentsClient.prototype.createButton = sandBox.stub().callsFake(opts => ({ click: () => opts.onClick() }));
+  PaymentsClient.prototype.loadPaymentData = sandBox.stub().resolves(loadPaymentData);
+
+  sandBox.stub(dom, 'loadLibs')
+    .resolves(loadLibs.then(() => {
+      window.google = {
+        payments: { api: { PaymentsClient } }
+      };
+    }));
+
+  return () => {
+    sandBox.restore();
+    delete window.google;
+  };
+}
