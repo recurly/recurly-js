@@ -79,7 +79,7 @@ apiTest(requestMethod => describe('Google Pay', function () {
         data: {
           country: 'US',
           currency: 'USD',
-          gatewayCode : 'CODE_123',
+          gateway_code : 'CODE_123',
         },
       });
     }));
