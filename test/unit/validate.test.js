@@ -34,8 +34,8 @@ describe('Recurly.validate', function () {
 
   describe('cardType', function () {
     it('should parse visa', function () {
-      var type = recurly.validate.cardType('4111-1111-1111-1111');
-      assert(type === 'visa');
+      assert.strictEqual(recurly.validate.cardType('4111-1111-1111-1'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4111-1111-1111-1111'), 'visa');
     });
 
     it('should parse discover', function () {
@@ -97,9 +97,23 @@ describe('Recurly.validate', function () {
       assert.strictEqual(recurly.validate.cardType('62109400'), 'unknown');
     });
 
+    it('should not parse partial numbers for maestro', function () {
+      assert.strictEqual(recurly.validate.cardType('6'), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('5000'), 'unknown');
+    });
+
+    it('should not parse partial numbers when multiple matches', function () {
+      assert.strictEqual(recurly.validate.cardType('3', true), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('38', true), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('5', true), 'unknown');
+    });
+
     it('should parse partial numbers if instructed', function () {
       assert.strictEqual(recurly.validate.cardType('3725', true), 'american_express');
       assert.strictEqual(recurly.validate.cardType('62109400', true), 'union_pay');
+      assert.strictEqual(recurly.validate.cardType('62', true), 'union_pay');
+      assert.strictEqual(recurly.validate.cardType('4', true), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4', true), 'visa');
     });
   });
 
