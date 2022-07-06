@@ -47,12 +47,14 @@ describe('Recurly.validate', function () {
     });
 
     it('should parse union_pay', function () {
+      assert.strictEqual(recurly.validate.cardType('6219803011113245'), 'unknown');
       assert.strictEqual(recurly.validate.cardType('621093991111324'), 'unknown');
-      assert.strictEqual(recurly.validate.cardType('6210939911113245'), 'unknown');
-      assert.strictEqual(recurly.validate.cardType('6210950011113245'), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('6210939911113245'), 'union_pay');
+      assert.strictEqual(recurly.validate.cardType('6210950011113245'), 'union_pay');
       assert.strictEqual(recurly.validate.cardType('6210940011113245'), 'union_pay');
       assert.strictEqual(recurly.validate.cardType('6210949911113245'), 'union_pay');
       assert.strictEqual(recurly.validate.cardType('8171999927660000'), 'union_pay');
+      assert.strictEqual(recurly.validate.cardType('6200000000000005'), 'union_pay');
       assert.strictEqual(recurly.validate.cardType('8171999900000000021'), 'union_pay');
     });
 
