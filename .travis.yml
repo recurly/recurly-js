@@ -14,7 +14,7 @@ env:
     - secure: fGRo+RTDcnWNnYjSgDtHIRFrkXDxYzFrF0JaGs73ZunLXoYbJ5FclaM9+wjw8BbGEEsVbyBYMSHyy8E2Y0VRggal/XlFkKaqQQHSDVuslcM5YdAkcLC8jFSuSzP32X6cY+L9fKszFVaO+vn84lXwiQnqgpOHAtN32/eB//5Ky1s=
     - secure: MmcELlODnZq5EdfKqp8YQBaWHTL76oK8GAbvMaY+MBEj+ddiWRj9xnkU9mKB488Zh/G3sqiqv80QeIPhWzL+cjSXj2v6oCy+PML+aWiWq7KlhSogxjVQrMN0VXew8DKC4/9FwdNf/irNcCm6UaiI0Fw6UcCZ+kVGw4301fciAkw=
     - secure: Vyedcxqn04Or/NZLOeK+pii6YulrSNQrDHCPmoXQh9IVeefOF4NujL/d7+PQuKiRUED3AOw6Ziib6oDzpFamTXXl5SJ4xeKS6V9NpHXunLUlLCuv37siQ+96WvN8r5IHs0BJV/hVKCFbk7IosEdnK1OAx6KyVpYctNdf4qWa4O4=
-script: travis_retry make test-unit-ci
+script: make test-unit-ci
 jobs:
   include:
     - stage: Check
@@ -78,7 +78,7 @@ jobs:
       stage: End-to-End Test
       name: Chrome
       env: BROWSER=BrowserStackChrome
-      script: travis_retry make test-e2e-ci
+      script: make test-e2e-ci
     - <<: *e2e
       name: Firefox
       env: BROWSER=BrowserStackFirefox
