@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.22.0](https://github.com/recurly/recurly-js/tree/v4.22.0) (2022-07-11)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.21.1...v4.22.0)
+
+
+**Merged Pull Requests**
+
+- Add more BIN ranges for UnionPay [#735](https://github.com/recurly/recurly-js/pull/735) ([douglaslise](https://github.com/douglaslise))
+- Adding support to google-pay [#733](https://github.com/recurly/recurly-js/pull/733) ([cyberxander90](https://github.com/cyberxander90))
+
+
+
 ## [v4.21.1](https://github.com/recurly/recurly-js/tree/v4.21.1) (2022-05-26)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.21.0...v4.21.1)
