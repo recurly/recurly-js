@@ -26,6 +26,7 @@ export type RecurlyOptions = {
       preflightDeviceDataCollector?: boolean;
     }
   };
+  supportedCoBrands?: string[];
 
   /**
    * @deprecated Use {@link https://developers.recurly.com/reference/recurly-js/index.html#elements|Elements} instead.
