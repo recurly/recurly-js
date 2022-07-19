@@ -34,21 +34,16 @@ describe('Recurly.validate', function () {
 
   describe('cardType', function () {
     it('should parse visa', function () {
-      var type = recurly.validate.cardType('4111-1111-1111-1111');
-      assert(type === 'visa');
+      assert.strictEqual(recurly.validate.cardType('4111-1111-1111-1'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4111-1111-1111-1111'), 'visa');
     });
 
     it('should parse discover', function () {
-      assert.strictEqual(recurly.validate.cardType('601099999013942'), 'unknown');
-      assert.strictEqual(recurly.validate.cardType('6010999990139424'), 'unknown');
-      assert.strictEqual(recurly.validate.cardType('6011040090139424'), 'unknown');
       assert.strictEqual(recurly.validate.cardType('6011000090139424'), 'discover');
       assert.strictEqual(recurly.validate.cardType('6011039990139424'), 'discover');
     });
 
     it('should parse union_pay', function () {
-      assert.strictEqual(recurly.validate.cardType('6219803011113245'), 'unknown');
-      assert.strictEqual(recurly.validate.cardType('621093991111324'), 'unknown');
       assert.strictEqual(recurly.validate.cardType('6210939911113245'), 'union_pay');
       assert.strictEqual(recurly.validate.cardType('6210950011113245'), 'union_pay');
       assert.strictEqual(recurly.validate.cardType('6210940011113245'), 'union_pay');
@@ -86,6 +81,13 @@ describe('Recurly.validate', function () {
       assert.strictEqual(recurly.validate.cardType('5895629999999999'), 'tarjeta_naranja');
     });
 
+    it('should parse maestro', function () {
+      assert.strictEqual(recurly.validate.cardType('627781000000000'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('6010999990139424'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('6011040090139424'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('6219803011113245'), 'maestro');
+    });
+
     it('should parse unknown', function () {
       assert.strictEqual(recurly.validate.cardType('867-5309-jenny'), 'unknown');
     });
@@ -95,9 +97,23 @@ describe('Recurly.validate', function () {
       assert.strictEqual(recurly.validate.cardType('62109400'), 'unknown');
     });
 
+    it('should not parse partial numbers for maestro', function () {
+      assert.strictEqual(recurly.validate.cardType('6'), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('5000'), 'unknown');
+    });
+
+    it('should not parse partial numbers when multiple matches', function () {
+      assert.strictEqual(recurly.validate.cardType('3', true), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('38', true), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('5', true), 'unknown');
+    });
+
     it('should parse partial numbers if instructed', function () {
       assert.strictEqual(recurly.validate.cardType('3725', true), 'american_express');
       assert.strictEqual(recurly.validate.cardType('62109400', true), 'union_pay');
+      assert.strictEqual(recurly.validate.cardType('62', true), 'union_pay');
+      assert.strictEqual(recurly.validate.cardType('4', true), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4', true), 'visa');
     });
   });
 
