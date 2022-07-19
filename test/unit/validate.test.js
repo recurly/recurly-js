@@ -44,6 +44,11 @@ describe('Recurly.validate', function () {
       assert.strictEqual(recurly.validate.cardCoBrand('4360 0000 0100 0005'), 'cartes_bancaires');
     });
 
+    it('should parse mastercard cartes bancaires', function () {
+      assert.strictEqual(recurly.validate.cardType('5555-5525-0000-1001'), 'master');
+      assert.strictEqual(recurly.validate.cardCoBrand('5555-5525-0000-1001'), 'cartes_bancaires');
+    });
+
     it('should return null for other cards', function () {
       assert.strictEqual(recurly.validate.cardCoBrand('4111-1111-1111-1111'), undefined);
       assert.strictEqual(recurly.validate.cardCoBrand('5454-5454-5454-5454'), undefined);
