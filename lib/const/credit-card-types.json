@@ -5,7 +5,12 @@
        "ranges": [
         [2221, 2720],
         [51, 55]
-      ]
+      ],
+      "co_brands": {
+        "cartes_bancaires": [
+          [55555525, 55555525]
+        ]
+      }
     }
   ],
   "diners_club": [
