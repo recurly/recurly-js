@@ -52,6 +52,7 @@ describe('Recurly.validate', function () {
     it('should return null for other cards', function () {
       assert.strictEqual(recurly.validate.cardCoBrand('4111-1111-1111-1111'), undefined);
       assert.strictEqual(recurly.validate.cardCoBrand('5454-5454-5454-5454'), undefined);
+      assert.strictEqual(recurly.validate.cardCoBrand('6011-0000-9013-9424'), undefined);
     });
   });
 
