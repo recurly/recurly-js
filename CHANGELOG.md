@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.22.1](https://github.com/recurly/recurly-js/tree/v4.22.1) (2022-07-20)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.0...v4.22.1)
+
+
+**Merged Pull Requests**
+
+- Update Adyen sdk libUrl for 3ds risk strategy [#742](https://github.com/recurly/recurly-js/pull/742) ([isaacvance1027](https://github.com/isaacvance1027))
+- Credit card types refactor [#736](https://github.com/recurly/recurly-js/pull/736) ([douglaslise](https://github.com/douglaslise))
+
+
+
 ## [v4.22.0](https://github.com/recurly/recurly-js/tree/v4.22.0) (2022-07-11)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.21.1...v4.22.0)
