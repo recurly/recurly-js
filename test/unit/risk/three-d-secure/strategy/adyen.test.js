@@ -128,7 +128,8 @@ describe('AdyenStrategy', function () {
             PaReq: 'test-pa-req',
             MD: 'test-md'
           },
-          container: strategy.container
+          container: strategy.container,
+          defaultEventName: 'adyen-3ds-challenge'
         }));
         strategy.remove();
       });
