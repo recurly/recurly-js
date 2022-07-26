@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.22.2](https://github.com/recurly/recurly-js/tree/v4.22.2) (2022-07-26)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.1...v4.22.2)
+
+
+**Merged Pull Requests**
+
+- Adyen 3ds risk strategy frame update [#744](https://github.com/recurly/recurly-js/pull/744) ([isaacvance1027](https://github.com/isaacvance1027))
+
+
+
 ## [v4.22.1](https://github.com/recurly/recurly-js/tree/v4.22.1) (2022-07-20)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.0...v4.22.1)
