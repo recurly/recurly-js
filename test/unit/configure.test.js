@@ -99,23 +99,23 @@ describe('Recurly.configure', function () {
       });
     });
 
-    describe('when options.coBrands is given', function () {
+    describe.only('when options.coBrands is given', function () {
       it('sets Recurly.config.coBrands as an array', function () {
         const { recurly } = this;
         recurly.configure({ publicKey: 'foo', coBrands: ['cartes_bancaires'] });
-        expect(recurly.config.coBrands).toBe.be.an('array');
+        assert.strictEqual(Array.isArray(recurly.config.coBrands), true);
       });
 
       it('sets Recurly.config.coBrands to the given value', function () {
         const { recurly } = this;
         recurly.configure({ publicKey: 'foo', coBrands: ['cartes_bancaires'] });
-        assert.strictEqual(recurly.config.coBrands, ['cartes_bancaires']);
+        assert.deepEqual(recurly.config.coBrands, ['cartes_bancaires']);
       });
 
       it('sets Recurly.config.coBrands to empty array if no value provided', function () {
         const { recurly } = this;
         recurly.configure({ publicKey: 'foo' });
-        assert.strictEqual(recurly.config.coBrands, []);
+        assert.deepEqual(recurly.config.coBrands, []);
       });
     });
 
