@@ -99,7 +99,7 @@ describe('Recurly.configure', function () {
       });
     });
 
-    describe.only('when options.coBrands is given', function () {
+    describe('when options.coBrands is given', function () {
       it('sets Recurly.config.coBrands as an array', function () {
         const { recurly } = this;
         recurly.configure({ publicKey: 'foo', coBrands: ['cartes_bancaires'] });
