@@ -99,6 +99,26 @@ describe('Recurly.configure', function () {
       });
     });
 
+    describe('when options.coBrands is given', function () {
+      it('sets Recurly.config.coBrands as an array', function () {
+        const { recurly } = this;
+        recurly.configure({ publicKey: 'foo', coBrands: ['cartes_bancaires'] });
+        assert.strictEqual(Array.isArray(recurly.config.coBrands), true);
+      });
+
+      it('sets Recurly.config.coBrands to the given value', function () {
+        const { recurly } = this;
+        recurly.configure({ publicKey: 'foo', coBrands: ['cartes_bancaires'] });
+        assert.deepEqual(recurly.config.coBrands, ['cartes_bancaires']);
+      });
+
+      it('sets Recurly.config.coBrands to empty array if no value provided', function () {
+        const { recurly } = this;
+        recurly.configure({ publicKey: 'foo' });
+        assert.deepEqual(recurly.config.coBrands, []);
+      });
+    });
+
     describe('as a string parameter', function () {
       it('sets the publicKey', function () {
         const { recurly } = this;

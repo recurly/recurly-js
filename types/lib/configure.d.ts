@@ -6,6 +6,7 @@ export type RecurlyOptions = {
   currency?: string;
   required?: string[];
   timeout?: number;
+  coBrands?: string[];
   fraud?: {
     kount?: {
       dataCollector?: boolean;
