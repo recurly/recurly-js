@@ -34,6 +34,7 @@ export type RecurlyOptions = {
   fields?: {
     all?: IndividualElementOptions;
     number?: IndividualElementOptions & { selector?: string };
+    brand?: IndividualElementOptions & { selector?: string };
     month?: IndividualElementOptions & { selector?: string };
     year?: IndividualElementOptions & { selector?: string };
     cvv?: IndividualElementOptions & { selector?: string };

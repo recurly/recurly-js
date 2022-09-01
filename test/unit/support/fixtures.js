@@ -31,6 +31,7 @@ const elements = opts => `
 const minimal = opts => `
   <form action="#" id="test-form">
     <div data-recurly="number"></div>
+    <div data-recurly="brand"></div>
     <div data-recurly="month"></div>
     <div data-recurly="year"></div>
     <div data-recurly="cvv"></div>
@@ -45,6 +46,7 @@ const minimal = opts => `
 const all = opts => `
   <form action="#" id="test-form">
     <div data-recurly="number"></div>
+    <div data-recurly="brand"></div>
     <div data-recurly="month"></div>
     <div data-recurly="year"></div>
     <div data-recurly="cvv"></div>
@@ -160,6 +162,7 @@ const checkoutPricing = opts => `
 const multipleForms = () => `
   <form action="#" id="test-form-1">
     <div id="number-1"></div>
+    <div id="brand-1"></div>
     <div id="month-1"></div>
     <div id="year-1"></div>
     <div id="cvv-1"></div>
@@ -168,6 +171,7 @@ const multipleForms = () => `
 
   <form action="#" id="test-form-2">
     <div id="number-2"></div>
+    <div id="brand-2"></div>
     <div id="month-2"></div>
     <div id="year-2"></div>
     <div id="cvv-2"></div>
