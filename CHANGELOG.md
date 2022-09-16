@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.22.3](https://github.com/recurly/recurly-js/tree/v4.22.3) (2022-09-16)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.2...v4.22.3)
+
+
+**Merged Pull Requests**
+
+- Sequential Preflight Calls [#749](https://github.com/recurly/recurly-js/pull/749) ([isaacvance1027](https://github.com/isaacvance1027))
+
+
+
 ## [v4.22.2](https://github.com/recurly/recurly-js/tree/v4.22.2) (2022-07-26)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.1...v4.22.2)
