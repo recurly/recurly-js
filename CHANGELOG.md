@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.22.4](https://github.com/recurly/recurly-js/tree/v4.22.4) (2022-09-22)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.3...v4.22.4)
+
+
+**Merged Pull Requests**
+
+- Add google-pay type definition to recurly.d.ts [#753](https://github.com/recurly/recurly-js/pull/753) ([cyberxander90](https://github.com/cyberxander90))
+
+
+
 ## [v4.22.3](https://github.com/recurly/recurly-js/tree/v4.22.3) (2022-09-16)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.2...v4.22.3)
