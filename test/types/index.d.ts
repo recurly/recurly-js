@@ -1,2 +1,2 @@
-// Minimum TypeScript Version: 3.1
+// Minimum TypeScript Version: 3.9
 export * from '../../types';
