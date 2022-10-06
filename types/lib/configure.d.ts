@@ -7,6 +7,7 @@ export type RecurlyOptions = {
   required?: string[];
   timeout?: number;
   coBrands?: string[];
+  challengeWindowSize?: string;
   fraud?: {
     kount?: {
       dataCollector?: boolean;
