@@ -36,7 +36,7 @@ describe('TestStrategy', function () {
           assert(recurly.Frame.calledWithMatch({
             type: Frame.TYPES.IFRAME,
             path: '/three_d_secure/mock',
-            payload: { three_d_secure_action_token_id: 'action-token-test' },
+            payload: { three_d_secure_action_token_id: 'action-token-test', iframe_size: '02' },
             container: strategy.container
           }));
           assert.strictEqual(result.success, true);
