@@ -99,6 +99,26 @@ describe('Recurly.configure', function () {
       });
     });
 
+    describe('when options.coBrands is given', function () {
+      it('sets Recurly.config.coBrands as an array', function () {
+        const { recurly } = this;
+        recurly.configure({ publicKey: 'foo', coBrands: ['cartes_bancaires'] });
+        assert.strictEqual(Array.isArray(recurly.config.coBrands), true);
+      });
+
+      it('sets Recurly.config.coBrands to the given value', function () {
+        const { recurly } = this;
+        recurly.configure({ publicKey: 'foo', coBrands: ['cartes_bancaires'] });
+        assert.deepEqual(recurly.config.coBrands, ['cartes_bancaires']);
+      });
+
+      it('sets Recurly.config.coBrands to empty array if no value provided', function () {
+        const { recurly } = this;
+        recurly.configure({ publicKey: 'foo' });
+        assert.deepEqual(recurly.config.coBrands, []);
+      });
+    });
+
     describe('as a string parameter', function () {
       it('sets the publicKey', function () {
         const { recurly } = this;
@@ -131,6 +151,11 @@ describe('Recurly.configure', function () {
             content: 'Credit Card Number'
           }
         },
+        brand: {
+          placeholder: {
+            content: 'Credit Card Brand'
+          }
+        },
         month: {
           placeholder: {
             content: 'Month (mm)'
@@ -161,6 +186,7 @@ describe('Recurly.configure', function () {
         const { recurly } = this;
         recurly.configure(example);
         assert.deepStrictEqual(recurly.config.fields.number.style, example.style.number);
+        assert.deepStrictEqual(recurly.config.fields.brand.style, example.style.brand);
         assert.deepStrictEqual(recurly.config.fields.month.style, example.style.month);
         assert.deepStrictEqual(recurly.config.fields.year.style, example.style.year);
         assert.deepStrictEqual(recurly.config.fields.cvv.style, example.style.cvv);
@@ -211,6 +237,7 @@ describe('Recurly.configure', function () {
           recurly.configure(objectExample);
           const { fields: fieldsConfig } = recurly.config;
           assert.strictEqual(fieldsConfig.number.style.fontWeight, 'normal');
+          assert.strictEqual(fieldsConfig.brand.style.placeholder.content, 'Credit Card Brand');
           assert.strictEqual(fieldsConfig.month.style.placeholder.content, 'Month (mm)');
           assert.strictEqual(fieldsConfig.year.style.placeholder.content, 'Year (yy)');
           assert.strictEqual(fieldsConfig.year.style.color, 'persimmon');
@@ -283,6 +310,7 @@ describe('Recurly.configure', function () {
       initRecurly(recurly, {
         fields: {
           number: `#number-${index}`,
+          brand: `#brand-${index}`,
           month: `#month-${index}`,
           year: `#year-${index}`,
           cvv: `#cvv-${index}`
