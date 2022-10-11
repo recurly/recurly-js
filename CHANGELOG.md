@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.23.0](https://github.com/recurly/recurly-js/tree/v4.23.0) (2022-10-11)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.4...v4.23.0)
+
+
+**Merged Pull Requests**
+
+- Replace $ExpectError with @ts-expect-error [#755](https://github.com/recurly/recurly-js/pull/755) ([douglasmiller](https://github.com/douglasmiller))
+- Cartes Bancaires and Co-Branding support [#752](https://github.com/recurly/recurly-js/pull/752) ([douglaslise](https://github.com/douglaslise))
+
+
+
 ## [v4.22.4](https://github.com/recurly/recurly-js/tree/v4.22.4) (2022-09-22)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.3...v4.22.4)
