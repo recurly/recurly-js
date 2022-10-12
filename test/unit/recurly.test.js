@@ -157,22 +157,6 @@ describe('Recurly', function () {
         });
       });
     });
-    describe('challengeWindowSize', function () {
-      describe('when challengeWindowSize is not given', function () {
-        it('is set to "02"', function () {
-          const recurly = new Recurly;
-          recurly.configure({ publicKey: 'fra-2test2' });
-          assert.strictEqual(recurly.config.challengeWindowSize, '02');
-        });
-      });
-      describe('when challengeWindowSize is given', function () {
-        it('is set to "03"', function () {
-          const recurly = new Recurly;
-          recurly.configure({ publicKey: 'fra-2test2', challengeWindowSize: '03' });
-          assert.strictEqual(recurly.config.challengeWindowSize, '03');
-        });
-      });
-    });
   });
 
   describe('destroy', function () {

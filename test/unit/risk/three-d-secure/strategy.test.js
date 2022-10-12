@@ -3,6 +3,7 @@ import { applyFixtures } from '../../support/fixtures';
 import { testBed } from '../../support/helpers';
 import ThreeDSecureStrategy from '../../../../lib/recurly/risk/three-d-secure/strategy';
 import actionToken from '../../../server/fixtures/tokens/action-token-test.json';
+import { ThreeDSecure } from '../../../../lib/recurly/risk/three-d-secure';
 
 describe('ThreeDSecureStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -41,10 +42,25 @@ describe('ThreeDSecureStrategy', function () {
         assert.strictEqual(container.getAttribute('data-recurly'), 'three-d-secure-container')
       });
 
-      it('sets its height and width to 100%', function () {
-        const { container } = this.strategy;
-        assert.strictEqual(container.style.height, '100%');
-        assert.strictEqual(container.style.width, '100%');
+      describe('dimensions', function () {
+        it('sets its height and width to 100% when no challengeWindowSize is given', function () {
+          const { container } = this.strategy;
+          assert.strictEqual(container.style.height, '100%');
+          assert.strictEqual(container.style.width, '100%');
+        });
+
+        it('sets the height and width to the given challengeWindowSize', function () {
+          const challengeWindowSize = ThreeDSecure.CHALLENGE_WINDOW_SIZE_01_250_X_400;
+          const threeDSecure = this.threeDSecureStub;
+          threeDSecure.challengeWindowSize = challengeWindowSize;
+
+          const strategy = new ThreeDSecureStrategy({ threeDSecure, actionToken });
+          strategy.attach(this.target);
+          const { container } = strategy;
+
+          assert.strictEqual(container.style.width, '250px');
+          assert.strictEqual(container.style.height, '400px');
+        });
       });
 
       it('is a single child of the target element', function () {
