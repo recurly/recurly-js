@@ -32,30 +32,6 @@ describe('Recurly.validate', function () {
     });
   });
 
-  describe('cardCoBrand', function() {
-    it('should parse visa cartes bancaires', function () {
-      assert.strictEqual(recurly.validate.cardType('4000-0025-0000-1001'), 'visa');
-      assert.strictEqual(recurly.validate.cardCoBrand('4000-0025-0000-1001'), 'cartes_bancaires');
-
-      assert.strictEqual(recurly.validate.cardType('4135-3100-0000-0000'), 'visa');
-      assert.strictEqual(recurly.validate.cardCoBrand('4135-3100-0000-0000'), 'cartes_bancaires');
-
-      assert.strictEqual(recurly.validate.cardType('4360 0000 0100 0005'), 'visa');
-      assert.strictEqual(recurly.validate.cardCoBrand('4360 0000 0100 0005'), 'cartes_bancaires');
-    });
-
-    it('should parse mastercard cartes bancaires', function () {
-      assert.strictEqual(recurly.validate.cardType('5555-5525-0000-1001'), 'master');
-      assert.strictEqual(recurly.validate.cardCoBrand('5555-5525-0000-1001'), 'cartes_bancaires');
-    });
-
-    it('should return null for other cards', function () {
-      assert.strictEqual(recurly.validate.cardCoBrand('4111-1111-1111-1111'), undefined);
-      assert.strictEqual(recurly.validate.cardCoBrand('5454-5454-5454-5454'), undefined);
-      assert.strictEqual(recurly.validate.cardCoBrand('6011-0000-9013-9424'), undefined);
-    });
-  });
-
   describe('cardType', function () {
     it('should parse visa', function () {
       assert.strictEqual(recurly.validate.cardType('4111-1111-1111-1'), 'visa');

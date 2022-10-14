@@ -25,7 +25,6 @@ describe('Elements', function () {
     [
       'CardElement',
       'CardNumberElement',
-      'CardBrandElement',
       'CardMonthElement',
       'CardYearElement',
       'CardCvvElement'
@@ -91,7 +90,7 @@ describe('Elements', function () {
         ['CardElement', 'CardNumberElement'],
         ['CardElement', 'CardCvvElement'],
         ['CardNumberElement', 'CardElement'],
-        ['CardNumberElement', 'CardBrandElement', 'CardMonthElement', 'CardYearElement', 'CardCvvElement', 'CardElement']
+        ['CardNumberElement', 'CardMonthElement', 'CardYearElement', 'CardCvvElement', 'CardElement']
       ];
       invalidSets.forEach(invalidSet => {
         const elements = new Elements({ recurly: recurly });
@@ -233,7 +232,6 @@ describe('Elements', function () {
         beforeEach(function () {
           const { elements } = this;
           this.number = elements.CardNumberElement();
-          this.brand = elements.CardBrandElement();
           this.month = elements.CardMonthElement();
           this.year = elements.CardYearElement();
           this.cvv = elements.CardCvvElement();
@@ -272,8 +270,8 @@ describe('Elements', function () {
 
         describe('when all elements have begun attachment', function () {
           beforeEach(function () {
-            const { number, brand, month, year, cvv } = this;
-            [number, brand, month, year, cvv].forEach(stubGetter('attaching', true));
+            const { number, month, year, cvv } = this;
+            [number, month, year, cvv].forEach(stubGetter('attaching', true));
           });
 
           describe('when none of those elements are yet attached', function () {
@@ -292,9 +290,9 @@ describe('Elements', function () {
 
           describe('when all of those elements are attached', function () {
             beforeEach(function () {
-              const { number, brand, month, year, cvv } = this;
-              [number, brand, month, year, cvv].forEach(stubGetter('attaching', false));
-              [number, brand, month, year, cvv].forEach(stubGetter('attached', true));
+              const { number, month, year, cvv } = this;
+              [number, month, year, cvv].forEach(stubGetter('attaching', false));
+              [number, month, year, cvv].forEach(stubGetter('attached', true));
             });
 
             it(...sendsElementsMessages());
