@@ -65,6 +65,13 @@ describe('ThreeDSecure', function () {
       const threeDSecure = factory.call(riskStub, { actionTokenId });
       assert.strictEqual(threeDSecure.risk, riskStub);
     });
+
+    it('sets challengeWindowSize from options', function(){
+      const challengeWindowSize = ThreeDSecure.CHALLENGE_WINDOW_SIZE_03_500_X_600;
+      const { actionTokenId, riskStub } = this;
+      const threeDSecure = factory.call(riskStub, { actionTokenId, challengeWindowSize });
+      assert.strictEqual(threeDSecure.challengeWindowSize, challengeWindowSize);
+    });
   });
 
   describe('ThreeDSecure.getStrategyForGatewayType', function () {
@@ -222,6 +229,22 @@ describe('ThreeDSecure', function () {
       });
     });
   });
+
+  describe('challengeWindowSize', function() {
+    it('validates', function () {
+      const challengeWindowSize = 'xx';
+      const { risk, actionTokenId } = this;
+      assert.throws(() => {
+        new ThreeDSecure({ risk, actionTokenId, challengeWindowSize });
+      }, /Invalid challengeWindowSize. Expected any of 01,02,03,04,05, got xx/);
+    });
+
+    it('uses the default value when not provided', function () {
+      const { risk, actionTokenId } = this;
+      const threeDSecure = new ThreeDSecure({ risk, actionTokenId });
+      assert.strictEqual(threeDSecure.challengeWindowSize, ThreeDSecure.CHALLENGE_WINDOW_SIZE_DEFAULT);
+    });
+  })
 
   describe('attach', function () {
     it('defers to the strategy', function (done) {

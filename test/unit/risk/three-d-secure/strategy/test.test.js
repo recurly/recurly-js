@@ -4,6 +4,7 @@ import { initRecurly, testBed } from '../../../support/helpers';
 import TestStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/test';
 import actionToken from '../../../../server/fixtures/tokens/action-token-test.json';
 import { Frame } from '../../../../../lib/recurly/frame';
+import { ThreeDSecure } from '../../../../../lib/recurly/risk/three-d-secure';
 
 describe('TestStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -12,7 +13,8 @@ describe('TestStrategy', function () {
 
   beforeEach(function () {
     const recurly = this.recurly = initRecurly();
-    const threeDSecure = this.threeDSecureStub = { risk: { recurly }, error: sinon.stub() };
+    const challengeWindowSize = ThreeDSecure.CHALLENGE_WINDOW_SIZE_03_500_X_600;
+    const threeDSecure = this.threeDSecureStub = { risk: { recurly }, error: sinon.stub(), challengeWindowSize };
     this.strategy = new TestStrategy({ threeDSecure, actionToken });
     this.target = testBed().querySelector('#three-d-secure-container');
     this.sandbox = sinon.createSandbox();
@@ -36,7 +38,10 @@ describe('TestStrategy', function () {
           assert(recurly.Frame.calledWithMatch({
             type: Frame.TYPES.IFRAME,
             path: '/three_d_secure/mock',
-            payload: { three_d_secure_action_token_id: 'action-token-test' },
+            payload: {
+              three_d_secure_action_token_id: 'action-token-test',
+              iframe_size: ThreeDSecure.CHALLENGE_WINDOW_SIZE_03_500_X_600
+            },
             container: strategy.container
           }));
           assert.strictEqual(result.success, true);
