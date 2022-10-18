@@ -15,7 +15,6 @@ apiTest(requestMethod => {
 
     const valid = {
       number: '4111111111111111',
-      brand: 'visa',
       month: '01',
       year: new Date().getFullYear() + 1,
       first_name: 'foo',
@@ -25,7 +24,6 @@ apiTest(requestMethod => {
     const elementsMap = {
       card: 'CardElement',
       number: 'CardNumberElement',
-      brand: 'CardBrandElement',
       month: 'CardMonthElement',
       year: 'CardYearElement',
       cvv: 'CardCvvElement'

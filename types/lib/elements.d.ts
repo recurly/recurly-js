@@ -258,7 +258,6 @@ export interface ElementsInstance extends Emitter<ElementsInstanceEvents> {
   CardElement: (cardElementOptions?: CardElementOptions) => CardElement;
 
   CardNumberElement: (cardNumberElementOptions?: IndividualElementOptions) => IndividualElement;
-  CardBrandElement: (cardBrandElementOptions?: IndividualElementOptions) => IndividualElement;
   CardMonthElement: (cardMonthElementOptions?: IndividualElementOptions) => IndividualElement;
   CardYearElement: (cardYearElementOptions?: IndividualElementOptions) => IndividualElement;
   CardCvvElement: (cardCvvElementOptions?: IndividualElementOptions) => IndividualElement;

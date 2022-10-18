@@ -89,7 +89,6 @@ describe('Recurly', function () {
           initRecurly(recurly, {
             fields: {
               number: { selector: '#number-1' },
-              brand: { selector: '#brand-1' },
               month: { selector: '#month-1' },
               year: { selector: '#year-1' },
               cvv: { selector: '#cvv-1' }
@@ -100,7 +99,6 @@ describe('Recurly', function () {
           recurly.configure({
             fields: {
               number: { selector: '#number-2' },
-              brand: { selector: '#brand-2' },
               month: { selector: '#month-2' },
               year: { selector: '#year-2' },
               cvv: { selector: '#cvv-2' }
@@ -115,7 +113,7 @@ describe('Recurly', function () {
               assert.strictEqual(recurly.readyState, 2);
               assert(readyStub.calledOnce);
               assert.strictEqual(testBed().querySelectorAll('#test-form-1 iframe').length, 0);
-              assert.strictEqual(testBed().querySelectorAll('#test-form-2 iframe').length, 5);
+              assert.strictEqual(testBed().querySelectorAll('#test-form-2 iframe').length, 4);
               assert(recurly.off.calledWithExactly('hostedFields:ready'));
               assert(recurly.off.calledWithExactly('hostedFields:state:change'));
               assert(recurly.off.calledWithExactly('hostedField:submit'));
