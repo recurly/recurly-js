@@ -725,6 +725,14 @@ describe('Element', function () {
         sendMessage('submit');
       });
     });
+
+    describe('onAutoTab', function () {
+      it(`emits 'autoTab' when the 'autoTab' bus message is sent`, function (done) {
+        const { element, sendMessage } = this;
+        element.on('autoTab', () => done());
+        sendMessage('autoTab');
+      });
+    });
   });
 });
 
