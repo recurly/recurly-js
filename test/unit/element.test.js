@@ -725,6 +725,14 @@ describe('Element', function () {
         sendMessage('submit');
       });
     });
+
+    describe('onReady', function () {
+      it(`emits 'ready' when the 'ready' bus message is sent`, function (done) {
+        const { element, sendMessage } = this;
+        element.on('ready', () => done());
+        sendMessage('ready');
+      });
+    });
   });
 });
 
