@@ -5,7 +5,6 @@ import merge from 'lodash.merge';
 import omit from 'lodash.omit';
 import Emitter from 'component-emitter';
 import Promise from 'promise';
-import { Recurly } from '../../lib/recurly';
 import { initRecurly, apiTest, nextTick } from './support/helpers';
 import { ApplePayBraintree } from '../../lib/recurly/apple-pay/apple-pay.braintree';
 
@@ -28,28 +27,29 @@ class ApplePaySessionStub extends Emitter {
     this.merchantSession = ms;
     this.emit('completeMerchantValidation');
   }
-  completePaymentMethodSelection (t, li) {
+  completePaymentMethodSelection ({ newTotal: t, newLineItems: li }) {
     this.total = t;
     this.lineItems = li;
     this.emit('completePaymentMethodSelection');
   }
-  completeShippingContactSelection (st, sm, t, li) {
+  completeShippingContactSelection ({ newTotal: t, newLineItems: li, newShippingMethods: sm }) {
     this.shippingMethods = sm;
     this.total = t;
     this.lineItems = li;
     this.emit('completeShippingContactSelection');
   }
-  completeShippingMethodSelection (st, t, li) {
+  completeShippingMethodSelection ({ newTotal: t, newLineItems: li }) {
     this.total = t;
     this.lineItems = li;
     this.emit('completeShippingMethodSelection');
   }
-  completePayment (status) {
+  completePayment ({ status }) {
     this.status = status;
     this.emit('completePayment');
   }
 };
 ApplePaySessionStub.canMakePayments = () => true;
+ApplePaySessionStub.supportsVersion = () => true;
 
 const getBraintreeStub = () => ({
   client: {
@@ -128,13 +128,9 @@ function applePayTest (integrationType, requestMethod) {
       });
 
       describe('when Apple Pay is not set up', function () {
-        let originalMethod = ApplePaySessionStub.canMakePayments;
         beforeEach(function () {
-          ApplePaySessionStub.canMakePayments = () => false;
+          this.sandbox.stub(ApplePaySessionStub, 'canMakePayments').returns(false);
           this.applePay = this.recurly.ApplePay(omit(validOpts, 'label'));
-        });
-        afterEach(function () {
-          ApplePaySessionStub.canMakePayments = originalMethod;
         });
 
         it('registers an Apple Pay not available error', function () {
@@ -146,6 +142,25 @@ function applePayTest (integrationType, requestMethod) {
             let result = this.applePay.begin();
             assert.equal(result.code, 'apple-pay-init-error');
             assert.equal(result.err.code, 'apple-pay-not-available');
+          });
+        });
+      });
+
+      describe('when Apple Pay version not supported', function () {
+        beforeEach(function () {
+          this.sandbox.stub(ApplePaySessionStub, 'supportsVersion').returns(false);
+          this.applePay = this.recurly.ApplePay(omit(validOpts, 'label'));
+        });
+
+        it('registers an Apple Pay not supported error', function () {
+          assertInitError(this.applePay, 'apple-pay-not-supported');
+        });
+
+        describe('ApplePay.begin', function () {
+          it('returns an initialization error', function () {
+            let result = this.applePay.begin();
+            assert.equal(result.code, 'apple-pay-init-error');
+            assert.equal(result.err.code, 'apple-pay-not-supported');
           });
         });
       });
