@@ -1,5 +1,4 @@
 import assert from 'assert';
-import { Recurly } from '../../lib/recurly';
 import { applyFixtures } from './support/fixtures';
 import { initRecurly, testBed } from './support/helpers';
 
@@ -28,10 +27,10 @@ describe('Recurly.fraud', function () {
           assert.strictEqual(err.error.message, 'Fraud detection feature is not enabled for this site');
           done();
         });
-      })
+      });
     });
 
-    describe('when the site supports kount data collection', function () {
+    describe.only('when the site supports kount data collection', function () {
       it('creates a data collector using the Kount SDK', function (done) {
         const form = testBed().querySelector('#test-form');
         assert.strictEqual(form.children.length, 0);
@@ -81,7 +80,7 @@ describe('Recurly.fraud', function () {
           });
 
           recurly.fraud.on('ready', () => {
-            assert(form.querySelector('input[data-recurly=fraud_session_id]'));
+            assert(form.querySelector('input[data-recurly=fraud_session_id][type=hidden]'));
             assert(form.querySelector('script[src="/api/mock-200"]'));
             assert(form.querySelector('div[class=kaxsdc]'));
             done();
