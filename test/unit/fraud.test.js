@@ -30,7 +30,7 @@ describe('Recurly.fraud', function () {
       });
     });
 
-    describe.only('when the site supports kount data collection', function () {
+    describe('when the site supports kount data collection', function () {
       it('creates a data collector using the Kount SDK', function (done) {
         const form = testBed().querySelector('#test-form');
         assert.strictEqual(form.children.length, 0);
