@@ -1,5 +1,21 @@
 # Changelog
 
+## [v4.22.5](https://github.com/recurly/recurly-js/tree/v4.22.5) (2022-11-14)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.4...v4.22.5)
+
+
+**Merged Pull Requests**
+
+- Update Minimum Apple Pay Version to v4 [#773](https://github.com/recurly/recurly-js/pull/773) ([cbarton](https://github.com/cbarton))
+- Replace denodeify [#772](https://github.com/recurly/recurly-js/pull/772) ([wsethbrown](https://github.com/wsethbrown))
+- Revert "Cartes Bancaires and Co-Branding support" [#760](https://github.com/recurly/recurly-js/pull/760) ([douglaslise](https://github.com/douglaslise))
+- Adding challenge window size selections [#757](https://github.com/recurly/recurly-js/pull/757) ([tilley-kyle](https://github.com/tilley-kyle))
+- Replace $ExpectError with @ts-expect-error [#755](https://github.com/recurly/recurly-js/pull/755) ([douglasmiller](https://github.com/douglasmiller))
+- Cartes Bancaires and Co-Branding support [#752](https://github.com/recurly/recurly-js/pull/752) ([douglaslise](https://github.com/douglaslise))
+
+
+
 ## [v4.22.4](https://github.com/recurly/recurly-js/tree/v4.22.4) (2022-09-22)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.3...v4.22.4)
