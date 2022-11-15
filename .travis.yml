@@ -50,6 +50,14 @@ jobs:
       env: BROWSER=BrowserStackIe11 SUITE_PARTITION=A
     - name: Internet Explorer 11 B
       env: BROWSER=BrowserStackIe11 SUITE_PARTITION=B
+    - name: Internet Explorer 11 C
+      env: BROWSER=BrowserStackIe11 SUITE_PARTITION=C
+    - name: Internet Explorer 11 D
+      env: BROWSER=BrowserStackIe11 SUITE_PARTITION=D
+    - name: Internet Explorer 11 E
+      env: BROWSER=BrowserStackIe11 SUITE_PARTITION=E
+    - name: Internet Explorer 11 F
+      env: BROWSER=BrowserStackIe11 SUITE_PARTITION=F
     - name: iOS 14
       env: BROWSER=BrowserStackIos14
     - name: iOS 13
