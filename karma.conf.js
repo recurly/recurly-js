@@ -76,7 +76,7 @@ function runner (config) {
   config.set(Object.assign({}, staticConfig, { logLevel: config.LOG_INFO }));
 }
 
-const server = require('./test/server');
+require('./test/server');
 
 runner.staticConfig = staticConfig;
 
