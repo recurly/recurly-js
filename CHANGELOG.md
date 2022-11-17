@@ -1,5 +1,19 @@
 # Changelog
 
+## [v4.22.6](https://github.com/recurly/recurly-js/tree/v4.22.6) (2022-11-17)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.5...v4.22.6)
+
+
+**Merged Pull Requests**
+
+- Set type of kount fraud_session_id input to 'hidden' [#774](https://github.com/recurly/recurly-js/pull/774) ([abachman](https://github.com/abachman))
+
+**Closed Issues**
+
+- Apple Pay via Braintree causes CSP violation [#767](https://github.com/recurly/recurly-js/issues/767)
+
+
 ## [v4.22.5](https://github.com/recurly/recurly-js/tree/v4.22.5) (2022-11-14)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.4...v4.22.5)
