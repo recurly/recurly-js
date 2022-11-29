@@ -50,6 +50,58 @@ describe('Recurly.fraud', function () {
         });
       });
 
+      describe('with more than one payment form', function () {
+        this.ctx.fixture = 'multipleEmptyForms';
+
+        it('creates a data collector repeatedly', function (done) {
+          let recurly = null;
+
+          const firstForm = () => {
+            const form = testBed().querySelector('#test-form-1');
+            assert.strictEqual(form.children.length, 0);
+
+            recurly = initRecurly({
+              fraud: {
+                kount: { ...kountConfiguration.kount, form }
+              }
+            });
+
+            recurly.fraud.once('ready', () => {
+              assert.strictEqual(form.children.length, 3, 'test form 1 should have Kount elements');
+              assert.strictEqual(form.children[0].getAttribute('data-recurly'), 'fraud_session_id');
+              assert.strictEqual(form.children[1].getAttribute('src'), '/api/mock-200');
+              assert.strictEqual(form.children[2].className, 'kaxsdc');
+              secondForm();
+            });
+          };
+
+          const secondForm = () => {
+            const form = testBed().querySelector('#test-form-2');
+            assert.strictEqual(form.children.length, 0);
+
+            // on the second pass, we need to set up additional checks BEFORE
+            // calling recurly.configuration, because recurly.fraud already
+            // exists
+            recurly.fraud.once('ready', () => {
+              assert.strictEqual(form.children.length, 3, 'test form 2 should have Kount elements');
+              assert.strictEqual(form.children[0].getAttribute('data-recurly'), 'fraud_session_id');
+              assert.strictEqual(form.children[1].getAttribute('src'), '/api/mock-200');
+              assert.strictEqual(form.children[2].className, 'kaxsdc');
+              done();
+            });
+
+            initRecurly(recurly, {
+              fraud: {
+                kount: { ...kountConfiguration.kount, form }
+              }
+            });
+
+          };
+
+          firstForm();
+        });
+      });
+
       it('emits an error when the Kount SDK encounters an error', function (done) {
         const form = testBed().querySelector('#test-form');
         assert.strictEqual(form.children.length, 0);

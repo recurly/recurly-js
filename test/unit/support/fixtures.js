@@ -182,9 +182,14 @@ const iframe = opts => `
   ></iframe>
 `;
 
-const threeDSecure = () => `<div id="three-d-secure-container"></div>`;
+const threeDSecure = () => '<div id="three-d-secure-container"></div>';
 
-const emptyForm = () => `<form id="test-form"></form>`;
+const emptyForm = () => '<form id="test-form"></form>';
+
+const multipleEmptyForms = () => `
+  <form id="test-form-1"></form>
+  <form id="test-form-2"></form>
+`;
 
 const selectLists = (name) => `<select id="${name}" name="${name}"></select>`;
 
@@ -207,6 +212,7 @@ const FIXTURES = {
   threeDSecure,
   empty,
   emptyForm,
+  multipleEmptyForms,
   selectLists,
   selectListsFull,
 };
@@ -243,5 +249,6 @@ export function clearFixture () {
  * @return {Mixed} value of property on object or default if none found
  */
 function fetch (object, prop, def = '') {
+  // eslint-disable-next-line no-prototype-builtins
   return object.hasOwnProperty(prop) ? object[prop] : def;
 }
