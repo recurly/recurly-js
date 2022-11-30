@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.22.7](https://github.com/recurly/recurly-js/tree/v4.22.7) (2022-11-30)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.6...v4.22.7)
+
+
+**Merged Pull Requests**
+
+- Multi form fraud detection [#780](https://github.com/recurly/recurly-js/pull/780) ([smagdicatrecurly](https://github.com/smagdicatrecurly))
+- Handle stripe js error when attaching the stripe element [#779](https://github.com/recurly/recurly-js/pull/779) ([cyberxander90](https://github.com/cyberxander90))
+
+
+
 ## [v4.22.6](https://github.com/recurly/recurly-js/tree/v4.22.6) (2022-11-17)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.5...v4.22.6)
