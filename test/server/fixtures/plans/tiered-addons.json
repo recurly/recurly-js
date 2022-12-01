@@ -1,6 +1,6 @@
 {
-  "code": "basic",
-  "name": "Basic",
+  "code": "tiered-addons",
+  "name": "Tiered Addons",
   "period": {
     "interval": "months",
     "length": 1
@@ -45,6 +45,34 @@
     "usage_percentage": 10,
     "usage_type": "percentage",
     "price": {}
+  }, {
+    "add_on_type": "fixed",
+    "code": "tiered",
+    "name": "tiered",
+    "quantity": 1,
+    "usage_type": null,
+    "usage_percentage": null,
+    "optional": true,
+    "display_quantity": true,
+    "tiers": [{
+      "ending_quantity": 3,
+      "currencies": [{
+        "currency": "USD",
+        "unit_amount": 2.00
+      }]
+    }, {
+      "ending_quantity": 999999999,
+      "currencies": [{
+        "currency": "USD",
+        "unit_amount": 4.00
+      }]
+    }],
+    "tier_type": "tiered",
+    "price": {
+      "USD": {
+        "unit_amount": 4.0
+      }
+    }
   }],
   "tax_exempt": false
 }
