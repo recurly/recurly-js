@@ -8,7 +8,8 @@ const {
 const {
   BROWSER = 'chrome',
   REPORT_COVERAGE = false,
-  TRAVIS_BUILD_NUMBER
+  TRAVIS_BUILD_NUMBER,
+  SUITE_PARTITION = null
 } = process.env;
 
 const BROWSER_STACK_CAPABILITY = browserStackCapabilities[BROWSER];
@@ -27,6 +28,11 @@ function runner (config) {
   }
 
   if (BROWSER_STACK_CAPABILITY) {
+    let localIdentifier = `${Math.round(Math.random() * 100)}-${Date.now()}`;
+    if (SUITE_PARTITION) {
+      localIdentifier += `-${SUITE_PARTITION}`;
+    }
+
     cfg.browserStack = {
       project,
       build: `${TRAVIS_BUILD_NUMBER || `local unit [${branchName()}]`}`,
@@ -37,9 +43,9 @@ function runner (config) {
       'browserstack.console': 'verbose',
       'browserstack.networkLogs': true,
       captureTimeout: 1200,
-      localIdentifier: `${Math.round(Math.random() * 100)}-${Date.now()}`,
       pollingTimeout: 4000,
-      timeout: 1200
+      timeout: 1200,
+      localIdentifier,
     };
     cfg.reporters.push('BrowserStack');
   }
@@ -47,9 +53,9 @@ function runner (config) {
   console.log(cfg);
 
   config.set(cfg);
-};
+}
 
-const server = require('./test/server');
+require('./test/server');
 
 module.exports = runner;
 
