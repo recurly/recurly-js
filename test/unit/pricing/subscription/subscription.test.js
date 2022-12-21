@@ -292,23 +292,23 @@ describe('Recurly.Pricing.Subscription', function () {
     describe('with tiered addons', () => {
       it('should apply the tiered cost to the addon price', function (done) {
         this.pricing
-          .plan('tiered-addons', { quantity: 1 })
+          .plan('tiered-plan', { quantity: 1 })
           .addon('tiered')
           .then(() => {
             assert.equal(this.pricing.items.addons.length, 1);
             assert.equal(this.pricing.items.addons[0].code, 'tiered');
             assert.equal(this.pricing.items.addons[0].quantity, 1);
           })
-          .addon('tiered', { quantity: 5 })
+          .addon('tiered', { quantity: 6 })
           .done(price => {
             assert.equal(this.pricing.items.addons.length, 1);
             assert.equal(this.pricing.items.addons[0].code, 'tiered');
-            assert.equal(this.pricing.items.addons[0].quantity, 5);
+            assert.equal(this.pricing.items.addons[0].quantity, 6);
             // 3 * 2 + 2 * 4 = 14
-            assert.equal(price.now.addons, '14.00');
-            assert.equal(price.next.addons, '14.00');
-            assert.equal(price.now.total, '35.99');
-            assert.equal(price.next.total, '33.99');
+            assert.strictEqual(price.now.addons, '14.00');
+            assert.strictEqual(price.next.addons, '14.00');
+            assert.strictEqual(price.now.total, '35.99');
+            assert.strictEqual(price.next.total, '33.99');
             done();
           });
       });
