@@ -28,11 +28,7 @@ implementations.
 ## Build
 Development build server
 ```bash
-make
-```
-Build to the file system
-```bash
-$ make build
+docker compose up
 ```
 
 If you are having issues with the build, try `make clean`.
