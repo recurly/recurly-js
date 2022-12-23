@@ -97,9 +97,6 @@ jobs:
       name: Edge
       env: BROWSER=BrowserStackEdge
     - <<: *e2e
-      name: Internet Explorer 11
-      env: BROWSER=BrowserStackIe11
-    - <<: *e2e
       name: iOS 14
       env: BROWSER=BrowserStackIos14
     - <<: *e2e
