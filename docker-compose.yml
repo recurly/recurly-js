@@ -1,0 +1,10 @@
+services:
+  recurly.js:
+    build: .
+    ports:
+      - "8020:8020"
+    volumes:
+      - type: bind
+        source: .
+        target: /usr/app/
+    command: make

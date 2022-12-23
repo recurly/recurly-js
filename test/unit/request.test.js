@@ -1,4 +1,3 @@
-import after from 'after';
 import assert from 'assert';
 import isEmpty from 'lodash.isempty';
 import Promise from 'promise';
