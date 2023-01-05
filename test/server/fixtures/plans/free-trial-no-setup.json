@@ -19,6 +19,7 @@
     "name": "Snarf",
     "code": "snarf",
     "quantity": 1,
+    "tier_type": "flat",
     "price": {
       "USD": {
         "unit_amount": 1.0
