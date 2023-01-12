@@ -1,5 +1,20 @@
 # Changelog
 
+## [v4.22.8](https://github.com/recurly/recurly-js/tree/v4.22.8) (2023-01-12)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.7...v4.22.8)
+
+
+**Merged Pull Requests**
+
+- Include tiered addon math [#781](https://github.com/recurly/recurly-js/pull/781) ([ELepolt](https://github.com/ELepolt))
+- Add IE11 partitions to travis config [#776](https://github.com/recurly/recurly-js/pull/776) ([abachman](https://github.com/abachman))
+
+**Closed Issues**
+
+- Apple Pay via Braintree causes CSP violation [#767](https://github.com/recurly/recurly-js/issues/767)
+
+
 ## [v4.22.7](https://github.com/recurly/recurly-js/tree/v4.22.7) (2022-11-30)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.6...v4.22.7)
