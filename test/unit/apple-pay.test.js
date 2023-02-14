@@ -339,6 +339,14 @@ function applePayTest (integrationType, requestMethod) {
           this.applePay = this.recurly.ApplePay(validOpts);
         });
 
+        it('assigns the applicationData', function (done) {
+          this.applePay.ready(() => {
+            assert.equal(this.applePay.config.applicationData,
+              btoa('test'));
+            done();
+          });
+        });
+
         it('assigns merchantCapabilities', function (done) {
           this.applePay.ready(() => {
             assert.deepEqual(this.applePay.config.merchantCapabilities, infoFixture.merchantCapabilities);
