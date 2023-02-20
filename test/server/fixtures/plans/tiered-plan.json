@@ -13,93 +13,119 @@
     "length": 1
   },
   "tax_exempt": true,
-  "addons": [{
-    "code": "flat",
-    "name": "flat",
-    "quantity": 1,
-    "add_on_type": "fixed",
-    "optional": true,
-    "tiers": [],
-    "tier_type": "flat",
-    "price": {
-      "USD": {
-        "unit_amount": 1.0
+  "addons": [
+    {
+      "code": "flat",
+      "name": "flat",
+      "quantity": 1,
+      "add_on_type": "fixed",
+      "optional": true,
+      "tiers": [],
+      "tier_type": "flat",
+      "price": {
+        "USD": {
+          "unit_amount": 1.0
+        }
+      }
+    },
+    {
+      "code": "tiered",
+      "name": "tiered",
+      "quantity": 1,
+      "add_on_type": "fixed",
+      "optional": true,
+      "tiers": [
+        {
+          "ending_quantity": 5,
+          "currencies": [
+            {
+              "currency_code": "USD",
+              "unit_amount": 2.00
+            }
+          ]
+        },
+        {
+          "ending_quantity": 999999999,
+          "currencies": [
+            {
+              "currency_code": "USD",
+              "unit_amount": 4.00
+            }
+          ]
+        }
+      ],
+      "tier_type": "tiered",
+      "price": {
+        "USD": {
+          "unit_amount": 4.00
+        }
+      }
+    },
+    {
+      "code": "volume",
+      "name": "volume",
+      "quantity": 1,
+      "add_on_type": "fixed",
+      "optional": true,
+      "tiers": [
+        {
+          "ending_quantity": 5,
+          "currencies": [
+            {
+              "currency_code": "USD",
+              "unit_amount": 2.00
+            }
+          ]
+        },
+        {
+          "ending_quantity": 999999999,
+          "currencies": [
+            {
+              "currency_code": "USD",
+              "unit_amount": 4.00
+            }
+          ]
+        }
+      ],
+      "tier_type": "volume",
+      "price": {
+        "USD": {
+          "unit_amount": 4.00
+        }
+      }
+    },
+    {
+      "code": "stairstep",
+      "name": "stairstep",
+      "quantity": 1,
+      "add_on_type": "fixed",
+      "optional": true,
+      "tiers": [
+        {
+          "ending_quantity": 5,
+          "currencies": [
+            {
+              "currency_code": "USD",
+              "unit_amount": 2.00
+            }
+          ]
+        },
+        {
+          "ending_quantity": 999999999,
+          "currencies": [
+            {
+              "currency_code": "USD",
+              "unit_amount": 4.00
+            }
+          ]
+        }
+      ],
+      "tier_type": "stairstep",
+      "price": {
+        "USD": {
+          "unit_amount": 4.00
+        }
       }
     }
-  }, {
-    "code": "tiered",
-    "name": "tiered",
-    "quantity": 1,
-    "add_on_type": "fixed",
-    "optional": true,
-    "tiers": [{
-      "ending_quantity": 5,
-      "currencies": [{
-        "currency_code": "USD",
-        "unit_amount": 2.00
-      }]
-    }, {
-      "ending_quantity": 999999999,
-      "currencies": [{
-        "currency_code": "USD",
-        "unit_amount": 4.00
-      }]
-    }],
-    "tier_type": "tiered",
-    "price": {
-      "USD": {
-        "unit_amount": 4.00
-      }
-    }
-  }, {
-    "code": "volume",
-    "name": "volume",
-    "quantity": 1,
-    "add_on_type": "fixed",
-    "optional": true,
-    "tiers": [{
-      "ending_quantity": 5,
-      "currencies": [{
-        "currency_code": "USD",
-        "unit_amount": 2.00
-      }]
-    }, {
-      "ending_quantity": 999999999,
-      "currencies": [{
-        "currency_code": "USD",
-        "unit_amount": 4.00
-      }]
-    }],
-    "tier_type": "volume",
-    "price": {
-      "USD": {
-        "unit_amount": 4.00
-      }
-    }
-  }, {
-    "code": "stairstep",
-    "name": "stairstep",
-    "quantity": 1,
-    "add_on_type": "fixed",
-    "optional": true,
-    "tiers": [{
-      "ending_quantity": 5,
-      "currencies": [{
-        "currency_code": "USD",
-        "unit_amount": 2.00
-      }]
-    }, {
-      "ending_quantity": 999999999,
-      "currencies": [{
-        "currency_code": "USD",
-        "unit_amount": 4.00
-      }]
-    }],
-    "tier_type": "stairstep",
-    "price": {
-      "USD": {
-        "unit_amount": 4.00
-      }
-    }
-  }]
+  ]
 }
