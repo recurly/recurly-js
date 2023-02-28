@@ -1,5 +1,18 @@
 # Changelog
 
+## [v4.22.9](https://github.com/recurly/recurly-js/tree/v4.22.9) (2023-02-28)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.8...v4.22.9)
+
+
+**Merged Pull Requests**
+
+- Installing `httplib2` and `crcmod` as needed by `gsutil` in the last build step [#791](https://github.com/recurly/recurly-js/pull/791) ([douglaslise](https://github.com/douglaslise))
+- Fix Tiered Unit Pricing Labels [#790](https://github.com/recurly/recurly-js/pull/790) ([douglaslise](https://github.com/douglaslise))
+- [feat][apple-pay] send hostname to server and specify applicationData [#788](https://github.com/recurly/recurly-js/pull/788) ([cbarton](https://github.com/cbarton))
+
+
+
 ## [v4.22.8](https://github.com/recurly/recurly-js/tree/v4.22.8) (2023-01-12)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.7...v4.22.8)
