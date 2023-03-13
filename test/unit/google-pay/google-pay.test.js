@@ -458,7 +458,31 @@ apiTest(requestMethod => describe('Google Pay', function () {
                     postal_code: '94043',
                     address1: '1600 Amphitheatre Parkway',
                     address2: '',
-                    google_pay_token: '{"id": "tok_123"}',
+                    paymentData: {
+                      paymentMethodData: {
+                        description: 'Visa •••• 1111',
+                        tokenizationData: {
+                          type: 'PAYMENT_GATEWAY',
+                          token: '{"id": "tok_123"}',
+                        },
+                        type: 'CARD',
+                        info: {
+                          cardNetwork: 'VISA',
+                          cardDetails: '1111',
+                          billingAddress: {
+                            address3: '',
+                            sortingCode: '',
+                            address2: '',
+                            countryCode: 'US',
+                            address1: '1600 Amphitheatre Parkway',
+                            postalCode: '94043',
+                            name: 'John Smith',
+                            locality: 'Mountain View',
+                            administrativeArea: 'CA',
+                          },
+                        },
+                      },
+                    },
                     gateway_code: 'gateway_123',
                   }
                 });
@@ -496,7 +520,31 @@ apiTest(requestMethod => describe('Google Pay', function () {
                       postal_code: '123',
                       address1: '',
                       address2: '',
-                      google_pay_token: '{"id": "tok_123"}',
+                      paymentData: {
+                        paymentMethodData: {
+                          description: 'Visa •••• 1111',
+                          tokenizationData: {
+                            type: 'PAYMENT_GATEWAY',
+                            token: '{"id": "tok_123"}',
+                          },
+                          type: 'CARD',
+                          info: {
+                            cardNetwork: 'VISA',
+                            cardDetails: '1111',
+                            billingAddress: {
+                              address3: '',
+                              sortingCode: '',
+                              address2: '',
+                              countryCode: 'US',
+                              address1: '1600 Amphitheatre Parkway',
+                              postalCode: '94043',
+                              name: 'John Smith',
+                              locality: 'Mountain View',
+                              administrativeArea: 'CA',
+                            },
+                          },
+                        },
+                      },
                       gateway_code: 'gateway_123',
                     }
                   });
