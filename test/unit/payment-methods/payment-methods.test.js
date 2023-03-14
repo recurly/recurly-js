@@ -30,8 +30,10 @@ describe.only("Recurly.PaymentMethods", () => {
       amount: 100,
       countryCode: 'US',
       locale: 'en-US',
-      publicKey: '123',
       containerSelector: 'my-div',
+      adyen: {
+        publicKey: '123',
+      }
     };
   });
 
@@ -41,27 +43,24 @@ describe.only("Recurly.PaymentMethods", () => {
   });
 
   describe("start", () => {
-    const requiredFields = [
-      'allowedPaymentMethods',
-      'currency',
-      'countryCode',
-      'amount',
-      'publicKey',
-      'containerSelector',
-    ];
+    describe('validations', () => {
+      const requiredFields = [
+        'allowedPaymentMethods',
+        'currency',
+        'countryCode',
+        'amount',
+        'containerSelector',
+        'adyen.publicKey',
+      ];
 
-    requiredFields.forEach(field => {
-      describe(`when missing the required field "${field}"`, () => {
-        beforeEach(() => {
-          delete params[field];
-        });
-
+      const assertValidationError = missingField => {
         it('emits an error', done => {
           paymentMethods = recurly.PaymentMethods(params);
           paymentMethods.on('error', err => assertDone(done, () => {
+            debugger
             assert.ok(err);
             assert.equal(err.code, 'payment-methods-config-missing');
-            assert.equal(err.message, `Missing Payment Method configuration option: '${field}'`);
+            assert.equal(err.message, `Missing Payment Method configuration option: '${missingField}'`);
           }));
           paymentMethods.start();
         });
@@ -74,18 +73,52 @@ describe.only("Recurly.PaymentMethods", () => {
               assert.equal(recurly.request.get.called, false);
             }));
         });
+      };
+
+      context('when does not includes any gateway config', () => {
+        beforeEach(() => {
+          ['adyen'].forEach(gatewayType => {
+            delete params[gatewayType];
+          });
+        });
+
+        assertValidationError('adyen');
+      });
+
+      requiredFields.forEach(field => {
+        describe(`when missing the required field "${field}"`, () => {
+          const deleteNestedField = (field, obj) => {
+            let currentObj = obj;
+            const keysPath = field.split('.');
+
+            for (let i = 0; i < keysPath.length; i++) {
+              if (i == keysPath.length -1) {
+                delete currentObj[keysPath[i]];
+              }
+
+              currentObj = currentObj[keysPath[i]];
+            }
+          };
+
+          beforeEach(() => {
+            deleteNestedField(field, params);
+          });
+
+          assertValidationError(field);
+        });
       });
     });
 
-    it("make a GET /js/v1/payment-methods/list with the needed params", (done) => {
+
+    it("make a GET /js/v1/payment_methods/list with the needed params", (done) => {
       sandbox.stub(recurly.request, 'get').resolves({ });
       paymentMethods = recurly.PaymentMethods(params);
 
       paymentMethods.start()
         .then(() => assertDone(done, () => {
           assert.equal(recurly.request.get.called, true);
-          assert.deepEqual(recurly.request.get.getCall(0).args[0], "/payment-methods/list");
-          assert.deepEqual(recurly.request.get.getCall(0).args[1], {
+          assert.deepEqual(recurly.request.get.getCall(0).args[0].route, "/payment_methods/list");
+          assert.deepEqual(recurly.request.get.getCall(0).args[0].data, {
             allowedPaymentMethods: ['boleto'],
             blockedPaymentMethods: ['iDeal'],
             currency: 'USD',
@@ -93,6 +126,7 @@ describe.only("Recurly.PaymentMethods", () => {
             countryCode: 'US',
             locale: 'en-US',
             channel: 'Web',
+            allowedGatewayTypes: ['adyen'],
           });
         }))
         .catch((err) => done(err));
@@ -205,14 +239,14 @@ describe.only("Recurly.PaymentMethods", () => {
         });
 
         const validateTokenization = submit => {
-          it("make a POST /js/v1/payment-methods/tokenize with the needed params", done => {
+          it("make a POST /js/v1/payment_methods/token with the needed params", done => {
             sandbox.stub(recurly.request, 'post').resolves({ });
             submit();
 
             nextTick(() => assertDone(done, () => {
               assert.equal(recurly.request.post.called, true);
-              assert.deepEqual(recurly.request.post.getCall(0).args[0], "/payment-methods/tokenize");
-              assert.deepEqual(recurly.request.post.getCall(0).args[1], {
+              assert.deepEqual(recurly.request.post.getCall(0).args[0].start, "/payment_methods/token");
+              assert.deepEqual(recurly.request.post.getCall(0).args[0].data, {
                 currency: 'USD',
                 amount: 100,
                 countryCode: 'US',
@@ -285,7 +319,7 @@ describe.only("Recurly.PaymentMethods", () => {
             onChange([{ data: 'boleto-state-2' }]);
             onChange([{ data: 'boleto-state' }]);
 
-            paymentMethods.tokenize();
+            paymentMethods.submit();
           });
         });
 
@@ -297,7 +331,7 @@ describe.only("Recurly.PaymentMethods", () => {
                 const { onChange } = window.AdyenCheckout.getCall(0).args[0];
                 onChange([{ data: 'boleto-state' }]);
 
-                paymentMethods.tokenize();
+                paymentMethods.submit();
                 done();
               });
           });
