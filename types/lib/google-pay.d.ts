@@ -44,6 +44,11 @@ export type GooglePayOptions = {
   requireBillingAddress?: boolean;
 
   /**
+   * Requires the user to accept providing their email address.
+   */
+  requireEmail?: boolean;
+
+  /**
    * Specify which Payment Gateway in Recurly must handle the payment.
    */
   gatewayCode?: string;
@@ -53,6 +58,7 @@ export type GooglePayOptions = {
  * Google Pay events.
  */
 export type GooglePayEvent =
+  | 'paymentAuthorized'
   | 'token'
   | 'error'
   | 'ready';

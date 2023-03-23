@@ -6,7 +6,7 @@ import { initRecurly, apiTest, nextTick, assertDone, stubPromise, stubGooglePaym
 import { googlePay } from '../../../lib/recurly/google-pay/google-pay';
 import dom from '../../../lib/util/dom';
 
-apiTest(requestMethod => describe('Google Pay', function () {
+apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
   const cors = requestMethod === 'cors';
 
   before(() => {
@@ -32,12 +32,12 @@ apiTest(requestMethod => describe('Google Pay', function () {
       {
         gatewayCode: 'gateway_123',
         cardNetworks: ['VISA'],
-        authMethods: ['PAM_ONLY'],
+        authMethods: ['PAN_ONLY'],
         paymentGateway: 'PAYMENT_GATEWAY_PARAMETERS',
       },
       {
         cardNetworks: ['MASTERCARD'],
-        authMethods: ['PAM_ONLY'],
+        authMethods: ['PAN_ONLY'],
         direct: 'DIRECT_PARAMETERS',
       }
     ];
@@ -209,7 +209,7 @@ apiTest(requestMethod => describe('Google Pay', function () {
               type: 'CARD',
               parameters: {
                 allowedCardNetworks: ['VISA'],
-                allowedAuthMethods: ['PAM_ONLY'],
+                allowedAuthMethods: ['PAN_ONLY'],
                 billingAddressRequired: true,
                 billingAddressParameters: {
                   format: 'FULL',
@@ -224,7 +224,7 @@ apiTest(requestMethod => describe('Google Pay', function () {
               type: 'CARD',
               parameters: {
                 allowedCardNetworks: ['MASTERCARD'],
-                allowedAuthMethods: ['PAM_ONLY'],
+                allowedAuthMethods: ['PAN_ONLY'],
                 billingAddressRequired: true,
                 billingAddressParameters: {
                   format: 'FULL',
@@ -334,7 +334,7 @@ apiTest(requestMethod => describe('Google Pay', function () {
                 type: 'CARD',
                 parameters: {
                   allowedCardNetworks: ['VISA'],
-                  allowedAuthMethods: ['PAM_ONLY'],
+                  allowedAuthMethods: ['PAN_ONLY'],
                 },
                 tokenizationSpecification: {
                   type: 'PAYMENT_GATEWAY',
@@ -345,7 +345,7 @@ apiTest(requestMethod => describe('Google Pay', function () {
                 type: 'CARD',
                 parameters: {
                   allowedCardNetworks: ['MASTERCARD'],
-                  allowedAuthMethods: ['PAM_ONLY'],
+                  allowedAuthMethods: ['PAN_ONLY'],
                 },
                 tokenizationSpecification: {
                   type: 'DIRECT',
@@ -354,6 +354,23 @@ apiTest(requestMethod => describe('Google Pay', function () {
               }
             ],
           });
+        }));
+      });
+    });
+
+    context('when the email is required', function () {
+      beforeEach(function () {
+        this.googlePayOpts.requireEmail = true;
+      });
+
+      it('initiates the pay-with-google with the email requirement', function (done) {
+        this.stubRequestAndGoogleApi();
+        googlePay(this.recurly, this.googlePayOpts);
+
+        nextTick(()=> assertDone(done, () => {
+          assert.equal(
+            window.google.payments.api.PaymentsClient.prototype.isReadyToPay.getCall(0).args[0].emailRequired, true
+          );
         }));
       });
     });
@@ -442,6 +459,15 @@ apiTest(requestMethod => describe('Google Pay', function () {
         });
 
         context('when success retrieving the user Payment Data', function () {
+          it('fires the paymentAuthorized event with the paymentData', function (done) {
+            this.clickGooglePayButton(result => {
+              result.on('paymentAuthorized', async paymentData => {
+                assert.deepEqual(paymentData, await this.stubGoogleAPIOpts.loadPaymentData);
+                done();
+              });
+            });
+          });
+
           it('request to Recurly to create the token with the billing address from the user Payment Data', function (done) {
             this.clickGooglePayButton(result => {
               result.on('token', () => assertDone(done, () => {
