@@ -1,5 +1,6 @@
-import { Emitter } from './emitter';
-import { CheckoutPricingInstance, CheckoutPricingPromise } from './pricing/checkout';
+import { Emitter } from '../emitter';
+import { CheckoutPricingInstance, CheckoutPricingPromise } from '../pricing/checkout';
+import { ApplePayPaymentRequest } from './native';
 
 export type ApplePayConfig = {
   /**
@@ -15,12 +16,12 @@ export type ApplePayConfig = {
   /**
    * Purchase description to display in the Apple Pay payment sheet.
    */
-  label: string;
+  label?: string;
 
   /**
    * Total cost to display in the Apple Pay payment sheet. Required if `options.pricing` is not provided.
    */
-  total: string;
+  total?: string;
 
   /**
    * If provided, will override `options.total` and provide the current total price on the CheckoutPricing instance
@@ -38,12 +39,17 @@ export type ApplePayConfig = {
   form?: HTMLFormElement;
 
   /**
+   * If `options.requiredShippingContactFields` is present, validate that the browser supports the minimum version required for that option.
+   */
+  enforceVersion?: boolean;
+
+  /**
    * If provided, will use Braintree to process the ApplePay transaction.
    */
   braintree?: {
     clientAuthorization: string;
   };
-};
+} | ApplePayPaymentRequest;
 
 export type ApplePayEvent =
   | 'token'
