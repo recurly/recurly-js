@@ -22,6 +22,48 @@ export type ApplePayContactField =
   | 'postalAddress'
   | 'phoneticName';
 
+/**
+ * Contact information fields to use for billing and shipping contact information.
+ */
+export type ApplePayPaymentContact = {
+  /**
+   * A phone number for the contact.
+   */
+  phoneNumber?: string;
+  /**
+   * An email address for the contact.
+   */
+  emailAddress?: string;
+  /**
+   * The contact’s given (first) name.
+   */
+  givenName?: string;
+  /**
+   * The contact’s family (last) name.
+   */
+  familyName?: string;
+  /**
+   * The street portion of the address for the contact.
+   */
+  addressLines?: string[];
+  /**
+   * The city for the contact.
+   */
+  locality?: string;
+  /**
+   * The zip code or postal code for the contact.
+   */
+  postalCode?: string;
+  /**
+   * The state for the contact.
+   */
+  administrativeArea?: string;
+  /**
+   * The contact’s two-letter ISO 3166 country code.
+   */
+  countryCode?: string;
+};
+
 export type ApplePayLineItem = {
   /**
    * A required value that’s a short, localized description of the line item.
@@ -66,9 +108,19 @@ export type ApplePayPaymentRequest = {
   total: ApplePayLineItem;
 
   /**
+   * Billing contact information for the user.
+   */
+  billingContact: ApplePayPaymentContact;
+
+  /**
    * The fields of shipping information the user must provide to fulfill the order.
    */
   requiredShippingContactFields?: ApplePayContactField[];
+
+  /**
+   * Shipping contact information for the user.
+   */
+  shippingContact: ApplePayPaymentContact;
 
   /**
    * A set of line items that explain recurring payments and additional charges and discounts.

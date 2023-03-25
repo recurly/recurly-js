@@ -481,6 +481,112 @@ function applePayTest (integrationType, requestMethod) {
         });
       });
 
+      describe('billingContact', function () {
+        const billingContact = {
+          givenName: 'Emmet',
+          familyName: 'Brown',
+          addressLines: ['1640 Riverside Drive', 'Suite 1'],
+          locality: 'Hill Valley',
+          administrativeArea: 'CA',
+          postalCode: '91103',
+          countryCode: 'US'
+        };
+
+        const billingAddress = {
+          first_name: billingContact.givenName,
+          last_name: billingContact.familyName,
+          address1: billingContact.addressLines[0],
+          address2: billingContact.addressLines[1],
+          city: billingContact.locality,
+          state: billingContact.administrativeArea,
+          postal_code: billingContact.postalCode,
+          country: billingContact.countryCode,
+        };
+
+        it('populates with the form address fields when available', function (done) {
+          const applePay = this.recurly.ApplePay(merge({}, validOpts, { form: billingAddress }));
+          applePay.ready(() => {
+            assert.deepEqual(applePay.session.billingContact, billingContact);
+            assert.deepEqual(applePay.session.shippingContact, {});
+            done();
+          });
+        });
+
+        it('allows an override', function (done) {
+          const applePay = this.recurly.ApplePay(merge({}, validOpts, { billingContact }));
+          applePay.ready(() => {
+            assert.deepEqual(applePay.session.billingContact, billingContact);
+            assert.deepEqual(applePay.session.shippingContact, {});
+            done();
+          });
+        });
+
+        it('prefers the configuration if provided and the form is populated', function (done) {
+          const form = {
+            first_name: 'Bobby',
+            last_name: 'Brown',
+            city: 'Mill Valley',
+          };
+
+          const applePay = this.recurly.ApplePay(merge({}, validOpts, { form, billingContact }));
+          applePay.ready(() => {
+            assert.deepEqual(applePay.session.billingContact, billingContact);
+            assert.deepEqual(applePay.session.shippingContact, {});
+            done();
+          });
+        });
+
+        it('omits if there is no form or override', function (done) {
+          const applePay = this.recurly.ApplePay(validOpts);
+          applePay.ready(() => {
+            assert.deepEqual(applePay.session.billingContact, {});
+            done();
+          });
+        });
+      });
+
+      describe('shippingContact', function () {
+        const shippingContact = { phoneNumber: '5555555555', };
+        const shippingAddress = { phone: '5555555555', };
+
+        it('populates with the form address fields when available', function (done) {
+          const applePay = this.recurly.ApplePay(merge({}, validOpts, { form: shippingAddress }));
+          applePay.ready(() => {
+            assert.deepEqual(applePay.session.shippingContact, shippingContact);
+            assert.deepEqual(applePay.session.billingContact, {});
+            done();
+          });
+        });
+
+        it('allows an override', function (done) {
+          const applePay = this.recurly.ApplePay(merge({}, validOpts, { shippingContact }));
+          applePay.ready(() => {
+            assert.deepEqual(applePay.session.shippingContact, shippingContact);
+            done();
+          });
+        });
+
+        it('prefers the configuration if provided and the form is populated', function (done) {
+          const form = {
+            phone: '3333333333',
+          };
+
+          const applePay = this.recurly.ApplePay(merge({}, validOpts, { form, shippingContact }));
+          applePay.ready(() => {
+            assert.deepEqual(applePay.session.shippingContact, shippingContact);
+            done();
+          });
+        });
+
+        it('omits if there is no form or override', function (done) {
+          const applePay = this.recurly.ApplePay(validOpts);
+          applePay.ready(() => {
+            assert.deepEqual(applePay.session.shippingContact, {});
+            done();
+          });
+        });
+      });
+
       it('emits ready when done', function (done) {
         this.recurly.ApplePay(validOpts).on('ready', done);
       });
@@ -611,105 +717,6 @@ function applePayTest (integrationType, requestMethod) {
       });
     });
 
-    describe('mapPaymentData', function () {
-      let applePayData = {
-        token: {
-          paymentData: 'apple pay token',
-          paymentMethod: 'card info'
-        },
-        billingContact: {
-          givenName: 'Emmet',
-          familyName: 'Brown',
-          addressLines: ['1640 Riverside Drive', 'Suite 1'],
-          locality: 'Hill Valley',
-          administrativeArea: 'CA',
-          postalCode: '91103',
-          countryCode: 'us'
-        }
-      };
-      let inputsDefault = {
-        first_name: '',
-        last_name: '',
-        address1: '',
-        address2: '',
-        city: '',
-        state: '',
-        postal_code: '',
-        country: '',
-        tax_identifier: '',
-        tax_identifier_type: '',
-      };
-      const inputAddressFields = {
-        first_name: 'Marty',
-        last_name: 'McFly',
-        address1: 'Av 1',
-        address2: 'Av 2',
-        city: 'Versalles',
-        state: 'Paris',
-        postal_code: '123',
-        country: 'fr',
-      };
-      const inputNotAddressFields = {
-        tax_identifier: 'tax123',
-        tax_identifier_type: 'cpf',
-      };
-
-      it('maps the apple pay token and address info into the inputs', function () {
-        let applePay = this.recurly.ApplePay();
-        let data = clone(applePayData);
-        let inputs = clone(inputsDefault);
-        applePay.mapPaymentData(inputs, data);
-        assert.equal('apple pay token', inputs.paymentData);
-        assert.equal('card info', inputs.paymentMethod);
-        assert.equal('Emmet', inputs.first_name);
-        assert.equal('Brown', inputs.last_name);
-        assert.equal('1640 Riverside Drive', inputs.address1);
-        assert.equal('Suite 1', inputs.address2);
-        assert.equal('Hill Valley', inputs.city);
-        assert.equal('CA', inputs.state);
-        assert.equal('91103', inputs.postal_code);
-        assert.equal('us', inputs.country);
-        assert.equal('', inputs.tax_identifier);
-        assert.equal('', inputs.tax_identifier_type);
-      });
-
-      it('prioritizes existing input data from the payment form when contains any address info', function () {
-        const applePay = this.recurly.ApplePay();
-        const data = clone(applePayData);
-        const addressFields = Object.keys(inputAddressFields);
-
-        addressFields.forEach((key) => {
-          const inputs = clone(inputsDefault);
-          inputs[key] = inputAddressFields[key];
-          applePay.mapPaymentData(inputs, data);
-
-          assert.equal('apple pay token', inputs.paymentData);
-          assert.equal('card info', inputs.paymentMethod);
-          addressFields.forEach(k => assert.equal(k === key ? inputAddressFields[k] : '', inputs[k]));
-        });
-      });
-
-      it('maps the apple pay data into the inputs when do not contains address info', function () {
-        const applePay = this.recurly.ApplePay();
-        const data = clone(applePayData);
-        const inputs = clone(inputNotAddressFields);
-        applePay.mapPaymentData(inputs, data);
-
-        assert.equal('apple pay token', inputs.paymentData);
-        assert.equal('card info', inputs.paymentMethod);
-        assert.equal('Emmet', inputs.first_name);
-        assert.equal('Brown', inputs.last_name);
-        assert.equal('1640 Riverside Drive', inputs.address1);
-        assert.equal('Suite 1', inputs.address2);
-        assert.equal('Hill Valley', inputs.city);
-        assert.equal('CA', inputs.state);
-        assert.equal('91103', inputs.postal_code);
-        assert.equal('us', inputs.country);
-        assert.equal('tax123', inputs.tax_identifier);
-        assert.equal('cpf', inputs.tax_identifier_type);
-      });
-    });
-
     describe('internal event handlers', function () {
       beforeEach(function (done) {
         this.applePay = this.recurly.ApplePay(validOpts);
@@ -835,11 +842,38 @@ function applePayTest (integrationType, requestMethod) {
       });
 
       describe('onPaymentAuthorized', function () {
+        const billingContact = {
+          givenName: 'Emmet',
+          familyName: 'Brown',
+          addressLines: ['1640 Riverside Drive', 'Suite 1'],
+          locality: 'Hill Valley',
+          administrativeArea: 'CA',
+          postalCode: '91103',
+          countryCode: 'US',
+        };
+
+        const billingAddress = {
+          first_name: billingContact.givenName,
+          last_name: billingContact.familyName,
+          address1: billingContact.addressLines[0],
+          address2: billingContact.addressLines[1],
+          city: billingContact.locality,
+          state: billingContact.administrativeArea,
+          postal_code: billingContact.postalCode,
+          country: billingContact.countryCode,
+        };
+
+        const inputNotAddressFields = {
+          tax_identifier: 'tax123',
+          tax_identifier_type: 'cpf',
+        };
+
         const validAuthorizeEvent = {
           payment: {
+            billingContact: billingContact,
             token: {
               paymentData: 'valid-payment-data',
-              paymentMethod: 'valid-payment-method'
+              paymentMethod: 'valid-payment-method',
             }
           }
         };
@@ -879,6 +913,25 @@ function applePayTest (integrationType, requestMethod) {
               assert.deepEqual(args.data, {
                 paymentData: 'valid-payment-data',
                 paymentMethod: 'valid-payment-method',
+                ...billingAddress,
+              });
+              done();
+            });
+          });
+
+          it('passes the non address parameters to create the token', function (done) {
+            this.spyTokenRequest = this.sandbox.spy(this.recurly.request, 'post');
+            this.applePay.config.form = clone(inputNotAddressFields);
+            this.applePay.begin(); // the form has changed!
+
+            this.applePay.session.onpaymentauthorized(clone(validAuthorizeEvent));
+            this.applePay.on('token', () => {
+              const args = this.spyTokenRequest.getCall(0).args[0];
+              assert.deepEqual(args.data, {
+                paymentData: 'valid-payment-data',
+                paymentMethod: 'valid-payment-method',
+                ...inputNotAddressFields,
+                ...billingAddress,
               });
               done();
             });
@@ -900,6 +953,7 @@ function applePayTest (integrationType, requestMethod) {
                   applePayPayment: {
                     paymentData: 'valid-payment-data',
                     paymentMethod: 'valid-payment-method',
+                    ...billingAddress,
                   },
                 }
               });
@@ -908,7 +962,7 @@ function applePayTest (integrationType, requestMethod) {
           });
         }
 
-        describe('when payment data is invalid', function (done) {
+        describe('when payment data is invalid', function () {
           const invalidAuthorizeEvent = {
             payment: {
               token: {
