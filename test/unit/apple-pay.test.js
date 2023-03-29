@@ -7,6 +7,7 @@ import Emitter from 'component-emitter';
 import Promise from 'promise';
 import { initRecurly, apiTest, nextTick } from './support/helpers';
 import { ApplePayBraintree } from '../../lib/recurly/apple-pay/apple-pay.braintree';
+import filterSupportedNetworks from '../../lib/recurly/apple-pay/util/filter-supported-networks';
 
 import infoFixture from '../server/fixtures/apple_pay/info';
 import startFixture from '../server/fixtures/apple_pay/start';
@@ -18,9 +19,10 @@ const INTEGRATION = {
 };
 
 class ApplePaySessionStub extends Emitter {
-  constructor () {
+  constructor (version, paymentRequest) {
     super();
-    return this;
+    this.version = version;
+    Object.assign(this, paymentRequest);
   }
   begin () {}
   completeMerchantValidation (ms) {
@@ -47,9 +49,14 @@ class ApplePaySessionStub extends Emitter {
     this.status = status;
     this.emit('completePayment');
   }
-};
+
+  static version = 4;
+  static supportsVersion (version) {
+    if (!this.version) return true;
+    return this.version >= version;
+  }
+}
 ApplePaySessionStub.canMakePayments = () => true;
-ApplePaySessionStub.supportsVersion = () => true;
 
 const getBraintreeStub = () => ({
   client: {
@@ -68,8 +75,39 @@ const getBraintreeStub = () => ({
   },
 });
 
-apiTest(applePayTest.bind(null, INTEGRATION.DIRECT));
-apiTest(applePayTest.bind(null, INTEGRATION.BRAINTREE));
+describe('ApplePay', function () {
+  beforeEach(function () {
+    this.sandbox = sinon.createSandbox();
+    this.isIE = !!document.documentMode;
+    if (this.isIE) {
+      window.Promise = Promise;
+    }
+    window.ApplePaySession = ApplePaySessionStub;
+  });
+
+  afterEach(function () {
+    this.sandbox.restore();
+    if (this.isIE) {
+      delete window.Promise;
+    }
+    delete window.ApplePaySession;
+  });
+
+  describe('filterSupportedNetworks', function () {
+    it('keeps networks that are compatible on the browser version', function () {
+      this.sandbox.stub(ApplePaySessionStub, 'version').value(4);
+      assert.deepEqual(filterSupportedNetworks(['visa', 'jcb', 'mir']), ['visa', 'jcb']);
+    });
+
+    it('rejects networks that are not compatible on the browser version', function () {
+      this.sandbox.stub(ApplePaySessionStub, 'version').value(12);
+      assert.deepEqual(filterSupportedNetworks(['visa', 'jcb', 'mir']), ['visa', 'jcb', 'mir']);
+    });
+  });
+
+  apiTest(applePayTest.bind(null, INTEGRATION.DIRECT));
+  apiTest(applePayTest.bind(null, INTEGRATION.BRAINTREE));
+});
 
 function applePayTest (integrationType, requestMethod) {
   const isDirectIntegration = integrationType === INTEGRATION.DIRECT;
@@ -86,24 +124,13 @@ function applePayTest (integrationType, requestMethod) {
     };
 
     beforeEach(function () {
-      this.sandbox = sinon.createSandbox();
-      this.isIE = !!document.documentMode;
-      if (this.isIE) {
-        window.Promise = Promise;
-      }
       this.recurly = initRecurly({ cors: requestMethod === 'cors' });
-      window.ApplePaySession = ApplePaySessionStub;
       if (isBraintreeIntegration) {
         window.braintree = getBraintreeStub();
       }
     });
 
     afterEach(function () {
-      this.sandbox.restore();
-      if (this.isIE) {
-        delete window.Promise;
-      }
-      delete window.ApplePaySession;
       delete window.braintree;
     });
 
@@ -130,7 +157,7 @@ function applePayTest (integrationType, requestMethod) {
       describe('when Apple Pay is not set up', function () {
         beforeEach(function () {
           this.sandbox.stub(ApplePaySessionStub, 'canMakePayments').returns(false);
-          this.applePay = this.recurly.ApplePay(omit(validOpts, 'label'));
+          this.applePay = this.recurly.ApplePay(clone(validOpts));
         });
 
         it('registers an Apple Pay not available error', function () {
@@ -148,8 +175,8 @@ function applePayTest (integrationType, requestMethod) {
 
       describe('when Apple Pay version not supported', function () {
         beforeEach(function () {
-          this.sandbox.stub(ApplePaySessionStub, 'supportsVersion').returns(false);
-          this.applePay = this.recurly.ApplePay(omit(validOpts, 'label'));
+          this.sandbox.stub(ApplePaySessionStub, 'version').value(2);
+          this.applePay = this.recurly.ApplePay(clone(validOpts));
         });
 
         it('registers an Apple Pay not supported error', function () {
@@ -165,15 +192,15 @@ function applePayTest (integrationType, requestMethod) {
         });
       });
 
-      it('requires options.label', function (done) {
-        let applePay = this.recurly.ApplePay(omit(validOpts, 'label'));
+      it('sets options.label as the i18n total', function (done) {
+        let options = omit(validOpts, 'label');
+        options.label = 'Label';
+        let applePay = this.recurly.ApplePay(options);
 
-        applePay.on('error', function (err) {
-          nextTick(() => {
-            assert.equal(err, applePay.initError);
-            assertInitError(applePay, 'apple-pay-config-missing', { opt: 'label' });
-            done();
-          });
+        applePay.ready(() => {
+          assert.equal(applePay.config.i18n.totalLineItemLabel, options.label);
+          assert.equal(applePay.config.i18n.totalLineItemLabel, 'Label');
+          done();
         });
       });
 
@@ -189,10 +216,42 @@ function applePayTest (integrationType, requestMethod) {
           });
         });
 
-        it('stores options.total', function (done) {
+        it('creates the total line item from options.total and the default options.label if absent', function (done) {
+          let applePay = this.recurly.ApplePay(omit(validOpts, 'label'));
+          applePay.ready(() => {
+            assert.equal(applePay.session.total.amount, validOpts.total);
+            assert.equal(applePay.session.total.label, applePay.config.i18n.totalLineItemLabel);
+            assert.equal(applePay.session.total.label, 'Total');
+            done();
+          });
+        });
+
+        it('creates the total line item from options.total and options.label', function (done) {
           let applePay = this.recurly.ApplePay(clone(validOpts));
           applePay.ready(() => {
-            assert.equal(applePay.config.total, validOpts.total)
+            assert.equal(applePay.session.total.amount, validOpts.total);
+            assert.equal(applePay.session.total.label, validOpts.label);
+            assert.equal(applePay.session.label, undefined);
+            done();
+          });
+        });
+
+        it('uses options.total as the total line item', function (done) {
+          let options = omit(validOpts, 'total');
+          options.total = { label: 'Subscription', amount: '10.00' };
+          let applePay = this.recurly.ApplePay(options);
+          applePay.ready(() => {
+            assert.equal(applePay.session.total, options.total);
+            done();
+          });
+        });
+
+        it('uses options.lineItems as the line items', function (done) {
+          let options = clone(validOpts);
+          options.lineItems = [{ label: 'Taxes', amount: '10.00' }, { label: 'Discount', amount: '-10.00' }];
+          let applePay = this.recurly.ApplePay(options);
+          applePay.ready(() => {
+            assert.equal(applePay.session.lineItems, options.lineItems);
             done();
           });
         });
@@ -207,13 +266,21 @@ function applePayTest (integrationType, requestMethod) {
         it('binds a pricing instance', function (done) {
           this.applePay.ready(() => {
             assert.strictEqual(this.applePay.config.pricing, this.pricing);
+            assert.equal(this.applePay.session.pricing, undefined);
             done();
           });
         });
 
-        it('ignores options.total', function (done) {
+        it('ignores options.total and options.lineItems', function (done) {
+          const lineItems = [{ label: 'Taxes', amount: '10.00' }];
+          this.applePay = this.recurly.ApplePay(merge({}, validOpts, {
+            pricing: this.pricing,
+            lineItems
+          }));
+
           this.applePay.ready(() => {
-            assert.notEqual(this.applePay.config.total, validOpts.total);
+            assert.notEqual(this.applePay.totalLineItem.amount, validOpts.total);
+            assert.notDeepEqual(this.applePay.lineItems, lineItems);
             done();
           });
         });
@@ -227,15 +294,15 @@ function applePayTest (integrationType, requestMethod) {
           });
 
           it('uses the underlying Pricing instance', function (done) {
-            const { pricingPromise, pricing, applePay } = this;
+            const { pricing, applePay } = this;
             applePay.ready(() => {
               assert.strictEqual(applePay.config.pricing, pricing);
-              assert.strictEqual(applePay.config.total, pricing.totalNow);
-              assert.strictEqual(applePay.config.total, '0.00');
+              assert.strictEqual(applePay.totalLineItem.amount, pricing.totalNow);
+              assert.strictEqual(applePay.totalLineItem.amount, '0.00');
 
               pricing.adjustment({ amount: 10 }).done(() => {
-                assert.strictEqual(applePay.config.total, pricing.totalNow);
-                assert.strictEqual(applePay.config.total, '10.00');
+                assert.strictEqual(applePay.totalLineItem.amount, pricing.totalNow);
+                assert.strictEqual(applePay.totalLineItem.amount, '10.00');
                 done();
               });
             });
@@ -264,6 +331,7 @@ function applePayTest (integrationType, requestMethod) {
             const giftCard = this.applePay.lineItems[2];
             const total = this.applePay.totalLineItem;
             assert.strictEqual(this.applePay.lineItems.length, 3);
+            assert.strictEqual(total.label, this.applePay.config.i18n.totalLineItemLabel);
             assert.strictEqual(subtotal.label, this.applePay.config.i18n.subtotalLineItemLabel);
             assert.strictEqual(discount.label, this.applePay.config.i18n.discountLineItemLabel);
             assert.strictEqual(giftCard.label, this.applePay.config.i18n.giftCardLineItemLabel);
@@ -276,6 +344,7 @@ function applePayTest (integrationType, requestMethod) {
           describe('when the line item labels are customized', () => {
             beforeEach(function () {
               this.exampleI18n = {
+                totalLineItemLabel: 'Custom total label',
                 subtotalLineItemLabel: 'Custom subtotal label',
                 discountLineItemLabel: 'Custom discount label',
                 taxLineItemLabel: 'Custom tax label',
@@ -286,12 +355,15 @@ function applePayTest (integrationType, requestMethod) {
             it('displays those labels', function (done) {
               const applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing: this.pricing, i18n: this.exampleI18n }));
               applePay.on('ready', () => {
+                const total = applePay.totalLineItem;
                 const subtotal = applePay.lineItems[0];
                 const discount = applePay.lineItems[1];
                 const giftCard = applePay.lineItems[2];
+                assert.equal(total.label, this.exampleI18n.totalLineItemLabel);
                 assert.equal(subtotal.label, this.exampleI18n.subtotalLineItemLabel);
                 assert.equal(discount.label, this.exampleI18n.discountLineItemLabel);
                 assert.equal(giftCard.label, this.exampleI18n.giftCardLineItemLabel);
+                assert.equal(applePay.session.i18n, undefined);
                 done();
               });
             });
@@ -334,6 +406,54 @@ function applePayTest (integrationType, requestMethod) {
         });
       });
 
+      describe('options.enforceVersion', function () {
+        it('returns an initError if the browser version for requiredShippingContactFields is not met', function (done) {
+          this.sandbox.stub(ApplePaySessionStub, 'version').value(4);
+          let applePay = this.recurly.ApplePay(merge({}, validOpts, {
+            enforceVersion: true, requiredShippingContactFields: ['email']
+          }));
+
+          applePay.on('error', (err) => {
+            nextTick(() => {
+              assert.equal(err, applePay.initError);
+              assertInitError(applePay, 'apple-pay-not-supported');
+              done();
+            });
+          });
+        });
+
+        it('sets requiredShippingContactFields if the browser version is met', function (done) {
+          this.sandbox.stub(ApplePaySessionStub, 'version').value(14);
+          let applePay = this.recurly.ApplePay(merge({}, validOpts, {
+            enforceVersion: true, requiredShippingContactFields: ['email']
+          }));
+
+          applePay.ready(() => {
+            assert.deepEqual(applePay.session.requiredShippingContactFields, ['email']);
+            assert.equal(applePay.session.enforceVersion, undefined);
+            done();
+          });
+        });
+      });
+
+      it('sets other ApplePayPaymentRequest options and does not include configuration options', function (done) {
+        let applePay = this.recurly.ApplePay(merge({}, validOpts, {
+          requiredShippingContactFields: ['email'],
+          supportedCountries: ['US'],
+        }));
+
+        applePay.ready(() => {
+          assert.deepEqual(applePay.session.requiredShippingContactFields, ['email']);
+          assert.deepEqual(applePay.session.supportedCountries, ['US']);
+          assert.equal(applePay.session.currencyCode, validOpts.currency);
+          assert.equal(applePay.session.countryCode, validOpts.country);
+          assert.equal(applePay.session.currency, undefined);
+          assert.equal(applePay.session.country, undefined);
+          assert.equal(applePay.session.form, undefined);
+          done();
+        });
+      });
+
       describe('merchant info collection', function () {
         beforeEach(function () {
           this.applePay = this.recurly.ApplePay(validOpts);
@@ -341,22 +461,21 @@ function applePayTest (integrationType, requestMethod) {
 
         it('assigns the applicationData', function (done) {
           this.applePay.ready(() => {
-            assert.equal(this.applePay.config.applicationData,
-              btoa('test'));
+            assert.equal(this.applePay.session.applicationData, btoa('test'));
             done();
           });
         });
 
         it('assigns merchantCapabilities', function (done) {
           this.applePay.ready(() => {
-            assert.deepEqual(this.applePay.config.merchantCapabilities, infoFixture.merchantCapabilities);
+            assert.deepEqual(this.applePay.session.merchantCapabilities, infoFixture.merchantCapabilities);
             done();
           });
         });
 
         it('assigns supportedNetworks', function (done) {
           this.applePay.ready(() => {
-            assert.deepEqual(this.applePay.config.supportedNetworks, infoFixture.supportedNetworks);
+            assert.deepEqual(this.applePay.session.supportedNetworks, infoFixture.supportedNetworks);
             done();
           });
         });
@@ -481,12 +600,14 @@ function applePayTest (integrationType, requestMethod) {
 
       it('updates the total to reflect Pricing changes', function (done) {
         let applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing: this.pricing }));
-        let originalTotal = clone(applePay.totalLineItem);
-        this.pricing.on('change', () => {
-          assert.notDeepEqual(originalTotal, applePay.totalLineItem);
-          done();
+        applePay.on('ready', () => {
+          let originalTotal = clone(applePay.totalLineItem);
+          this.pricing.on('change', () => {
+            assert.notDeepEqual(originalTotal, applePay.totalLineItem);
+            done();
+          });
+          this.pricing.plan('basic', { quantity: 1 }).done();
         });
-        this.pricing.plan('basic', { quantity: 1 }).done();
       });
     });
 
