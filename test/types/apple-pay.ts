@@ -1,9 +1,18 @@
 export default function applePay() {
-  const applePay = recurly.ApplePay({
+  const applePayDeprecated = recurly.ApplePay({
     country: 'US',
     currency: 'USD',
     label: 'My Subscription',
     total: '29.00',
+    pricing: window.recurly.Pricing.Checkout()
+  });
+
+  const applePay = recurly.ApplePay({
+    country: 'US',
+    currency: 'USD',
+    total: { label: 'My Subscription', amount: '29.00' },
+    lineItems: [{ label: 'Subtotal', amount: '1.00' }],
+    requiredShippingContactFields: ['email', 'phone'],
     pricing: window.recurly.Pricing.Checkout()
   });
 
