@@ -90,11 +90,11 @@ describe('CheckoutPricing#attach', function () {
         };
 
         it('does not set the shipping address', function (done) {
-          assert(typeof this.pricing.items.shipping_address === 'undefined');
+          assert(typeof this.pricing.items.shippingAddress === 'undefined');
           this.pricing.on('set.address', () => {
             assert.equal(this.pricing.items.address.country, 'US');
             assert.equal(this.pricing.items.address.postal_code, '94129');
-            assert.equal(this.pricing.items.shipping_address, undefined);
+            assert.equal(this.pricing.items.shippingAddress, undefined);
             done();
           });
         });
