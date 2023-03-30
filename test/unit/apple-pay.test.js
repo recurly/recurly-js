@@ -518,39 +518,44 @@ function applePayTest (integrationType, requestMethod) {
           const applePay = this.recurly.ApplePay(merge({}, validOpts, { form: billingAddress }));
           applePay.ready(() => {
             assert.deepEqual(applePay.session.billingContact, billingContact);
-            assert.deepEqual(applePay.session.shippingContact, {});
+            assert.equal(applePay.session.shippingContact, undefined);
             done();
           });
         });
 
-        it('allows an override', function (done) {
-          const applePay = this.recurly.ApplePay(merge({}, validOpts, { billingContact }));
-          applePay.ready(() => {
-            assert.deepEqual(applePay.session.billingContact, billingContact);
-            assert.deepEqual(applePay.session.shippingContact, {});
-            done();
+        it('populates with the pricing address when available', function (done) {
+          const pricing = this.recurly.Pricing.Checkout();
+          pricing.address(billingAddress).done(() => {
+            const applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing }));
+            applePay.ready(() => {
+              assert.deepEqual(applePay.session.billingContact, billingContact);
+              assert.equal(applePay.session.shippingContact, undefined);
+              done();
+            });
           });
         });
 
-        it('prefers the configuration if provided and the form is populated', function (done) {
+        it('prefers the override if the form/pricing is populated', function (done) {
           const form = {
             first_name: 'Bobby',
             last_name: 'Brown',
             city: 'Mill Valley',
           };
-
-          const applePay = this.recurly.ApplePay(merge({}, validOpts, { form, billingContact }));
-          applePay.ready(() => {
-            assert.deepEqual(applePay.session.billingContact, billingContact);
-            assert.deepEqual(applePay.session.shippingContact, {});
-            done();
+          const pricing = this.recurly.Pricing.Checkout();
+          pricing.address(form).done(() => {
+            const applePay = this.recurly.ApplePay(merge({}, validOpts, { form, pricing, billingContact }));
+            applePay.ready(() => {
+              assert.deepEqual(applePay.session.billingContact, billingContact);
+              assert.equal(applePay.session.shippingContact, undefined);
+              done();
+            });
           });
         });
 
         it('omits if there is no form or override', function (done) {
           const applePay = this.recurly.ApplePay(validOpts);
           applePay.ready(() => {
-            assert.deepEqual(applePay.session.billingContact, {});
+            assert.equal(applePay.session.billingContact, undefined);
             done();
           });
         });
@@ -564,35 +569,96 @@ function applePayTest (integrationType, requestMethod) {
           const applePay = this.recurly.ApplePay(merge({}, validOpts, { form: shippingAddress }));
           applePay.ready(() => {
             assert.deepEqual(applePay.session.shippingContact, shippingContact);
-            assert.deepEqual(applePay.session.billingContact, {});
+            assert.equal(applePay.session.billingContact, undefined);
             done();
           });
         });
 
-        it('allows an override', function (done) {
-          const applePay = this.recurly.ApplePay(merge({}, validOpts, { shippingContact }));
-          applePay.ready(() => {
-            assert.deepEqual(applePay.session.shippingContact, shippingContact);
-            done();
+        it('populates with the pricing shipping address when available', function (done) {
+          const pricing = this.recurly.Pricing.Checkout();
+          pricing.shippingAddress(shippingAddress).done(() => {
+            const applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing }));
+            applePay.ready(() => {
+              assert.deepEqual(applePay.session.shippingContact, shippingContact);
+              assert.equal(applePay.session.billingContact, undefined);
+              done();
+            });
           });
         });
 
-        it('prefers the configuration if provided and the form is populated', function (done) {
+        it('populates the shipping address with the address phone number', function (done) {
+          const phone = '3333333333';
+          const pricing = this.recurly.Pricing.Checkout();
+          pricing.address({ phone }).done(() => {
+            const applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing }));
+            applePay.ready(() => {
+              assert.deepEqual(applePay.session.shippingContact, { phoneNumber: phone, });
+              done();
+            });
+          });
+        });
+
+        describe('with pricing that has both a shipping address and phone number from the address', function () {
+          const phone = '3333333333';
+          const fullShippingAddress = {
+            first_name: 'Bobby',
+            last_name: 'Brown',
+            city: 'Mill Valley',
+          };
+
+          it('populates with the pricing address phone number when available', function (done) {
+            const pricing = this.recurly.Pricing.Checkout();
+            pricing.address({ phone }).shippingAddress(fullShippingAddress).done(() => {
+              const applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing }));
+              applePay.ready(() => {
+                assert.equal(applePay.session.billingContact, undefined);
+                assert.deepEqual(applePay.session.shippingContact, {
+                  phoneNumber: phone,
+                  givenName: 'Bobby',
+                  familyName: 'Brown',
+                  locality: 'Mill Valley',
+                });
+                done();
+              });
+            });
+          });
+
+          it('uses the shippingAddress phone number over the address', function (done) {
+            const pricing = this.recurly.Pricing.Checkout();
+            pricing.address({ phone }).shippingAddress({ ...fullShippingAddress, ...shippingAddress }).done(() => {
+              const applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing }));
+              applePay.ready(() => {
+                assert.deepEqual(applePay.session.shippingContact, {
+                  givenName: 'Bobby',
+                  familyName: 'Brown',
+                  locality: 'Mill Valley',
+                  ...shippingContact,
+                });
+                done();
+              });
+            });
+          });
+        });
+
+        it('prefers the override if the form/pricing is populated', function (done) {
           const form = {
             phone: '3333333333',
           };
 
-          const applePay = this.recurly.ApplePay(merge({}, validOpts, { form, shippingContact }));
-          applePay.ready(() => {
-            assert.deepEqual(applePay.session.shippingContact, shippingContact);
-            done();
+          const pricing = this.recurly.Pricing.Checkout();
+          pricing.shippingAddress(form).done(() => {
+            const applePay = this.recurly.ApplePay(merge({}, validOpts, { form, pricing, shippingContact }));
+            applePay.ready(() => {
+              assert.deepEqual(applePay.session.shippingContact, shippingContact);
+              done();
+            });
           });
         });
 
         it('omits if there is no form or override', function (done) {
           const applePay = this.recurly.ApplePay(validOpts);
           applePay.ready(() => {
-            assert.deepEqual(applePay.session.shippingContact, {});
+            assert.equal(applePay.session.shippingContact, undefined);
             done();
           });
         });
