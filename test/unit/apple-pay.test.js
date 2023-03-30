@@ -437,7 +437,7 @@ function applePayTest (integrationType, requestMethod) {
       });
 
       it('sets other ApplePayPaymentRequest options and does not include configuration options', function (done) {
-        let applePay = this.recurly.ApplePay(merge({}, validOpts, {
+        const applePay = this.recurly.ApplePay(merge({}, validOpts, {
           requiredShippingContactFields: ['email'],
           supportedCountries: ['US'],
         }));
@@ -476,6 +476,16 @@ function applePayTest (integrationType, requestMethod) {
         it('assigns supportedNetworks', function (done) {
           this.applePay.ready(() => {
             assert.deepEqual(this.applePay.session.supportedNetworks, infoFixture.supportedNetworks);
+            done();
+          });
+        });
+
+        it('limits the supportedNetworks to the configuration', function (done) {
+          const applePay = this.recurly.ApplePay(merge({}, validOpts, {
+            supportedNetworks: ['visa'],
+          }));
+          applePay.ready(() => {
+            assert.deepEqual(applePay.session.supportedNetworks, ['visa']);
             done();
           });
         });
