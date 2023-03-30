@@ -1,6 +1,6 @@
 import { Emitter } from '../emitter';
 import { CheckoutPricingInstance, CheckoutPricingPromise } from '../pricing/checkout';
-import { ApplePayPaymentRequest } from './native';
+import { ApplePayPaymentRequest, ApplePayLineItem } from './native';
 
 export type ApplePayConfig = {
   /**
@@ -21,7 +21,7 @@ export type ApplePayConfig = {
   /**
    * Total cost to display in the Apple Pay payment sheet. Required if `options.pricing` is not provided.
    */
-  total?: string;
+  total?: string | ApplePayLineItem;
 
   /**
    * If provided, will override `options.total` and provide the current total price on the CheckoutPricing instance

@@ -13,6 +13,19 @@ export default function applePay() {
     total: { label: 'My Subscription', amount: '29.00' },
     lineItems: [{ label: 'Subtotal', amount: '1.00' }],
     requiredShippingContactFields: ['email', 'phone'],
+    billingContact: {
+      givenName: 'Emmet',
+      familyName: 'Brown',
+      addressLines: ['1640 Riverside Drive', 'Suite 1'],
+      locality: 'Hill Valley',
+      administrativeArea: 'CA',
+      postalCode: '91103',
+      countryCode: 'US'
+    },
+    shippingContact: {
+      phoneNumber: '1231231234',
+      emailAddress: 'ebrown@example.com'
+    },
     pricing: window.recurly.Pricing.Checkout()
   });
 
