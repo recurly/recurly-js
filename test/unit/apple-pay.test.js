@@ -40,7 +40,8 @@ class ApplePaySessionStub extends Emitter {
     this.lineItems = li;
     this.emit('completeShippingContactSelection');
   }
-  completeShippingMethodSelection ({ newTotal: t, newLineItems: li }) {
+  completeShippingMethodSelection ({ newTotal: t, newLineItems: li, newShippingMethods: sm }) {
+    this.shippingMethods = sm;
     this.total = t;
     this.lineItems = li;
     this.emit('completeShippingMethodSelection');
@@ -793,7 +794,35 @@ function applePayTest (integrationType, requestMethod) {
             assert.deepEqual(this.applePay.session.lineItems, this.applePay.lineItems);
             done();
           });
-          this.applePay.session.onpaymentmethodselected();
+          this.applePay.session.onpaymentmethodselected({ paymentMethod: { billingContact: { postalCode: '94114' } } });
+        });
+
+        describe('with options.pricing set', function () {
+          beforeEach(function (done) {
+            this.pricing = this.recurly.Pricing.Checkout();
+            this.pricing.adjustment({ amount: 10 }).then(() => {
+              this.applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing: this.pricing }));
+              this.applePay.ready(() => {
+                this.applePay.begin();
+                done();
+              });
+            });
+          });
+
+          it('reprices when the billingContact is selected', function (done) {
+            this.applePay.session.on('completePaymentMethodSelection', () => {
+              assert.deepEqual(this.pricing.items.address, { postal_code: '94110', country: 'US' });
+              assert.deepEqual(this.applePay.session.total, this.applePay.finalTotalLineItem);
+              assert.deepEqual(this.applePay.session.lineItems, this.applePay.lineItems);
+              assert.equal(this.applePay.session.lineItems[1].label, 'Tax');
+              assert.equal(this.applePay.session.lineItems[1].amount, this.pricing.price.now.taxes);
+              done();
+            });
+
+            this.applePay.session.onpaymentmethodselected({
+              paymentMethod: { billingContact: { postalCode: '94110', countryCode: 'US' } }
+            });
+          });
         });
       });
 
@@ -806,29 +835,57 @@ function applePayTest (integrationType, requestMethod) {
             assert.deepEqual(this.applePay.session.lineItems, this.applePay.lineItems);
             done();
           });
-          this.applePay.session.onshippingcontactselected();
+          this.applePay.session.onshippingcontactselected({});
         });
 
         it('emits shippingContactSelected', function (done) {
-          const example = { test: 'event' };
+          const example = { shippingContact: { postalCode: '94114' } };
           this.applePay.on('shippingContactSelected', event => {
             assert.deepEqual(event, example);
             done();
           });
           this.applePay.session.onshippingcontactselected(example);
         });
+
+        describe('with options.pricing set', function () {
+          beforeEach(function (done) {
+            this.pricing = this.recurly.Pricing.Checkout();
+            this.pricing.adjustment({ amount: 10 }).done(() => {
+              this.applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing: this.pricing }));
+              this.applePay.ready(() => {
+                this.applePay.begin();
+                done();
+              });
+            });
+          });
+
+          it('reprices when the shippingContact is selected', function (done) {
+            this.applePay.session.on('completeShippingContactSelection', () => {
+              assert.deepEqual(this.pricing.items.shippingAddress, { postal_code: '94110', country: 'US' });
+              assert.deepEqual(this.applePay.session.total, this.applePay.finalTotalLineItem);
+              assert.deepEqual(this.applePay.session.lineItems, this.applePay.lineItems);
+              assert.equal(this.applePay.session.lineItems[1].label, 'Tax');
+              assert.equal(this.applePay.session.lineItems[1].amount, this.pricing.price.now.taxes);
+              done();
+            });
+
+            this.applePay.session.onshippingcontactselected({
+              shippingContact: { postalCode: '94110', countryCode: 'US' }
+            });
+          });
+        });
       });
 
       describe('onShippingMethodSelected', function () {
         it('calls ApplePaySession.completeShippingMethodSelection with status, a total, and line items', function (done) {
-          this.applePay.session.on('completeShippingContactSelection', () => {
+          this.applePay.session.on('completeShippingMethodSelection', () => {
             assert(Array.isArray(this.applePay.session.shippingMethods));
             assert.equal(this.applePay.session.shippingMethods.length, 0);
             assert.deepEqual(this.applePay.session.total, this.applePay.finalTotalLineItem);
             assert.deepEqual(this.applePay.session.lineItems, this.applePay.lineItems);
             done();
           });
-          this.applePay.session.onshippingcontactselected();
+          this.applePay.session.onshippingmethodselected();
         });
 
         it('emits shippingMethodSelected', function (done) {
@@ -998,6 +1055,46 @@ function applePayTest (integrationType, requestMethod) {
             done();
           });
           this.applePay.session.oncancel(example);
+        });
+
+        ['address', 'shippingAddress'].forEach(function (addressType) {
+          describe(`with options.pricing set and ${addressType} configured`, function () {
+            beforeEach(function (done) {
+              this.pricing = this.recurly.Pricing.Checkout();
+              this.pricing[addressType]({ postalCode: '91411', countryCode: 'US' }).done(() => {
+                this.applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing: this.pricing }));
+                this.applePay.ready(() => {
+                  this.applePay.begin();
+                  done();
+                });
+              });
+            });
+
+            it(`does not reprice if the ${addressType} has not changed`, function (done) {
+              const spy = this.sandbox.spy(this.pricing, 'reprice');
+
+              this.applePay.on('cancel', () => {
+                assert.equal(this.pricing.items[addressType].postalCode, '91411');
+                assert.equal(this.pricing.items[addressType].countryCode, 'US');
+                assert(!spy.called, 'should not have repriced');
+                done();
+              });
+              this.applePay.session.oncancel({});
+            });
+
+            it(`restores the pricing ${addressType} and repricings`, function (done) {
+              const spy = this.sandbox.spy(this.pricing, 'reprice');
+              this.applePay.on('cancel', () => {
+                assert.equal(this.pricing.items[addressType].postalCode, '91411');
+                assert.equal(this.pricing.items[addressType].countryCode, 'US');
+                assert(spy.called, 'should have repriced');
+                done();
+              });
+
+              this.pricing[addressType]({ postalCode: '91423', countryCode: 'US' })
+                .then(() => this.applePay.session.oncancel({}));
+            });
+          });
         });
 
         if (isBraintreeIntegration) {
