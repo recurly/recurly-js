@@ -29,21 +29,24 @@ class ApplePaySessionStub extends Emitter {
     this.merchantSession = ms;
     this.emit('completeMerchantValidation');
   }
-  completePaymentMethodSelection ({ newTotal: t, newLineItems: li }) {
-    this.total = t;
-    this.lineItems = li;
+  completePaymentMethodSelection ({ newTotal: t, newLineItems: li, newRecurringPaymentRequest: r }) {
+    this.newTotal = t;
+    this.newLineItems = li;
+    this.newRecurringPaymentRequest = r
     this.emit('completePaymentMethodSelection');
   }
-  completeShippingContactSelection ({ newTotal: t, newLineItems: li, newShippingMethods: sm }) {
-    this.shippingMethods = sm;
-    this.total = t;
-    this.lineItems = li;
+  completeShippingContactSelection ({ newTotal: t, newLineItems: li, newRecurringPaymentRequest: r, newShippingMethods: sm }) {
+    this.newShippingMethods = sm;
+    this.newTotal = t;
+    this.newLineItems = li;
+    this.newRecurringPaymentRequest = r
     this.emit('completeShippingContactSelection');
   }
-  completeShippingMethodSelection ({ newTotal: t, newLineItems: li, newShippingMethods: sm }) {
-    this.shippingMethods = sm;
-    this.total = t;
-    this.lineItems = li;
+  completeShippingMethodSelection ({ newTotal: t, newLineItems: li, newRecurringPaymentRequest: r, newShippingMethods: sm }) {
+    this.newShippingMethods = sm;
+    this.newTotal = t;
+    this.newLineItems = li;
+    this.newRecurringPaymentRequest = r
     this.emit('completeShippingMethodSelection');
   }
   completePayment ({ status }) {
@@ -239,6 +242,7 @@ function applePayTest (integrationType, requestMethod) {
           let applePay = this.recurly.ApplePay(options);
           applePay.ready(ensureDone(done, () => {
             assert.equal(applePay.session.total, options.total);
+            assert.equal(applePay.session.recurringPaymentRequest, undefined);
           }));
         });
 
@@ -420,6 +424,59 @@ function applePayTest (integrationType, requestMethod) {
             assert.deepEqual(applePay.session.requiredShippingContactFields, ['email']);
             assert.equal(applePay.session.enforceVersion, undefined);
           }));
+        });
+      });
+
+      describe('recurringPaymentRequest', function () {
+        it('is configured when the options.total is a recurring line item', function (done) {
+          const applePay = this.recurly.ApplePay(merge({}, validOpts, {
+            total: { label: 'Apple Pay testing', amount: '3.00', paymentTiming: 'recurring' },
+          }));
+
+          applePay.ready(() => {
+            assert.deepEqual(applePay.session.recurringPaymentRequest, {
+              paymentDescription: applePay.session.total.label,
+              regularBilling: applePay.session.total,
+              managementURL: infoFixture.managementURL,
+            });
+            done();
+          });
+        });
+
+        describe('when options.recurringPaymentRequest is provided', function () {
+          const recurringPaymentRequest = {
+            paymentDescription: 'Recurring Test',
+            regularBilling: { label: 'Total', amount: '3.00', paymentTiming: 'recurring' },
+          };
+
+          it('uses it as the recurringPaymentRequest', function (done) {
+            const applePay = this.recurly.ApplePay(merge({}, validOpts, {
+              recurringPaymentRequest: {
+                ...recurringPaymentRequest,
+                managementURL: 'https://example.com',
+              },
+            }));
+
+            applePay.ready(() => {
+              assert.deepEqual(applePay.session.recurringPaymentRequest, {
+                ...recurringPaymentRequest,
+                managementURL: 'https://example.com',
+              });
+              done();
+            });
+          });
+
+          it('uses the managementURL from the server', function (done) {
+            const applePay = this.recurly.ApplePay(merge({}, validOpts, { recurringPaymentRequest, }));
+
+            applePay.ready(() => {
+              assert.deepEqual(applePay.session.recurringPaymentRequest, {
+                ...recurringPaymentRequest,
+                managementURL: infoFixture.managementURL,
+              });
+              done();
+            });
+          });
         });
       });
 
@@ -824,10 +881,33 @@ function applePayTest (integrationType, requestMethod) {
       describe('onPaymentMethodSelected', function () {
         it('calls ApplePaySession.completePaymentSelection with a total and line items', function (done) {
           this.applePay.session.on('completePaymentMethodSelection', ensureDone(done, () => {
-            assert.deepEqual(this.applePay.session.total, this.applePay.finalTotalLineItem);
-            assert.deepEqual(this.applePay.session.lineItems, this.applePay.lineItems);
+            assert.deepEqual(this.applePay.session.newTotal, this.applePay.finalTotalLineItem);
+            assert.deepEqual(this.applePay.session.newLineItems, this.applePay.lineItems);
+            assert.equal(this.applePay.session.newRecurringPaymentRequest, undefined);
           }));
           this.applePay.session.onpaymentmethodselected({ paymentMethod: { billingContact: { postalCode: '94114' } } });
+        });
+
+        describe('with options.recurringPaymentRequest set', function () {
+          beforeEach(function (done) {
+            this.applePay = this.recurly.ApplePay(merge({}, validOpts, {
+              total: { label: 'Total', amount: '3.00', paymentTiming: 'recurring' }
+            }));
+
+            this.applePay.ready(() => {
+              this.applePay.begin();
+              done();
+            });
+          });
+
+          it('includes the newRecurringPaymentRequest', function (done) {
+            this.applePay.session.on('completePaymentMethodSelection', () => {
+              assert.notEqual(this.applePay.session.newRecurringPaymentRequest, undefined);
+              assert.deepEqual(this.applePay.session.newRecurringPaymentRequest, this.applePay.recurringPaymentRequest);
+              done();
+            });
+            this.applePay.session.onpaymentmethodselected({ paymentMethod: { billingContact: { postalCode: '94114' } } });
+          });
         });
 
         describe('with options.pricing set', function () {
@@ -843,10 +923,10 @@ function applePayTest (integrationType, requestMethod) {
             const spy = this.sandbox.spy(this.pricing, 'reprice');
             this.applePay.session.on('completePaymentMethodSelection', ensureDone(done, () => {
               assert.deepEqual(this.pricing.items.address, { postal_code: '94110', country: 'US' });
-              assert.deepEqual(this.applePay.session.total, this.applePay.finalTotalLineItem);
-              assert.deepEqual(this.applePay.session.lineItems, this.applePay.lineItems);
-              assert.equal(this.applePay.session.lineItems[1].label, 'Tax');
-              assert.equal(this.applePay.session.lineItems[1].amount, this.pricing.price.now.taxes);
+              assert.deepEqual(this.applePay.session.newTotal, this.applePay.finalTotalLineItem);
+              assert.deepEqual(this.applePay.session.newLineItems, this.applePay.lineItems);
+              assert.equal(this.applePay.session.newLineItems[1].label, 'Tax');
+              assert.equal(this.applePay.session.newLineItems[1].amount, this.pricing.price.now.taxes);
               assert(spy.called, 'should have repriced');
             }));
 
@@ -860,10 +940,11 @@ function applePayTest (integrationType, requestMethod) {
       describe('onShippingContactSelected', function () {
         it('calls ApplePaySession.completeShippingContactSelection with empty methods, a total, and line items', function (done) {
           this.applePay.session.on('completeShippingContactSelection', ensureDone(done, () => {
-            assert(Array.isArray(this.applePay.session.shippingMethods));
-            assert.equal(this.applePay.session.shippingMethods.length, 0);
-            assert.deepEqual(this.applePay.session.total, this.applePay.finalTotalLineItem);
-            assert.deepEqual(this.applePay.session.lineItems, this.applePay.lineItems);
+            assert(Array.isArray(this.applePay.session.newShippingMethods));
+            assert.equal(this.applePay.session.newShippingMethods.length, 0);
+            assert.deepEqual(this.applePay.session.newTotal, this.applePay.finalTotalLineItem);
+            assert.deepEqual(this.applePay.session.newLineItems, this.applePay.lineItems);
+            assert.equal(this.applePay.session.newRecurringPaymentRequest, undefined);
           }));
           this.applePay.session.onshippingcontactselected({});
         });
@@ -874,6 +955,28 @@ function applePayTest (integrationType, requestMethod) {
             assert.deepEqual(event, example);
           }));
           this.applePay.session.onshippingcontactselected(example);
+        });
+
+        describe('with options.recurringPaymentRequest set', function () {
+          beforeEach(function (done) {
+            this.applePay = this.recurly.ApplePay(merge({}, validOpts, {
+              total: { label: 'Total', amount: '3.00', paymentTiming: 'recurring' }
+            }));
+
+            this.applePay.ready(() => {
+              this.applePay.begin();
+              done();
+            });
+          });
+
+          it('includes the newRecurringPaymentRequest', function (done) {
+            this.applePay.session.on('completeShippingContactSelection', () => {
+              assert.notEqual(this.applePay.session.newRecurringPaymentRequest, undefined);
+              assert.deepEqual(this.applePay.session.newRecurringPaymentRequest, this.applePay.recurringPaymentRequest);
+              done();
+            });
+            this.applePay.session.onshippingcontactselected({});
+          });
         });
 
         describe('with options.pricing set', function () {
@@ -890,10 +993,10 @@ function applePayTest (integrationType, requestMethod) {
 
             this.applePay.session.on('completeShippingContactSelection', ensureDone(done, () => {
               assert.deepEqual(this.pricing.items.shippingAddress, { postal_code: '94110', country: 'US' });
-              assert.deepEqual(this.applePay.session.total, this.applePay.finalTotalLineItem);
-              assert.deepEqual(this.applePay.session.lineItems, this.applePay.lineItems);
-              assert.equal(this.applePay.session.lineItems[1].label, 'Tax');
-              assert.equal(this.applePay.session.lineItems[1].amount, this.pricing.price.now.taxes);
+              assert.deepEqual(this.applePay.session.newTotal, this.applePay.finalTotalLineItem);
+              assert.deepEqual(this.applePay.session.newLineItems, this.applePay.lineItems);
+              assert.equal(this.applePay.session.newLineItems[1].label, 'Tax');
+              assert.equal(this.applePay.session.newLineItems[1].amount, this.pricing.price.now.taxes);
               assert(spy.called, 'should have repriced');
             }));
 
@@ -907,10 +1010,11 @@ function applePayTest (integrationType, requestMethod) {
       describe('onShippingMethodSelected', function () {
         it('calls ApplePaySession.completeShippingMethodSelection with status, a total, and line items', function (done) {
           this.applePay.session.on('completeShippingMethodSelection', ensureDone(done, () => {
-            assert(Array.isArray(this.applePay.session.shippingMethods));
-            assert.equal(this.applePay.session.shippingMethods.length, 0);
-            assert.deepEqual(this.applePay.session.total, this.applePay.finalTotalLineItem);
-            assert.deepEqual(this.applePay.session.lineItems, this.applePay.lineItems);
+            assert(Array.isArray(this.applePay.session.newShippingMethods));
+            assert.equal(this.applePay.session.newShippingMethods.length, 0);
+            assert.deepEqual(this.applePay.session.newTotal, this.applePay.finalTotalLineItem);
+            assert.deepEqual(this.applePay.session.newLineItems, this.applePay.lineItems);
+            assert.equal(this.applePay.session.newRecurringPaymentRequest, undefined);
           }));
           this.applePay.session.onshippingmethodselected();
         });
@@ -921,6 +1025,28 @@ function applePayTest (integrationType, requestMethod) {
             assert.deepEqual(event, example);
           }));
           this.applePay.session.onshippingmethodselected(example);
+        });
+
+        describe('with options.recurringPaymentRequest set', function () {
+          beforeEach(function (done) {
+            this.applePay = this.recurly.ApplePay(merge({}, validOpts, {
+              total: { label: 'Total', amount: '3.00', paymentTiming: 'recurring' }
+            }));
+
+            this.applePay.ready(() => {
+              this.applePay.begin();
+              done();
+            });
+          });
+
+          it('includes the newRecurringPaymentRequest', function (done) {
+            this.applePay.session.on('completeShippingMethodSelection', () => {
+              assert.notEqual(this.applePay.session.newRecurringPaymentRequest, undefined);
+              assert.deepEqual(this.applePay.session.newRecurringPaymentRequest, this.applePay.recurringPaymentRequest);
+              done();
+            });
+            this.applePay.session.onshippingmethodselected({});
+          });
         });
       });
 
