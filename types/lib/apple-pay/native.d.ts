@@ -110,7 +110,13 @@ export type ApplePayPaymentRequest = {
   /**
    * Billing contact information for the user.
    */
-  billingContact: ApplePayPaymentContact;
+  billingContact?: ApplePayPaymentContact;
+
+  /**
+   * The payment networks the merchant supports. Only selects those networks that intersect with the merchant's
+   * payment gateways configured in Recurly.
+   */
+  supportedNetworks?: string;
 
   /**
    * The fields of shipping information the user must provide to fulfill the order.
@@ -120,7 +126,7 @@ export type ApplePayPaymentRequest = {
   /**
    * Shipping contact information for the user.
    */
-  shippingContact: ApplePayPaymentContact;
+  shippingContact?: ApplePayPaymentContact;
 
   /**
    * A set of line items that explain recurring payments and additional charges and discounts.
