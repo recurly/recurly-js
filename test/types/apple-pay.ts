@@ -1,7 +1,7 @@
-import { ApplePayLineItem } from 'lib/apple-pay/native';
+import { ApplePayPaymentRequest, ApplePayLineItem } from 'lib/apple-pay/native';
 
 export default function applePay() {
-  const applePayDeprecated = recurly.ApplePay({
+  const applePaySimple = recurly.ApplePay({
     country: 'US',
     currency: 'USD',
     label: 'My Subscription',
@@ -18,9 +18,7 @@ export default function applePay() {
     recurringPaymentStartDate: new Date(),
   };
 
-  const applePay = recurly.ApplePay({
-    country: 'US',
-    currency: 'USD',
+  const paymentRequest: ApplePayPaymentRequest = {
     total,
     lineItems: [{ label: 'Subtotal', amount: '1.00' }],
     requiredShippingContactFields: ['email', 'phone'],
@@ -42,7 +40,12 @@ export default function applePay() {
       regularBilling: total,
       billingAgreement: 'Will recur forever',
     },
-    pricing: window.recurly.Pricing.Checkout()
+  };
+
+  const applePay = recurly.ApplePay({
+    country: 'US',
+    currency: 'USD',
+    paymentRequest,
   });
 
   applePay.ready(() => {});

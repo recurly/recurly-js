@@ -1,17 +1,45 @@
 import { Emitter } from '../emitter';
 import { CheckoutPricingInstance, CheckoutPricingPromise } from '../pricing/checkout';
-import { ApplePayPaymentRequest, ApplePayLineItem } from './native';
+import { ApplePayPaymentRequest } from './native';
+
+export type I18n = {
+  /**
+   * The short, localized description of the subtotal line item
+   */
+  subtotalLineItemLabel: string;
+
+  /**
+   * The short, localized description of the total line item
+   */
+  totalLineItemLabel: string;
+
+  /**
+   * The short, localized description of the discount line item
+   */
+  discountLineItemLabel: string;
+
+  /**
+   * The short, localized description of the tax line item
+   */
+  taxLineItemLabel: string;
+
+  /**
+   * The short, localized description of the gift card line item
+   */
+  giftCardLineItemLabel: string;
+};
 
 export type ApplePayConfig = {
   /**
-   * Your ISO 3166 country code (ex: ‘US’). This is your country code as the merchant.
+   * Your ISO 3166 country code (ex: ‘US’). This is your country code as the merchant. Required if not
+   * set in `options.paymentRequest.countryCode`.
    */
-  country: string;
+  country?: string;
 
   /**
-   * ISO 4217 purchase currency (ex: ‘USD’)
+   * ISO 4217 purchase currency (ex: ‘USD’). Required if not set in `options.paymentRequest.currencyCode`.
    */
-  currency: string;
+  currency?: string;
 
   /**
    * Purchase description to display in the Apple Pay payment sheet.
@@ -19,9 +47,20 @@ export type ApplePayConfig = {
   label?: string;
 
   /**
-   * Total cost to display in the Apple Pay payment sheet. Required if `options.pricing` is not provided.
+   * Total cost to display in the Apple Pay payment sheet. Required if `options.pricing` or
+   * `options.paymentRequest.total` is not provided.
    */
-  total?: string | ApplePayLineItem;
+  total?: string;
+
+  /**
+   * Display the recurring payment request on a monthly cadence
+   */
+  recurring?: boolean;
+
+  /**
+   * `options.pricing` line item descriptions to display in the Apple Pay payment sheet.
+   */
+  i18n?: I18n;
 
   /**
    * If provided, will override `options.total` and provide the current total price on the CheckoutPricing instance
@@ -39,7 +78,7 @@ export type ApplePayConfig = {
   form?: HTMLFormElement;
 
   /**
-   * If `options.requiredShippingContactFields` is present, validate that the browser supports the minimum version required for that option.
+   * If `requiredShippingContactFields` is specified, validate that the browser supports the minimum version required for that option.
    */
   enforceVersion?: boolean;
 
@@ -49,7 +88,12 @@ export type ApplePayConfig = {
   braintree?: {
     clientAuthorization: string;
   };
-} | ApplePayPaymentRequest;
+
+  /**
+   * The request for a payment.
+   */
+  paymentRequest?: ApplePayPaymentRequest;
+};
 
 export type ApplePayEvent =
   | 'token'
