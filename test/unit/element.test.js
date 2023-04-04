@@ -22,7 +22,10 @@ describe('Element', function () {
       displayIcon: true,
       inputType: 'select',
       style: {
-        fontSize: '20px'
+        fontSize: '20px',
+        placeholder: {
+          content: 'placeholder title'
+        },
       },
       tabIndex: 100
     };
@@ -320,7 +323,8 @@ describe('Element', function () {
           style: {
             fontSize: '10px',
             fontWeight: 'bold',
-            padding: '2px'
+            padding: '2px',
+            placeholder: { content: 'placeholder title' },
           },
           tabIndex: undefined
         };
@@ -459,6 +463,7 @@ describe('Element', function () {
       assert.strictEqual(iframe.getAttribute('allowpaymentrequest'), 'true');
       assert.strictEqual(iframe.getAttribute('style'), 'background: none; width: 100%; height: 100%;');
       assert.strictEqual(iframe.getAttribute('src'), url);
+      assert.strictEqual(iframe.getAttribute('title'), this.element.config.style.placeholder.content);
     });
   });
 

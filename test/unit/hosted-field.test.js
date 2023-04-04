@@ -38,6 +38,21 @@ describe('Recurly.HostedField', function () {
     });
   });
 
+  describe('when configured with a placeholder', function () {
+    beforeEach(
+      buildHostedFieldExample(
+        {
+          style: { placeholder: { content: 'placeholder test' }  }
+        }
+      )
+    );
+
+    it('it sets the iframes title attribute with the placeholder content', function () {
+      assert.strictEqual(this.hostedField.iframe.getAttribute('title'), 'placeholder test');
+    });
+
+  });
+
   describe('when configured with a tabIndex', function () {
     describe('when set to -1', function () {
       beforeEach(buildHostedFieldExample({ tabIndex: -1 }));
