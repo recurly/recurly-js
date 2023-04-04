@@ -86,13 +86,9 @@ export type ApplePayConfig = {
    * If set, the apple flow will require the user to provide these attributes.
    * See docs here: https://recurly.com/developers/reference/recurly-js/#apple-pay
    */
-  requiredShippingContactFields?: Array<(
-    | 'postalAddress'
-    | 'name'
-    | 'phoneticName'
-    | 'phone'
-    | 'email'
-  )>;
+  requiredShippingContactFields?: Array<
+      'postalAddress' | 'name' | 'phoneticName' | 'phone' | 'email'
+  >;
 
   /**
    * If provided, will use Braintree to process the ApplePay transaction.
