@@ -101,6 +101,40 @@ export type ApplePayLineItem = {
   recurringPaymentEndDate?: Date;
 };
 
+/**
+ * A dictionary that represents a request to set up a subscription.
+ */
+export type ApplePayRecurringPaymentRequest = {
+  /**
+   * A description of the recurring payment that Apple Pay displays to the user in the payment sheet.
+   */
+  paymentDescription: string;
+
+  /**
+   * The regular billing cycle for the recurring payment, including start and end dates, an interval, and an interval count.
+   */
+  regularBilling: ApplePayLineItem ;
+
+  /**
+   * The trial billing cycle for the recurring payment.
+   */
+  trialBilling?: ApplePayLineItem ;
+
+  /**
+   * A localized billing agreement that the payment sheet displays to the user before the user authorizes the payment.
+   */
+  billingAgreement?: string;
+
+  /**
+   * A URL to a web page where the user can update or delete the payment method for the recurring payment.
+   * Defaults to the managment URL set in the Recurly Apple Pay configuration.
+   */
+  managementURL?: string;
+};
+
+/**
+ * A request for payment, which includes information about payment-processing capabilities, the payment amount, and shipping information
+ */
 export type ApplePayPaymentRequest = {
   /**
    * Total cost to display in the Apple Pay payment sheet. Required if `options.pricing` is not provided.
@@ -132,4 +166,9 @@ export type ApplePayPaymentRequest = {
    * A set of line items that explain recurring payments and additional charges and discounts.
    */
   lineItems?: ApplePayLineItem[];
+
+  /**
+   * A property that requests a subscription.
+   */
+  recurringPaymentRequest?: ApplePayRecurringPaymentRequest;
 };
