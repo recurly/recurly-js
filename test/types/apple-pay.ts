@@ -1,4 +1,15 @@
-import { ApplePayPaymentRequest, ApplePayLineItem } from 'lib/apple-pay/native';
+import {
+  ApplePayPaymentRequest,
+  ApplePayLineItem,
+  ApplePayPaymentContact,
+  ApplePaySelectionUpdate,
+} from 'lib/apple-pay/native';
+
+function getTaxes(billingContact: ApplePayPaymentContact | undefined): ApplePaySelectionUpdate | void {
+  if (billingContact?.postalCode === '12345') {
+    return { newLineItems: [{ label: 'Tax', amount: '1.00' }] };
+  }
+}
 
 export default function applePay() {
   const applePaySimple = recurly.ApplePay({
@@ -45,6 +56,9 @@ export default function applePay() {
   const applePay = recurly.ApplePay({
     country: 'US',
     currency: 'USD',
+    callbacks: {
+      onPaymentMethodSelected: ({ paymentMethod: { billingContact } }) => getTaxes(billingContact),
+    },
     paymentRequest,
   });
 
