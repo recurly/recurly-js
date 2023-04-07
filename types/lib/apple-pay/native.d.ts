@@ -23,6 +23,48 @@ export type ApplePayContactField =
   | 'phoneticName';
 
 /**
+ * The error code that indicates whether an error on the payment sheet is for shipping or billing information, or for another kind of error.
+ */
+export type ApplePayErrorCode =
+  /**
+   * Indicates that the shipping address or contact information is invalid or missing.
+   * Use with contactField
+   */
+  | "shippingContactInvalid"
+  /**
+   * Indicates that the billing address information is invalid or missing.
+   * Use with contactField
+   */
+  | "billingContactInvalid"
+  /**
+   * Indicates that the merchant can’t provide service to the shipping address (for example, can’t deliver to a P.O. Box).
+   */
+  | "addressUnserviceable"
+  /**
+   * Indicates an unknown but nonfatal error occurred during payment processing. The user can attempt authorization again.
+   */
+  | "unknown";
+
+/**
+ * Names of the fields in the shipping or billing contact information, used to locate errors in the payment sheet.
+ * @see {@link https://developer.apple.com/documentation/apple_pay_on_the_web/applepayerrorcontactfield} for when to use the fields.
+ */
+export type ApplePayErrorContactField =
+  | 'phoneNumber'
+  | 'emailAddress'
+  | 'name'
+  | 'phoneticName'
+  | 'postalAddress'
+  | 'addressLines'
+  | 'locality'
+  | 'subLocality'
+  | 'postalCode'
+  | 'administrativeArea'
+  | 'subAdministrativeArea'
+  | 'country'
+  | 'countryCode';
+
+/**
  * Contact information fields to use for billing and shipping contact information.
  */
 export type ApplePayPaymentContact = {
@@ -171,4 +213,146 @@ export type ApplePayPaymentRequest = {
    * A property that requests a subscription.
    */
   recurringPaymentRequest?: ApplePayRecurringPaymentRequest;
+};
+
+export class ApplePayError {
+  /**
+   * A customizable error type that you create to indicate problems with the address or contact information on an Apple Pay sheet.
+   * @param errorCode The error code for this instance.
+   * @param contactField The field name that contains the error on the payment sheet.
+   * @param message A localized, user-facing string that describes the error.
+   */
+  constructor(errorCode: ApplePayErrorCode, contactField?: ApplePayErrorContactField, message?: string);
+
+  /**
+   * The error code for this instance.
+   */
+  code: ApplePayErrorCode;
+
+  /**
+   * The field name that contains the error on the payment sheet.
+   */
+  contactField?: ApplePayErrorContactField;
+
+  /**
+   * A localized, user-facing string that describes the error.
+   */
+  message: string;
+}
+
+export type ApplePayErrorUpdate = {
+  /**
+   * A list of customized errors you provide that results from the user's selection.
+   */
+  errors?: ApplePayError[];
+};
+
+/**
+ * Updated transaction details to provide after the user's selection.
+ */
+export type ApplePaySelectionUpdate = {
+  /**
+   * The new total that results from the user's selection.
+   */
+  newTotal?: ApplePayLineItem;
+
+  /**
+   * Updated line items for the payment request that results from the user’s selection.
+   */
+  newLineItems?: ApplePayLineItem[];
+
+  /**
+   * The updated list of available shipping methods that results from the user's selection;
+   */
+  newRecurringPaymentRequest?: ApplePayRecurringPaymentRequest;
+} | ApplePayErrorUpdate;
+
+/**
+ * Describes an Apple Pay payment method
+ */
+export type ApplePayPaymentMethod = {
+  /**
+   * A string, suitable for display, that describes the card.
+   */
+  displayName?: string;
+
+  /**
+   * A string, suitable for display, that is the name of the payment network backing the card.
+   */
+  network?: string;
+
+  /**
+   * A string value representing the card's type of payment.
+   */
+  type?: (
+    | 'credit'
+    | 'debit'
+  );
+
+  /**
+   * The billing contact associated with the card.
+   */
+  billingContact?: ApplePayPaymentContact;
+};
+
+/**
+ * An event object that contains the payment method.
+ */
+export type ApplePayPaymentSelectedEvent = {
+  /**
+   * The card used to complete a payment.
+   */
+  paymentMethod: ApplePayPaymentMethod;
+};
+
+/**
+ * An event object that contains the shipping address the user selects.
+ */
+export type ApplePayShippingContactSelectedEvent = {
+  /**
+   * The shipping address selected by the user.
+   */
+  shippingContact: ApplePayPaymentContact;
+};
+
+/**
+ * An event object that contains the shipping method.
+ */
+export type ApplePayShippingMethodSelectedEvent = {
+  /**
+   * The shipping method selected by the user.
+   */
+  shippingMethod: any;
+};
+
+/**
+ * The result of authorizing a payment request that contains payment information.
+ */
+export type ApplePayPayment = {
+  token: {
+    /**
+     * Information about the card used in the transaction.
+     */
+    paymentMethod: ApplePayPaymentMethod,
+  };
+
+  /**
+   * The billing contact selected by the user for this transaction.
+   */
+  billingContact: ApplePayPaymentContact;
+
+  /**
+   * The shipping contact selected by the user for this transaction.
+   */
+  shippingContact: ApplePayPaymentContact;
+};
+
+/**
+ * An event object that contains the token used to authorize a payment.
+ */
+export type ApplePayPaymentAuthorizedEvent = {
+  /**
+   * The authorized payment information for this transaction.
+   */
+  payment: ApplePayPayment;
 };

@@ -1,6 +1,16 @@
 import { Emitter } from '../emitter';
 import { CheckoutPricingInstance, CheckoutPricingPromise } from '../pricing/checkout';
-import { ApplePayPaymentRequest } from './native';
+import { TokenPayload } from '../token';
+import {
+  ApplePayPaymentRequest,
+  ApplePayContactField,
+  ApplePaySelectionUpdate,
+  ApplePayErrorUpdate,
+  ApplePayPaymentSelectedEvent,
+  ApplePayShippingContactSelectedEvent,
+  ApplePayShippingMethodSelectedEvent,
+  ApplePayPaymentAuthorizedEvent,
+} from './native';
 
 export type I18n = {
   /**
@@ -28,6 +38,11 @@ export type I18n = {
    */
   giftCardLineItemLabel: string;
 };
+
+export type PaymentAuthorizedEvent = {
+  gatewayToken?: string;
+  recurlyToken: TokenPayload;
+} | ApplePayPaymentAuthorizedEvent;
 
 export type ApplePayConfig = {
   /**
@@ -63,6 +78,16 @@ export type ApplePayConfig = {
   i18n?: I18n;
 
   /**
+   * Callbacks for the events emitted by the payment session when a user selects options in the payment sheet.
+   */
+  callbacks?: {
+    onPaymentMethodSelected?: (event: ApplePayPaymentSelectedEvent) => Promise<ApplePaySelectionUpdate> | ApplePaySelectionUpdate | void,
+    onShippingContactSelected?: (event: ApplePayShippingContactSelectedEvent) => Promise<ApplePaySelectionUpdate> | ApplePaySelectionUpdate | void,
+    onShippingMethodSelected?: (event: ApplePayShippingMethodSelectedEvent) => Promise<ApplePaySelectionUpdate> | ApplePaySelectionUpdate | void,
+    onPaymentAuthorized?: (event: PaymentAuthorizedEvent) => Promise<ApplePayErrorUpdate> | ApplePayErrorUpdate | void,
+  };
+
+  /**
    * If provided, will override `options.total` and provide the current total price on the CheckoutPricing instance
    * when the Apple Pay flow is initiated.
    */
@@ -85,10 +110,9 @@ export type ApplePayConfig = {
   /**
    * If set, the apple flow will require the user to provide these attributes.
    * See docs here: https://recurly.com/developers/reference/recurly-js/#apple-pay
+   * @deprecated use paymentRequest.requiredShippingContactFields field instead
    */
-  requiredShippingContactFields?: Array<
-      'postalAddress' | 'name' | 'phoneticName' | 'phone' | 'email'
-  >;
+  requiredShippingContactFields?: ApplePayContactField[];
 
   /**
    * If provided, will use Braintree to process the ApplePay transaction.
