@@ -6,7 +6,7 @@ import { initRecurly, apiTest, nextTick, assertDone, stubPromise, stubGooglePaym
 import { googlePay } from '../../../lib/recurly/google-pay/google-pay';
 import dom from '../../../lib/util/dom';
 
-apiTest(requestMethod => describe('Google Pay', function () {
+apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
   const cors = requestMethod === 'cors';
 
   before(() => {
@@ -416,7 +416,7 @@ apiTest(requestMethod => describe('Google Pay', function () {
 
         context('when fails retrieving the user Payment Data', function () {
           beforeEach(function () {
-            this.stubGoogleAPIOpts.loadPaymentData = Promise.reject(recurlyError('google-pay-payment-failure'));
+            this.stubGoogleAPIOpts.loadPaymentData = Promise.reject('boom');
           });
 
           it('emits the same error that the retrieving process throws', function (done) {
