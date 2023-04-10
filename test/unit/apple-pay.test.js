@@ -18,6 +18,14 @@ const INTEGRATION = {
   BRAINTREE: 'Braintree Integration',
 };
 
+class ApplePayError {
+  constructor (code, contactField, message) {
+    this.code = code;
+    this.contactField = contactField;
+    this.message = message;
+  }
+}
+
 class ApplePaySessionStub extends Emitter {
   STATUS_FAILURE = 0;
   STATUS_SUCCESS = 1;
@@ -78,6 +86,7 @@ describe('ApplePay', function () {
       window.Promise = Promise;
     }
     window.ApplePaySession = ApplePaySessionStub;
+    window.ApplePayError = ApplePayError;
   });
 
   afterEach(function () {
@@ -86,6 +95,7 @@ describe('ApplePay', function () {
       delete window.Promise;
     }
     delete window.ApplePaySession;
+    delete window.ApplePayError;
   });
 
   describe('filterSupportedNetworks', function () {
