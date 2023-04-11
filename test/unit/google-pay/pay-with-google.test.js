@@ -26,7 +26,9 @@ describe('Pay with Google', function () {
     };
 
     this.payWithGoogleOpts = {
-      environment: 'TEST',
+      paymentOptions: {
+        environment: 'TEST',
+      },
       isReadyToPayRequest,
       paymentDataRequest: {
         ...isReadyToPayRequest,

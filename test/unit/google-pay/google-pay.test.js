@@ -24,7 +24,7 @@ apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
       total: '1',
       country: 'US',
       currency: 'USD',
-      requireBillingAddress: true,
+      billingAddressRequired: true,
       gatewayCode: 'CODE_123',
     };
 
@@ -32,12 +32,12 @@ apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
       {
         gatewayCode: 'gateway_123',
         cardNetworks: ['VISA'],
-        authMethods: ['PAM_ONLY'],
+        authMethods: ['PAN_ONLY'],
         paymentGateway: 'PAYMENT_GATEWAY_PARAMETERS',
       },
       {
         cardNetworks: ['MASTERCARD'],
-        authMethods: ['PAM_ONLY'],
+        authMethods: ['PAN_ONLY'],
         direct: 'DIRECT_PARAMETERS',
       }
     ];
@@ -86,7 +86,7 @@ apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
   });
 
   context('when missing a required option', function () {
-    const requiredKeys = ['googleMerchantId', 'total', 'country', 'currency'];
+    const requiredKeys = ['country', 'currency'];
     requiredKeys.forEach(key => {
       describe(`:${key}`, function () {
         beforeEach(function () {
@@ -200,7 +200,14 @@ apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
 
       nextTick(() => assertDone(done, () => {
         assert.equal(window.google.payments.api.PaymentsClient.called, true);
-        assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0], { environment: 'TEST' });
+        assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0], {
+          environment: 'TEST',
+          merchantInfo: {
+            merchantId: 'GOOGLE_MERCHANT_ID_123',
+            merchantName: 'RECURLY',
+          },
+          paymentDataCallbacks: undefined,
+        });
         assert.deepEqual(window.google.payments.api.PaymentsClient.prototype.isReadyToPay.getCall(0).args[0], {
           apiVersion: 2,
           apiVersionMinor: 0,
@@ -209,7 +216,7 @@ apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
               type: 'CARD',
               parameters: {
                 allowedCardNetworks: ['VISA'],
-                allowedAuthMethods: ['PAM_ONLY'],
+                allowedAuthMethods: ['PAN_ONLY'],
                 billingAddressRequired: true,
                 billingAddressParameters: {
                   format: 'FULL',
@@ -224,7 +231,7 @@ apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
               type: 'CARD',
               parameters: {
                 allowedCardNetworks: ['MASTERCARD'],
-                allowedAuthMethods: ['PAM_ONLY'],
+                allowedAuthMethods: ['PAN_ONLY'],
                 billingAddressRequired: true,
                 billingAddressParameters: {
                   format: 'FULL',
@@ -254,7 +261,7 @@ apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
         googlePay(this.recurly, this.googlePayOpts);
 
         nextTick(() => assertDone(done, () => {
-          assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0], { environment: 'TEST' });
+          assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0].environment, 'TEST');
         }));
       });
     });
@@ -273,7 +280,7 @@ apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
         googlePay(this.recurly, this.googlePayOpts);
 
         nextTick(() => assertDone(done, () => {
-          assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0], { environment: 'PRODUCTION' });
+          assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0].environment, 'PRODUCTION');
         }));
       });
     });
@@ -292,7 +299,7 @@ apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
         googlePay(this.recurly, this.googlePayOpts);
 
         nextTick(() => assertDone(done, () => {
-          assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0], { environment: 'PRODUCTION' });
+          assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0].environment, 'PRODUCTION');
         }));
       });
     });
@@ -311,13 +318,31 @@ apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
         googlePay(this.recurly, this.googlePayOpts);
 
         nextTick(() => assertDone(done, () => {
-          assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0], { environment: 'TEST' });
+          assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0].environment, 'TEST');
         }));
       });
     });
 
-    context('when the billing address is not required', function () {
+    context('options.billingAddressRequired = false', function () {
       beforeEach(function () {
+        this.googlePayOpts.billingAddressRequired = false;
+      });
+
+      it('initiates the pay-with-google without the billing address requirement', function (done) {
+        this.stubRequestAndGoogleApi();
+        googlePay(this.recurly, this.googlePayOpts);
+
+        nextTick(() => assertDone(done, () => {
+          const { allowedPaymentMethods: [{ parameters }] } = window.google.payments.api.PaymentsClient.prototype.isReadyToPay.getCall(0).args[0];
+          assert.deepEqual(parameters.billingAddressRequired, undefined);
+          assert.deepEqual(parameters.billingAddressParameters, undefined);
+        }));
+      });
+    });
+
+    context('@deprecated options.requireBillingAddress = false', function () {
+      beforeEach(function () {
+        delete this.googlePayOpts.billingAddressRequired;
         this.googlePayOpts.requireBillingAddress = false;
       });
 
@@ -326,35 +351,203 @@ apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
         googlePay(this.recurly, this.googlePayOpts);
 
         nextTick(() => assertDone(done, () => {
-          assert.deepEqual(window.google.payments.api.PaymentsClient.prototype.isReadyToPay.getCall(0).args[0], {
-            apiVersion: 2,
-            apiVersionMinor: 0,
-            allowedPaymentMethods: [
-              {
-                type: 'CARD',
-                parameters: {
-                  allowedCardNetworks: ['VISA'],
-                  allowedAuthMethods: ['PAM_ONLY'],
-                },
-                tokenizationSpecification: {
-                  type: 'PAYMENT_GATEWAY',
-                  parameters: 'PAYMENT_GATEWAY_PARAMETERS',
-                },
-              },
-              {
-                type: 'CARD',
-                parameters: {
-                  allowedCardNetworks: ['MASTERCARD'],
-                  allowedAuthMethods: ['PAM_ONLY'],
-                },
-                tokenizationSpecification: {
-                  type: 'DIRECT',
-                  parameters: 'DIRECT_PARAMETERS',
-                },
-              }
-            ],
-          });
+          const { allowedPaymentMethods: [{ parameters }] } = window.google.payments.api.PaymentsClient.prototype.isReadyToPay.getCall(0).args[0];
+          assert.deepEqual(parameters.billingAddressRequired, undefined);
+          assert.deepEqual(parameters.billingAddressParameters, undefined);
         }));
+      });
+    });
+
+    context('with options.paymentDataRequest attributes', function () {
+      it('merges them into the actual paymentDataRequest', function (done) {
+        this.stubRequestAndGoogleApi();
+        const merchantInfo = {
+          merchantId: 'GOOGLE_MERCHANT_ID_123',
+          merchantName: 'RECURLY',
+        };
+        const transactionInfo = {
+          currencyCode: 'USD',
+          countryCode: 'US',
+          totalPrice: '1',
+        };
+
+        googlePay(this.recurly, {
+          ...this.googlePayOpts,
+          billingAddressRequired: false,
+          paymentDataRequest: {
+            emailRequired: true,
+            shippingAddressRequired: true,
+            shippingOptionRequired: true,
+            shippingOptionParameters: [],
+            shippingAddressParameters: [],
+          },
+        });
+
+        nextTick(() => assertDone(done, () => {
+          const paymentDataRequest = window.google.payments.api.PaymentsClient.prototype.prefetchPaymentData.getCall(0).args[0];
+          assert.deepEqual(paymentDataRequest.merchantInfo, merchantInfo);
+          assert.deepEqual(paymentDataRequest.transactionInfo, { totalPriceStatus: 'NOT_CURRENTLY_KNOWN', ...transactionInfo });
+          assert.equal(paymentDataRequest.emailRequired, true);
+          assert.equal(paymentDataRequest.shippingAddressRequired, true);
+          assert.equal(paymentDataRequest.shippingOptionRequired, true);
+          assert.equal(paymentDataRequest.shippingOptionParameters.length, 0);
+          assert.equal(paymentDataRequest.shippingAddressParameters.length, 0);
+        }));
+      });
+
+      it('uses them if not provided at the top level', function (done) {
+        this.stubRequestAndGoogleApi();
+        const merchantInfo = {
+          merchantId: 'GOOGLE_MERCHANT_ID_123',
+          merchantName: 'RECURLY',
+        };
+        const transactionInfo = {
+          currencyCode: 'USD',
+          countryCode: 'US',
+          totalPrice: '1',
+        };
+
+        googlePay(this.recurly, {
+          billingAddressRequired: false,
+          paymentDataRequest: {
+            merchantInfo,
+            transactionInfo,
+            emailRequired: true,
+            shippingAddressRequired: true,
+            shippingOptionRequired: true,
+            shippingOptionParameters: [],
+            shippingAddressParameters: [],
+          },
+        });
+
+        nextTick(() => assertDone(done, () => {
+          const paymentDataRequest = window.google.payments.api.PaymentsClient.prototype.prefetchPaymentData.getCall(0).args[0];
+          assert.deepEqual(paymentDataRequest.merchantInfo, merchantInfo);
+          assert.deepEqual(paymentDataRequest.transactionInfo, { totalPriceStatus: 'NOT_CURRENTLY_KNOWN', ...transactionInfo });
+          assert.equal(paymentDataRequest.emailRequired, true);
+          assert.equal(paymentDataRequest.shippingAddressRequired, true);
+          assert.equal(paymentDataRequest.shippingOptionRequired, true);
+          assert.equal(paymentDataRequest.shippingOptionParameters.length, 0);
+          assert.equal(paymentDataRequest.shippingAddressParameters.length, 0);
+        }));
+      });
+    });
+
+    context('with options.callbacks', function () {
+      it('handles the shipping address intent if onPaymentDataChanged is provided and requiring shipping address', function (done) {
+        this.stubRequestAndGoogleApi();
+        const callbacks = { onPaymentDataChanged: () => {} };
+        googlePay(this.recurly, {
+          ...this.googlePayOpts,
+          callbacks,
+          paymentDataRequest: {
+            shippingAddressRequired: true,
+          },
+        });
+
+        nextTick(() => assertDone(done, () => {
+          assert.equal(window.google.payments.api.PaymentsClient.getCall(0).args[0].paymentDataCallbacks, callbacks);
+          const { callbackIntents } = window.google.payments.api.PaymentsClient.prototype.prefetchPaymentData.getCall(0).args[0];
+          assert.deepEqual(callbackIntents, ['SHIPPING_ADDRESS']);
+        }));
+      });
+
+      it('handles the shipping option intent if onPaymentDataChanged is provided and requiring shipping option', function (done) {
+        this.stubRequestAndGoogleApi();
+        const callbacks = { onPaymentDataChanged: () => {} };
+        googlePay(this.recurly, {
+          ...this.googlePayOpts,
+          callbacks,
+          paymentDataRequest: {
+            shippingOptionRequired: true,
+          },
+        });
+
+        nextTick(() => assertDone(done, () => {
+          assert.equal(window.google.payments.api.PaymentsClient.getCall(0).args[0].paymentDataCallbacks, callbacks);
+          const { callbackIntents } = window.google.payments.api.PaymentsClient.prototype.prefetchPaymentData.getCall(0).args[0];
+          assert.deepEqual(callbackIntents, ['SHIPPING_OPTION']);
+        }));
+      });
+
+      context('with onPaymentAuthorized provided', function () {
+        beforeEach(function () {
+          this.stubRequestAndGoogleApi();
+          this.clickGooglePayButton = (emitter, done) => {
+            emitter.on('ready', button => {
+              nextTick(() => {
+                const { onPaymentAuthorized } = window.google.payments.api.PaymentsClient.getCall(0).args[0].paymentDataCallbacks;
+                button.click().then(onPaymentAuthorized).then(done);
+              });
+            });
+          };
+        });
+
+        it('handles the payment authorized intent', function (done) {
+          const callbacks = { onPaymentAuthorized: () => {} };
+          googlePay(this.recurly, {
+            ...this.googlePayOpts,
+            callbacks,
+          });
+
+          nextTick(() => assertDone(done, () => {
+            assert.equal(window.google.payments.api.PaymentsClient.getCall(0).args[0].paymentDataCallbacks.onPaymentAuthorized === undefined, false);
+            const { callbackIntents } = window.google.payments.api.PaymentsClient.prototype.prefetchPaymentData.getCall(0).args[0];
+            assert.deepEqual(callbackIntents, ['PAYMENT_AUTHORIZATION']);
+          }));
+        });
+
+        it('is called after the button is clicked with the paymentData and token', function (done) {
+          let paymentData;
+          const emitter = googlePay(this.recurly, {
+            ...this.googlePayOpts,
+            callbacks: { onPaymentAuthorized: (pd) => paymentData = pd },
+          });
+
+          this.clickGooglePayButton(emitter, (res) => assertDone(done, () => {
+            assert.equal(res.transactionState, 'SUCCESS');
+            assert.equal(res.error, undefined);
+            assert.equal(paymentData.recurlyToken.id, 'TOKEN_123');
+          }));
+        });
+
+        it('allows for errors from fetching the token', function (done) {
+          this.recurly.request.post.restore();
+          this.sandbox.stub(this.recurly.request, 'post').rejects('boom');
+
+          const onPaymentAuthorized = this.sandbox.stub();
+          const emitter = googlePay(this.recurly, {
+            ...this.googlePayOpts,
+            callbacks: { onPaymentAuthorized },
+          });
+
+          this.clickGooglePayButton(emitter, (res) => assertDone(done, () => {
+            assert.equal(res.transactionState, 'ERROR');
+            assert.deepEqual(res.error, {
+              reason: 'OTHER_ERROR',
+              message: 'Error processing payment information, please try again later',
+              intent: 'PAYMENT_AUTHORIZATION'
+            });
+            assert(!onPaymentAuthorized.called, 'onPaymentAuthorized should not be called');
+          }));
+        });
+
+        it('allows for errors to be passed back', function (done) {
+          const error =  {
+            reason: 'PAYMENT_DATA_INVALID',
+            message: 'Cannot pay with payment credentials',
+            intent: 'PAYMENT_AUTHORIZATION',
+          };
+          const emitter = googlePay(this.recurly, {
+            ...this.googlePayOpts,
+            callbacks: { onPaymentAuthorized: () => ({ error }) },
+          });
+
+          this.clickGooglePayButton(emitter, (res) => assertDone(done, () => {
+            assert.equal(res.transactionState, 'ERROR');
+            assert.deepEqual(res.error, error);
+          }));
+        });
       });
     });
 
