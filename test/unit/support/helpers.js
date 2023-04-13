@@ -185,8 +185,12 @@ export function stubGooglePaymentAPI (options) {
 
   const PaymentsClient = sandBox.stub();
   PaymentsClient.prototype.isReadyToPay = sandBox.stub().resolves(isReadyToPay);
-  PaymentsClient.prototype.createButton = sandBox.stub().callsFake(opts => ({ click: () => opts.onClick() }));
+  PaymentsClient.prototype.createButton = sandBox.stub().callsFake(properties => ({
+    properties,
+    click: properties.onClick
+  }));
   PaymentsClient.prototype.loadPaymentData = sandBox.stub().resolves(loadPaymentData);
+  PaymentsClient.prototype.prefetchPaymentData = sandBox.stub();
 
   sandBox.stub(dom, 'loadLibs')
     .resolves(loadLibs.then(() => {

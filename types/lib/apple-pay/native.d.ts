@@ -215,15 +215,10 @@ export type ApplePayPaymentRequest = {
   recurringPaymentRequest?: ApplePayRecurringPaymentRequest;
 };
 
-export class ApplePayError {
-  /**
-   * A customizable error type that you create to indicate problems with the address or contact information on an Apple Pay sheet.
-   * @param errorCode The error code for this instance.
-   * @param contactField The field name that contains the error on the payment sheet.
-   * @param message A localized, user-facing string that describes the error.
-   */
-  constructor(errorCode: ApplePayErrorCode, contactField?: ApplePayErrorContactField, message?: string);
-
+/**
+ * A customizable error type that you create to indicate problems with the address or contact information on an Apple Pay sheet.
+ */
+export type ApplePayError = {
   /**
    * The error code for this instance.
    */
@@ -238,7 +233,7 @@ export class ApplePayError {
    * A localized, user-facing string that describes the error.
    */
   message: string;
-}
+};
 
 export type ApplePayErrorUpdate = {
   /**
