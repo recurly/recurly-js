@@ -51,6 +51,11 @@ export interface Recurly extends Emitter<RecurlyEvent> {
   configure: Configure;
 
   /**
+   * Triggered once Recurly has fully been initialized after configuring.the instance.
+   */
+  ready: (cb?: VoidFunction) => void;
+
+  /**
    * Elements allow sensitive customer payment information to be securely accepted via iframes.
    * They are controlled in groups by an Elements instance.
    *
