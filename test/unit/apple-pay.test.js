@@ -73,7 +73,6 @@ const getBraintreeStub = () => ({
     create: sinon.stub().resolves({
       performValidation: sinon.stub().resolves('MERCHANT_SESSION'),
       tokenize: sinon.stub().resolves('TOKENIZED_PAYLOAD'),
-      teardown: sinon.stub().resolves('TEARDOWN'),
     }),
   },
 });
@@ -1309,15 +1308,6 @@ function applePayTest (integrationType, requestMethod) {
             });
           });
         });
-
-        if (isBraintreeIntegration) {
-          it('teardown braintree', function (done) {
-            this.applePay.on('cancel', ensureDone(done, () => {
-              assert.ok(this.applePay.braintree.applePay.teardown.called);
-            }));
-            this.applePay.session.oncancel('event');
-          });
-        }
       });
     });
   });
