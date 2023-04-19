@@ -1,5 +1,36 @@
 # Changelog
 
+## [v4.23.0](https://github.com/recurly/recurly-js/tree/v4.23.0) (2023-04-19)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.9...v4.23.0)
+
+
+**Merged Pull Requests**
+
+- chore(paypal): add types for display options [#812](https://github.com/recurly/recurly-js/pull/812) ([cbarton](https://github.com/cbarton))
+- fix(apple pay): Do not teardown Braintree on cancel [#811](https://github.com/recurly/recurly-js/pull/811) ([cbarton](https://github.com/cbarton))
+- fix(types): add type definition for Recurly#ready [#810](https://github.com/recurly/recurly-js/pull/810) ([cbarton](https://github.com/cbarton))
+- feat(google pay): add support for the paymentDataRequest [#809](https://github.com/recurly/recurly-js/pull/809) ([cbarton](https://github.com/cbarton))
+- feat(Apple Pay): allow for customization of event updates [#808](https://github.com/recurly/recurly-js/pull/808) ([cbarton](https://github.com/cbarton))
+- Update config type with requiredShippingContactFields [#806](https://github.com/recurly/recurly-js/pull/806) ([BARK-RMILLER](https://github.com/BARK-RMILLER))
+- feat(apple pay): add support for `recurringPaymentRequest`, move to `options.paymentRequest` [#804](https://github.com/recurly/recurly-js/pull/804) ([cbarton](https://github.com/cbarton))
+- fix(apple pay): emit events when restore pricing addresses [#803](https://github.com/recurly/recurly-js/pull/803) ([cbarton](https://github.com/cbarton))
+- chore(apple pay): capture async test errors to fail faster [#802](https://github.com/recurly/recurly-js/pull/802) ([cbarton](https://github.com/cbarton))
+- feat(apple pay): populate contacts with pricing addresses [#801](https://github.com/recurly/recurly-js/pull/801) ([cbarton](https://github.com/cbarton))
+- feat(apple pay): allow for supportedNetworks selection [#800](https://github.com/recurly/recurly-js/pull/800) ([cbarton](https://github.com/cbarton))
+- feat(apple pay): update tax when billing/shipping contact changes [#798](https://github.com/recurly/recurly-js/pull/798) ([cbarton](https://github.com/cbarton))
+- feat(apple pay): populate billingContact with form address fields [#797](https://github.com/recurly/recurly-js/pull/797) ([cbarton](https://github.com/cbarton))
+- feat(Apple Pay): validate and support more ApplePayPaymentRequest features [#794](https://github.com/recurly/recurly-js/pull/794) ([cbarton](https://github.com/cbarton))
+- [feat][google-pay] send raw payment data to server [#789](https://github.com/recurly/recurly-js/pull/789) ([cbarton](https://github.com/cbarton))
+
+**Closed Issues**
+
+- property 'ready' does not exist on type 'Recurly'.ts [#795](https://github.com/recurly/recurly-js/issues/795)
+- Missing types definitions for `coupon` method [#698](https://github.com/recurly/recurly-js/issues/698)
+- If formRef unmounts during call, recurly.token fails silently. [#697](https://github.com/recurly/recurly-js/issues/697)
+- The user can enter 4 digits as the month value in the expiration date field. [#678](https://github.com/recurly/recurly-js/issues/678)
+
+
 ## [v4.22.9](https://github.com/recurly/recurly-js/tree/v4.22.9) (2023-02-28)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.8...v4.22.9)
