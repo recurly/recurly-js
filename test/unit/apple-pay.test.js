@@ -901,19 +901,7 @@ function applePayTest (integrationType, requestMethod) {
 
           this.applePay.session.on('completePaymentMethodSelection', ensureDone(done, (update) => {
             assert.deepEqual(update.newTotal, this.applePay.finalTotalLineItem);
-            assert.deepEqual(update.newLineItems, this.applePay.lineItems);
-            assert.deepEqual(undefined, this.applePay._paymentRequest.lineItems);
-          }));
-          this.applePay.session.onpaymentmethodselected({ paymentMethod: {} });
-        });
-
-        it('accepts a promise rejection callback to modify the update response', function (done) {
-          const newLineItems = [{ label: 'Tax', amount: '1.00' }];
-          this.applePay.config.callbacks = { onPaymentMethodSelected: () => Promise.reject({ newLineItems }) };
-
-          this.applePay.session.on('completePaymentMethodSelection', ensureDone(done, (update) => {
-            assert.deepEqual(update.newTotal, this.applePay.finalTotalLineItem);
-            assert.deepEqual(update.newLineItems, this.applePay.lineItems);
+            assert.deepEqual(update.newLineItems, newLineItems);
             assert.deepEqual(undefined, this.applePay._paymentRequest.lineItems);
           }));
           this.applePay.session.onpaymentmethodselected({ paymentMethod: {} });
@@ -1160,6 +1148,17 @@ function applePayTest (integrationType, requestMethod) {
             assert.deepEqual(event, example);
           }));
           this.applePay.session.onpaymentauthorized(example);
+        });
+
+        it('accepts a promise to reject errors', function (done) {
+          const errors = [{ code: 'shippingAddressInvalid', contactField: 'emailAddress', message: 'not gmail!' }];
+          this.applePay.config.callbacks = { onPaymentAuthorized: () => Promise.reject(errors) };
+
+          this.applePay.session.on('completePayment', ensureDone(done, (update) => {
+            assert.deepEqual(update.errors, errors);
+            assert.deepEqual(update.status, this.applePay.session.STATUS_FAILURE);
+          }));
+          this.applePay.session.onpaymentauthorized(clone(validAuthorizeEvent));
         });
 
         it('accepts a callback to return errors', function (done) {
