@@ -1,7 +1,9 @@
+import { TokenPayload } from '../token';
+
 /**
  * Information about the merchant that requests payment data.
  */
-export type MerchantInfo = {
+export type GooglePayMerchantInfo = {
   /**
    * The Google merchant identifier issued after registration with the Google Pay and Wallet Console.
    */
@@ -21,7 +23,7 @@ export type MerchantInfo = {
 /**
  * Charges to show on the payment sheet.
  */
-export type DisplayItem = {
+export type GooglePayDisplayItem = {
   /**
    * The label to be displayed for the given option.
    */
@@ -51,7 +53,7 @@ export type DisplayItem = {
 /**
  * Describes a transaction that determines a payer's ability to pay. It's used to present a payment authorization dialog
  */
-export type TransactionInfo = {
+export type GooglePayTransactionInfo = {
   /*
    * Your ISO 3166 country code (ex: ‘US’). This is your country code as the merchant.
    */
@@ -85,7 +87,7 @@ export type TransactionInfo = {
    *  All of the available charges for the current payment request.
    *  Required and only populated in the payment sheet if you use Authorize Payments or Dynamic Price Updates.
    */
-  displayItems?: DisplayItem[];
+  displayItems?: GooglePayDisplayItem[];
 
   /**
    * Label for the total price within the display items.
@@ -110,7 +112,7 @@ export type TransactionInfo = {
 /**
  * Provides information about any Offers currently applied to a transaction.
  */
-export type OfferDetail = {
+export type GooglePayOfferDetail = {
   /**
    * The promotional code associated with the Offer. Should be the same as the code entered into the payment sheet.
    */
@@ -125,14 +127,14 @@ export type OfferDetail = {
 /**
  * Provides information about any Offers currently applied to a transaction.
  */
-export type OfferInfo = {
-  offers: OfferDetail[];
+export type GooglePayOfferInfo = {
+  offers: GooglePayOfferDetail[];
 };
 
 /**
  * Set shipping restrictions.
  */
-export type ShippingAddressParameters = {
+export type GooglePayShippingAddressParameters = {
    /**
     * ISO 3166-1 alpha-2 country code values of the countries where shipping is allowed.
     * If this object isn't specified, all shipping address countries are allowed.
@@ -148,7 +150,7 @@ export type ShippingAddressParameters = {
 /**
  * Shipping option selection
  */
-export type SelectionOption = {
+export type GooglePaySelectionOption = {
   /**
    * The developer can put any value that needs to be returned in PaymentData.
    */
@@ -168,11 +170,11 @@ export type SelectionOption = {
 /**
  * Set shipping options.
  */
-export type ShippingOptionParameters = {
+export type GooglePayShippingOptionParameters = {
   /**
    * All of the shipping options available for the current request.
    */
-  shippingOptions: SelectionOption[];
+  shippingOptions: GooglePaySelectionOption[];
 
   /**
    * 	An identifier to the default selected shipping option.
@@ -184,21 +186,21 @@ export type ShippingOptionParameters = {
 /**
  * Configuration object for Google Pay API.
  */
-export type PaymentDataRequest = {
+export type GooglePayPaymentDataRequest = {
   /**
    * Information about the merchant that requests payment data.
    */
-  merchantInfo?: MerchantInfo;
+  merchantInfo?: GooglePayMerchantInfo;
 
   /**
    * Details about the authorization of the transaction based upon whether the user agrees to the transaction or not.
    */
-  transactionInfo?: TransactionInfo;
+  transactionInfo?: GooglePayTransactionInfo;
 
   /**
    * Specifies which offers to apply when the payment sheet first loads.
    */
-  offerInfo?: OfferInfo;
+  offerInfo?: GooglePayOfferInfo;
 
   /**
    * Request an email address.
@@ -213,7 +215,7 @@ export type PaymentDataRequest = {
   /**
    * 	If shippingAddressRequired is set to true, specify shipping address restrictions.
    */
-  shippingAddressParameters?: ShippingAddressParameters;
+  shippingAddressParameters?: GooglePayShippingAddressParameters;
 
   /**
    * Request an shipping option.
@@ -224,10 +226,10 @@ export type PaymentDataRequest = {
   /**
    * If shippingOptionRequired is set to true, specify shipping options.
    */
-  shippingOptionParameters?: ShippingOptionParameters;
+  shippingOptionParameters?: GooglePayShippingOptionParameters;
 };
 
-export type IntermediatePaymentData = {
+export type GooglePayIntermediatePaymentData = {
   callbackTrigger?:
     | 'INITIALIZE'
     | 'SHIPPING_ADDRESS'
@@ -270,7 +272,7 @@ export type IntermediatePaymentData = {
   };
 };
 
-export type PaymentDataError = {
+export type GooglePayPaymentDataError = {
   reason:
     | 'OFFER_INVALID'
     | 'PAYMENT_DATA_INVALID'
@@ -297,26 +299,26 @@ export type PaymentDataError = {
 /**
  * Specifies new transaction info, shipping options and error to update the payment sheet.
  */
-export type PaymentDataRequestUpdate = {
+export type GooglePayPaymentDataRequestUpdate = {
   /**
    * Updates the offers currently active in the payment sheet.
    */
-  newOfferInfo?: OfferInfo;
+  newOfferInfo?: GooglePayOfferInfo;
   /**
    * Updates the transaction info in the payment sheet.
    */
-  newTransactionInfo?: TransactionInfo;
+  newTransactionInfo?: GooglePayTransactionInfo;
   /**
    * Updates the shipping options in the payment sheet.
    */
-  newShippingOptionParameters?: ShippingOptionParameters;
+  newShippingOptionParameters?: GooglePayShippingOptionParameters;
   /**
    * Adds an error message to the payment sheet.
    */
-  error?: PaymentDataError;
+  error?: GooglePayPaymentDataError;
 };
 
-export type PaymentData = {
+export type GooglePayPaymentData = {
   email?: string;
   shippingAddress?: {
     name: string;
@@ -330,4 +332,5 @@ export type PaymentData = {
     administrativeArea: string;
     sortingCode: string;
   };
+  recurlyToken: TokenPayload;
 };
