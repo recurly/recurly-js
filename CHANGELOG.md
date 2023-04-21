@@ -1,5 +1,18 @@
 # Changelog
 
+## [v4.23.1](https://github.com/recurly/recurly-js/tree/v4.23.1) (2023-04-21)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.23.0...v4.23.1)
+
+
+**Merged Pull Requests**
+
+- fix(types): Fix type declarations for apple and google pay [#816](https://github.com/recurly/recurly-js/pull/816) ([cbarton](https://github.com/cbarton))
+- fix(apple pay): simplify newRecurringPaymentRequest handling [#815](https://github.com/recurly/recurly-js/pull/815) ([cbarton](https://github.com/cbarton))
+- fix(apple pay): callbacks with promises resolve correctly [#814](https://github.com/recurly/recurly-js/pull/814) ([cbarton](https://github.com/cbarton))
+
+
+
 ## [v4.23.0](https://github.com/recurly/recurly-js/tree/v4.23.0) (2023-04-19)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.22.9...v4.23.0)
@@ -26,6 +39,7 @@
 **Closed Issues**
 
 - property 'ready' does not exist on type 'Recurly'.ts [#795](https://github.com/recurly/recurly-js/issues/795)
+- PayPal.d.ts is missing amount [#732](https://github.com/recurly/recurly-js/issues/732)
 - Missing types definitions for `coupon` method [#698](https://github.com/recurly/recurly-js/issues/698)
 - If formRef unmounts during call, recurly.token fails silently. [#697](https://github.com/recurly/recurly-js/issues/697)
 - The user can enter 4 digits as the month value in the expiration date field. [#678](https://github.com/recurly/recurly-js/issues/678)
