@@ -249,6 +249,11 @@ export type ApplePayErrorUpdate = {
  */
 export type ApplePaySelectionUpdate = {
   /**
+   * The new total cost that results from the user's selection.
+   */
+  total?: string;
+
+  /**
    * The new total that results from the user's selection.
    */
   newTotal?: ApplePayLineItem;
