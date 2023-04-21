@@ -1,16 +1,17 @@
 import { Emitter } from '../emitter';
 import { CheckoutPricingInstance, CheckoutPricingPromise } from '../pricing/checkout';
-import { TokenPayload } from '../token';
 import {
   ApplePayPaymentRequest,
   ApplePayContactField,
   ApplePaySelectionUpdate,
   ApplePayErrorUpdate,
-  ApplePayPaymentSelectedEvent,
+  ApplePayPaymentMethodSelectedEvent,
   ApplePayShippingContactSelectedEvent,
   ApplePayShippingMethodSelectedEvent,
   ApplePayPaymentAuthorizedEvent,
 } from './native';
+
+export * from './native';
 
 export type I18n = {
   /**
@@ -38,11 +39,6 @@ export type I18n = {
    */
   giftCardLineItemLabel: string;
 };
-
-export type PaymentAuthorizedEvent = {
-  gatewayToken?: string;
-  recurlyToken: TokenPayload;
-} | ApplePayPaymentAuthorizedEvent;
 
 export type ApplePayConfig = {
   /**
@@ -81,10 +77,10 @@ export type ApplePayConfig = {
    * Callbacks for the events emitted by the payment session when a user selects options in the payment sheet.
    */
   callbacks?: {
-    onPaymentMethodSelected?: (event: ApplePayPaymentSelectedEvent) => Promise<ApplePaySelectionUpdate> | ApplePaySelectionUpdate | void,
+    onPaymentMethodSelected?: (event: ApplePayPaymentMethodSelectedEvent) => Promise<ApplePaySelectionUpdate> | ApplePaySelectionUpdate | void,
     onShippingContactSelected?: (event: ApplePayShippingContactSelectedEvent) => Promise<ApplePaySelectionUpdate> | ApplePaySelectionUpdate | void,
     onShippingMethodSelected?: (event: ApplePayShippingMethodSelectedEvent) => Promise<ApplePaySelectionUpdate> | ApplePaySelectionUpdate | void,
-    onPaymentAuthorized?: (event: PaymentAuthorizedEvent) => Promise<ApplePayErrorUpdate> | ApplePayErrorUpdate | void,
+    onPaymentAuthorized?: (event: ApplePayPaymentAuthorizedEvent) => Promise<ApplePayErrorUpdate> | ApplePayErrorUpdate | void,
   };
 
   /**

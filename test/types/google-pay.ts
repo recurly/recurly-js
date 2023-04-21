@@ -1,5 +1,7 @@
-import { PaymentData } from 'lib/google-pay/native';
-import { PaymentAuthorizationResult } from 'lib/google-pay';
+import {
+  GooglePayPaymentData,
+  GooglePayPaymentAuthorizationResult,
+} from '@recurly/recurly-js';
 
 export default function googlePay() {
   const googlePaySimple = recurly.GooglePay({
@@ -33,7 +35,7 @@ export default function googlePay() {
       buttonColor: 'black',
     },
     callbacks: {
-      onPaymentAuthorized: (paymentData: PaymentData): Promise<PaymentAuthorizationResult> | void => {
+      onPaymentAuthorized: (paymentData: GooglePayPaymentData): Promise<GooglePayPaymentAuthorizationResult> | void => {
         if (paymentData.email === 'test@example.com') {
           return Promise.reject({
             error: {

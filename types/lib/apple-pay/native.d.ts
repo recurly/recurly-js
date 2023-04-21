@@ -1,3 +1,5 @@
+import { TokenPayload } from '../token';
+
 /**
  * A type that indicates the time a payment occurs in a transaction.
  */
@@ -293,7 +295,7 @@ export type ApplePayPaymentMethod = {
 /**
  * An event object that contains the payment method.
  */
-export type ApplePayPaymentSelectedEvent = {
+export type ApplePayPaymentMethodSelectedEvent = {
   /**
    * The card used to complete a payment.
    */
@@ -350,4 +352,7 @@ export type ApplePayPaymentAuthorizedEvent = {
    * The authorized payment information for this transaction.
    */
   payment: ApplePayPayment;
+
+  gatewayToken?: string;
+  recurlyToken: TokenPayload;
 };

@@ -1,23 +1,20 @@
 import { Emitter } from '../emitter';
-import { TokenPayload } from '../token';
 import {
-  PaymentDataRequest,
-  IntermediatePaymentData,
-  PaymentDataRequestUpdate,
-  PaymentDataError,
-  PaymentData,
+  GooglePayPaymentDataRequest,
+  GooglePayIntermediatePaymentData,
+  GooglePayPaymentDataRequestUpdate,
+  GooglePayPaymentDataError,
+  GooglePayPaymentData,
 } from './native';
 
-export type PaymentAuthorizationResult = {
+export * from './native';
+
+export type GooglePayPaymentAuthorizationResult = {
   /**
    * The error to be rendered in the payment sheet for the user when it's necessary to retry the payment.
    */
-  error: PaymentDataError;
+  error: GooglePayPaymentDataError;
 };
-
-export type RecurlyPaymentData = {
-  recurlyToken: TokenPayload;
-} | PaymentData;
 
 /**
  * Options used to configure the Google Pay integration with Recurly.
@@ -80,14 +77,14 @@ export type GooglePayOptions = {
   /**
    * Specify configuration for Google Pay API.
    */
-  paymentDataRequest?: PaymentDataRequest;
+  paymentDataRequest?: GooglePayPaymentDataRequest;
 
   /**
    * Callbacks for the events emitted by the payment session when dynamic price updates are requested.
    */
   callbacks?: {
-    onPaymentDataChanged?: (intermediatePaymentData: IntermediatePaymentData) => Promise<PaymentDataRequestUpdate>;
-    onPaymentAuthorized?: (paymentData: PaymentData) => Promise<PaymentAuthorizationResult> | void;
+    onPaymentDataChanged?: (intermediatePaymentData: GooglePayIntermediatePaymentData) => Promise<GooglePayPaymentDataRequestUpdate>;
+    onPaymentAuthorized?: (paymentData: GooglePayPaymentData) => Promise<GooglePayPaymentAuthorizationResult> | void;
   },
 };
 

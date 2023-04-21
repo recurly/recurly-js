@@ -1,11 +1,11 @@
 import {
   ApplePayPaymentRequest,
   ApplePayLineItem,
-  ApplePayPaymentContact,
+  ApplePayPaymentMethodSelectedEvent,
   ApplePaySelectionUpdate,
-} from 'lib/apple-pay/native';
+} from '@recurly/recurly-js';
 
-function getTaxes(billingContact: ApplePayPaymentContact | undefined): ApplePaySelectionUpdate | void {
+function getTaxes({ paymentMethod: { billingContact } }: ApplePayPaymentMethodSelectedEvent): ApplePaySelectionUpdate | void {
   if (billingContact?.postalCode === '12345') {
     return { newLineItems: [{ label: 'Tax', amount: '1.00' }] };
   }
@@ -57,7 +57,7 @@ export default function applePay() {
     country: 'US',
     currency: 'USD',
     callbacks: {
-      onPaymentMethodSelected: ({ paymentMethod: { billingContact } }) => getTaxes(billingContact),
+      onPaymentMethodSelected: getTaxes,
     },
     paymentRequest,
   });
