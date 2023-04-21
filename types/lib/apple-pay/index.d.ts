@@ -58,8 +58,7 @@ export type ApplePayConfig = {
   label?: string;
 
   /**
-   * Total cost to display in the Apple Pay payment sheet. Required if `options.pricing` or
-   * `options.paymentRequest.total` is not provided.
+   * Total cost to display in the Apple Pay payment sheet. Defaults to '0'.
    */
   total?: string;
 

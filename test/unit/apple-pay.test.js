@@ -208,14 +208,11 @@ function applePayTest (integrationType, requestMethod) {
       });
 
       describe('when not given options.pricing', function () {
-        it('requires options.total', function (done) {
+        it('uses a $0 total when options.total is not provided', function (done) {
           let applePay = this.recurly.ApplePay(omit(validOpts, 'total'));
-          applePay.on('error', function (err) {
-            nextTick(ensureDone(done, () => {
-              assert.equal(err, applePay.initError);
-              assertInitError(applePay, 'apple-pay-config-missing', { opt: 'total' });
-            }));
-          });
+          applePay.ready(ensureDone(done, () => {
+            assert.equal(applePay.session.total.amount, '0.00');
+          }));
         });
 
         it('creates the total line item from options.total and the default options.label if absent', function (done) {
