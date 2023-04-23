@@ -19,7 +19,6 @@ module.exports = {
         enablePopups: true
       }
     },
-
     BrowserStackEdge: {
       browserName: 'Edge',
       browserVersion: 'latest',
@@ -29,47 +28,35 @@ module.exports = {
         enablePopups: true
       }
     },
-    BrowserStackIe11: {
-      browserName: 'IE',
-      browserVersion: '11.0',
-      os: 'Windows',
-      osVersion: '8.1',
-      ie: {
-        arch: 'x32',
-        driver: '3.141.59',
-        enablePopups: true
-      }
-    },
-
-    BrowserStackIos14: {
-      deviceName: 'iPhone 11',
+    BrowserStackIos16: {
+      deviceName: 'iPhone 14',
       os: 'ios',
-      osVersion: '14',
+      osVersion: '16',
       realMobile: true
     },
-    BrowserStackIos13: {
-      deviceName: 'iPhone 11',
+    BrowserStackIos15: {
+      deviceName: 'iPhone 13',
       os: 'ios',
-      osVersion: '13',
+      osVersion: '15',
       realMobile: true
     },
 
+    BrowserStackAndroid13: {
+      deviceName: 'Google Pixel 7',
+      os: 'android',
+      osVersion: '13.0',
+      realMobile: true
+    },
+    BrowserStackAndroid12: {
+      deviceName: 'Google Pixel 6',
+      os: 'android',
+      osVersion: '12.0',
+      realMobile: true
+    },
     BrowserStackAndroid11: {
-      deviceName: 'Google Pixel 4',
+      deviceName: 'Google Pixel 5',
       os: 'android',
       osVersion: '11.0',
-      realMobile: true
-    },
-    BrowserStackAndroid10: {
-      deviceName: 'Samsung Galaxy S20',
-      os: 'android',
-      osVersion: '10.0',
-      realMobile: true
-    },
-    BrowserStackAndroid9: {
-      deviceName: 'Google Pixel 3',
-      os: 'android',
-      osVersion: '9.0',
       realMobile: true
     }
   }

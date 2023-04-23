@@ -8,8 +8,7 @@ const {
 const {
   BROWSER = 'chrome',
   REPORT_COVERAGE = false,
-  TRAVIS_BUILD_NUMBER,
-  SUITE_PARTITION = null
+  TRAVIS_BUILD_NUMBER
 } = process.env;
 
 const BROWSER_STACK_CAPABILITY = browserStackCapabilities[BROWSER];
@@ -29,9 +28,6 @@ function runner (config) {
 
   if (BROWSER_STACK_CAPABILITY) {
     let localIdentifier = `${Math.round(Math.random() * 100)}-${Date.now()}`;
-    if (SUITE_PARTITION) {
-      localIdentifier += `-${SUITE_PARTITION}`;
-    }
 
     cfg.browserStack = {
       project,
