@@ -38,6 +38,7 @@ if (BROWSER === 'Electron') {
     key,
     capabilities: [
       {
+        browserName: BROWSER_STACK_CAPABILITY.browserName,
         'bstack:options': Object.assign(
           {},
           BROWSER_STACK_CAPABILITY,
@@ -52,11 +53,7 @@ if (BROWSER === 'Electron') {
             consoleLogs: 'verbose',
             localIdentifier
           }
-        ),
-        'browserstack.use_w3c': true,
-        captureTimeout: timeout,
-        pollingTimeout: timeout,
-        timeout
+        )
       }
     ],
     baseUrl: 'http://bs-local.com:9877',

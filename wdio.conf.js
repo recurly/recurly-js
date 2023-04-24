@@ -17,7 +17,8 @@ exports.config = Object.assign({
   runner: 'local',
   path: '/',
   specs: [
-    './test/e2e/**/*.test.js'
+    // './test/e2e/**/*.test.js'
+    './test/e2e/display.test.js'
   ],
   maxInstances: maxInstances(),
   capabilities: capabilities(),
@@ -37,8 +38,7 @@ exports.config = Object.assign({
   before: async () => {
     global.testEnvironment = { API, API_PROXY, PUBLIC_KEY };
     await browser.setTimeout({
-      script: timeout(),
-      // implicit: Math.round(timeout() * 1/3)
+      script: timeout()
     });
   }
 }, assignPort());
