@@ -4,7 +4,6 @@ const memoize = require('memoize-one');
 const TOKEN_PATTERN = /^[\w-]{21,23}$/;
 
 const BROWSERS = {
-  IE_11: ['internet explorer', '11'],
   EDGE: ['MicrosoftEdge'],
   ELECTRON: ['chrome', 'electron'],
   SAFARI: ['Safari'],

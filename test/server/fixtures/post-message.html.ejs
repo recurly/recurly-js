@@ -11,19 +11,7 @@
       }
 
       function post (msg) {
-        if (isIE()) {
-          var relay = findRelay();
-          if (!relay) throw new Error('relay not found');
-          relay.send(JSON.stringify(msg), '*');
-        } else {
-          targetWindow().postMessage(JSON.stringify(msg), '*');
-        }
-      }
-
-      function isIE () {
-        var nav = window.navigator;
-        return nav.appName == 'Microsoft Internet Explorer'
-          || nav.userAgent.indexOf('Trident') > -1;
+        targetWindow().postMessage(JSON.stringify(msg), '*');
       }
 
       function findRelay () {

@@ -65,12 +65,6 @@ function tabsThroughTheForm () {
       }
     }
 
-    // IE11 cannot perform tab progression in reverse from within an <iframe>
-    // Android devices do not support reverse tab progression
-    if (environmentIs(BROWSERS.IE_11)) {
-      return;
-    }
-
     destinationReached = false;
 
     if (environmentIs(DEVICES.IOS)) {

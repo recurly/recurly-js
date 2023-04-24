@@ -26,7 +26,7 @@ maybeDescribe('Display', () => {
         await fillCardElement();
         await clickFirstName();
 
-        const diff = await browser.checkFullPageScreen('elements/card-element-pacifico');
+        const diff = await browser.checkElement(await $('.test-bed'), 'elements/card-element');
         assertDiffThresholdMet(diff);
       });
     });
@@ -40,7 +40,7 @@ maybeDescribe('Display', () => {
         await fillDistinctCardElements();
         await clickFirstName();
 
-        const diff = await browser.checkFullPageScreen('elements/distinct-elements-pacifico');
+        const diff = await browser.checkElement(await $('.test-bed'), 'elements/distinct-elements');
         assertDiffThresholdMet(diff);
       });
     });
@@ -55,7 +55,7 @@ maybeDescribe('Display', () => {
       await fillCardElement();
       await clickFirstName();
 
-      const diff = await browser.checkFullPageScreen('hosted-fields/card-element-pacifico');
+      const diff = await browser.checkElement(await $('.test-bed'), 'hosted-fields/card-field');
       assertDiffThresholdMet(diff);
     });
   });
@@ -69,7 +69,7 @@ maybeDescribe('Display', () => {
       await fillDistinctCardElements();
       await clickFirstName();
 
-      const diff =  await browser.checkFullPageScreen('hosted-fields/distinct-elements-pacifico');
+      const diff =  await browser.checkElement(await $('.test-bed'), 'hosted-fields/distinct-fields');
       assertDiffThresholdMet(diff);
     });
   });
