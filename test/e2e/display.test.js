@@ -26,8 +26,7 @@ maybeDescribe('Display', () => {
         await fillCardElement();
         await clickFirstName();
 
-        const diff = await browser.checkElement(await $('.test-bed'), 'elements/card-element');
-        assertDiffThresholdMet(diff);
+        assertVisualRegressionThreshold(await browser.checkElement(await $('.test-bed'), 'elements/card-element'));
       });
     });
 
@@ -40,8 +39,7 @@ maybeDescribe('Display', () => {
         await fillDistinctCardElements();
         await clickFirstName();
 
-        const diff = await browser.checkElement(await $('.test-bed'), 'elements/distinct-elements');
-        assertDiffThresholdMet(diff);
+        assertVisualRegressionThreshold(await browser.checkElement(await $('.test-bed'), 'elements/distinct-elements'));
       });
     });
   });
@@ -55,8 +53,7 @@ maybeDescribe('Display', () => {
       await fillCardElement();
       await clickFirstName();
 
-      const diff = await browser.checkElement(await $('.test-bed'), 'hosted-fields/card-field');
-      assertDiffThresholdMet(diff);
+      assertVisualRegressionThreshold(await browser.checkElement(await $('.test-bed'), 'hosted-fields/card-field'));
     });
   });
 
@@ -69,25 +66,13 @@ maybeDescribe('Display', () => {
       await fillDistinctCardElements();
       await clickFirstName();
 
-      const diff =  await browser.checkElement(await $('.test-bed'), 'hosted-fields/distinct-fields');
-      assertDiffThresholdMet(diff);
+      assertVisualRegressionThreshold(await browser.checkElement(await $('.test-bed'), 'hosted-fields/distinct-fields'));
     });
   });
 });
 
-function assertDiffThresholdMet (diff) {
-  let threshold;
-  if (environmentIs(DEVICES.ANDROID)) {
-    threshold = 0.5;
-  } else if (environmentIs(DEVICES.IOS)) {
-    threshold = 0.25;
-  } else if (environmentIs(BROWSERS.EDGE)) {
-    threshold = 0.05;
-  } else if (environmentIs(BROWSERS.FIREFOX)) {
-   threshold = 0.1;
-  }
-  if (threshold) assert(diff <= threshold, `${diff} is above the threshold of ${threshold}`);
-  else assert.strictEqual(diff, 0);
+function assertVisualRegressionThreshold (diff, threshold = 0.05) {
+  assert(diff <= threshold, `${diff} is above the threshold of ${threshold}`);
 }
 
 async function clickFirstName () {

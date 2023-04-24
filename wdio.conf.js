@@ -143,7 +143,7 @@ function imageComparisonService () {
       savePerInstance: true,
 
       // Change to true and remove snapshots to generate new baselines
-      autoSaveBaseline: true,
+      autoSaveBaseline: false,
 
       blockOutStatusBar: true,
       blockOutToolBar: true,
