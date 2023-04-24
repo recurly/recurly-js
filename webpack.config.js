@@ -1,8 +1,8 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
-const minify = ~process.argv.indexOf('-p');
+const minify = ~process.argv.indexOf('production');
 const manifest = require('./package.json');
 
 const ATTRIBUTION_URL = 'https://docs.recurly.com/page/open-source-attribution';
@@ -78,7 +78,7 @@ module.exports = {
           banner: () => `License information available at ${ATTRIBUTION_URL}`
         }
       }),
-      new OptimizeCSSAssetsPlugin({})
+      new CssMinimizerPlugin()
     ]
   },
   devServer: {

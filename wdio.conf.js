@@ -115,10 +115,6 @@ function services () {
 
   if (browserName() === 'firefox') {
     definition.push('geckodriver');
-  } else if (isMobile()) {
-    definition.push(['appium', {
-      logPath : './build/reports/e2e/log/'
-    }]);
   } else {
     definition.push('chromedriver');
   }

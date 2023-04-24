@@ -24,9 +24,9 @@ server-http: build
 build: build/recurly.min.js
 build/recurly.js: index.js $(src) node_modules
 	@mkdir -p $(@D)
-	@$(webpack) --display-reasons --display-chunks
+	@$(webpack)
 build/recurly.min.js: build/recurly.js
-	@$(webpack) -p
+	@$(webpack) --mode production
 build/test-unit.js: $(src) $(tests)
 	@$(webpack) --config webpack.test.config.js
 
