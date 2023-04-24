@@ -6,7 +6,7 @@ karma = $(bin)/karma start
 server = $(bin)/webpack-dev-server --inline --hot --port 8020
 webpack = $(bin)/webpack
 tsc = $(bin)/tsc
-dts = $(bin)/dtslint
+dtslint = $(bin)/dtslint
 src = index.js $(shell find . -type f -name '*.js' ! -path './build/*' -o -name '*.css' ! -path './build/*')
 tests = $(shell find test -type f -name '*.js')
 
@@ -49,8 +49,8 @@ test-e2e-debug: build $(src) $(tests)
 test-e2e-ci: build $(src) $(tests)
 	@$(wdio) wdio.ci.conf.js
 test-types: types
-	$(dts) test/types
-	@$(dts) types
+	@$(dtslint) test/types
+	@$(dtslint) types
 lint: build
 	@$(eslint)
 lint-fix: build
