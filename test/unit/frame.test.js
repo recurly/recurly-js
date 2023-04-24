@@ -162,7 +162,9 @@ describe('Recurly.Frame', function () {
       const { recurly } = this;
       assert.throws(() => {
         this.frame = recurly.Frame({ path, payload, type: Frame.TYPES.IFRAME });
-      }, 'Invalid container. Expected HTMLElement, got undefined');
+      }, {
+        message: 'Invalid container. Expected HTMLElement, got undefined'
+      });
     });
 
     describe('when given a container', function () {

@@ -68,7 +68,9 @@ describe('Element', function () {
       invalidExamples.forEach(invalidExample => {
         assert.throws(() => {
           element.attach(invalidExample);
-        }, 'Invalid parent. Expected HTMLElement.');
+        }, {
+          message: 'Invalid parent. Expected HTMLElement.'
+        });
       });
 
       element.once('attach', () => done());

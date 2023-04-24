@@ -13,15 +13,15 @@ apiTest(function (requestMethod) {
     });
 
     it('requires a callback', function () {
-      assert.throws(() => recurly.giftCard(valid), 'Missing callback');
+      assert.throws(() => recurly.giftCard(valid), { message: 'Missing callback' });
     });
 
     it('requires options', function () {
-      assert.throws(() => recurly.giftCard(null, () => {}), 'Options must be an object');
+      assert.throws(() => recurly.giftCard(null, () => {}), { message: 'Options must be an object' });
     });
 
     it('requires options.code', function () {
-      assert.throws(() => recurly.giftCard({ arbitrary: 'values' }, () => {}), 'Option code must be a String');
+      assert.throws(() => recurly.giftCard({ arbitrary: 'values' }, () => {}), { message: 'Option code must be a String' });
     });
 
     it('requires Recurly.configure', function () {
