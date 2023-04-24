@@ -427,7 +427,6 @@ describe('Request', () => {
     beforeEach(function () {
       const { timeout } = this.request;
 
-      this.expectedOptions = { prefix: '__rjs', timeout };
       this.exampleOkUrl = this.recurly.url('/mock-200');
       this.exampleErrUrl = this.recurly.url('/mock-200-err');
 
@@ -440,7 +439,7 @@ describe('Request', () => {
     });
 
     it('makes a call to the specified url', function () {
-      const { exampleOkUrl, expectedOptions } = this;
+      const { exampleOkUrl } = this;
 
       this.request.jsonp({
         url: exampleOkUrl,
@@ -457,7 +456,7 @@ describe('Request', () => {
 
     describe('when instructed to mimic a POST request', () => {
       it('sets _method in the request', function () {
-        const { exampleOkUrl, expectedOptions } = this;
+        const { exampleOkUrl } = this;
 
         this.request.jsonp({
           method: 'post',
@@ -467,12 +466,9 @@ describe('Request', () => {
 
         assert(Request.makeJsonpRequest.calledOnce);
 
-        assert(
-          Request.makeJsonpRequest.calledWithMatch(
-            `${exampleOkUrl}?`,
-            expectedOptions,
-            sinon.match.func
-          )
+        assert.strictEqual(
+          Request.makeJsonpRequest.firstCall.firstArg,
+          `${exampleOkUrl}?_method=post`
         );
       });
     });

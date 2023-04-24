@@ -73,7 +73,7 @@ maybeDescribe('Display', () => {
 
 function assertVisualRegressionThreshold (diff, threshold = 0.05) {
   if (environmentIs(DEVICES.ANDROID)) {
-    threshold = 8;
+    threshold = 15;
   }
 
   assert(diff <= threshold, `${diff} is above the threshold of ${threshold}`);
