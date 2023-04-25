@@ -17,8 +17,7 @@ exports.config = Object.assign({
   runner: 'local',
   path: '/',
   specs: [
-    // './test/e2e/**/*.test.js'
-    './test/e2e/display.test.js'
+    './test/e2e/**/*.test.js'
   ],
   maxInstances: maxInstances(),
   capabilities: capabilities(),
