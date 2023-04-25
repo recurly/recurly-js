@@ -99,13 +99,6 @@ jobs:
     - <<: *e2e
       name: Android 11
       env: BROWSER=BrowserStackAndroid11
-    - <<: *e2e
-      name: Electron
-      env: BROWSER=Electron
-      addons:
-        chrome: stable
-      services:
-        - xvfb
 
     - stage: Publish
       name: Publish Artifacts

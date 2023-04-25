@@ -13,12 +13,15 @@ apiTest(function (requestMethod) {
 
     it('requires a callback', function () {
       const { recurly } = this;
-      assert.throws(() => recurly.plan(valid), 'Missing callback');
+      assert.throws(() => recurly.plan(valid), { message: 'Missing callback' });
     });
 
-    it('requires a plan code', function () {
+    it('requires a plan code', function (done) {
       const { recurly } = this;
-      assert.throws(() => recurly.plan(), 'Missing plan code');
+      recurly.plan(undefined, (err) => {
+        assert.strictEqual(err.message, 'Missing plan code');
+        done();
+      });
     });
 
     it('requires Recurly.configure', function () {

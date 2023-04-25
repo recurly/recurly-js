@@ -1,7 +1,5 @@
 const {
   BROWSER = 'Chrome',
-  VIRTUALBOX_EDGE_UUID,
-  VIRTUALBOX_IE11_UUID,
   ANDROID_HOME,
   ANDROID_AVD_NAME
 } = process.env;
@@ -36,16 +34,6 @@ const staticConfig = {
     FirefoxDebug: {
       base: 'Firefox',
       flags: ['--devtools']
-    },
-    VirtualBoxEdgeWin10: {
-      base: 'VirtualBoxEdge',
-      keepAlive: true,
-      uuid: VIRTUALBOX_EDGE_UUID
-    },
-    VirtualBoxIE11Win7: {
-      base: 'VirtualBoxIE11',
-      keepAlive: true,
-      uuid: VIRTUALBOX_IE11_UUID
     },
     Android10: {
       base: 'AndroidEmulator',

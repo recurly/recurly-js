@@ -17,8 +17,7 @@ exports.config = Object.assign({
   runner: 'local',
   path: '/',
   specs: [
-    // './test/e2e/**/*.test.js'
-    './test/e2e/display.test.js'
+    './test/e2e/**/*.test.js'
   ],
   maxInstances: maxInstances(),
   capabilities: capabilities(),
@@ -115,10 +114,6 @@ function services () {
 
   if (browserName() === 'firefox') {
     definition.push('geckodriver');
-  } else if (isMobile()) {
-    definition.push(['appium', {
-      logPath : './build/reports/e2e/log/'
-    }]);
   } else {
     definition.push('chromedriver');
   }

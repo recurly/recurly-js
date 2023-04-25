@@ -1,6 +1,6 @@
 const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
-const ejs = require('koa-ejs');
+const ejs = require('@koa/ejs');
 const fs = require('fs');
 const jsonp = require('koa-jsonp');
 const Koa = require('koa');
@@ -39,7 +39,12 @@ app.use(methodOverride());
 app.use(jsonp());
 app.use(cors());
 
-ejs(app, { root: __dirname, layout: false, viewExt: 'html.ejs', cache: false });
+ejs(app, {
+  root: __dirname,
+  layout: false,
+  viewExt: 'html.ejs',
+  cache: false
+});
 
 // Utility endpoints
 app.use(route.get('/build/:artifact', build));

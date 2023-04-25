@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const glob = require('glob');
 const path = require('path');
@@ -29,7 +30,10 @@ module.exports = {
     ]
   },
   plugins: [
-    new MiniCssExtractPlugin({ filename: 'recurly.css' })
+    new MiniCssExtractPlugin({ filename: 'recurly.css' }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
   ],
   devtool: 'inline-source-map'
 };

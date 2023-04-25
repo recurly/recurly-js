@@ -13,7 +13,7 @@ apiTest((requestMethod) => {
 
     it('requires an itemCode', function () {
       const { recurly } = this;
-      assert.throws(() => recurly.item(), 'Option itemCode must be a String');
+      assert.throws(() => recurly.item(), { message: 'Option itemCode must be a String' });
     });
 
     it('requires Recurly.configure', function (done) {

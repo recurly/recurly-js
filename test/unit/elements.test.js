@@ -18,7 +18,6 @@ describe('Elements', function () {
     // This stub allows us to generate inert Element instances
     this.elementsStub = new ElementsStub({ recurly });
     this.cardElementExample = this.elementsStub.CardElement();
-    this.cardElementExampleTwo = this.elementsStub.CardElement();
   });
 
   it('has factory properties that return Element instances', function () {
@@ -64,8 +63,10 @@ describe('Elements', function () {
       elements.add(cardElementExample);
 
       assert.throws(() => {
-        elements.add(cardElementExampleTwo);
-      }, 'Invalid element. There is already a `CardElement` in this set.');
+        elements.add(cardElementExample);
+      }, {
+        message: 'Invalid element. There is already a `CardElement` in this set.'
+      });
     });
 
     it('adds the Element to the set', function () {
