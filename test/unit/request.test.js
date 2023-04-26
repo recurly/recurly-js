@@ -3,7 +3,7 @@ import isEmpty from 'lodash.isempty';
 import Promise from 'promise';
 import { Recurly } from '../../lib/recurly';
 import { initRecurly } from './support/helpers';
-import { Request, factory } from '../../lib/recurly/request';
+import { Request } from '../../lib/recurly/request';
 
 describe('Request', () => {
   beforeEach(function () {
@@ -419,6 +419,116 @@ describe('Request', () => {
             set.forEach(res => assert.equal(res.success, true));
             done();
           })
+      });
+    });
+  });
+
+  describe('Request.jsonp', () => {
+    beforeEach(function () {
+      const { timeout } = this.request;
+
+      this.expectedOptions = { prefix: '__rjs', timeout };
+      this.exampleOkUrl = this.recurly.url('/mock-200');
+      this.exampleErrUrl = this.recurly.url('/mock-200-err');
+
+      sinon.spy(Request, 'makeJsonpRequest');
+    });
+
+    afterEach(function () {
+      if (!('restore' in Request.makeJsonpRequest)) return;
+      Request.makeJsonpRequest.restore();
+    });
+
+    it('makes a call to the specified url', function () {
+      const { exampleOkUrl, expectedOptions } = this;
+
+      this.request.jsonp({
+        url: exampleOkUrl,
+        data: {}
+      });
+
+      assert(Request.makeJsonpRequest.calledOnce);
+
+      assert.strictEqual(
+        Request.makeJsonpRequest.firstCall.firstArg,
+        `${exampleOkUrl}?`
+      );
+    });
+
+    describe('when instructed to mimic a POST request', () => {
+      it('sets _method in the request', function () {
+        const { exampleOkUrl, expectedOptions } = this;
+
+        this.request.jsonp({
+          method: 'post',
+          url: exampleOkUrl,
+          data: {}
+        });
+
+        assert(Request.makeJsonpRequest.calledOnce);
+
+        assert(
+          Request.makeJsonpRequest.calledWithMatch(
+            `${exampleOkUrl}?`,
+            expectedOptions,
+            sinon.match.func
+          )
+        );
+      });
+    });
+
+    it('encodes the payload in the querystring', function () {
+      const { exampleOkUrl, expectedOptions } = this;
+
+      const examplePayload = {
+        arbitrary: 'data payload!',
+        with: 1.1,
+        mixed: true,
+        types: {
+          evenNested: ['x','y']
+        }
+      };
+
+      const examplePayloadEncoded = `
+        arbitrary=data%20payload%21&with=1.1&mixed=true&types[evenNested][0]=x&types[evenNested][1]=y
+      `.trim();
+
+      this.request.jsonp({
+        url: exampleOkUrl,
+        data: examplePayload
+      });
+
+      assert(Request.makeJsonpRequest.calledOnce);
+
+      assert.strictEqual(
+        Request.makeJsonpRequest.firstCall.firstArg,
+        `${exampleOkUrl}?${examplePayloadEncoded}`
+      );
+    });
+
+    it('resolves when the response is shaped like a success', function (done) {
+      const { exampleOkUrl } = this;
+
+      this.request.jsonp({
+        url: exampleOkUrl,
+        data: {}
+      }).then(response => {
+        assert.strictEqual(response, '');
+        done();
+      }, err => {});
+    });
+
+    it('rejects when the response is shaped like an error', function (done) {
+      const { exampleErrUrl } = this;
+
+      this.request.jsonp({
+        url: exampleErrUrl,
+        data: {}
+      }).then(() => {}, err => {
+        assert.strictEqual(err.name, 'api-error');
+        assert.strictEqual(err.code, 'error');
+        assert.strictEqual(err.message, 'An error');
+        done();
       });
     });
   });
