@@ -53,6 +53,12 @@ app.use(route.get('/frame_mock', postMessage));
 app.use(route.get('/relay', html('relay')));
 app.use(route.get('/mock-404', ctx => ctx.status = 404));
 app.use(route.get('/mock-200', ok));
+app.use(route.get('/mock-200-err', ctx => ctx.body = {
+  error: {
+    code: 'error',
+    message: 'An error'
+  }
+}));
 
 // Standard API fixtures
 app.use(route.get('/apple_pay/info', json));
