@@ -5,7 +5,7 @@ import merge from 'lodash.merge';
 import omit from 'lodash.omit';
 import Emitter from 'component-emitter';
 import Promise from 'promise';
-import { initRecurly, apiTest, nextTick } from './support/helpers';
+import { initRecurly, nextTick } from './support/helpers';
 import { ApplePayBraintree } from '../../lib/recurly/apple-pay/apple-pay.braintree';
 import filterSupportedNetworks from '../../lib/recurly/apple-pay/util/filter-supported-networks';
 
@@ -109,15 +109,15 @@ describe('ApplePay', function () {
     });
   });
 
-  apiTest(applePayTest.bind(null, INTEGRATION.DIRECT));
-  apiTest(applePayTest.bind(null, INTEGRATION.BRAINTREE));
+  applePayTest(INTEGRATION.DIRECT);
+  applePayTest(INTEGRATION.BRAINTREE);
 });
 
-function applePayTest (integrationType, requestMethod) {
+function applePayTest (integrationType) {
   const isDirectIntegration = integrationType === INTEGRATION.DIRECT;
   const isBraintreeIntegration = integrationType === INTEGRATION.BRAINTREE;
 
-  describe(`Recurly.ApplePay ${integrationType} (${requestMethod})`, function () {
+  describe(`Recurly.ApplePay ${integrationType}`, function () {
     let validOpts = {
       country: 'US',
       currency: 'USD',
@@ -128,7 +128,7 @@ function applePayTest (integrationType, requestMethod) {
     };
 
     beforeEach(function () {
-      this.recurly = initRecurly({ cors: requestMethod === 'cors' });
+      this.recurly = initRecurly();
       if (isBraintreeIntegration) {
         window.braintree = getBraintreeStub();
       }

@@ -1,14 +1,11 @@
 
 import assert from 'assert';
-
 import recurlyError from '../../../lib/recurly/errors';
-import { initRecurly, apiTest, nextTick, assertDone, stubPromise, stubGooglePaymentAPI } from '../support/helpers';
+import { initRecurly, nextTick, assertDone, stubPromise, stubGooglePaymentAPI } from '../support/helpers';
 import { googlePay } from '../../../lib/recurly/google-pay/google-pay';
 import dom from '../../../lib/util/dom';
 
-apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
-  const cors = requestMethod === 'cors';
-
+describe(`Google Pay`, function () {
   before(() => {
     stubPromise();
   });
@@ -16,7 +13,7 @@ apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
   beforeEach(function () {
     this.sandbox = sinon.createSandbox();
 
-    this.recurly = initRecurly({ cors });
+    this.recurly = initRecurly();
     this.googlePayOpts = {
       environment: undefined,
       googleMerchantId: 'GOOGLE_MERCHANT_ID_123',
@@ -786,4 +783,4 @@ apiTest(requestMethod => describe(`Google Pay (${requestMethod})`, function () {
       });
     });
   });
-}));
+});

@@ -26,11 +26,6 @@ export function initRecurly (recurly, opts) {
   return recurly;
 }
 
-export function apiTest (suite) {
-  suite('cors');
-  suite('jsonp');
-}
-
 export function testBed () {
   let el = window.document.getElementById('dom-testbed');
   if (!el) {
