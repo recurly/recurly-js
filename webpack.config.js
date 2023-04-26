@@ -82,9 +82,12 @@ module.exports = {
     ]
   },
   devServer: {
-    disableHostCheck: true,
+    allowedHosts: 'all',
     headers: {
       'Cross-Origin-Resource-Policy': 'cross-origin'
-    }
+    },
+    client: {
+      overlay: false,
+    },
   },
 };

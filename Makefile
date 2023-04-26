@@ -3,7 +3,7 @@ coveralls = $(bin)/coveralls
 wdio = $(bin)/wdio
 eslint = $(bin)/eslint ./lib
 karma = $(bin)/karma start
-server = $(bin)/webpack-dev-server --inline --hot --port 8020
+server = $(bin)/webpack serve --hot --port 8020
 webpack = $(bin)/webpack
 tsc = $(bin)/tsc
 dtslint = $(bin)/dtslint
@@ -11,9 +11,9 @@ src = index.js $(shell find . -type f -name '*.js' ! -path './build/*' -o -name 
 tests = $(shell find test -type f -name '*.js')
 
 ifdef RECURLY_JS_CERT
-	server_opts = --https --cert $(RECURLY_JS_CERT) --key $(RECURLY_JS_KEY)
+	server_opts = --server-type https --server-options-cert $(RECURLY_JS_CERT) --server-options-key $(RECURLY_JS_KEY)
 else
-	server_opts = --https
+	server_opts = --serrer-type http
 endif
 
 server: build
