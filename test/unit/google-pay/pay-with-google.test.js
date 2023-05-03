@@ -1,13 +1,9 @@
 import assert from 'assert';
 import dom from '../../../lib/util/dom';
-import { assertDone, stubPromise, stubGooglePaymentAPI } from '../support/helpers';
+import { assertDone, stubGooglePaymentAPI } from '../support/helpers';
 import { payWithGoogle } from '../../../lib/recurly/google-pay/pay-with-google';
 
 describe('Pay with Google', function () {
-  before(() => {
-    stubPromise();
-  });
-
   beforeEach(function () {
     const isReadyToPayRequest = {
       allowedPaymentMethods: [

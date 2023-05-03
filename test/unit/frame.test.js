@@ -15,10 +15,7 @@ describe('Recurly.Frame', function () {
   beforeEach(function (done) {
     this.recurly = initRecurly();
     this.sandbox = sinon.createSandbox();
-    this.isIE = !!document.documentMode;
 
-    // HACK: when we're in an IE environment, we need to stub the relay creation;
-    //       however, we want to proceed as normal in all other circumstances
     this.sandbox.stub(window.document.body, 'appendChild').callsFake(function (maybeRelay) {
       if (~(maybeRelay.name || '').indexOf('recurly-relay-')) maybeRelay.onload();
       else this.appendChild.wrappedMethod.call(this, maybeRelay);
@@ -98,16 +95,16 @@ describe('Recurly.Frame', function () {
 
   describe('when the browser is detected to be IE', function () {
     beforeEach(function () {
-      const { sandbox, isIE } = this;
+      const { sandbox } = this;
 
-      if (!isIE) document.documentMode = 'test';
+      document.documentMode = 'test';
 
       // rerun this to account for IE mocking
       this.frame = this.recurly.Frame({ path });
     });
 
     afterEach(function () {
-      if (!this.isIE) delete document.documentMode;
+      delete document.documentMode;
     });
 
     it('creates a relay', function () {
@@ -169,8 +166,7 @@ describe('Recurly.Frame', function () {
 
     describe('when given a container', function () {
       beforeEach(function (done) {
-        const { recurly, isIE } = this;
-        if (isIE) window.document.body.appendChild.restore();
+        const { recurly } = this;
         this.frame = recurly.Frame({ path, payload, type: Frame.TYPES.IFRAME, container: testBed() });
         this.frame.on('done', () => done());
       });

@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import assert from 'assert';
-import { initRecurly, stubPromise, assertDone, nextTick } from '../support/helpers';
+import { initRecurly, assertDone, nextTick } from '../support/helpers';
 import dom from '../../../lib/util/dom';
 
 describe('Recurly.AlternativePaymentMethods', () => {
@@ -8,8 +8,6 @@ describe('Recurly.AlternativePaymentMethods', () => {
   let recurly;
   let paymentMethods;
   let params;
-
-  before(stubPromise);
 
   beforeEach(function () {
     this.timeout = 2000;
