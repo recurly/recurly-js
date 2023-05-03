@@ -58,11 +58,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Unit test
+        uses: nick-fields/retry@v2
         env:
           BROWSER: ${{ matrix.browser }}
           BROWSER_STACK_USERNAME: ${{ secrets.BROWSER_STACK_USERNAME }}
           BROWSER_STACK_ACCESS_KEY: ${{ secrets.BROWSER_STACK_ACCESS_KEY }}
-        run: make test-unit-ci
+        with:
+          timeout_minutes: 12
+          max_attempts: 2
+          command: make test-unit-ci
   e2e_test:
     runs-on: ubuntu-latest
     name: End-to-end test
@@ -84,11 +88,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: End-to-end test
+        uses: nick-fields/retry@v2
         env:
           BROWSER: ${{ matrix.browser }}
           BROWSER_STACK_USERNAME: ${{ secrets.BROWSER_STACK_USERNAME }}
           BROWSER_STACK_ACCESS_KEY: ${{ secrets.BROWSER_STACK_ACCESS_KEY }}
-        run: make test-e2e-ci
+        with:
+          timeout_minutes: 16
+          max_attempts: 2
+          command: make test-e2e-ci
   integration_test:
     runs-on: ubuntu-latest
     name: Integration test with react-recurly
