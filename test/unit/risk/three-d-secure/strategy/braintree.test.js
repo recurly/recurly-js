@@ -16,9 +16,7 @@ describe('BraintreeStrategy', function () {
     const threeDSecure = this.threeDSecure = risk.ThreeDSecure({ actionTokenId: 'action-token-test' });
     this.target = testBed().querySelector('#three-d-secure-container');
     this.sandbox = sinon.createSandbox();
-    this.isIE = !!document.documentMode;
 
-    if (this.isIE) window.Promise = Promise;
     this.exampleResult = {
       nonce: 'braintree-test-3ds-nonce'
     };
@@ -40,10 +38,9 @@ describe('BraintreeStrategy', function () {
   });
 
   afterEach(function () {
-    const { isIE, sandbox } = this;
+    const { sandbox } = this;
     sandbox.restore();
     delete window.braintree;
-    if (isIE) delete window.Promise;
   });
 
   describe('when the braintree.js library encounters a load error', function () {

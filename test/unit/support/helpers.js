@@ -138,14 +138,6 @@ export function assertDone (done, assertCb) {
   }
 }
 
-export function stubPromise () {
-  const isIE = !!document.documentMode;
-
-  if (isIE) {
-    window.Promise = Promise;
-  }
-}
-
 export function stubGooglePaymentAPI (options) {
   options.loadLibs ||= Promise.resolve(true);
   options.isReadyToPay ||= Promise.resolve({ result: true });

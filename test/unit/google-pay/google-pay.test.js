@@ -1,15 +1,11 @@
 
 import assert from 'assert';
 import recurlyError from '../../../lib/recurly/errors';
-import { initRecurly, nextTick, assertDone, stubPromise, stubGooglePaymentAPI } from '../support/helpers';
+import { initRecurly, nextTick, assertDone, stubGooglePaymentAPI } from '../support/helpers';
 import { googlePay } from '../../../lib/recurly/google-pay/google-pay';
 import dom from '../../../lib/util/dom';
 
 describe(`Google Pay`, function () {
-  before(() => {
-    stubPromise();
-  });
-
   beforeEach(function () {
     this.sandbox = sinon.createSandbox();
 

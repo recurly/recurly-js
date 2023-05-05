@@ -1,17 +1,17 @@
 module.exports = {
   projectName: 'Recurly.js',
   capabilities: {
-    BrowserStackChrome: {
+    'Chrome-Remote': {
       browserName: 'Chrome',
       os: 'OS X',
       osVersion: 'Catalina'
     },
-    BrowserStackFirefox: {
+    'Firefox-Remote': {
       browserName: 'Firefox',
       os: 'OS X',
       osVersion: 'Catalina'
     },
-    BrowserStackSafari: {
+    'Safari-Remote': {
       browserName: 'Safari',
       os: 'OS X',
       osVersion: 'Catalina',
@@ -19,7 +19,7 @@ module.exports = {
         enablePopups: true
       }
     },
-    BrowserStackEdge: {
+    'Edge-Remote': {
       browserName: 'Edge',
       browserVersion: 'latest',
       os: 'Windows',
@@ -28,36 +28,36 @@ module.exports = {
         enablePopups: true
       }
     },
-    BrowserStackIos16: {
+    'iOS-16-Remote': {
       browserName: 'safari',
-      deviceName: 'iPhone 14',
+      deviceName: 'iPhone 14 Pro',
       os: 'ios',
       osVersion: '16',
       realMobile: true
     },
-    BrowserStackIos15: {
+    'iOS-15-Remote': {
       browserName: 'safari',
-      deviceName: 'iPhone 13',
+      deviceName: 'iPhone 13 Pro',
       os: 'ios',
       osVersion: '15',
       realMobile: true
     },
 
-    BrowserStackAndroid13: {
+    'Android-13-Remote': {
       browserName: 'chrome',
       deviceName: 'Google Pixel 7',
       os: 'android',
       osVersion: '13.0',
       realMobile: true
     },
-    BrowserStackAndroid12: {
+    'Android-12-Remote': {
       browserName: 'chrome',
       deviceName: 'Google Pixel 6',
       os: 'android',
       osVersion: '12.0',
       realMobile: true
     },
-    BrowserStackAndroid11: {
+    'Android-11-Remote': {
       browserName: 'chrome',
       deviceName: 'Google Pixel 5',
       os: 'android',

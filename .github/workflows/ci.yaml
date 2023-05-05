@@ -1,0 +1,133 @@
+name: Continuous Integration
+on:
+  push:
+  pull_request:
+    branches:
+      - master
+
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    name: Check
+    steps:
+      - uses: actions/checkout@v3
+      - name: Lint
+        run: make lint
+      - name: Types
+        run: make test-types
+  unit_test:
+    runs-on: ubuntu-latest
+    name: Unit test
+    strategy:
+      fail-fast: false
+      matrix:
+        browser:
+          - Chrome
+          - Firefox
+          - Electron
+    steps:
+      - uses: browser-actions/setup-chrome@v1
+      - uses: browser-actions/setup-firefox@v1
+      - uses: actions/checkout@v3
+      - name: Unit test
+        uses: coactions/setup-xvfb@v1
+        env:
+          BROWSER: ${{ matrix.browser }}
+          DISPLAY: :99
+        with:
+          run: make test-unit-ci
+  unit_test_remote:
+    runs-on: ubuntu-latest
+    name: Unit test
+    strategy:
+      max-parallel: 5
+      fail-fast: false
+      matrix:
+        browser:
+          - Safari-Remote
+          - Edge-Remote
+          - iOS-16-Remote
+          - iOS-15-Remote
+          - Android-13-Remote
+          - Android-12-Remote
+          - Android-11-Remote
+    steps:
+      - uses: actions/checkout@v3
+      - name: Unit test
+        uses: nick-fields/retry@v2
+        env:
+          BROWSER: ${{ matrix.browser }}
+          BROWSER_STACK_USERNAME: ${{ secrets.BROWSER_STACK_USERNAME }}
+          BROWSER_STACK_ACCESS_KEY: ${{ secrets.BROWSER_STACK_ACCESS_KEY }}
+        with:
+          timeout_minutes: 12
+          max_attempts: 2
+          command: make test-unit-ci
+  e2e_test:
+    runs-on: ubuntu-latest
+    name: End-to-end test
+    needs: unit_test_remote
+    strategy:
+      max-parallel: 5
+      fail-fast: false
+      matrix:
+        browser:
+          - Chrome-Remote
+          - Firefox-Remote
+          - Safari-Remote
+          - Edge-Remote
+          - iOS-16-Remote
+          - iOS-15-Remote
+          - Android-13-Remote
+          - Android-12-Remote
+          - Android-11-Remote
+    steps:
+      - uses: actions/checkout@v3
+      - name: End-to-end test
+        uses: nick-fields/retry@v2
+        env:
+          BROWSER: ${{ matrix.browser }}
+          BROWSER_STACK_USERNAME: ${{ secrets.BROWSER_STACK_USERNAME }}
+          BROWSER_STACK_ACCESS_KEY: ${{ secrets.BROWSER_STACK_ACCESS_KEY }}
+        with:
+          timeout_minutes: 16
+          max_attempts: 2
+          command: make test-e2e-ci
+  integration_test:
+    runs-on: ubuntu-latest
+    name: Integration test with react-recurly
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: recurly/react-recurly
+          path: vendor
+      - name: react-recurly
+        env:
+          RECURLY_JS_SHA: ${{ github.sha }}
+        run: |-
+          cd vendor
+          make test
+  publish:
+    runs-on: ubuntu-latest
+    name: Publish artifacts
+    needs:
+      - check
+      - unit_test
+      - unit_test_remote
+      - e2e_test
+      - integration_test
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: make build
+      - uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCR_QA_PUBLIC_DEVOPS_SA }}
+      - uses: google-github-actions/upload-cloud-storage@v1
+        with:
+          path: build
+          destination: ${{ secrets.ARTIFACT_BUCKET_NAME }}/${{ github.sha }}/

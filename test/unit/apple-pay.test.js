@@ -77,22 +77,17 @@ const getBraintreeStub = () => ({
   },
 });
 
-describe('ApplePay', function () {
+const maybeDescribe = 'ApplePaySession' in window ? describe : describe.skip;
+
+maybeDescribe('ApplePay', function () {
   beforeEach(function () {
     this.sandbox = sinon.createSandbox();
-    this.isIE = !!document.documentMode;
-    if (this.isIE) {
-      window.Promise = Promise;
-    }
     window.ApplePaySession = ApplePaySessionStub;
     window.ApplePayError = ApplePayError;
   });
 
   afterEach(function () {
     this.sandbox.restore();
-    if (this.isIE) {
-      delete window.Promise;
-    }
     delete window.ApplePaySession;
     delete window.ApplePayError;
   });

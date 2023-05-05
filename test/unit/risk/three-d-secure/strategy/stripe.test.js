@@ -17,9 +17,7 @@ describe('StripeStrategy', function () {
     const threeDSecure = this.threeDSecure = risk.ThreeDSecure({ actionTokenId: 'action-token-test' });
     this.target = testBed().querySelector('#three-d-secure-container');
     this.sandbox = sinon.createSandbox();
-    this.isIE = !!document.documentMode;
 
-    if (this.isIE) window.Promise = Promise;
     this.paymentIntentResult = {
       paymentIntent: { id: 'pi-test-id', test: 'result', consistingOf: 'arbitrary-values' }
     };
@@ -34,10 +32,9 @@ describe('StripeStrategy', function () {
   });
 
   afterEach(function () {
-    const { isIE, sandbox } = this;
+    const { sandbox } = this;
     sandbox.restore();
     delete window.Stripe;
-    if (isIE) delete window.Promise;
   });
 
   it('instantiates Stripe.js with the Stripe publishable key', function (done) {
