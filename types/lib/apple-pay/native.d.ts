@@ -328,6 +328,16 @@ export type ApplePayShippingMethodSelectedEvent = {
 };
 
 /**
+ * An event object that contains the coupon code.
+ */
+export type ApplePayCouponCodeChangedEvent = {
+  /**
+   * The coupon code selected by the user.
+   */
+  couponCode: string;
+};
+
+/**
  * The result of authorizing a payment request that contains payment information.
  */
 export type ApplePayPayment = {

@@ -43,6 +43,9 @@ class ApplePaySessionStub extends Emitter {
   completePaymentMethodSelection (update) {
     this.emit('completePaymentMethodSelection', update);
   }
+  completeCouponCodeChange (update) {
+    this.emit('completeCouponCodeChange', update);
+  }
   completeShippingContactSelection (update) {
     this.emit('completeShippingContactSelection', update);
   }
@@ -420,6 +423,7 @@ function applePayTest (integrationType) {
               paymentDescription: applePay.session.total.label,
               regularBilling: applePay.session.total,
               managementURL: infoFixture.managementURL,
+              tokenNotificationURL: infoFixture.tokenNotificationURL,
             });
           }));
         });
@@ -432,6 +436,7 @@ function applePayTest (integrationType) {
               paymentDescription: applePay.session.total.label,
               regularBilling: applePay.session.total,
               managementURL: infoFixture.managementURL,
+              tokenNotificationURL: infoFixture.tokenNotificationURL,
             });
           }));
         });
@@ -455,6 +460,7 @@ function applePayTest (integrationType) {
             applePay.ready(ensureDone(done, () => {
               assert.deepEqual(applePay.session.recurringPaymentRequest, {
                 ...recurringPaymentRequest,
+                tokenNotificationURL: infoFixture.tokenNotificationURL,
                 managementURL: 'https://example.com',
               });
             }));
@@ -466,6 +472,7 @@ function applePayTest (integrationType) {
             applePay.ready(ensureDone(done,() => {
               assert.deepEqual(applePay.session.recurringPaymentRequest, {
                 ...recurringPaymentRequest,
+                tokenNotificationURL: infoFixture.tokenNotificationURL,
                 managementURL: infoFixture.managementURL,
               });
             }));
@@ -1110,6 +1117,54 @@ function applePayTest (integrationType) {
               assert.deepEqual(update.newRecurringPaymentRequest, this.applePay.recurringPaymentRequest);
             }));
             this.applePay.session.onshippingmethodselected({});
+          });
+        });
+      });
+
+      describe('onCouponCodeChanged', function () {
+        it('calls ApplePaySession.completeCouponCodeChange with a total, and line items', function (done) {
+          this.applePay.session.on('completeCouponCodeChange', ensureDone(done, (update) => {
+            assert.deepEqual(update.newTotal, this.applePay.finalTotalLineItem);
+            assert.deepEqual(update.newLineItems, this.applePay.lineItems);
+            assert.equal(update.newRecurringPaymentRequest, undefined);
+          }));
+          this.applePay.session.oncouponcodechanged();
+        });
+
+        it('emits couponcodechanged', function (done) {
+          const example = { test: 'event' };
+          this.applePay.on('couponCodeChanged', ensureDone(done, (event) => {
+            assert.deepEqual(event, example);
+          }));
+          this.applePay.session.oncouponcodechanged(example);
+        });
+
+        it('accepts a callback to modify the update response', function (done) {
+          const newLineItems = [{ label: 'Shipping', amount: '1.00' }];
+          this.applePay.config.callbacks = { onCouponCodeChanged: () => ({ newLineItems }) };
+
+          this.applePay.session.on('completeCouponCodeChange', ensureDone(done, (update) => {
+            assert.deepEqual(update.newTotal, this.applePay.finalTotalLineItem);
+            assert.deepEqual(update.newLineItems, newLineItems);
+            assert.deepEqual(undefined, this.applePay._paymentRequest.lineItems);
+          }));
+          this.applePay.session.oncouponcodechanged();
+        });
+
+        describe('with options.recurringPaymentRequest set', function () {
+          beforeEach(function (done) {
+            this.applePay = this.recurly.ApplePay(merge({}, validOpts, { recurring: true }));
+            this.applePay.ready(ensureDone(done, () => {
+              this.applePay.begin();
+            }));
+          });
+
+          it('includes the newRecurringPaymentRequest', function (done) {
+            this.applePay.session.on('completeCouponCodeChange', ensureDone(done, (update) => {
+              assert.notEqual(update.newRecurringPaymentRequest, undefined);
+              assert.deepEqual(update.newRecurringPaymentRequest, this.applePay.recurringPaymentRequest);
+            }));
+            this.applePay.session.oncouponcodechanged({});
           });
         });
       });

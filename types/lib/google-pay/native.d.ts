@@ -84,8 +84,8 @@ export type GooglePayTransactionInfo = {
   totalPrice?: string;
 
   /**
-   *  All of the available charges for the current payment request.
-   *  Required and only populated in the payment sheet if you use Authorize Payments or Dynamic Price Updates.
+   * All of the available charges for the current payment request.
+   * Required and only populated in the payment sheet if you use Authorize Payments or Dynamic Price Updates.
    */
   displayItems?: GooglePayDisplayItem[];
 
@@ -177,8 +177,8 @@ export type GooglePayShippingOptionParameters = {
   shippingOptions: GooglePaySelectionOption[];
 
   /**
-   * 	An identifier to the default selected shipping option.
-   * 	If this field isn't provided, the first option is the default option.
+   *  An identifier to the default selected shipping option.
+   *  If this field isn't provided, the first option is the default option.
    */
   defaultSelectedOptionId?: string;
 };
@@ -213,7 +213,7 @@ export type GooglePayPaymentDataRequest = {
   shippingAddressRequired?: boolean;
 
   /**
-   * 	If shippingAddressRequired is set to true, specify shipping address restrictions.
+   * If shippingAddressRequired is set to true, specify shipping address restrictions.
    */
   shippingAddressParameters?: GooglePayShippingAddressParameters;
 
@@ -266,7 +266,7 @@ export type GooglePayIntermediatePaymentData = {
 
   shippingOptionData?: {
     /**
-     * 	Matches with SelectionOption.id
+     * Matches with SelectionOption.id
      */
     id: string;
   };
