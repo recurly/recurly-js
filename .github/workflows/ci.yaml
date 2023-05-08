@@ -130,4 +130,5 @@ jobs:
       - uses: google-github-actions/upload-cloud-storage@v1
         with:
           path: build
-          destination: ${{ secrets.ARTIFACT_BUCKET_NAME }}/${{ github.sha }}/
+          destination: ${{ secrets.ARTIFACT_BUCKET_NAME }}/recurly-js/${{ github.sha }}/
+          parent: false
