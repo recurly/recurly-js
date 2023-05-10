@@ -21,7 +21,7 @@ describe('CompleteStrategy', function () {
       this.sandbox.spy(this.recurly, 'Frame');
       this.paypal.start();
       console.log({ calls: this.recurly.Frame.getCalls() });
-      assert(this.recurly.Frame.calledWith({ path: '/paypal_commerce/start' }));
+      assert(this.recurly.Frame.calledWith({ path: '/paypal_complete/start' }));
     });
   });
 });
