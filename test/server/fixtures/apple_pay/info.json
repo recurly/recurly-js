@@ -4,5 +4,6 @@
   "currencies": ["USD", "CAD"],
   "merchantCapabilities": ["supportsCredit", "supports3DS", "supportsDebit"],
   "supportedNetworks": ["visa", "amex"],
-  "managementURL": "https://example.com/account"
+  "managementURL": "https://example.com/account",
+  "tokenNotificationURL": "https://recurly.com"
 }
