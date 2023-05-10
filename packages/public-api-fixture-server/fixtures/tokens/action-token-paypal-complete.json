@@ -1,0 +1,19 @@
+{
+  "type": "three_d_secure_action",
+  "id": "action-token-test",
+  "three_d_secure": {
+    "params": {
+      "redirect": {
+        "url": "https://www.sandbox.paypal.com/webapps/helios?action=verify&flow=3ds&cart_id=7G156062VE7988426"
+      }
+    }
+  },
+  "gateway": {
+    "type": "paypal_commerce",
+    "credentials": {}
+  },
+  "transaction": {
+    "amount": 10.0,
+    "amount_in_cents": 1000
+  }
+}
