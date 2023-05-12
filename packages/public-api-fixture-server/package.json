@@ -1,0 +1,26 @@
+{
+  "name": "@recurly/public-api-test-server",
+  "version": "1.0.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:recurly/recurly-js.git",
+    "directory": "packages/public-api-test-server"
+  },
+  "private": true,
+  "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "@koa/ejs": "^5.1.0",
+    "koa": "^2.14.2",
+    "koa-better-http-proxy": "^0.2.5",
+    "koa-bodyparser": "^4.4.0",
+    "koa-cors": "0.0.16",
+    "koa-json": "^2.0.2",
+    "koa-jsonp": "^2.0.2",
+    "koa-logger": "^3.2.1",
+    "koa-override": "^3.0.0",
+    "koa-qs": "^3.0.0",
+    "koa-route": "^3.2.0",
+    "koa-send": "^5.0.1"
+  }
+}

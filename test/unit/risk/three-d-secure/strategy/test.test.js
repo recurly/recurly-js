@@ -2,7 +2,7 @@ import assert from 'assert';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import TestStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/test';
-import actionToken from '../../../../server/fixtures/tokens/action-token-test.json';
+import actionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-test.json';
 import { Frame } from '../../../../../lib/recurly/frame';
 import { ThreeDSecure } from '../../../../../lib/recurly/risk/three-d-secure';
 

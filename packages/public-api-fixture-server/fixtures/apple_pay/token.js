@@ -5,7 +5,7 @@ const ok = {
 const error = {
   error: {
     code: 'invalid-payment-data',
-    message: 'invaid payment data'
+    message: 'invalid payment data'
   }
 };
 

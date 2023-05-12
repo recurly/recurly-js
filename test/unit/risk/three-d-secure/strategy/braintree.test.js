@@ -2,7 +2,7 @@ import assert from 'assert';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import BraintreeStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/braintree';
-import actionToken from '../../../../server/fixtures/tokens/action-token-braintree.json';
+import actionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-braintree.json';
 import Promise from 'promise';
 
 describe('BraintreeStrategy', function () {

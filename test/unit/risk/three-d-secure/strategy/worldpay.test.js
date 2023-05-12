@@ -2,7 +2,7 @@ import assert from 'assert';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import WorldpayStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/worldpay';
-import actionToken from '../../../../server/fixtures/tokens/action-token-worldpay.json';
+import actionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-worldpay.json';
 import Promise from 'promise';
 import { Frame } from '../../../../../lib/recurly/frame';
 

@@ -3,9 +3,9 @@ import Promise from 'promise';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import AdyenStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/adyen';
-import actionToken from '../../../../server/fixtures/tokens/action-token-adyen.json';
-import fingerprintActionToken from '../../../../server/fixtures/tokens/action-token-adyen-fingerprint.json';
-import fallbackActionToken from '../../../../server/fixtures/tokens/action-token-adyen-3ds1.json';
+import actionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-adyen.json';
+import fingerprintActionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-adyen-fingerprint.json';
+import fallbackActionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-adyen-3ds1.json';
 import { Frame } from '../../../../../lib/recurly/frame'
 
 describe('AdyenStrategy', function () {

@@ -2,8 +2,8 @@ import assert from 'assert';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import StripeStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/stripe';
-import actionTokenPaymentIntent from '../../../../server/fixtures/tokens/action-token-stripe-pi.json';
-import actionTokenSetupIntent from '../../../../server/fixtures/tokens/action-token-stripe-seti.json';
+import actionTokenPaymentIntent from '@recurly/public-api-test-server/fixtures/tokens/action-token-stripe-pi.json';
+import actionTokenSetupIntent from '@recurly/public-api-test-server/fixtures/tokens/action-token-stripe-seti.json';
 import Promise from 'promise';
 
 describe('StripeStrategy', function () {

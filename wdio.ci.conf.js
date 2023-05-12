@@ -63,7 +63,7 @@ if (BROWSER === 'Electron') {
       if (isMobile()) {
         process.env.API_PROXY = 'http://bs-local.com:9877/api-proxy';
       }
-      require('./test/server');
+      require('@recurly/public-api-test-server');
     }
   });
 
