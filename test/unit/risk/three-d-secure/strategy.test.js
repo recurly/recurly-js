@@ -2,7 +2,7 @@ import assert from 'assert';
 import { applyFixtures } from '../../support/fixtures';
 import { testBed } from '../../support/helpers';
 import ThreeDSecureStrategy from '../../../../lib/recurly/risk/three-d-secure/strategy';
-import actionToken from '../../../server/fixtures/tokens/action-token-test.json';
+import actionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-test.json';
 import { ThreeDSecure } from '../../../../lib/recurly/risk/three-d-secure';
 
 describe('ThreeDSecureStrategy', function () {

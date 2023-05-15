@@ -4,5 +4,4 @@ build
 node_modules
 tmp
 npm-debug.log
-test/server/pid.txt
 local.log

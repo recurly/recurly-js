@@ -51,7 +51,7 @@ function runner (config) {
   config.set(cfg);
 }
 
-require('./test/server');
+require('@recurly/public-api-test-server');
 
 module.exports = runner;
 

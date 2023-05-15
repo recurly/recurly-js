@@ -60,7 +60,7 @@ function runner (config) {
   config.set(Object.assign({}, staticConfig, { logLevel: config.LOG_INFO }));
 }
 
-require('./test/server');
+require('@recurly/public-api-test-server');
 
 runner.staticConfig = staticConfig;
 

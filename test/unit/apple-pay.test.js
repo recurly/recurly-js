@@ -9,9 +9,7 @@ import { initRecurly, nextTick } from './support/helpers';
 import { ApplePayBraintree } from '../../lib/recurly/apple-pay/apple-pay.braintree';
 import filterSupportedNetworks from '../../lib/recurly/apple-pay/util/filter-supported-networks';
 
-import infoFixture from '../server/fixtures/apple_pay/info';
-import startFixture from '../server/fixtures/apple_pay/start';
-import tokenFixture from '../server/fixtures/apple_pay/token';
+const infoFixture = require('@recurly/public-api-test-server/fixtures/apple_pay/info');
 
 const INTEGRATION = {
   DIRECT: 'Direct Integration',
@@ -824,10 +822,16 @@ function applePayTest (integrationType) {
       describe('onValidateMerchant', function () {
         if (isDirectIntegration) {
           it('calls the merchant validation endpoint and passes the result to the ApplePaySession', function (done) {
+            const expectedMerchantSessionIdentifier = 'C8135543D34E42CCB22BCABD64E6A2E7_916523AAED1343F5BC5815E12BEE9250AFFDC1A17C46B0DE5A943F0F94927C24';
+
             this.applePay.session.on('completeMerchantValidation', ensureDone(done, () => {
               assert.equal(typeof this.applePay.session.merchantSession, 'object');
-              assert.equal(this.applePay.session.merchantSession.merchantSessionIdentifier, startFixture.ok.merchantSessionIdentifier);
+              assert.equal(
+                this.applePay.session.merchantSession.merchantSessionIdentifier,
+                expectedMerchantSessionIdentifier
+              );
             }));
+
             this.applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
           });
         }
@@ -1214,9 +1218,13 @@ function applePayTest (integrationType) {
         });
 
         it('emits a token event', function (done) {
+          const expectedTokenId = 'atnbRPPuXvNAa_mqxD-Ptg';
+
           this.applePay.session.onpaymentauthorized(clone(validAuthorizeEvent));
           this.applePay.on('token', ensureDone(done, (token, event) => {
-            assert.deepEqual(token, tokenFixture.ok);
+            assert.deepEqual(token, {
+              id: expectedTokenId
+            });
 
             if (isBraintreeIntegration) {
               assert.deepEqual(event, {
@@ -1348,10 +1356,13 @@ function applePayTest (integrationType) {
           });
 
           it('emits an error event', function (done) {
+            const expectedErrorCode = 'invalid-payment-data';
+            const expectedErrorMessage = 'invalid payment data';
+
             this.applePay.session.onpaymentauthorized(clone(invalidAuthorizeEvent));
             this.applePay.on('error', ensureDone(done, err => {
-              assert.equal(err.code, tokenFixture.error.error.code);
-              assert.equal(err.message, tokenFixture.error.error.message);
+              assert.equal(err.code, expectedErrorCode);
+              assert.equal(err.message, expectedErrorMessage);
             }));
           });
         });

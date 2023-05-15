@@ -2,7 +2,7 @@ import assert from 'assert';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import OrbitalStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/orbital';
-import actionToken from '../../../../server/fixtures/tokens/action-token-orbital.json';
+import actionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-orbital.json';
 
 describe('OrbitalStrategy', function () {
   this.ctx.fixture = 'threeDSecure';

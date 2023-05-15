@@ -4,7 +4,7 @@ import {
   getTieredPricingUnitAmount
 } from '../../../../lib/recurly/pricing/subscription/tiered-pricing-calculator';
 import { initRecurly } from '../../support/helpers';
-import TIERED_PLAN from '../../../server/fixtures/plans/tiered-plan.json';
+import TIERED_PLAN from '@recurly/public-api-test-server/fixtures/plans/tiered-plan.json';
 
 describe('Recurly.Pricing.Subscription.TieredPricingCalculator', function () {
   beforeEach(function () {
