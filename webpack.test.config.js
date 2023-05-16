@@ -40,7 +40,7 @@ module.exports = {
 
 // Only instrument in CI if we're set to report coverage
 function shouldInstrument () {
-  if (process.env.TRAVIS_JOB_ID) {
+  if (process.env.CI) {
     return !!process.env.REPORT_COVERAGE;
   }
   return true;

@@ -8,7 +8,7 @@ const {
 const {
   BROWSER = 'chrome',
   REPORT_COVERAGE = false,
-  TRAVIS_BUILD_NUMBER
+  GITHUB_RUN_ID
 } = process.env;
 
 const BROWSER_STACK_CAPABILITY = browserStackCapabilities[BROWSER];
@@ -31,7 +31,7 @@ function runner (config) {
 
     cfg.browserStack = {
       project,
-      build: `${TRAVIS_BUILD_NUMBER || `local unit [${branchName()}]`}`,
+      build: `${GITHUB_RUN_ID || `local unit [${branchName()}]`}`,
       autoAcceptAlerts: true,
       forceLocal: true,
       'browserstack.local': true,
