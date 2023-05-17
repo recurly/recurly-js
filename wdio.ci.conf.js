@@ -10,7 +10,7 @@ const {
   BROWSER = 'BrowserStackChrome',
   BROWSER_STACK_USERNAME: user,
   BROWSER_STACK_ACCESS_KEY: key,
-  TRAVIS_BUILD_NUMBER
+  GITHUB_RUN_ID
 } = process.env;
 
 const BROWSER_STACK_CAPABILITY = browserStackCapabilities[BROWSER];
@@ -44,7 +44,7 @@ if (BROWSER === 'Electron') {
           BROWSER_STACK_CAPABILITY,
           {
             projectName,
-            buildName: `${TRAVIS_BUILD_NUMBER || `Local e2e [${branchName()}]`}`,
+            buildName: `${GITHUB_RUN_ID || `Local e2e [${branchName()}]`}`,
             seleniumVersion: '3.141.59',
             appiumVersion: '1.17.0',
             local: true,
