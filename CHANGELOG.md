@@ -1,5 +1,19 @@
 # Changelog
 
+## [v4.23.2](https://github.com/recurly/recurly-js/tree/v4.23.2) (2023-05-17)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.23.1...v4.23.2)
+
+
+**Merged Pull Requests**
+
+- Add ApplePay coupon code changed support [#825](https://github.com/recurly/recurly-js/pull/825) ([cbarton](https://github.com/cbarton))
+- Change Artifact Upload Path [#824](https://github.com/recurly/recurly-js/pull/824) ([douglaslise](https://github.com/douglaslise))
+- fix(dev server): Updates for webpack version bump [#821](https://github.com/recurly/recurly-js/pull/821) ([cbarton](https://github.com/cbarton))
+- add iframe titles on update [#807](https://github.com/recurly/recurly-js/pull/807) ([smagdicatrecurly](https://github.com/smagdicatrecurly))
+
+
+
 ## [v4.23.1](https://github.com/recurly/recurly-js/tree/v4.23.1) (2023-04-21)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.23.0...v4.23.1)
