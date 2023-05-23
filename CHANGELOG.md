@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.24.0](https://github.com/recurly/recurly-js/tree/v4.24.0) (2023-05-23)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.23.2...v4.24.0)
+
+
+**Merged Pull Requests**
+
+- PayPal Complete 3DS [#826](https://github.com/recurly/recurly-js/pull/826) ([douglaslise](https://github.com/douglaslise))
+- PayPal Complete using PayPal Method [#823](https://github.com/recurly/recurly-js/pull/823) ([douglaslise](https://github.com/douglaslise))
+
+
+
 ## [v4.23.2](https://github.com/recurly/recurly-js/tree/v4.23.2) (2023-05-17)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.23.1...v4.23.2)
