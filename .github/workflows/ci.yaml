@@ -111,6 +111,28 @@ jobs:
         run: |-
           cd vendor
           make test
+  verify:
+    runs-on: ubuntu-latest
+    name: Verify required checks
+    if: ${{ always() }}
+    needs:
+      - check
+      - unit_test
+      - unit_test_remote
+      - e2e_test
+      - integration_test
+    steps:
+      - name: Check status for pull requests
+        if: |-
+          ${{
+            github.event_name == 'pull_request'
+            && needs.check.result != 'success'
+            && needs.unit_test.result != 'success'
+            && needs.unit_test_remote.result != 'success'
+            && needs.e2e_test.result != 'success'
+            && needs.integration_test.result != 'success'
+          }}
+        run: exit 1
   publish:
     runs-on: ubuntu-latest
     name: Publish artifacts
