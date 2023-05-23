@@ -1,6 +1,4 @@
 import assert from 'assert';
-import after from 'lodash.after';
-import { PayPal } from '../../../lib/recurly/paypal';
 import { DirectStrategy } from '../../../lib/recurly/paypal/strategy/direct';
 import { BraintreeStrategy } from '../../../lib/recurly/paypal/strategy/braintree';
 import {
@@ -8,8 +6,9 @@ import {
   stubBraintree,
   stubWindowOpen
 } from '../support/helpers';
+import { CompleteStrategy } from '../../../lib/recurly/paypal/strategy/complete';
 
-describe(`Recurly.PayPal`, function () {
+describe('Recurly.PayPal', function () {
   stubWindowOpen();
 
   beforeEach(function () {
@@ -54,7 +53,7 @@ describe(`Recurly.PayPal`, function () {
         this.paypal.ready(() => {
           assert(this.paypal.strategy instanceof DirectStrategy);
           done();
-        })
+        });
       });
 
       it('falls back to direct PayPal flow', function (done) {
@@ -67,12 +66,24 @@ describe(`Recurly.PayPal`, function () {
     });
   });
 
+  describe('when configured using PayPal Complete', function () {
+    const validOpts = { payPalComplete: true };
+
+    beforeEach(function () {
+      this.paypal = this.recurly.PayPal(validOpts);
+    });
+
+    it('uses PayPal Complete strategy', function () {
+      assert(this.paypal.strategy instanceof CompleteStrategy);
+    });
+  });
+
   describe('destroy', function () {
     it('deletes the strategy and removes listeners', function () {
       this.sandbox.spy(this.paypal, 'off');
       this.paypal.destroy();
       assert.equal(this.paypal.strategy, undefined);
       assert(this.paypal.off.calledOnce);
-    })
-  })
+    });
+  });
 });
