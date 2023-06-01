@@ -179,8 +179,9 @@ describe('Recurly.fraud', function () {
 
         const fraudnetScript = iframeDoc.querySelector('script#fraudnet-script');
         assert.ok(fraudnetScript);
-        assert.strictEqual(fraudnetScript.getAttribute('src'), 'https://fraudnet.test/script.js');
+        assert.strictEqual(fraudnetScript.getAttribute('src'), '/api/mock-200');
 
+        recurly.destroy();
         done();
       });
     });
@@ -242,6 +243,7 @@ describe('Recurly.fraud', function () {
           processor: 'fraudnet',
           session_id: '69e62735a65c012f5ef31b4efcad2e90',
         }]);
+        recurly.destroy();
         done();
       });
     });

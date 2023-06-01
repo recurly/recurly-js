@@ -14,7 +14,7 @@ const FRAUDNET = {
   params: {
     session_id: '69e62735a65c012f5ef31b4efcad2e90',
     page_identifier: 'KJH4G352J34HG5_checkout',
-    script_url: 'https://fraudnet.test/script.js',
+    script_url: '/api/mock-200',
     sandbox: true,
   }
 };
