@@ -13,7 +13,7 @@ tests = $(shell find test -type f -name '*.js')
 ifdef RECURLY_JS_CERT
 	server_opts = --server-type https --server-options-cert $(RECURLY_JS_CERT) --server-options-key $(RECURLY_JS_KEY)
 else
-	server_opts = --serrer-type http
+	server_opts = --server-type http
 endif
 
 server: build

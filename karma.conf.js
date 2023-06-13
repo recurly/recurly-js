@@ -1,5 +1,5 @@
 const {
-  BROWSER = 'Chrome',
+  BROWSER = 'ChromeHeadlessNoSandbox',
   ANDROID_HOME,
   ANDROID_AVD_NAME
 } = process.env;
@@ -19,7 +19,7 @@ const staticConfig = {
   port: 9876,
   colors: true,
   autoWatch: true,
-  browsers: [BROWSER || 'ChromeHeadless'],
+  browsers: [BROWSER],
   singleRun: true,
   concurrency: Infinity,
   browserDisconnectTimeout: 800000,
@@ -27,6 +27,10 @@ const staticConfig = {
   browserNoActivityTimeout: 800000,
   captureTimeout: 800000,
   customLaunchers: {
+    ChromeHeadlessNoSandbox: {
+      base: 'ChromeHeadless',
+      flags: ['--no-sandbox']
+    },
     ChromeDebug: {
       base: 'Chrome',
       flags: ['--auto-open-devtools-for-tabs']
