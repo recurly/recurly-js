@@ -157,6 +157,36 @@ describe('Recurly.fraud', function () {
     });
   });
 
+  describe('when configured to use the fraudnet data collector', function () {
+    it('creates a data collector using the Fraudnet SDK', function (done) {
+      const recurly = initRecurly({
+        publicKey: 'test-site-with-fraudnet-only',
+      });
+
+      recurly.fraud.on('ready', () => {
+        const iframe = document.querySelector('#fraudnet-iframe');
+        assert.ok(iframe);
+
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+        const paramsScript = iframeDoc.querySelector('script#fraudnet-params');
+        assert.ok(paramsScript);
+        assert.strictEqual(paramsScript.getAttribute('fncls'), 'fnparams-dede7cc5-15fd-4c75-a9f4-36c430ee3a99');
+        const jsonContent = JSON.parse(paramsScript.textContent);
+        assert.strictEqual(jsonContent.f, '69e62735a65c012f5ef31b4efcad2e90');
+        assert.strictEqual(jsonContent.s, 'KJH4G352J34HG5_checkout');
+        assert.strictEqual(jsonContent.sandbox, true);
+
+        const fraudnetScript = iframeDoc.querySelector('script#fraudnet-script');
+        assert.ok(fraudnetScript);
+        assert.strictEqual(fraudnetScript.getAttribute('src'), '/api/mock-200');
+
+        recurly.destroy();
+        done();
+      });
+    });
+  });
+
   describe('#destroy', function () {
     it('removes attached collector nodes', function (done) {
       const form = testBed().querySelector('#test-form');
@@ -200,6 +230,22 @@ describe('Recurly.fraud', function () {
           { label: 'UDF_2', value: 'VALUE_2' },
         ]
       }]);
+    });
+
+    it('gets the fraud params presented for fraudnet', function (done) {
+      const recurly = initRecurly({
+        publicKey: 'test-site-with-fraudnet-only',
+      });
+
+      recurly.fraud.on('ready', () => {
+        const params = recurly.fraud.params();
+        assert.deepEqual(params, [{
+          processor: 'fraudnet',
+          session_id: '69e62735a65c012f5ef31b4efcad2e90',
+        }]);
+        recurly.destroy();
+        done();
+      });
     });
   });
 });
