@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.25.0](https://github.com/recurly/recurly-js/tree/v4.25.0) (2023-06-19)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.24.0...v4.25.0)
+
+
+**Merged Pull Requests**
+
+- Add PayPal Fraudnet Script [#830](https://github.com/recurly/recurly-js/pull/830) ([douglaslise](https://github.com/douglaslise))
+
+
+
 ## [v4.24.0](https://github.com/recurly/recurly-js/tree/v4.24.0) (2023-05-23)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.23.2...v4.24.0)
