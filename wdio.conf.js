@@ -7,7 +7,7 @@ const {
 const {
   API,
   API_PROXY,
-  BROWSER = 'chrome',
+  BROWSER = 'Chrome-Remote',
   BROWSER_VERSION,
   DEBUG = false,
   PUBLIC_KEY

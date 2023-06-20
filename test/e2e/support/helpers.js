@@ -4,7 +4,7 @@ const memoize = require('memoize-one');
 const TOKEN_PATTERN = /^[\w-]{21,23}$/;
 
 const BROWSERS = {
-  EDGE: ['MicrosoftEdge'],
+  EDGE: ['Edge', 'msedge'],
   ELECTRON: ['chrome', 'electron'],
   SAFARI: ['Safari'],
   FIREFOX: ['firefox']
@@ -334,11 +334,9 @@ function environmentIs (...conditions) {
     }
 
     if (browsers.includes(condition)) {
-      const [ name, version ] = condition;
-      if (name === browserName) {
-        if (version) return version === browserVersion;
-        else return true;
-      }
+      return Array.isArray(condition)
+        ? condition.some(c => c === browserName)
+        : condition === browserName;
     }
 
     if (devices.includes(condition)) {

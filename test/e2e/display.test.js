@@ -61,8 +61,6 @@ maybeDescribe('Display', () => {
     beforeEach(init({ fixture: 'hosted-fields-card-distinct', opts: hostedFieldOpts }));
 
     it('matches distinct card Hosted Field baseline', async function () {
-      if (environmentIs(BROWSERS.EDGE)) return this.skip();
-
       await fillDistinctCardElements();
       await clickFirstName();
 
@@ -72,7 +70,7 @@ maybeDescribe('Display', () => {
 });
 
 function assertVisualRegressionThreshold (diff, threshold = 0.05) {
-  if (environmentIs(DEVICES.ANDROID)) {
+  if (environmentIs(DEVICES.ANDROID) || environmentIs(BROWSERS.EDGE)) {
     threshold = 15;
   }
 
