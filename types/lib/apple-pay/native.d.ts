@@ -202,6 +202,11 @@ export type ApplePayPaymentRequest = {
   requiredShippingContactFields?: ApplePayContactField[];
 
   /**
+   * The fields of billing information the user must provide to process the transaction. Defaults to `['postalAddress']`.
+   */
+  requiredBillingContactFields?: ApplePayContactField[];
+
+  /**
    * Shipping contact information for the user.
    */
   shippingContact?: ApplePayPaymentContact;

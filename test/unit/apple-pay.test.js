@@ -495,6 +495,27 @@ function applePayTest (integrationType) {
         }));
       });
 
+      describe('requiredBillingContactFields', function () {
+        it('defaults to the postalAddress', function (done) {
+          const applePay = this.recurly.ApplePay(validOpts);
+          applePay.ready(ensureDone(done, () => {
+            assert.deepEqual(applePay.session.requiredBillingContactFields, ['postalAddress']);
+          }));
+        });
+
+        it('includes the configuration billing fields', function (done) {
+          const applePay = this.recurly.ApplePay(merge({} , validOpts, {
+            paymentRequest: {
+              requiredBillingContactFields: ['name', 'postalAddress'],
+            },
+          }));
+
+          applePay.ready(ensureDone(done, () => {
+            assert.deepEqual(applePay.session.requiredBillingContactFields, ['name', 'postalAddress']);
+          }));
+        });
+      });
+
       describe('merchant info collection', function () {
         beforeEach(function () {
           this.applePay = this.recurly.ApplePay(validOpts);
