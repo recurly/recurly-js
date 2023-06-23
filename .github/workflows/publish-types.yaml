@@ -31,6 +31,7 @@ jobs:
           $(cat recurly-js/types/index.d.ts)" > recurly-js/types/index.d.ts
 
           rm recurly-js/test/types/tsconfig.json \
+             recurly-js/test/types/tslint.json \
              recurly-js/test/types/index.d.ts \
              recurly-js/types/tsconfig.json \
              recurly-js/types/tslint.json
