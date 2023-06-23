@@ -849,13 +849,20 @@ function applePayTest (integrationType) {
           });
 
           it('calls the braintree performValidation with the validation url', function (done) {
-            this.applePay.session.on('completeMerchantValidation', ensureDone(done, () => {
-              assert.ok(this.applePay.braintree.applePay.performValidation.calledWith({
-                validationURL: 'valid-test-url',
-                displayName: 'My Store'
-              }));
+            const applePay = this.recurly.ApplePay(merge({}, validOpts, {
+              braintree: {
+                displayName: 'My Great Store',
+              }
             }));
-            this.applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
+            applePay.ready(ensureDone(done, () => {
+              applePay.session.on('completeMerchantValidation', ensureDone(done, () => {
+                assert.ok(applePay.braintree.applePay.performValidation.calledWith({
+                  validationURL: 'valid-test-url',
+                  displayName: 'My Great Store'
+                }));
+              }));
+              applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
+            }));
           });
 
           it('calls the completeMerchantValidation with the merchant session', function (done) {

@@ -116,6 +116,11 @@ export type ApplePayConfig = {
    */
   braintree?: {
     clientAuthorization: string;
+
+    /**
+     * Canonical name for your store, suitable for display.
+     */
+    displayName?: string;
   };
 
   /**
