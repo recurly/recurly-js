@@ -9,7 +9,7 @@
     }
   },
   "gateway": {
-    "type": "paypal_commerce",
+    "type": "paypal_complete",
     "credentials": {}
   },
   "transaction": {
