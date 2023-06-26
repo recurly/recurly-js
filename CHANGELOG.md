@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.25.1](https://github.com/recurly/recurly-js/tree/v4.25.1) (2023-06-26)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.0...v4.25.1)
+
+
+**Merged Pull Requests**
+
+- Renamed PayPalCommerce to PayPalComplete [#833](https://github.com/recurly/recurly-js/pull/833) ([arzitney](https://github.com/arzitney))
+
+
+
 ## [v4.25.0](https://github.com/recurly/recurly-js/tree/v4.25.0) (2023-06-19)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.24.0...v4.25.0)
