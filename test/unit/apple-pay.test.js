@@ -495,6 +495,27 @@ function applePayTest (integrationType) {
         }));
       });
 
+      describe('requiredBillingContactFields', function () {
+        it('defaults to the postalAddress', function (done) {
+          const applePay = this.recurly.ApplePay(validOpts);
+          applePay.ready(ensureDone(done, () => {
+            assert.deepEqual(applePay.session.requiredBillingContactFields, ['postalAddress']);
+          }));
+        });
+
+        it('includes the configuration billing fields', function (done) {
+          const applePay = this.recurly.ApplePay(merge({} , validOpts, {
+            paymentRequest: {
+              requiredBillingContactFields: ['name', 'postalAddress'],
+            },
+          }));
+
+          applePay.ready(ensureDone(done, () => {
+            assert.deepEqual(applePay.session.requiredBillingContactFields, ['name', 'postalAddress']);
+          }));
+        });
+      });
+
       describe('merchant info collection', function () {
         beforeEach(function () {
           this.applePay = this.recurly.ApplePay(validOpts);
@@ -849,13 +870,20 @@ function applePayTest (integrationType) {
           });
 
           it('calls the braintree performValidation with the validation url', function (done) {
-            this.applePay.session.on('completeMerchantValidation', ensureDone(done, () => {
-              assert.ok(this.applePay.braintree.applePay.performValidation.calledWith({
-                validationURL: 'valid-test-url',
-                displayName: 'My Store'
-              }));
+            const applePay = this.recurly.ApplePay(merge({}, validOpts, {
+              braintree: {
+                displayName: 'My Great Store',
+              }
             }));
-            this.applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
+            applePay.ready(ensureDone(done, () => {
+              applePay.session.on('completeMerchantValidation', ensureDone(done, () => {
+                assert.ok(applePay.braintree.applePay.performValidation.calledWith({
+                  validationURL: 'valid-test-url',
+                  displayName: 'My Great Store'
+                }));
+              }));
+              applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
+            }));
           });
 
           it('calls the completeMerchantValidation with the merchant session', function (done) {
