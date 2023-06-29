@@ -27,7 +27,8 @@ describe('Recurly.AlternativePaymentMethods', () => {
       containerSelector: 'my-div',
       adyen: {
         publicKey: '123',
-      }
+      },
+      returnURL: 'https://merchant-website.test/completed',
     };
   });
 
@@ -231,6 +232,47 @@ describe('Recurly.AlternativePaymentMethods', () => {
             }));
         });
 
+        context('when a billingAddress is specified', () => {
+          beforeEach((done) => {
+            paymentMethods = recurly.AlternativePaymentMethods(params);
+            paymentMethods.start().finally(done);
+          });
+
+          it('sends billingAddress when tokenizing', (done) => {
+            sandbox.stub(recurly.request, 'post').resolves({});
+
+            const billingAddress = {
+              address1: '123 Main St',
+              address2: 'Suite 701',
+              city: 'San Francisco',
+              state: 'CA',
+              postalCode: '94105',
+              country: 'US',
+            };
+
+            const { onChange } = window.AdyenCheckout.getCall(0).args[0];
+            onChange({ data: 'payment-method-state', isValid: true });
+
+            paymentMethods.submit({ billingAddress });
+
+            nextTick(() => assertDone(done, () => {
+              assert.equal(recurly.request.post.called, true);
+              assert.deepEqual(recurly.request.post.getCall(0).args[0].route, '/payment_methods/token');
+              assert.deepEqual(recurly.request.post.getCall(0).args[0].data, {
+                currency: 'USD',
+                amount: 100,
+                countryCode: 'US',
+                locale: 'en-US',
+                channel: 'Web',
+                paymentMethodData: 'payment-method-state',
+                gatewayType: 'adyen',
+                returnURL: 'https://merchant-website.test/completed',
+                billingAddress: billingAddress,
+              });
+            }));
+          });
+        });
+
         const validateTokenization = submit => {
           it("make a POST /js/v1/payment_methods/token with the needed params", done => {
             sandbox.stub(recurly.request, 'post').resolves({ });
@@ -246,7 +288,9 @@ describe('Recurly.AlternativePaymentMethods', () => {
                 locale: 'en-US',
                 channel: 'Web',
                 paymentMethodData: 'boleto-state',
-                gatewayType: 'adyen'
+                gatewayType: 'adyen',
+                returnURL: 'https://merchant-website.test/completed',
+                billingAddress: undefined,
               });
             }));
           });
