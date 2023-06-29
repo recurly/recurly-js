@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.25.2](https://github.com/recurly/recurly-js/tree/v4.25.2) (2023-06-29)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.1...v4.25.2)
+
+
+**Merged Pull Requests**
+
+- feat(apple pay): Improve support [#834](https://github.com/recurly/recurly-js/pull/834) ([cbarton](https://github.com/cbarton))
+
+
+
 ## [v4.25.1](https://github.com/recurly/recurly-js/tree/v4.25.1) (2023-06-26)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.0...v4.25.1)
