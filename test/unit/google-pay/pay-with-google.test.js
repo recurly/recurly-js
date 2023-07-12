@@ -62,6 +62,25 @@ describe('Pay with Google', function () {
       }));
   });
 
+  context('when window.google is already defined', function () {
+    beforeEach(function () {
+      window.google = {};
+    });
+
+    afterEach(function () {
+      delete window.google;
+    });
+
+    it('loads the script', function (done) {
+      this.stubGoogleApi();
+
+      payWithGoogle(this.payWithGoogleOpts)
+        .finally(() => assertDone(done, () => {
+          assert.equal(dom.loadLibs.getCall(0).args[0], 'https://pay.google.com/gp/p/js/pay.js');
+        }));
+    });
+  });
+
   context('when the script was already loaded and settle to window.google.payments.api.PaymentsClient', function () {
     beforeEach(function () {
       window.google = {
