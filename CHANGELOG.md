@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.25.3](https://github.com/recurly/recurly-js/tree/v4.25.3) (2023-07-13)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.2...v4.25.3)
+
+
+**Merged Pull Requests**
+
+- fix: load Google Pay when `window.google` exists [#837](https://github.com/recurly/recurly-js/pull/837) ([cbarton](https://github.com/cbarton))
+
+
+
 ## [v4.25.2](https://github.com/recurly/recurly-js/tree/v4.25.2) (2023-06-29)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.1...v4.25.2)
