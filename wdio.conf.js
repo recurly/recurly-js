@@ -143,7 +143,7 @@ function imageComparisonService () {
       blockOutStatusBar: true,
       blockOutToolBar: true,
     }
-  ]
+  ];
 
   return service;
 }
