@@ -1,7 +1,8 @@
 import bowser from 'bowser';
 import merge from 'lodash.merge';
 import { Recurly } from '../../../lib/recurly';
-import { BRAINTREE_CLIENT_VERSION } from '../../../lib/recurly/paypal/strategy/braintree';
+import { BRAINTREE_CLIENT_VERSION } from '../../../lib/const/gateway-constants';
+
 import Promise from 'promise';
 
 /**
