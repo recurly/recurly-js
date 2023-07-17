@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.25.5](https://github.com/recurly/recurly-js/tree/v4.25.5) (2023-07-17)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.4...v4.25.5)
+
+
+**Merged Pull Requests**
+
+- Consolidate Braintree client version constants to a single file [#840](https://github.com/recurly/recurly-js/pull/840) ([douglasmiller](https://github.com/douglasmiller))
+
+
+
 ## [v4.25.4](https://github.com/recurly/recurly-js/tree/v4.25.4) (2023-07-17)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.3...v4.25.4)
