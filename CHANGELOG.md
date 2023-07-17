@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.25.4](https://github.com/recurly/recurly-js/tree/v4.25.4) (2023-07-17)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.3...v4.25.4)
+
+
+**Merged Pull Requests**
+
+- Update to latest version of Braintree JS Client [#839](https://github.com/recurly/recurly-js/pull/839) ([douglasmiller](https://github.com/douglasmiller))
+
+
+
 ## [v4.25.3](https://github.com/recurly/recurly-js/tree/v4.25.3) (2023-07-13)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.2...v4.25.3)
@@ -9,6 +20,9 @@
 
 - fix: load Google Pay when `window.google` exists [#837](https://github.com/recurly/recurly-js/pull/837) ([cbarton](https://github.com/cbarton))
 
+**Closed Issues**
+
+- Cannot read properties of undefined (reading 'api') [#836](https://github.com/recurly/recurly-js/issues/836)
 
 
 ## [v4.25.2](https://github.com/recurly/recurly-js/tree/v4.25.2) (2023-06-29)
