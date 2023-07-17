@@ -64,7 +64,7 @@ ApplePaySessionStub.canMakePayments = () => true;
 
 const getBraintreeStub = () => ({
   client: {
-    VERSION: '3.76.0',
+    VERSION: '3.96.0',
     create: sinon.stub().resolves('CLIENT'),
   },
   dataCollector: {
