@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.25.6](https://github.com/recurly/recurly-js/tree/v4.25.6) (2023-07-25)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.5...v4.25.6)
+
+
+**Merged Pull Requests**
+
+- Accept Billing Address in AlternativePaymentMethods Submit [#838](https://github.com/recurly/recurly-js/pull/838) ([douglaslise](https://github.com/douglaslise))
+
+
+
 ## [v4.25.5](https://github.com/recurly/recurly-js/tree/v4.25.5) (2023-07-17)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.4...v4.25.5)
