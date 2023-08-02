@@ -251,7 +251,7 @@ describe('Recurly.AlternativePaymentMethods', () => {
             };
 
             const { onChange } = window.AdyenCheckout.getCall(0).args[0];
-            onChange({ data: 'payment-method-state', isValid: true });
+            onChange({ data: { myState: 1 }, isValid: true });
 
             paymentMethods.submit({ billingAddress });
 
@@ -264,7 +264,7 @@ describe('Recurly.AlternativePaymentMethods', () => {
                 countryCode: 'US',
                 locale: 'en-US',
                 channel: 'Web',
-                paymentMethodData: 'payment-method-state',
+                paymentMethodData: { myState: 1 },
                 gatewayType: 'adyen',
                 returnURL: 'https://merchant-website.test/completed',
                 billingAddress: billingAddress,
@@ -274,20 +274,20 @@ describe('Recurly.AlternativePaymentMethods', () => {
         });
 
         const validateTokenization = submit => {
-          it("make a POST /js/v1/payment_methods/token with the needed params", done => {
+          it('make a POST /js/v1/payment_methods/token with the needed params', done => {
             sandbox.stub(recurly.request, 'post').resolves({ });
             submit();
 
             nextTick(() => assertDone(done, () => {
               assert.equal(recurly.request.post.called, true);
-              assert.deepEqual(recurly.request.post.getCall(0).args[0].route, "/payment_methods/token");
+              assert.deepEqual(recurly.request.post.getCall(0).args[0].route, '/payment_methods/token');
               assert.deepEqual(recurly.request.post.getCall(0).args[0].data, {
                 currency: 'USD',
                 amount: 100,
                 countryCode: 'US',
                 locale: 'en-US',
                 channel: 'Web',
-                paymentMethodData: 'boleto-state',
+                paymentMethodData: { myState: 2 },
                 gatewayType: 'adyen',
                 returnURL: 'https://merchant-website.test/completed',
                 billingAddress: undefined,
@@ -358,7 +358,7 @@ describe('Recurly.AlternativePaymentMethods', () => {
 
           validateTokenization(() => {
             const { onSubmit } = window.AdyenCheckout.getCall(0).args[0];
-            onSubmit({ data: 'boleto-state' });
+            onSubmit({ data: { myState: 2 } });
           });
         });
 
@@ -375,7 +375,7 @@ describe('Recurly.AlternativePaymentMethods', () => {
             }));
 
             const { onChange } = window.AdyenCheckout.getCall(0).args[0];
-            onChange({ data: 'boleto-state-2', isValid: true });
+            onChange({ data: { myState: 3 }, isValid: true });
           });
         });
 
@@ -388,8 +388,8 @@ describe('Recurly.AlternativePaymentMethods', () => {
 
           validateTokenization(() => {
             const { onChange } = window.AdyenCheckout.getCall(0).args[0];
-            onChange({ data: 'boleto-state-2' });
-            onChange({ data: 'boleto-state' });
+            onChange({ data: { myState: 3 } });
+            onChange({ data: { myState: 2 } });
 
             paymentMethods.submit();
           });
@@ -401,7 +401,7 @@ describe('Recurly.AlternativePaymentMethods', () => {
             paymentMethods.start()
               .finally(() => {
                 const { onChange } = window.AdyenCheckout.getCall(0).args[0];
-                onChange({ data: 'boleto-state' });
+                onChange({ data: { myState: 2 } });
 
                 paymentMethods.submit();
                 done();
