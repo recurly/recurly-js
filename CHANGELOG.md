@@ -1,5 +1,18 @@
 # Changelog
 
+## [v4.25.7](https://github.com/recurly/recurly-js/tree/v4.25.7) (2023-08-04)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.6...v4.25.7)
+
+
+**Merged Pull Requests**
+
+- Expose Venmo Device Data [#844](https://github.com/recurly/recurly-js/pull/844) ([arzitney](https://github.com/arzitney))
+- Add Support for Sofort on Adyen Components [#843](https://github.com/recurly/recurly-js/pull/843) ([douglaslise](https://github.com/douglaslise))
+- add kount debugging [#842](https://github.com/recurly/recurly-js/pull/842) ([smagdicatrecurly](https://github.com/smagdicatrecurly))
+
+
+
 ## [v4.25.6](https://github.com/recurly/recurly-js/tree/v4.25.6) (2023-07-25)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.5...v4.25.6)
