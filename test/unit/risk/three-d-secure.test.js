@@ -20,7 +20,7 @@ describe('ThreeDSecure', function () {
   beforeEach(function (done) {
     const actionTokenId = this.actionTokenId = 'action-token-test';
     const recurly = this.recurly = initRecurly();
-    const risk = this.risk = { add: sinon.stub(), remove: sinon.stub(), recurly };
+    const risk = this.risk = { add: sinon.stub(), remove: sinon.stub(), concerns: [], recurly };
     const sandbox = this.sandbox = sinon.createSandbox();
 
     // Neuter the third party lib loaders
@@ -51,7 +51,7 @@ describe('ThreeDSecure', function () {
   describe('factory', function () {
     beforeEach(function () {
       const { sandbox, recurly } = this;
-      this.riskStub = { add: sandbox.stub(), recurly };
+      this.riskStub = { add: sandbox.stub(), concerns: [], recurly };
     });
 
     it('returns a ThreeDSecure instance', function () {
@@ -271,6 +271,19 @@ describe('ThreeDSecure', function () {
           { concernId: threeDSecure.id }
         ));
         done();
+      });
+    });
+  });
+
+  describe('when a threeDSecure instance already exists', function () {
+    it('removes the previous instance', function (done) {
+      const { risk, actionTokenId, threeDSecure, container } = this;
+      threeDSecure.whenReady(() => {
+        threeDSecure.attach(container);
+        risk.concerns.push(threeDSecure);
+        new ThreeDSecure({ risk, actionTokenId });
+        assert(container.childNodes.length === 0);
+        done()
       });
     });
   });
