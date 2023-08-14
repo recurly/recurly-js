@@ -145,7 +145,7 @@ describe('ThreeDSecure', function () {
 
       assert.throws(() => {
         new ThreeDSecure({ risk, actionTokenId });
-      }, /More than one instance of 3DS was initialized./);
+      }, /More than one instance of threeDSecure was initialized. Make sure you remove the previous instance before initializing a new one./);
       assert(risk.add.calledOnce);
     });
   });
