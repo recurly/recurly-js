@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.25.8](https://github.com/recurly/recurly-js/tree/v4.25.8) (2023-08-21)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.7...v4.25.8)
+
+
+**Merged Pull Requests**
+
+- Prevent multiple 3ds instances [#847](https://github.com/recurly/recurly-js/pull/847) ([ajkelso](https://github.com/ajkelso))
+
+
+
 ## [v4.25.7](https://github.com/recurly/recurly-js/tree/v4.25.7) (2023-08-04)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.6...v4.25.7)
