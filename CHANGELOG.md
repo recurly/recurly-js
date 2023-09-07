@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.25.9](https://github.com/recurly/recurly-js/tree/v4.25.9) (2023-09-07)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.8...v4.25.9)
+
+
+**Merged Pull Requests**
+
+- feat(google pay): Add support for `existingPaymentMethodRequired` [#849](https://github.com/recurly/recurly-js/pull/849) ([cbarton](https://github.com/cbarton))
+
+
+
 ## [v4.25.8](https://github.com/recurly/recurly-js/tree/v4.25.8) (2023-08-21)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.7...v4.25.8)
