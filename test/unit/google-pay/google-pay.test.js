@@ -545,27 +545,65 @@ describe(`Google Pay`, function () {
     });
 
     context('when cannot proceed with the pay-with-google', function () {
-      beforeEach(function () {
-        this.stubGoogleAPIOpts.isReadyToPay = Promise.resolve({ result: false });
-        this.stubRequestAndGoogleApi();
+      context('when the GooglePay is not available', function () {
+        beforeEach(function () {
+          this.stubGoogleAPIOpts.isReadyToPay = Promise.resolve({ result: false });
+          this.stubRequestAndGoogleApi();
+        });
+
+        it('emits the same error the pay-with-google throws', function (done) {
+          const result = googlePay(this.recurly, this.googlePayOpts);
+
+          result.on('error', (err) => assertDone(done, () => {
+            assert.ok(err);
+            assert.equal(err.code, 'google-pay-not-available');
+            assert.equal(err.message, 'Google Pay is not available');
+          }));
+        });
+
+        it('do not emit any token nor the on ready event', function (done) {
+          const result = googlePay(this.recurly, this.googlePayOpts);
+
+          result.on('ready', () => done(new Error('expected to not emit a ready event')));
+          result.on('token', () => done(new Error('expected to not emit a token event')));
+          nextTick(done);
+        });
       });
 
-      it('emits the same error the pay-with-google throws', function (done) {
-        const result = googlePay(this.recurly, this.googlePayOpts);
+      context('when the GooglePay is available but does not support user cards', function () {
+        beforeEach(function () {
+          this.googlePayOpts.existingPaymentMethodRequired = true;
+          this.stubGoogleAPIOpts.isReadyToPay = Promise.resolve({ result: true, paymentMethodPresent: false });
+          this.stubRequestAndGoogleApi();
+        });
 
-        result.on('error', (err) => assertDone(done, () => {
-          assert.ok(err);
-          assert.equal(err.code, 'google-pay-not-available');
-          assert.equal(err.message, 'Google Pay is not available');
-        }));
-      });
+        it('initiates pay-with-google with the expected Google Pay Configuration', function (done) {
+          googlePay(this.recurly, this.googlePayOpts);
 
-      it('do not emit any token nor the on ready event', function (done) {
-        const result = googlePay(this.recurly, this.googlePayOpts);
+          nextTick(() => assertDone(done, () => {
+            assert.equal(window.google.payments.api.PaymentsClient.called, true);
+            const isReadyToPayRequest = window.google.payments.api.PaymentsClient.prototype.isReadyToPay.getCall(0).args[0];
+            assert.equal(isReadyToPayRequest.existingPaymentMethodRequired, true);
+          }));
+        });
 
-        result.on('ready', () => done(new Error('expected to not emit a ready event')));
-        result.on('token', () => done(new Error('expected to not emit a token event')));
-        nextTick(done);
+        it('emits the same error the pay-with-google throws', function (done) {
+          const result = googlePay(this.recurly, this.googlePayOpts);
+
+          result.on('error', (err) => assertDone(done, () => {
+            assert.ok(err);
+            assert.equal(err.code, 'google-pay-not-available');
+            assert.equal(err.message, 'Google Pay is not available');
+          }));
+        });
+
+        it('do not emit any token nor the on ready event', function (done) {
+          const result = googlePay(this.recurly, this.googlePayOpts);
+
+          result.on('ready', () => done(new Error('expected to not emit a ready event')));
+          result.on('token', () => done(new Error('expected to not emit a token event')));
+          nextTick(done);
+        });
       });
     });
 
