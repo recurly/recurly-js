@@ -1,5 +1,18 @@
 # Changelog
 
+## [v4.25.10](https://github.com/recurly/recurly-js/tree/v4.25.10) (2023-09-27)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.9...v4.25.10)
+
+
+**Merged Pull Requests**
+
+- Adds hostname configuration pass-through [#851](https://github.com/recurly/recurly-js/pull/851) ([chrissrogers](https://github.com/chrissrogers))
+- Updated images for iOS-15-Remote Browser for e2e tests [#850](https://github.com/recurly/recurly-js/pull/850) ([arzitney](https://github.com/arzitney))
+- Add Amazon Pay [#848](https://github.com/recurly/recurly-js/pull/848) ([gilv93](https://github.com/gilv93))
+
+
+
 ## [v4.25.9](https://github.com/recurly/recurly-js/tree/v4.25.9) (2023-09-07)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.8...v4.25.9)

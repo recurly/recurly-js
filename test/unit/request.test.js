@@ -240,11 +240,13 @@ describe('Request', () => {
         beforeEach(function () {
           sinon.spy(this.XHR.prototype, 'open');
           sinon.spy(this.XHR.prototype, 'send');
+          sinon.spy(this.XHR.prototype, 'setRequestHeader');
         });
 
         afterEach(function () {
           this.XHR.prototype.open.restore();
           this.XHR.prototype.send.restore();
+          this.XHR.prototype.setRequestHeader.restore();
         });
 
         describe('when performing a POST request', () => {
@@ -269,6 +271,14 @@ describe('Request', () => {
             const url = `${this.recurly.config.api}/test?${this.exampleEncoded()}`;
             assert(this.XHR.prototype.open.calledWithExactly('get', url));
             assert(this.XHR.prototype.send.calledWith());
+          });
+        });
+
+        describe('when configured with a hostname', () => {
+          it('Applies the hostname as a header', function () {
+            this.recurly.configure({ hostname: 'test-hostname.recurly.com' });
+            this.request.request({ method: 'get', route: 'test' });
+            assert(this.XHR.prototype.setRequestHeader.calledWithMatch('Recurly-Credential-Checkout-Hostname', 'test-hostname.recurly.com'));
           });
         });
       });
