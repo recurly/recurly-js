@@ -1,5 +1,20 @@
 # Changelog
 
+## [v4.26.0](https://github.com/recurly/recurly-js/tree/v4.26.0) (2023-10-10)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.10...v4.26.0)
+
+
+**Merged Pull Requests**
+
+- Amazon follow up [#855](https://github.com/recurly/recurly-js/pull/855) ([arzitney](https://github.com/arzitney))
+- Fix ios 16 remote e2e [#854](https://github.com/recurly/recurly-js/pull/854) ([arzitney](https://github.com/arzitney))
+
+**Closed Issues**
+
+- Formatting on DefinitelyTyped update [#856](https://github.com/recurly/recurly-js/issues/856)
+
+
 ## [v4.25.10](https://github.com/recurly/recurly-js/tree/v4.25.10) (2023-09-27)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.9...v4.25.10)
