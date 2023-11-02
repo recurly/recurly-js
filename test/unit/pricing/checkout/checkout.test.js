@@ -1750,20 +1750,36 @@ describe('CheckoutPricing', function () {
         });
 
         describe('when a coupon is applied', () => {
-          beforeEach(function () {
-            return this.pricing.coupon('coop-pct-all');
+          describe('..', () => {
+
+            beforeEach(function () {
+              return this.pricing.coupon('coop-pct-all');
+            });
+
+            it('taxes the discounted subtotal', function (done) {
+              this.pricing
+                .reprice()
+                .done(price => {
+                  // 8.75% of taxable amount: 21.99 (sub) + 40 (adj) - 9 (discount) = 52.99
+                  assert.equal(price.now.taxes, '4.64');
+                  // 8.75% of taxable amount: 19.99 (sub) - 3 (discount) = 16.99
+                  assert.equal(price.next.taxes, '1.49');
+                  done();
+                });
+            });
           });
 
-          it('taxes the discounted subtotal', function (done) {
-            this.pricing
-              .reprice()
-              .done(price => {
-                // 8.75% of taxable amount: 21.99 (sub) + 40 (adj) - 9 (discount) = 52.99
-                assert.equal(price.now.taxes, '4.64');
-                // 8.75% of taxable amount: 19.99 (sub) - 3 (discount) = 16.99
-                assert.equal(price.next.taxes, '1.49');
-                done();
-              });
+          describe.only('is single-use and applies to subscriptions and adjustments with taxes', () => {
+            beforeEach(applyCoupon('coop-single-use'));
+
+            it('discounts only the subscriptions now, and applies no discounts next cycle', function () {
+              assert.equal(this.price.now.subtotal, 41.99); // 19.99 + 2 (setup fee) + 20 (adj) + 20 (adj) - $20 discount
+              assert.equal(this.price.now.discount, 20); 
+              assert.equal(this.price.next.subscriptions, 19.99);
+              assert.equal(this.price.next.discount, 0);
+              assert.equal(this.price.now.taxes, 3.67);
+              assert.equal(this.price.next.taxes, 1.75);
+            });
           });
         });
       });
