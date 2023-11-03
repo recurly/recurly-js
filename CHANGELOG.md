@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.26.1](https://github.com/recurly/recurly-js/tree/v4.26.1) (2023-11-03)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.26.0...v4.26.1)
+
+
+**Merged Pull Requests**
+
+- fix tax calculations on next object with single-use coupons [#858](https://github.com/recurly/recurly-js/pull/858) ([wsethbrown](https://github.com/wsethbrown))
+
+
+
 ## [v4.26.0](https://github.com/recurly/recurly-js/tree/v4.26.0) (2023-10-10)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.25.10...v4.26.0)
