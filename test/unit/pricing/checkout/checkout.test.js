@@ -1765,6 +1765,19 @@ describe('CheckoutPricing', function () {
                 done();
               });
           });
+
+          describe('is single-use and applies to subscriptions and adjustments with taxes', () => {
+            beforeEach(applyCoupon('coop-single-use'));
+
+            it('discounts only the subscriptions now, and applies no discounts next cycle', function () {
+              assert.equal(this.price.now.subtotal, 41.99); // 19.99 + 2 (setup fee) + 20 (adj) + 20 (adj) - $20 discount
+              assert.equal(this.price.now.discount, 20); 
+              assert.equal(this.price.next.subscriptions, 19.99);
+              assert.equal(this.price.next.discount, 0);
+              assert.equal(this.price.now.taxes, 3.67);
+              assert.equal(this.price.next.taxes, 1.75);
+            });
+          });
         });
       });
 
