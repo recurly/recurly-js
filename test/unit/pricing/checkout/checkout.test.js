@@ -1750,8 +1750,6 @@ describe('CheckoutPricing', function () {
         });
 
         describe('when a coupon is applied', () => {
-          describe('..', () => {
-
             beforeEach(function () {
               return this.pricing.coupon('coop-pct-all');
             });
@@ -1766,7 +1764,6 @@ describe('CheckoutPricing', function () {
                   assert.equal(price.next.taxes, '1.49');
                   done();
                 });
-            });
           });
 
           describe.only('is single-use and applies to subscriptions and adjustments with taxes', () => {
