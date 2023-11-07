@@ -261,6 +261,18 @@ describe('Request', () => {
           });
         });
 
+        describe('when performing a PUT request', () => {
+          beforeEach(function (done) {
+            const proceed = () => done();
+            this.request.request({ method: 'put', route: '/test', data: this.example }).done(proceed, proceed);
+          });
+
+          it('sends properly-encoded data in the request body', function () {
+            assert(this.XHR.prototype.open.calledWithExactly('put', `${this.recurly.config.api}/test`));
+            assert(this.XHR.prototype.send.calledWithExactly(this.exampleEncoded()));
+          });
+        });
+
         describe('when performing a GET request', () => {
           beforeEach(function (done) {
             const proceed = () => done();
