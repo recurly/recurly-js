@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.26.2](https://github.com/recurly/recurly-js/tree/v4.26.2) (2023-11-13)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.26.1...v4.26.2)
+
+
+**Merged Pull Requests**
+
+- Added Address Collectiong and Web Login for Venmo on Braintree [#864](https://github.com/recurly/recurly-js/pull/864) ([arzitney](https://github.com/arzitney))
+- Adds PUT support to Request [#860](https://github.com/recurly/recurly-js/pull/860) ([chrissrogers](https://github.com/chrissrogers))
+
+
+
 ## [v4.26.1](https://github.com/recurly/recurly-js/tree/v4.26.1) (2023-11-03)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.26.0...v4.26.1)
