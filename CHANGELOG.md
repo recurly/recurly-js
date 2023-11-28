@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.26.3](https://github.com/recurly/recurly-js/tree/v4.26.3) (2023-11-28)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.26.2...v4.26.3)
+
+
+**Merged Pull Requests**
+
+- pass gateway_code to choose if multiple Amazon gateway instances [#863](https://github.com/recurly/recurly-js/pull/863) ([jsanderson1130](https://github.com/jsanderson1130))
+
+
+
 ## [v4.26.2](https://github.com/recurly/recurly-js/tree/v4.26.2) (2023-11-13)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.26.1...v4.26.2)
