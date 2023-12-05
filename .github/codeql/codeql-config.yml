@@ -1,0 +1,13 @@
+#  Recurly Security and Quality checks
+#  
+#  Customize this file for your project.
+#  Contact the application security team in slack/security channel for assistance.
+#  https://coda.io/d/Information-Security_dDTWpZde3Uu/GitHub-Advanced-Security_suXj4#_lu8Xf
+#  https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning#specifying-directories-to-scan
+name: "Recurly Security Tests"
+query-filters:
+#  - exclude:
+#      id: js/redundant-query
+paths-ignore:
+  - '**/node_modules'
+  - '**/*test*'
