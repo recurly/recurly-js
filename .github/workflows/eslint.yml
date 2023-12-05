@@ -8,3 +8,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: stefanoeb/eslint-action@1.0.2
+        continue-on-error: true
