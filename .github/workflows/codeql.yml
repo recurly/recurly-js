@@ -3,7 +3,12 @@
 # Contact us in the security slack channel for concerns
 name: "Security check - CodeQL"
 
-on: [pull_request,  workflow_dispatch]
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches:
+      - ${{ github.event.repository.default_branch }}
 
 jobs:
   analyze:

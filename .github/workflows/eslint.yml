@@ -1,6 +1,11 @@
 name: Security check - ESLint
 
-on: [push]
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches:
+      - ${{ github.event.repository.default_branch }}
 
 jobs:
   eslint:
