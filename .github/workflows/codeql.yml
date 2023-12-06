@@ -11,6 +11,7 @@ on:
       - staging
       - main
       - master
+      - qa
 
 jobs:
   analyze:

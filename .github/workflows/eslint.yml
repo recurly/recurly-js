@@ -8,6 +8,7 @@ on:
       - staging
       - main
       - master
+      - qa
 
 jobs:
   eslint:
