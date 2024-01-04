@@ -20,10 +20,12 @@ export function initRecurly (recurly, opts) {
     // prevents itinerant event logging workers from dispatching
     sinon.stub(recurly.reporter, 'send');
   }
+
   recurly.configure(merge({
     publicKey: 'test',
     api: `${window.location.protocol}//${window.location.host}/api`
   }, opts));
+
   return recurly;
 }
 
