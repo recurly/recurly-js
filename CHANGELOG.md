@@ -1,5 +1,18 @@
 # Changelog
 
+## [v4.26.4](https://github.com/recurly/recurly-js/tree/v4.26.4) (2024-01-24)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.26.3...v4.26.4)
+
+
+**Merged Pull Requests**
+
+- Update ApplePayPaymentAuthorizedEvent type to match actual object shape [#867](https://github.com/recurly/recurly-js/pull/867) ([shin-](https://github.com/shin-))
+- refactor rjs to resolve button reload error and add types [#866](https://github.com/recurly/recurly-js/pull/866) ([jsanderson1130](https://github.com/jsanderson1130))
+- Instantiates events only on demand [#865](https://github.com/recurly/recurly-js/pull/865) ([chrissrogers](https://github.com/chrissrogers))
+
+
+
 ## [v4.26.3](https://github.com/recurly/recurly-js/tree/v4.26.3) (2023-11-28)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.26.2...v4.26.3)
