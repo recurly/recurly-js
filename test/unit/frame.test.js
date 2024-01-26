@@ -183,6 +183,20 @@ describe('Recurly.Frame', function () {
         assert(~src.indexOf(`version=${recurly.version}`));
         assert(~src.indexOf('event=recurly-frame-'));
         assert(~src.indexOf('key=test'));
+        assert(!~src.indexOf('credentialCheckoutHostname'));
+      });
+
+      describe('when configured to use hostname auth', function () {
+        beforeEach(function (done) {
+          this.recurly.configure({ hostname: 'test-hostname.recurly.com' });
+          this.frame = this.recurly.Frame({ path, payload, type: Frame.TYPES.IFRAME, container: testBed() });
+          this.frame.on('done', () => done());
+        });
+
+        it('assigns the value in the URL', function () {
+          const { src } = this.frame.iframe;
+          assert(~src.indexOf('credentialCheckoutHostname=test-hostname.recurly.com'));
+        });
       });
 
       describe('Frame.destroy', function () {
