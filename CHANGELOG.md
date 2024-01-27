@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.26.5](https://github.com/recurly/recurly-js/tree/v4.26.5) (2024-01-27)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.26.4...v4.26.5)
+
+
+**Merged Pull Requests**
+
+- Adds hostname auth capability to Frame [#868](https://github.com/recurly/recurly-js/pull/868) ([chrissrogers](https://github.com/chrissrogers))
+
+
+
 ## [v4.26.4](https://github.com/recurly/recurly-js/tree/v4.26.4) (2024-01-24)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.26.3...v4.26.4)
