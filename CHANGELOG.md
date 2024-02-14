@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.27.0](https://github.com/recurly/recurly-js/tree/v4.27.0) (2024-02-14)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.26.5...v4.27.0)
+
+
+**Merged Pull Requests**
+
+- Handle Amazon Pay 3DS action tokens [#869](https://github.com/recurly/recurly-js/pull/869) ([gilv93](https://github.com/gilv93))
+
+
+
 ## [v4.26.5](https://github.com/recurly/recurly-js/tree/v4.26.5) (2024-01-27)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.26.4...v4.26.5)
