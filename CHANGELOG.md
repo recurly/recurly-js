@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.28.0](https://github.com/recurly/recurly-js/tree/v4.28.0) (2024-02-28)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.27.0...v4.28.0)
+
+
+**Merged Pull Requests**
+
+- Co-badge card support [#874](https://github.com/recurly/recurly-js/pull/874) ([gilv93](https://github.com/gilv93))
+
+
+
 ## [v4.27.0](https://github.com/recurly/recurly-js/tree/v4.27.0) (2024-02-14)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.26.5...v4.27.0)
