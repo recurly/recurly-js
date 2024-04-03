@@ -84,6 +84,7 @@ describe('BraintreeStrategy', function () {
           nonce: "test-braintree-nonce",
           bin: "test-braintree-bin",
           challengeRequested: true,
+          collectDeviceData: true,
           onLookupComplete: sinon.match.func
         }));
 
