@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.28.1](https://github.com/recurly/recurly-js/tree/v4.28.1) (2024-04-08)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.28.0...v4.28.1)
+
+
+**Merged Pull Requests**
+
+- fix: Amazon Pay should be emitting the 'cancel' event when the window is manually closed [#879](https://github.com/recurly/recurly-js/pull/879) ([douglasmiller](https://github.com/douglasmiller))
+
+
+
 ## [v4.28.0](https://github.com/recurly/recurly-js/tree/v4.28.0) (2024-02-28)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.27.0...v4.28.0)
