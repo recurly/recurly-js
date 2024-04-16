@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.28.2](https://github.com/recurly/recurly-js/tree/v4.28.2) (2024-04-16)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.28.1...v4.28.2)
+
+
+**Merged Pull Requests**
+
+- Upgrade Braintree SDK [#877](https://github.com/recurly/recurly-js/pull/877) ([arzitney](https://github.com/arzitney))
+
+
+
 ## [v4.28.1](https://github.com/recurly/recurly-js/tree/v4.28.1) (2024-04-08)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.28.0...v4.28.1)
