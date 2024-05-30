@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.29.0](https://github.com/recurly/recurly-js/tree/v4.29.0) (2024-05-30)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.28.2...v4.29.0)
+
+
+**Merged Pull Requests**
+
+- Support Cash App [#881](https://github.com/recurly/recurly-js/pull/881) ([gilv93](https://github.com/gilv93))
+
+
+
 ## [v4.28.2](https://github.com/recurly/recurly-js/tree/v4.28.2) (2024-04-16)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.28.1...v4.28.2)
