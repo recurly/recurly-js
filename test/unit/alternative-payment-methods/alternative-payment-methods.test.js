@@ -165,8 +165,8 @@ describe('Recurly.AlternativePaymentMethods', () => {
 
         paymentMethods.start()
           .finally(() => assertDone(done, () => {
-            assert.equal(dom.loadScript.getCall(0).args[0], 'https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/5.31.1/adyen.js');
-            assert.equal(dom.loadStyle.getCall(0).args[0], 'https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/5.31.1/adyen.css');
+            assert.equal(dom.loadScript.getCall(0).args[0], 'https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/5.44.0/adyen.js');
+            assert.equal(dom.loadStyle.getCall(0).args[0], 'https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/5.44.0/adyen.css');
           }));
       });
 
