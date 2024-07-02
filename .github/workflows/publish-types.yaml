@@ -22,14 +22,6 @@ jobs:
       - name: Create changes
         id: create-changes
         run: |
-          version=$(cat recurly-js/package.json | jq '.version' -r | sed -ne 's/^\([0-9]*\.[0-9]*\).*/\1/p')
-          echo "// Type definitions for non-npm package @recurly/recurly-js $version
-          // Project: https://github.com/recurly/recurly-js
-          // Definitions by: Christopher Rogers <https://github.com/chrissrogers>
-          // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-          // TypeScript Version: 3.1
-          $(cat recurly-js/types/index.d.ts)" > recurly-js/types/index.d.ts
-
           rm recurly-js/test/types/tsconfig.json \
              recurly-js/test/types/tslint.json \
              recurly-js/test/types/index.d.ts \

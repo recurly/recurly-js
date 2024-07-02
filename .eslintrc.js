@@ -15,6 +15,7 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module'
   },
+  plugins: ['@typescript-eslint'],
   rules: {
     indent: [
       'error',
@@ -45,5 +46,13 @@ module.exports = {
       'error',
       'always'
     ]
-  }
+  },
+  overrides: [
+      {
+      files: ['**/*.ts'],
+      rules: {
+        'no-undef': 'off'
+      }
+    }
+  ]
 };
