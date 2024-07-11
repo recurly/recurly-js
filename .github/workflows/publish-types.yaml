@@ -31,6 +31,9 @@ jobs:
           cp -R recurly-js/types/* DefinitelyTyped/types/recurly__recurly-js
           cp -R recurly-js/test/types/* DefinitelyTyped/types/recurly__recurly-js/test
 
+          version=$(cat recurly-js/package.json | jq '.version' -r | sed -ne 's/^\([0-9]*\.[0-9]*\).*/\1.9999/p')
+          npx json -I -f DefinitelyTyped/types/recurly__recurly-js/package.json -e "this.version=\"$version\""
+
           out_version=$(cat recurly-js/package.json | jq '.version' -r )
           echo ::set-output name=version::$out_version
       - name: Create Pull Request
