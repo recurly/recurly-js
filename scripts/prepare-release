@@ -27,10 +27,15 @@ LIB_ARTIFACT=./build/recurly.min.js
 VERSION_FILE=./lib/recurly/version.js
 
 # Bump version
-old_version=$(cat package.json | jq -r '.version')
-npm --no-git-tag-version version ${part}
-new_version=$(cat package.json | jq -r '.version')
-echo "$(sed "s/$old_version/$new_version/" $VERSION_FILE)" > $VERSION_FILE
+old_version=$(jq -r '.version' < package.json)
+npm --no-git-tag-version version "${part}"
+new_version=$(jq -r '.version' < package.json)
+sed -i "s/$old_version/$new_version/" "$VERSION_FILE"
+
+# Update types version
+old_types_version=$(jq -r '.version' < types/package.json)
+new_types_version=$(jq '.version' -r < package.json | sed -ne 's/^\([0-9]*\.[0-9]*\).*/\1.9999/p')
+sed -i "s/$old_types_version/$new_types_version/" types/package.json
 
 # Generate Changelog
 changelogly --future-release "v$new_version"
@@ -46,7 +51,7 @@ while [[ "$#" -gt 0 ]]; do
     -n|--notes-out)
       echo "$new_version
 
-      $(cat CHANGELOG.md | sed -n "/^## \[v$new_version\]/,/^##/p" | sed '$d;1d')
+      $(sed -n "/^## \[v$new_version\]/,/^##/p" < CHANGELOG.md | sed '$d;1d')
 
       ##### Minified MD5 Checksum
       \`\`\`
@@ -55,13 +60,13 @@ while [[ "$#" -gt 0 ]]; do
       ##### [SRI Hash](https://www.srihash.org/)
       \`\`\`
       ${sri_hash}
-      \`\`\`" | awk '{$1=$1};1' > $2
+      \`\`\`" | awk '{$1=$1};1' > "$2"
       shift
       ;;
 
     # Create release notes artifact
     -t|--tag-out)
-      echo "v$new_version" > $2
+      echo "v$new_version" > "$2"
       ;;
   esac
   shift
