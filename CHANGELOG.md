@@ -1,5 +1,20 @@
 # Changelog
 
+## [v4.29.1](https://github.com/recurly/recurly-js/tree/v4.29.1) (2024-07-16)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.29.0...v4.29.1)
+
+
+**Merged Pull Requests**
+
+- Allows subscription quantities of zero on Pricing instances [#888](https://github.com/recurly/recurly-js/pull/888) ([chrissrogers](https://github.com/chrissrogers))
+- Adding types/package.json [#887](https://github.com/recurly/recurly-js/pull/887) ([douglasmiller](https://github.com/douglasmiller))
+
+**Closed Issues**
+
+- Recurly-JS is no longer updating the DefinitelyTyped repo [#875](https://github.com/recurly/recurly-js/issues/875)
+
+
 ## [v4.29.0](https://github.com/recurly/recurly-js/tree/v4.29.0) (2024-05-30)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.28.2...v4.29.0)
