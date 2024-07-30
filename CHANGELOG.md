@@ -1,5 +1,24 @@
 # Changelog
 
+## [v4.29.2](https://github.com/recurly/recurly-js/tree/v4.29.2) (2024-07-30)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.29.1...v4.29.2)
+
+
+**Merged Pull Requests**
+
+- Adds billing address override to CashApp implementation [#890](https://github.com/recurly/recurly-js/pull/890) ([chrissrogers](https://github.com/chrissrogers))
+- Small venmo tweaks for development debugging [#841](https://github.com/recurly/recurly-js/pull/841) ([douglasmiller](https://github.com/douglasmiller))
+
+**Closed Issues**
+
+- SyntaxError: Invalid regular expression: missing terminating ] for character class [#880](https://github.com/recurly/recurly-js/issues/880)
+- Recurly (3DS) in Test Mode with `<dialog />` elements [#876](https://github.com/recurly/recurly-js/issues/876)
+- Recurly-JS is no longer updating the DefinitelyTyped repo [#875](https://github.com/recurly/recurly-js/issues/875)
+- Formatting on DefinitelyTyped update [#856](https://github.com/recurly/recurly-js/issues/856)
+- Inconsistent Autofill behavior with Recurly.js Elements [#845](https://github.com/recurly/recurly-js/issues/845)
+
+
 ## [v4.29.1](https://github.com/recurly/recurly-js/tree/v4.29.1) (2024-07-16)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.29.0...v4.29.1)
