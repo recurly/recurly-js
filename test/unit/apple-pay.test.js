@@ -6,6 +6,7 @@ import omit from 'lodash.omit';
 import Emitter from 'component-emitter';
 import Promise from 'promise';
 import { initRecurly, nextTick } from './support/helpers';
+import BraintreeLoader from '../../lib/util/braintree-loader';
 import { ApplePayBraintree } from '../../lib/recurly/apple-pay/apple-pay.braintree';
 import filterSupportedNetworks from '../../lib/recurly/apple-pay/util/filter-supported-networks';
 
@@ -719,55 +720,16 @@ function applePayTest (integrationType) {
         describe('when the libs are not loaded', function () {
           beforeEach(function () {
             delete window.braintree;
-            this.sandbox.stub(ApplePayBraintree, 'libUrl').returns('/api/mock-200');
+            this.sandbox.stub(BraintreeLoader, 'loadModules').rejects('boom');
           });
 
           it('load the libs', function (done) {
             const applePay = this.recurly.ApplePay(validOpts);
-            applePay.on('error', ensureDone(done, () => {
-              assert.equal(ApplePayBraintree.libUrl.callCount, 3);
-              assert.equal(ApplePayBraintree.libUrl.getCall(0).args[0], 'client');
-              assert.equal(ApplePayBraintree.libUrl.getCall(1).args[0], 'applePay');
-              assert.equal(ApplePayBraintree.libUrl.getCall(2).args[0], 'dataCollector');
+            applePay.on('error', ensureDone(done, (err) => {
+              assert(BraintreeLoader.loadModules.calledWith('applePay', 'dataCollector'));
+              assert.equal(err, applePay.initError);
+              assertInitError(applePay, 'apple-pay-init-error');
             }));
-          });
-        });
-
-        const requiredBraintreeLibs = ['client', 'dataCollector', 'applePay'];
-        requiredBraintreeLibs.forEach(requiredLib => {
-          describe(`when failed to load the braintree ${requiredLib} lib`, function () {
-            beforeEach(function () {
-              delete window.braintree;
-              this.sandbox.stub(ApplePayBraintree, 'libUrl').withArgs(requiredLib).returns('/api/mock-404');
-            });
-
-            it('register an initialization error', function (done) {
-              const applePay = this.recurly.ApplePay(validOpts);
-
-              applePay.on('error', (err) => {
-                nextTick(ensureDone(done, () => {
-                  assert.equal(err, applePay.initError);
-                  assertInitError(applePay, 'apple-pay-init-error');
-                }));
-              });
-            });
-          });
-
-          describe(`when failed to create the ${requiredLib} instance`, function () {
-            beforeEach(function () {
-              window.braintree[requiredLib].create = sinon.stub().rejects('error');
-            });
-
-            it('register an initialization error', function (done) {
-              const applePay = this.recurly.ApplePay(validOpts);
-
-              applePay.on('error', (err) => {
-                nextTick(ensureDone(done, () => {
-                  assert.equal(err, applePay.initError);
-                  assertInitError(applePay, 'apple-pay-init-error');
-                }));
-              });
-            });
           });
         });
 

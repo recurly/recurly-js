@@ -2,8 +2,8 @@ import assert from 'assert';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import BraintreeStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/braintree';
+import BraintreeLoader from '../../../../../lib/util/braintree-loader';
 import actionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-braintree.json';
-import Promise from 'promise';
 
 describe('BraintreeStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -25,6 +25,7 @@ describe('BraintreeStrategy', function () {
     };
     this.braintree = {
       client: {
+        VERSION: BraintreeLoader.BRAINTREE_CLIENT_VERSION,
         create: sinon.stub().resolves()
       },
       threeDSecure: {
@@ -46,7 +47,7 @@ describe('BraintreeStrategy', function () {
   describe('when the braintree.js library encounters a load error', function () {
     beforeEach(function () {
       const { sandbox, threeDSecure } = this;
-      sandbox.replace(BraintreeStrategy.prototype, 'urlForResource', (f) => '/api/mock-404');
+      sandbox.stub(BraintreeLoader, 'loadModules').rejects();
       delete window.braintree;
       this.strategy = new BraintreeStrategy({ threeDSecure, actionToken });
     });
@@ -57,7 +58,7 @@ describe('BraintreeStrategy', function () {
         assert.strictEqual(error.code, '3ds-vendor-load-error');
         assert.strictEqual(error.vendor, 'Braintree');
         done();
-      })
+      });
     });
   });
 
