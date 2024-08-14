@@ -168,8 +168,6 @@ function init ({ fixture = '', opts = {} } = {}) {
  * @return {Promise}
  */
 async function configureRecurly (opts = {}) {
-  console.log('configureRecurly', opts);
-
   return await browser.executeAsync(function (opts, done) {
     recurly.configure(opts);
     recurly.ready(function () {
