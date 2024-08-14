@@ -79,9 +79,7 @@ const getBraintreeStub = () => ({
   },
 });
 
-const maybeDescribe = 'ApplePaySession' in window ? describe : describe.skip;
-
-maybeDescribe('ApplePay', function () {
+describe('ApplePay', function () {
   beforeEach(function () {
     this.sandbox = sinon.createSandbox();
     window.ApplePaySession = ApplePaySessionStub;
