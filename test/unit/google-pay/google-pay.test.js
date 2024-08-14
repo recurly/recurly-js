@@ -2,10 +2,9 @@
 import assert from 'assert';
 import recurlyError from '../../../lib/recurly/errors';
 import { initRecurly, nextTick, assertDone, stubGooglePaymentAPI } from '../support/helpers';
-import { googlePay } from '../../../lib/recurly/google-pay/google-pay';
 import dom from '../../../lib/util/dom';
 
-describe(`Google Pay`, function () {
+describe('Google Pay', function () {
   beforeEach(function () {
     this.sandbox = sinon.createSandbox();
 
@@ -63,7 +62,7 @@ describe(`Google Pay`, function () {
 
   it('requests to Recurly the merchant Google Pay info with the initial options provided', function (done) {
     this.stubRequestAndGoogleApi();
-    googlePay(this.recurly, this.googlePayOpts);
+    this.recurly.GooglePay(this.googlePayOpts);
 
     nextTick(() => assertDone(done, () => {
       assert.equal(this.recurly.request.get.called, true);
@@ -88,7 +87,7 @@ describe(`Google Pay`, function () {
         });
 
         it('emits a google-pay-config-missing error', function (done) {
-          const result = googlePay(this.recurly, this.googlePayOpts);
+          const result = this.recurly.GooglePay(this.googlePayOpts);
 
           result.on('error', (err) => assertDone(done, () => {
             assert.ok(err);
@@ -98,7 +97,7 @@ describe(`Google Pay`, function () {
         });
 
         it('do not initiate the pay-with-google nor requests to Recurly the merchant Google Pay info', function (done) {
-          googlePay(this.recurly, this.googlePayOpts);
+          this.recurly.GooglePay(this.googlePayOpts);
 
           nextTick(() => assertDone(done, () => {
             assert.equal(this.recurly.request.get.called, false);
@@ -107,7 +106,7 @@ describe(`Google Pay`, function () {
         });
 
         it('do not emit any token nor the on ready event', function (done) {
-          const result = googlePay(this.recurly, this.googlePayOpts);
+          const result = this.recurly.GooglePay(this.googlePayOpts);
 
           result.on('ready', () => done(new Error('expected to not emit a ready event')));
           result.on('token', () => done(new Error('expected to not emit a token event')));
@@ -124,7 +123,7 @@ describe(`Google Pay`, function () {
     });
 
     it('emits an api-error', function (done) {
-      const result = googlePay(this.recurly, this.googlePayOpts);
+      const result = this.recurly.GooglePay(this.googlePayOpts);
 
       result.on('error', (err) => assertDone(done, () => {
         assert.ok(err);
@@ -134,7 +133,7 @@ describe(`Google Pay`, function () {
     });
 
     it('do not initiate the pay-with-google', function (done) {
-      googlePay(this.recurly, this.googlePayOpts);
+      this.recurly.GooglePay(this.googlePayOpts);
 
       nextTick(() => assertDone(done, () => {
         assert.equal(window.google.payments.api.PaymentsClient.called, false);
@@ -142,7 +141,7 @@ describe(`Google Pay`, function () {
     });
 
     it('do not emit any token nor the on ready event', function (done) {
-      const result = googlePay(this.recurly, this.googlePayOpts);
+      const result = this.recurly.GooglePay(this.googlePayOpts);
 
       result.on('ready', () => done(new Error('expected to not emit a ready event')));
       result.on('token', () => done(new Error('expected to not emit a token event')));
@@ -160,7 +159,7 @@ describe(`Google Pay`, function () {
     });
 
     it('emits a google-pay-not-configured error', function (done) {
-      const result = googlePay(this.recurly, this.googlePayOpts);
+      const result = this.recurly.GooglePay(this.googlePayOpts);
 
       result.on('error', (err) => assertDone(done, () => {
         assert.ok(err);
@@ -170,7 +169,7 @@ describe(`Google Pay`, function () {
     });
 
     it('do not initiate the pay-with-google', function (done) {
-      googlePay(this.recurly, this.googlePayOpts);
+      this.recurly.GooglePay(this.googlePayOpts);
 
       nextTick(() => assertDone(done, () => {
         assert.equal(window.google.payments.api.PaymentsClient.called, false);
@@ -178,7 +177,7 @@ describe(`Google Pay`, function () {
     });
 
     it('do not emit any token nor the on ready event', function (done) {
-      const result = googlePay(this.recurly, this.googlePayOpts);
+      const result = this.recurly.GooglePay(this.googlePayOpts);
 
       result.on('ready', () => done(new Error('expected to not emit a ready event')));
       result.on('token', () => done(new Error('expected to not emit a token event')));
@@ -189,7 +188,7 @@ describe(`Google Pay`, function () {
   context('when the requested merchant Google Pay info returns a valid non-empty list of payment methods', function () {
     it('initiates the pay-with-google with the expected Google Pay Configuration', function (done) {
       this.stubRequestAndGoogleApi();
-      googlePay(this.recurly, this.googlePayOpts);
+      this.recurly.GooglePay(this.googlePayOpts);
 
       nextTick(() => assertDone(done, () => {
         assert.equal(window.google.payments.api.PaymentsClient.called, true);
@@ -251,7 +250,7 @@ describe(`Google Pay`, function () {
 
       it('initiates the pay-with-google in the specified environment', function (done) {
         this.stubRequestAndGoogleApi();
-        googlePay(this.recurly, this.googlePayOpts);
+        this.recurly.GooglePay(this.googlePayOpts);
 
         nextTick(() => assertDone(done, () => {
           assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0].environment, 'TEST');
@@ -270,7 +269,7 @@ describe(`Google Pay`, function () {
 
       it('initiates the pay-with-google in PRODUCTION mode', function (done) {
         this.stubRequestAndGoogleApi();
-        googlePay(this.recurly, this.googlePayOpts);
+        this.recurly.GooglePay(this.googlePayOpts);
 
         nextTick(() => assertDone(done, () => {
           assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0].environment, 'PRODUCTION');
@@ -289,7 +288,7 @@ describe(`Google Pay`, function () {
 
       it('initiates the pay-with-google in the specified environment', function (done) {
         this.stubRequestAndGoogleApi();
-        googlePay(this.recurly, this.googlePayOpts);
+        this.recurly.GooglePay(this.googlePayOpts);
 
         nextTick(() => assertDone(done, () => {
           assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0].environment, 'PRODUCTION');
@@ -308,7 +307,7 @@ describe(`Google Pay`, function () {
 
       it('initiates the pay-with-google in TEST mode', function (done) {
         this.stubRequestAndGoogleApi();
-        googlePay(this.recurly, this.googlePayOpts);
+        this.recurly.GooglePay(this.googlePayOpts);
 
         nextTick(() => assertDone(done, () => {
           assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0].environment, 'TEST');
@@ -323,7 +322,7 @@ describe(`Google Pay`, function () {
 
       it('initiates the pay-with-google without the billing address requirement', function (done) {
         this.stubRequestAndGoogleApi();
-        googlePay(this.recurly, this.googlePayOpts);
+        this.recurly.GooglePay(this.googlePayOpts);
 
         nextTick(() => assertDone(done, () => {
           const { allowedPaymentMethods: [{ parameters }] } = window.google.payments.api.PaymentsClient.prototype.isReadyToPay.getCall(0).args[0];
@@ -341,7 +340,7 @@ describe(`Google Pay`, function () {
 
       it('initiates the pay-with-google without the billing address requirement', function (done) {
         this.stubRequestAndGoogleApi();
-        googlePay(this.recurly, this.googlePayOpts);
+        this.recurly.GooglePay(this.googlePayOpts);
 
         nextTick(() => assertDone(done, () => {
           const { allowedPaymentMethods: [{ parameters }] } = window.google.payments.api.PaymentsClient.prototype.isReadyToPay.getCall(0).args[0];
@@ -364,7 +363,7 @@ describe(`Google Pay`, function () {
           totalPrice: '1',
         };
 
-        googlePay(this.recurly, {
+        this.recurly.GooglePay({
           ...this.googlePayOpts,
           billingAddressRequired: false,
           paymentDataRequest: {
@@ -400,7 +399,7 @@ describe(`Google Pay`, function () {
           totalPrice: '1',
         };
 
-        googlePay(this.recurly, {
+        this.recurly.GooglePay({
           billingAddressRequired: false,
           paymentDataRequest: {
             merchantInfo,
@@ -430,7 +429,7 @@ describe(`Google Pay`, function () {
       it('handles the shipping address intent if onPaymentDataChanged is provided and requiring shipping address', function (done) {
         this.stubRequestAndGoogleApi();
         const callbacks = { onPaymentDataChanged: () => {} };
-        googlePay(this.recurly, {
+        this.recurly.GooglePay({
           ...this.googlePayOpts,
           callbacks,
           paymentDataRequest: {
@@ -448,7 +447,7 @@ describe(`Google Pay`, function () {
       it('handles the shipping option intent if onPaymentDataChanged is provided and requiring shipping option', function (done) {
         this.stubRequestAndGoogleApi();
         const callbacks = { onPaymentDataChanged: () => {} };
-        googlePay(this.recurly, {
+        this.recurly.GooglePay({
           ...this.googlePayOpts,
           callbacks,
           paymentDataRequest: {
@@ -478,7 +477,7 @@ describe(`Google Pay`, function () {
 
         it('handles the payment authorized intent', function (done) {
           const callbacks = { onPaymentAuthorized: () => {} };
-          googlePay(this.recurly, {
+          this.recurly.GooglePay({
             ...this.googlePayOpts,
             callbacks,
           });
@@ -492,7 +491,7 @@ describe(`Google Pay`, function () {
 
         it('is called after the button is clicked with the paymentData and token', function (done) {
           let paymentData;
-          const emitter = googlePay(this.recurly, {
+          const emitter = this.recurly.GooglePay({
             ...this.googlePayOpts,
             callbacks: { onPaymentAuthorized: (pd) => paymentData = pd },
           });
@@ -509,7 +508,7 @@ describe(`Google Pay`, function () {
           this.sandbox.stub(this.recurly.request, 'post').rejects('boom');
 
           const onPaymentAuthorized = this.sandbox.stub();
-          const emitter = googlePay(this.recurly, {
+          const emitter = this.recurly.GooglePay({
             ...this.googlePayOpts,
             callbacks: { onPaymentAuthorized },
           });
@@ -531,7 +530,7 @@ describe(`Google Pay`, function () {
             message: 'Cannot pay with payment credentials',
             intent: 'PAYMENT_AUTHORIZATION',
           };
-          const emitter = googlePay(this.recurly, {
+          const emitter = this.recurly.GooglePay({
             ...this.googlePayOpts,
             callbacks: { onPaymentAuthorized: () => ({ error }) },
           });
@@ -552,7 +551,7 @@ describe(`Google Pay`, function () {
         });
 
         it('emits the same error the pay-with-google throws', function (done) {
-          const result = googlePay(this.recurly, this.googlePayOpts);
+          const result = this.recurly.GooglePay(this.googlePayOpts);
 
           result.on('error', (err) => assertDone(done, () => {
             assert.ok(err);
@@ -562,7 +561,7 @@ describe(`Google Pay`, function () {
         });
 
         it('do not emit any token nor the on ready event', function (done) {
-          const result = googlePay(this.recurly, this.googlePayOpts);
+          const result = this.recurly.GooglePay(this.googlePayOpts);
 
           result.on('ready', () => done(new Error('expected to not emit a ready event')));
           result.on('token', () => done(new Error('expected to not emit a token event')));
@@ -578,7 +577,7 @@ describe(`Google Pay`, function () {
         });
 
         it('initiates pay-with-google with the expected Google Pay Configuration', function (done) {
-          googlePay(this.recurly, this.googlePayOpts);
+          this.recurly.GooglePay(this.googlePayOpts);
 
           nextTick(() => assertDone(done, () => {
             assert.equal(window.google.payments.api.PaymentsClient.called, true);
@@ -588,7 +587,7 @@ describe(`Google Pay`, function () {
         });
 
         it('emits the same error the pay-with-google throws', function (done) {
-          const result = googlePay(this.recurly, this.googlePayOpts);
+          const result = this.recurly.GooglePay(this.googlePayOpts);
 
           result.on('error', (err) => assertDone(done, () => {
             assert.ok(err);
@@ -598,7 +597,7 @@ describe(`Google Pay`, function () {
         });
 
         it('do not emit any token nor the on ready event', function (done) {
-          const result = googlePay(this.recurly, this.googlePayOpts);
+          const result = this.recurly.GooglePay(this.googlePayOpts);
 
           result.on('ready', () => done(new Error('expected to not emit a ready event')));
           result.on('token', () => done(new Error('expected to not emit a token event')));
@@ -610,7 +609,7 @@ describe(`Google Pay`, function () {
     context('when the pay-with-google success', function () {
       it('emits the ready event with the google-pay button', function (done) {
         this.stubRequestAndGoogleApi();
-        const result = googlePay(this.recurly, this.googlePayOpts);
+        const result = this.recurly.GooglePay(this.googlePayOpts);
 
         result.on('ready', button => assertDone(done, () => {
           assert.ok(button);
@@ -621,7 +620,7 @@ describe(`Google Pay`, function () {
         beforeEach(function () {
           this.clickGooglePayButton = (cb) => {
             this.stubRequestAndGoogleApi();
-            const result = googlePay(this.recurly, this.googlePayOpts);
+            const result = this.recurly.GooglePay(this.googlePayOpts);
 
             result.on('ready', button => {
               cb(result);
