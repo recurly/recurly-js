@@ -5,16 +5,17 @@ import {
   stubWindowOpen
 } from '../../support/helpers';
 
-describe(`BraintreeStrategy`, function () {
+describe('BraintreeStrategy', function () {
   const validOpts = { braintree: { clientAuthorization: 'valid' } };
 
   stubWindowOpen();
   stubBraintree();
 
-  beforeEach(function () {
+  beforeEach(function (done) {
     this.sandbox = sinon.createSandbox();
     this.recurly = initRecurly();
     this.venmo = this.recurly.Venmo(validOpts);
+    this.venmo.on('ready', done);
   });
 
   describe('start', function () {
@@ -23,7 +24,7 @@ describe(`BraintreeStrategy`, function () {
       this.venmo.start();
       assert(this.venmo.strategy.venmo.tokenize.calledOnce);
     });
-  })
+  });
 
   describe('destroy', function () {
     it('closes the window and removes listeners', function () {

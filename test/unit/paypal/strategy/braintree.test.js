@@ -1,23 +1,21 @@
 import assert from 'assert';
-import each from 'component-each';
-import merge from 'lodash.merge';
-import { Recurly } from '../../../../lib/recurly';
 import {
   initRecurly,
   stubBraintree,
   stubWindowOpen
 } from '../../support/helpers';
 
-describe(`BraintreeStrategy`, function () {
+describe('BraintreeStrategy', function () {
   const validOpts = { braintree: { clientAuthorization: 'valid' } };
 
   stubWindowOpen();
   stubBraintree();
 
-  beforeEach(function () {
+  beforeEach(function (done) {
     this.sandbox = sinon.createSandbox();
     this.recurly = initRecurly();
     this.paypal = this.recurly.PayPal(validOpts);
+    this.paypal.on('ready', done);
   });
 
   describe('start', function () {
@@ -26,7 +24,7 @@ describe(`BraintreeStrategy`, function () {
       this.paypal.start();
       assert(this.paypal.strategy.paypal.tokenize.calledOnce);
     });
-  })
+  });
 
   describe('destroy', function () {
     it('closes the window and removes listeners', function () {

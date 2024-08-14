@@ -1,7 +1,7 @@
 import bowser from 'bowser';
 import merge from 'lodash.merge';
 import { Recurly } from '../../../lib/recurly';
-import { BRAINTREE_CLIENT_VERSION } from '../../../lib/const/gateway-constants';
+import BraintreeLoader from '../../../lib/util/braintree-loader';
 
 import Promise from 'promise';
 
@@ -62,7 +62,7 @@ export function stubBraintree () {
 
     window.braintree = {
       client: {
-        VERSION: BRAINTREE_CLIENT_VERSION,
+        VERSION: BraintreeLoader.BRAINTREE_CLIENT_VERSION,
         create
       },
       venmo: {
