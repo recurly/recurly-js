@@ -7,7 +7,6 @@ import Emitter from 'component-emitter';
 import Promise from 'promise';
 import { initRecurly, nextTick } from './support/helpers';
 import BraintreeLoader from '../../lib/util/braintree-loader';
-import { ApplePayBraintree } from '../../lib/recurly/apple-pay/apple-pay.braintree';
 import filterSupportedNetworks from '../../lib/recurly/apple-pay/util/filter-supported-networks';
 
 const infoFixture = require('@recurly/public-api-test-server/fixtures/apple_pay/info');
