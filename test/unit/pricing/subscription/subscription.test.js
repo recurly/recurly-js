@@ -271,6 +271,24 @@ describe('Recurly.Pricing.Subscription', function () {
             });
         });
       });
+
+      describe('when the plan quantity is zero', () => {
+        it('calculates to zero', function (done) {
+          this.pricing
+            .plan('basic', { quantity: 0 })
+            .addon('snarf', { quantity: 2 })
+            .done(price => {
+              assert.equal(this.pricing.items.addons.length, 1);
+              assert.equal(this.pricing.items.addons[0].code, 'snarf');
+              assert.equal(this.pricing.items.addons[0].quantity, 2);
+              assert.equal(price.now.addons, '0.00');
+              assert.equal(price.next.addons, '0.00');
+              assert.equal(price.now.total, '0.00');
+              assert.equal(price.next.total, '0.00');
+              done();
+            });
+        });
+      });
     });
 
     describe('with usage addons', () => {
