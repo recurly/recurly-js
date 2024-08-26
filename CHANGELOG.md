@@ -1,5 +1,18 @@
 # Changelog
 
+## [v4.29.3](https://github.com/recurly/recurly-js/tree/v4.29.3) (2024-08-26)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.29.2...v4.29.3)
+
+
+**Merged Pull Requests**
+
+- Ensures setup fees are not applied to subscriptions with quantity = 0 [#893](https://github.com/recurly/recurly-js/pull/893) ([chrissrogers](https://github.com/chrissrogers))
+- chore: convert Google Pay element to a class from function [#892](https://github.com/recurly/recurly-js/pull/892) ([cbarton](https://github.com/cbarton))
+- chore: extract loading braintree libraries to util/braintree [#891](https://github.com/recurly/recurly-js/pull/891) ([cbarton](https://github.com/cbarton))
+
+
+
 ## [v4.29.2](https://github.com/recurly/recurly-js/tree/v4.29.2) (2024-07-30)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.29.1...v4.29.2)
