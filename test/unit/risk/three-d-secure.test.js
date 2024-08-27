@@ -95,7 +95,7 @@ describe('ThreeDSecure', function () {
         }
       ];
       sandbox.stub(ThreeDSecure, 'getStrategyForGatewayType').callsFake(() => ({
-        preflight: sandbox.stub().usingPromise(Promise).resolves({ arbitrary: 'test-results' })
+        preflight: sandbox.stub().usingPromise(Promise).resolves({ results: { arbitrary: 'test-results' } })
       }));
     });
 
@@ -108,9 +108,9 @@ describe('ThreeDSecure', function () {
     it('resolves with preflight results from strategies', function (done) {
       const { recurly, bin, preflights } = this;
       const returnValue = ThreeDSecure.preflight({ recurly, bin, preflights })
-        .done(response => {
-          const [{ processor, results }] = response;
-          assert.strictEqual(Array.isArray(response), true);
+        .done(({ risk }) => {
+          const [{ processor, results }] = risk;
+          assert.strictEqual(Array.isArray(risk), true);
           assert.strictEqual(processor, 'test-gateway-type');
           assert.deepStrictEqual(results, { arbitrary: 'test-results' });
           done();

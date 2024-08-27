@@ -87,7 +87,7 @@ describe('CybersourceStrategy', function () {
       const { recurly, Strategy, sessionId, number, month, year, gateway_code, jwt, poll } = this;
 
       Strategy.preflight({ recurly, number, month, year, gateway_code }).then(preflightResponse => {
-        assert.strictEqual(preflightResponse.session_id, sessionId);
+        assert.strictEqual(preflightResponse.results.session_id, sessionId);
 
         clearInterval(poll);
         done();
