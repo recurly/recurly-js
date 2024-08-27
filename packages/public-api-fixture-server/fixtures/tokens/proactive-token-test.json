@@ -1,0 +1,13 @@
+{
+  "type": "three_d_secure_proactive_action",
+  "id": "proactive-token-test",
+  "gateway": {
+    "code": "1234567890",
+    "type": "test"
+  },
+  "three_d_secure": {
+    "params": {
+      "challengeType": "challenge"
+    }
+  }
+}

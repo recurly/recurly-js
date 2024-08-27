@@ -85,6 +85,19 @@ describe('Risk', function () {
         });
     });
 
+    it('appends proactive data to the preflight request when enabled', function (done) {
+      const { recurly, sandbox, bin } = this;
+      recurly.config.risk.threeDSecure.proactive.enabled = true;
+      recurly.config.risk.threeDSecure.proactive.gateway_code = 'test-gateway-code';
+      sandbox.spy(recurly.request, 'get');
+      Risk.preflight({ recurly, bin })
+        .done(results => {
+          assert(recurly.request.get.calledOnce);
+          assert(recurly.request.get.calledWithMatch({ route: '/risk/preflights?proactive=true&gatewayCode=test-gateway-code' }));
+          done();
+        });
+    });
+
     describe('when some results are timeouts', function () {
       beforeEach(function () {
         this.stubPreflightResults = [

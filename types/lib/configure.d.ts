@@ -24,6 +24,9 @@ export type RecurlyOptions = {
   risk?: {
     threeDSecure?: {
       preflightDeviceDataCollector?: boolean;
+      proactive?: {
+        enabled: true;
+      }
     }
   };
 

@@ -155,6 +155,29 @@ describe('Recurly', function () {
         });
       });
     });
+
+    describe('when proactive3ds', function () {
+      describe('is set to true', function() {
+        it('returns true', function () {
+          const recurly = initRecurly({
+            risk: {
+              threeDSecure: {
+                proactive: {
+                  enabled: true
+                }
+              }
+            }
+          });
+          assert.strictEqual(recurly.config.risk.threeDSecure.proactive.enabled, true);
+        });
+      });
+      describe('is not set', function() {
+        it('returns false', function () {
+          const recurly = initRecurly({});
+          assert.strictEqual(recurly.config.risk.threeDSecure.proactive.enabled, false);
+        });
+      })
+    });
   });
 
   describe('destroy', function () {

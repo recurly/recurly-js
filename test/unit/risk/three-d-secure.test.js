@@ -242,6 +242,32 @@ describe('ThreeDSecure', function () {
     });
   });
 
+  describe('when a proactiveTokenId is provided', function () {
+    it('throws an error if it is not valid', function (done) {
+      const { risk } = this;
+      const threeDSecure = new ThreeDSecure({ risk, proactiveTokenId: 'invalid-token-id' });
+      
+      threeDSecure.on('error', err => {
+        assert.strictEqual(err.code, 'not-found');
+        assert.strictEqual(err.message, 'Token not found');
+        done();
+      });
+    });
+
+    it('calls onStrategyDone when a strategy completes', function (done) {
+      const { sandbox, threeDSecure } = this;
+      const example = { arbitrary: 'test-payload' };
+      sandbox.spy(threeDSecure, 'onStrategyDone');
+
+      threeDSecure.whenReady(() => {
+        threeDSecure.strategy.emit('done', example);
+        assert(threeDSecure.onStrategyDone.calledOnce);
+        assert(threeDSecure.onStrategyDone.calledWithMatch(example));
+        done();
+      });
+    });
+  });
+
   describe('challengeWindowSize', function() {
     it('validates', function () {
       const challengeWindowSize = 'xx';
