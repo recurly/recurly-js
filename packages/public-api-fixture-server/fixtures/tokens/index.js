@@ -59,20 +59,20 @@ const CREATE_INVALID = {
 module.exports = function tokens () {
   const params = this.method === 'GET' ? this.query : this.request.body;
   const { type } = params;
-  let token;
 
   if (type === 'iban_bank_account') {
-    token = IBAN_BANK_ACCOUNT_TOKENS[params.iban];
+    return IBAN_BANK_ACCOUNT_TOKENS[params.iban];
   } else if (type === 'bacs_bank_account') {
-    token = BACS_BANK_ACCOUNT_TOKENS[params.account_number];
+    return BACS_BANK_ACCOUNT_TOKENS[params.account_number];
   } else if (type === 'three_d_secure_action_result') {
-    token = THREE_D_SECURE_TOKENS[params.three_d_secure_action_token_id];
+    return THREE_D_SECURE_TOKENS[params.three_d_secure_action_token_id];
   } else if (type === 'becs_bank_account') {
-    token = BECS_BANK_ACCOUNT_TOKENS[params.account_number];
+    return BECS_BANK_ACCOUNT_TOKENS[params.account_number];
   } else if ('account_number' in params) {
-    token = BANK_ACCOUNT_TOKENS[params.account_number];
+    return BANK_ACCOUNT_TOKENS[params.account_number];
+  } else if (type === 'checkout_session') {
+    return require('./checkout-session-token.json');
   }
 
-  if (token) return token;
-  else return CREATE_INVALID;
+  return CREATE_INVALID;
 };

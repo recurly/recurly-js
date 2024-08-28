@@ -1,0 +1,288 @@
+{
+  "type": "checkout_session",
+  "id": "ANVq-oGYqYD4Qe5CNbXmvA",
+  "cancelUrl": null,
+  "cart": {
+    "coupons": [],
+    "currencies": [
+      {
+        "code": "USD"
+      }
+    ],
+    "currency": {
+      "code": "USD"
+    },
+    "giftCards": [],
+    "lineItems": [],
+    "subscriptions": [
+      {
+        "addOns": [],
+        "planId": "basic",
+        "quantity": "1",
+        "quantityMutable": true,
+        "ephemeralId": "t-k9lRX0Xv7DFyXBThpA8YI"
+      }
+    ]
+  },
+  "confirmUrl": "",
+  "finishUrl": null,
+  "flags": [
+    "accept_coupons"
+  ],
+  "iconUrl": null,
+  "locale": "en-US",
+  "logoUrl": null,
+  "paymentMethods": [
+    {
+      "currencies": [
+        {
+          "cardTypes": [
+            "american_express",
+            "discover",
+            "diners_club",
+            "master",
+            "visa",
+            "jcb",
+            "union_pay",
+            "cartes_bancaires"
+          ],
+          "code": "USD"
+        },
+        {
+          "cardTypes": [
+            "american_express",
+            "discover",
+            "diners_club",
+            "master",
+            "visa",
+            "jcb",
+            "union_pay",
+            "elo",
+            "hipercard"
+          ],
+          "code": "BRL"
+        },
+        {
+          "cardTypes": [
+            "american_express",
+            "discover",
+            "diners_club",
+            "master",
+            "visa",
+            "jcb",
+            "union_pay",
+            "cartes_bancaires",
+            "bancontact"
+          ],
+          "code": "EUR"
+        },
+        {
+          "cardTypes": [
+            "american_express",
+            "discover",
+            "diners_club",
+            "master",
+            "visa",
+            "jcb",
+            "union_pay",
+            "cartes_bancaires"
+          ],
+          "code": "CHF"
+        }
+      ],
+      "gateways": [],
+      "type": "credit_card"
+    },
+    {
+      "currencies": [
+        {
+          "cardTypes": [],
+          "code": "USD"
+        },
+        {
+          "cardTypes": [],
+          "code": "BRL"
+        },
+        {
+          "cardTypes": [],
+          "code": "EUR"
+        },
+        {
+          "cardTypes": [],
+          "code": "CHF"
+        }
+      ],
+      "gateways": [
+        {
+          "code": "stripe-gateway-code",
+          "type": "stripe",
+          "credentials": {
+            "publishableKey": "pk_test_12345"
+          },
+          "currencies": [
+            {
+              "code": "USD"
+            }
+          ]
+        },
+        {
+          "code": "test-adyen-code",
+          "type": "adyen",
+          "credentials": {
+            "clientKey": "test_12345"
+          },
+          "currencies": [
+            {
+              "code": "USD"
+            },
+            {
+              "code": "BRL"
+            },
+            {
+              "code": "EUR"
+            },
+            {
+              "code": "CHF"
+            }
+          ]
+        },
+        {
+          "code": "test-adyen-code",
+          "type": "adyen",
+          "credentials": {
+            "clientKey": "test_12345"
+          },
+          "currencies": [
+            {
+              "code": "USD"
+            },
+            {
+              "code": "BRL"
+            },
+            {
+              "code": "EUR"
+            },
+            {
+              "code": "CHF"
+            }
+          ]
+        }
+      ],
+      "type": "apple_pay"
+    },
+    {
+      "currencies": [
+        {
+          "cardTypes": [],
+          "code": "USD"
+        },
+        {
+          "cardTypes": [],
+          "code": "BRL"
+        },
+        {
+          "cardTypes": [],
+          "code": "EUR"
+        },
+        {
+          "cardTypes": [],
+          "code": "CHF"
+        }
+      ],
+      "gateways": [],
+      "type": "google_pay"
+    },
+    {
+      "currencies": [
+        {
+          "cardTypes": [],
+          "code": "BRL"
+        }
+      ],
+      "gateways": [
+        {
+          "code": "test-adyen-code",
+          "type": "adyen",
+          "credentials": {
+            "clientKey": "test_12345"
+          },
+          "currencies": [
+            {
+              "code": "BRL"
+            }
+          ]
+        }
+      ],
+      "type": "boleto"
+    },
+    {
+      "currencies": [
+        {
+          "cardTypes": [],
+          "code": "EUR"
+        }
+      ],
+      "gateways": [
+        {
+          "code": "test-adyen-code",
+          "type": "adyen",
+          "credentials": {
+            "clientKey": "test_12345"
+          },
+          "currencies": [
+            {
+              "code": "EUR"
+            }
+          ]
+        }
+      ],
+      "type": "ideal"
+    },
+    {
+      "currencies": [
+        {
+          "cardTypes": [],
+          "code": "EUR"
+        },
+        {
+          "cardTypes": [],
+          "code": "CHF"
+        }
+      ],
+      "gateways": [
+        {
+          "code": "test-adyen-code",
+          "type": "adyen",
+          "credentials": {
+            "clientKey": "test_12345"
+          },
+          "currencies": [
+            {
+              "code": "EUR"
+            },
+            {
+              "code": "CHF"
+            }
+          ]
+        }
+      ],
+      "type": "sofort"
+    },
+    {
+      "currencies": [],
+      "gateways": [],
+      "type": "bacs"
+    }
+  ],
+  "prefersColorScheme": null,
+  "primaryColor": "#2676a5",
+  "site": {
+    "addressRequirement": "full",
+    "name": "Test site",
+    "defaultCurrency": "USD"
+  },
+  "purchases": [],
+  "privacyPolicyUrl": "",
+  "tosUrl": "https://recurly.com/legal/terms/",
+  "updatedAt": "2024-08-28T19:17:11Z"
+}
