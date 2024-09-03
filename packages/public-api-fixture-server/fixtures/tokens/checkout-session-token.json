@@ -1,6 +1,6 @@
 {
   "type": "checkout_session",
-  "id": "ANVq-oGYqYD4Qe5CNbXmvA",
+  "id": "checkout-session-token",
   "cancelUrl": null,
   "cart": {
     "coupons": [],
