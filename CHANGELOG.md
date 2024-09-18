@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.30.0](https://github.com/recurly/recurly-js/tree/v4.30.0) (2024-09-18)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.29.4...v4.30.0)
+
+
+**Merged Pull Requests**
+
+- Adds Checkout session token fixture [#897](https://github.com/recurly/recurly-js/pull/897) ([chrissrogers](https://github.com/chrissrogers))
+- feat: Add Google Pay through Braintree [#894](https://github.com/recurly/recurly-js/pull/894) ([cbarton](https://github.com/cbarton))
+
+
+
 ## [v4.29.4](https://github.com/recurly/recurly-js/tree/v4.29.4) (2024-08-26)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.29.2...v4.29.4)
