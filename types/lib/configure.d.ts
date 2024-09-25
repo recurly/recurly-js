@@ -26,6 +26,7 @@ export type RecurlyOptions = {
       preflightDeviceDataCollector?: boolean;
       proactive?: {
         enabled: true;
+        gatewayCode: string;
       }
     }
   };
