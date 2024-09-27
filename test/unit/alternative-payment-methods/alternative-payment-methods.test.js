@@ -103,6 +103,18 @@ describe('Recurly.AlternativePaymentMethods', () => {
       });
     });
 
+    describe('destroy', () => {
+      it('removes the web component', done => {
+        paymentMethods = recurly.AlternativePaymentMethods(params);
+        paymentMethods.start()
+          .then(() => {
+            paymentMethods.destroy();
+            assert.equal(paymentMethods.webComponent, undefined);
+          })
+          .finally(done);
+      });
+    });
+
     it("make a GET /js/v1/payment_methods/list with the needed params", (done) => {
       sandbox.stub(recurly.request, 'get').resolves({ });
       paymentMethods = recurly.AlternativePaymentMethods(params);
