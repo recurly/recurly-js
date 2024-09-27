@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.30.1](https://github.com/recurly/recurly-js/tree/v4.30.1) (2024-09-27)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.30.0...v4.30.1)
+
+
+**Merged Pull Requests**
+
+- Add destroy method for AlternatePaymentMethod class [#901](https://github.com/recurly/recurly-js/pull/901) ([Patrick-Duvall](https://github.com/Patrick-Duvall))
+
+
+
 ## [v4.30.0](https://github.com/recurly/recurly-js/tree/v4.30.0) (2024-09-18)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.29.4...v4.30.0)
