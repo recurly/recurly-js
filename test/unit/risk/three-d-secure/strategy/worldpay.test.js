@@ -81,7 +81,7 @@ describe('WorldpayStrategy', function () {
       const { recurly, Strategy, number, jwt, deviceDataCollectionUrl, sessionId, simulatePreflightResponse } = this;
 
       Strategy.preflight({ recurly, number, jwt, deviceDataCollectionUrl }).then(preflightResponse => {
-        assert.strictEqual(preflightResponse.session_id, sessionId);
+        assert.strictEqual(preflightResponse.results.session_id, sessionId);
         done();
       });
 

@@ -69,7 +69,7 @@ describe('Risk', function () {
       const { sandbox, recurly } = this;
       this.bin = '411111';
       this.recurly = initRecurly({ publicKey: 'test-preflight-key' });
-      this.stubPreflightResults = [{ arbitrary: 'preflight-results' }];
+      this.stubPreflightResults = { risk: [{ arbitrary: 'results' }], tokenType: undefined };
       sandbox.stub(ThreeDSecure, 'preflight').usingPromise(Promise).resolves(this.stubPreflightResults);
     });
 
@@ -87,12 +87,12 @@ describe('Risk', function () {
 
     describe('when some results are timeouts', function () {
       beforeEach(function () {
-        this.stubPreflightResults = [
+        this.stubPreflightResults = { risk: [
           { arbitrary: 'preflight-results' },
           errors('risk-preflight-timeout', { processor: 'test' }),
           { arbitrary: 'preflight-results-2' },
           errors('risk-preflight-timeout', { processor: 'test-2' })
-        ];
+        ], tokenType: undefined};
         ThreeDSecure.preflight.usingPromise(Promise).resolves(this.stubPreflightResults);
       });
 
@@ -100,9 +100,9 @@ describe('Risk', function () {
         const { recurly, bin, stubPreflightResults } = this;
         Risk.preflight({ recurly, bin })
           .done(results => {
-            assert.strictEqual(results.length, 2);
-            assert.deepStrictEqual(results[0], stubPreflightResults[0]);
-            assert.deepStrictEqual(results[1], stubPreflightResults[2]);
+            assert.strictEqual(results.risk.length, 2);
+            assert.deepStrictEqual(results.risk[0], stubPreflightResults.risk[0]);
+            assert.deepStrictEqual(results.risk[1], stubPreflightResults.risk[2]);
             done();
           });
       });
