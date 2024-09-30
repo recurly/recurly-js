@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.31.0](https://github.com/recurly/recurly-js/tree/v4.31.0) (2024-09-30)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.30.1...v4.31.0)
+
+
+**Merged Pull Requests**
+
+- Proactive 3DS changes [#896](https://github.com/recurly/recurly-js/pull/896) ([gilv93](https://github.com/gilv93))
+
+
+
 ## [v4.30.1](https://github.com/recurly/recurly-js/tree/v4.30.1) (2024-09-27)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.30.0...v4.30.1)
