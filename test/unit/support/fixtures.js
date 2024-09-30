@@ -230,7 +230,7 @@ export function applyFixtures () {
 }
 
 export function fixture (name, opts = {}) {
-  const tpl = FIXTURES[name] || (() => {});
+  const tpl = typeof name === 'function' ? name : FIXTURES[name] || (() => {});
   testBed().innerHTML = tpl(opts);
 }
 

@@ -2,7 +2,6 @@ import assert from 'assert';
 import Element from '../../lib/recurly/element';
 import Elements from '../../lib/recurly/elements';
 import { initRecurly } from './support/helpers';
-import { Recurly } from '../../lib/recurly';
 
 const noop = () => {};
 
@@ -26,7 +25,7 @@ describe('Elements', function () {
       'CardNumberElement',
       'CardMonthElement',
       'CardYearElement',
-      'CardCvvElement'
+      'CardCvvElement',
     ].forEach(elementName => {
       const elements = new Elements({ recurly: this.recurly });
       const element = elements[elementName]();

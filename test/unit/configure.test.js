@@ -51,8 +51,6 @@ describe('Recurly.configure', function () {
         { publicKey: 'test', currency: 'USD' },
         { publicKey: 'test', currency: 'AUD', api },
         { publicKey: 'test', currency: 'AUD', api, cors: true },
-        { publicKey: 'test', currency: 'USD', api, required: ['country'] },
-        { publicKey: 'test', currency: 'USD', api, required: ['postal_code', 'country'] }
       ];
     });
 
@@ -105,6 +103,14 @@ describe('Recurly.configure', function () {
         recurly.configure('bar');
         assert.strictEqual(recurly.config.publicKey, 'bar');
       });
+    });
+  });
+
+  describe('when options.required is given', function () {
+    it('appends the given value to the defaults', function () {
+      const { recurly } = this;
+      recurly.configure({ publicKey: 'test', required: ['number', 'postal_code'] });
+      assert.deepEqual(recurly.config.required, ['number', 'month', 'year', 'first_name', 'last_name', 'postal_code']);
     });
   });
 

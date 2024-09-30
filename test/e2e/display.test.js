@@ -7,6 +7,7 @@ const {
   environmentIs,
   fillCardElement,
   fillDistinctCardElements,
+  fillCvvElement,
   init
 } = require('./support/helpers');
 
@@ -34,7 +35,7 @@ maybeDescribe('Display', () => {
       it('matches distinct elements baseline', async function () {
         const { CardElement, ...distinctElements } = ELEMENT_TYPES;
         for (const element in distinctElements) {
-          await createElement(element, { style: { fontFamily: 'Pacifico' }});
+          await createElement(element, { style: { fontFamily: 'Pacifico' } });
         }
         await fillDistinctCardElements();
         await clickFirstName();
