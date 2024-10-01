@@ -86,7 +86,6 @@ describe('ThreeDSecure', function () {
 
   describe('ThreeDSecure.preflight', function () {
     beforeEach(function () {
-      const { sandbox } = this;
       this.bin = '411111';
       this.preflights = [
         {
@@ -94,28 +93,50 @@ describe('ThreeDSecure', function () {
           params: { arbitrary: 'test-params' }
         }
       ];
-      sandbox.stub(ThreeDSecure, 'getStrategyForGatewayType').callsFake(() => ({
-        preflight: sandbox.stub().usingPromise(Promise).resolves({ results: { arbitrary: 'test-results' } })
-      }));
     });
 
-    it('returns a promise', function (done) {
-      const { recurly, bin, preflights } = this;
-      const returnValue = ThreeDSecure.preflight({ recurly, bin, preflights }).then(() => done());
-      assert(returnValue instanceof Promise);
+    context('when a strategy returns valid results', function () {
+      beforeEach(function () {
+        this.sandbox.stub(ThreeDSecure, 'getStrategyForGatewayType').callsFake(() => ({
+          preflight: this.sandbox.stub().usingPromise(Promise).resolves({ results: { arbitrary: 'test-results' } })
+        }));
+      });
+
+      it('returns a promise', function (done) {
+        const { recurly, bin, preflights } = this;
+        const returnValue = ThreeDSecure.preflight({ recurly, bin, preflights }).then(() => done());
+        assert(returnValue instanceof Promise);
+      });
+  
+      it('resolves with preflight results from strategies', function (done) {
+        const { recurly, bin, preflights } = this;
+        const returnValue = ThreeDSecure.preflight({ recurly, bin, preflights })
+          .done(({ risk }) => {
+            const [{ processor, results }] = risk;
+            assert.strictEqual(Array.isArray(risk), true);
+            assert.strictEqual(processor, 'test-gateway-type');
+            assert.deepStrictEqual(results, { arbitrary: 'test-results' });
+            done();
+          });
+      });
     });
 
-    it('resolves with preflight results from strategies', function (done) {
-      const { recurly, bin, preflights } = this;
-      const returnValue = ThreeDSecure.preflight({ recurly, bin, preflights })
-        .done(({ risk }) => {
-          const [{ processor, results }] = risk;
-          assert.strictEqual(Array.isArray(risk), true);
-          assert.strictEqual(processor, 'test-gateway-type');
-          assert.deepStrictEqual(results, { arbitrary: 'test-results' });
+    context('when a strategy does not return results', function () {
+      beforeEach(function() {
+        this.sandbox.stub(ThreeDSecure, 'getStrategyForGatewayType').callsFake(() => ({
+          preflight: this.sandbox.stub().usingPromise(Promise).resolves(undefined)
+        }));
+      });
+
+      it('does not error out', function (done) {
+        const { recurly, bin, preflights } = this;
+        ThreeDSecure.preflight({ recurly, bin, preflights }).done(returnValue => {
+          assert(Array.isArray(returnValue.risk));
+          assert.strictEqual(returnValue.risk.length, 0);
           done();
         });
-    });
+      });
+    })
   });
 
   it('adds itself to the provided Risk instance', function () {
