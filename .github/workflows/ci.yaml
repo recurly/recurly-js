@@ -140,8 +140,6 @@ jobs:
       - check
       - unit_test
       - unit_test_remote
-      - e2e_test
-      - integration_test
     steps:
       - uses: actions/checkout@v3
       - uses: browser-actions/setup-chrome@v1

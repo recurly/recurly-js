@@ -7,7 +7,7 @@ const {
 } = require('./test/conf/browserstack');
 
 const {
-  BROWSER = 'BrowserStackChrome',
+  BROWSER = 'Chrome-Remote',
   BROWSER_STACK_USERNAME: user,
   BROWSER_STACK_ACCESS_KEY: key,
   GITHUB_RUN_ID

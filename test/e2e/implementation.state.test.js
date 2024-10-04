@@ -8,6 +8,8 @@ const {
   environmentIs,
   EXAMPLES,
   fillCardElement,
+  fillDistinctCardElements,
+  fillElement,
   init
 } = require('./support/helpers');
 
@@ -68,6 +70,17 @@ describe('Field State', elementAndFieldSuite({
       );
     });
   },
+  cvvElement: async () => {
+    it('displays field state on the page', async function () {
+      await setupElementsStateOutput();
+      await assertInputStateChange(() => fillElement(0, '.recurly-hosted-field-input', '123'), 0, {
+        empty: false,
+        length: 3,
+        focus: false,
+        valid: true
+      });
+    });
+  },
   cardHostedField: async function () {
     it('displays field state on the page', async function () {
       // Skip Electron due to element blur incompatibility
@@ -115,6 +128,19 @@ describe('Field State', elementAndFieldSuite({
         hostedFieldState({ number, month, year, cvv })
       );
     });
+  },
+  cvvHostedField: async () => {
+    it('displays field state on the page', async function () {
+      const cvv = {
+        empty: false,
+        length: 3,
+        focus: false,
+        valid: true,
+      };
+
+      await setupHostedFieldStateOutput();
+      await assertInputStateChange(() => fillElement(0, '.recurly-hosted-field-input', '123'), 0, { fields: { cvv } });
+    });
   }
 }));
 
@@ -141,6 +167,7 @@ async function setupHostedFieldStateOutput () {
 }
 
 async function assertCardBehavior ({ wrap = obj => obj } = {}) {
+  const FRAME = 0;
   const expect = {
     valid: false,
     firstSix: '',
@@ -164,29 +191,9 @@ async function assertCardBehavior ({ wrap = obj => obj } = {}) {
       valid: false
     }
   };
+  const expectation = (changes) => wrap(Object.assign({}, expect, changes));
 
-  const firstName = await $(sel.firstName);
-  const output = await $(sel.output);
-  const actual = async () => JSON.parse(await output.getText());
-  const assertStateOutputIs = async changes => {
-    assert.deepStrictEqual(
-      await actual(),
-      wrap(Object.assign({}, expect, changes))
-    );
-  };
-
-  // await browser.switchToFrame(0);
-  // const number = await $(sel.number);
-  // await number.setValue(EXAMPLES.NUMBER);
-  // await browser.waitUntil(async () => (await number.getValue()).length >= 19);
-  // await browser.switchToFrame(null);
-  await fillCardElement({
-    expiry: '',
-    cvv: ''
-  });
-  await firstName.click();
-
-  await assertStateOutputIs({
+  await assertInputStateChange(() => fillCardElement({ expiry: '', cvv: '' }), FRAME, expectation({
     firstSix: '411111',
     lastFour: '1111',
     brand: 'visa',
@@ -197,14 +204,9 @@ async function assertCardBehavior ({ wrap = obj => obj } = {}) {
       focus: false,
       valid: true
     }
-  });
+  }));
 
-  await fillCardElement({
-    cvv: ''
-  });
-  await firstName.click();
-
-  await assertStateOutputIs({
+  await assertInputStateChange(() => fillCardElement({ cvv: '' }), FRAME, expectation({
     firstSix: '411111',
     lastFour: '1111',
     brand: 'visa',
@@ -220,15 +222,9 @@ async function assertCardBehavior ({ wrap = obj => obj } = {}) {
       focus: false,
       valid: true
     }
-  });
+  }));
 
-  // await browser.switchToFrame(0);
-  // await (await $(sel.cvv)).addValue(EXAMPLES.CVV);
-  // await browser.switchToFrame(null);
-  await fillCardElement();
-  await firstName.click();
-
-  await assertStateOutputIs({
+  await assertInputStateChange(() => fillCardElement(), FRAME, expectation({
     firstSix: '411111',
     lastFour: '1111',
     brand: 'visa',
@@ -250,7 +246,7 @@ async function assertCardBehavior ({ wrap = obj => obj } = {}) {
       focus: false,
       valid: true
     }
-  });
+  }));
 }
 
 async function assertDistinctCardBehavior (...expectations) {
@@ -260,26 +256,22 @@ async function assertDistinctCardBehavior (...expectations) {
     '28',
     '123'
   ];
-  const firstName = await $(sel.firstName);
-  const output = await $(sel.output);
-  const actual = async () => JSON.parse(await output.getText());
-  const assertStateOutputIs = async expect => assert.deepStrictEqual(
-    await actual(),
-    expect
-  );
 
   for (const entry of entries) {
     const i = entries.indexOf(entry);
-    await browser.switchToFrame(i);
-    const input = await $('.recurly-hosted-field-input');
-    await input.addValue(entry);
-    if (environmentIs(BROWSERS.EDGE)) {
-      await browser.waitUntil(async () => (await input.getValue()).replace(/ /g, '') === entry);
-    }
-    await browser.switchToFrame(null);
-    await firstName.click();
-    await assertStateOutputIs(expectations[i]);
+    await assertInputStateChange(() => fillElement(i, '.recurly-hosted-field-input', entry), i, expectations[i]);
   }
+}
+
+async function assertInputStateChange(example, frame, expectation) {
+  const blurTriggerEl = await $(sel.firstName);
+  const output = await $(sel.output);
+
+  await example();
+
+  await blurTriggerEl.click();
+  const actual = JSON.parse(await output.getText());
+  assert.deepStrictEqual(actual, expectation);
 }
 
 function hostedFieldState ({ number, month, year, cvv }) {

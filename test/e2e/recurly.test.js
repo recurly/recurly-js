@@ -3,6 +3,7 @@ const {
   assertIsAToken,
   EXAMPLES,
   getValue,
+  fillElement,
   init,
   recurlyEnvironment,
   tokenize
@@ -98,6 +99,17 @@ describe('Recurly.js', async function () {
         const [errWith, tokenWith] = await tokenize(sel.form);
         assert.strictEqual(errWith, null);
         assertIsAToken(tokenWith);
+      });
+    });
+
+    describe('when using standalone cvv hosted field', async function () {
+      beforeEach(init({ fixture: 'hosted-fields-cvv' }));
+
+      it('creates a token', async function () {
+        await fillElement(0, sel.hostedFieldInput, EXAMPLES.CVV);
+        const [err, token] = await tokenize(sel.form);
+        assert.strictEqual(err, null);
+        assertIsAToken(token);
       });
     });
   });

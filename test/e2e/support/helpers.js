@@ -22,7 +22,7 @@ const ELEMENT_TYPES = {
   CardNumberElement: 'CardNumberElement',
   CardMonthElement: 'CardMonthElement',
   CardYearElement: 'CardYearElement',
-  CardCvvElement: 'CardCvvElement'
+  CardCvvElement: 'CardCvvElement',
 };
 
 const FIELD_TYPES = {
@@ -76,6 +76,8 @@ module.exports = {
   FIELD_TYPES,
   fillCardElement,
   fillDistinctCardElements,
+  fillCvvElement,
+  fillElement,
   getValue,
   init,
   recurlyEnvironment,
@@ -106,8 +108,10 @@ module.exports = {
 function elementAndFieldSuite ({
   cardElement,
   distinctCardElements,
+  cvvElement,
   cardHostedField,
   distinctCardHostedFields,
+  cvvHostedField,
   any
 }) {
   return () => {
@@ -132,6 +136,13 @@ function elementAndFieldSuite ({
         });
         maybeRun(distinctCardElements);
       });
+
+      describe('distinct CardCvvElement', function () {
+        beforeEach(async function () {
+          await createElement(ELEMENT_TYPES.CardCvvElement);
+        });
+        maybeRun(cvvElement);
+      });
     });
 
     describe('when using a card Hosted Field', function () {
@@ -142,6 +153,11 @@ function elementAndFieldSuite ({
     describe('when using distinct card Hosted Fields', function () {
       beforeEach(init({ fixture: 'hosted-fields-card-distinct' }));
       maybeRun(distinctCardHostedFields);
+    });
+
+    describe('when using a cvv Hosted Field', function () {
+      beforeEach(init({ fixture: 'hosted-fields-cvv' }));
+      maybeRun(cvvHostedField);
     });
   };
 }
@@ -207,30 +223,9 @@ async function fillCardElement ({
   expiry = EXAMPLES.EXPIRY,
   cvv = EXAMPLES.CVV
 } = {}) {
-  await browser.switchToFrame(0);
-
-  const numberInput = await $(SELECTORS.CARD_ELEMENT.NUMBER);
-  const expiryInput = await $(SELECTORS.CARD_ELEMENT.EXPIRY);
-  const cvvInput = await $(SELECTORS.CARD_ELEMENT.CVV);
-
-  // setvalue's underlying elementSendKeys is slow to act on Android. Thus we chunk the input.
-  if (environmentIs(DEVICES.ANDROID)) {
-    await numberInput.clearValue();
-    for (const chunk of number.match(/.{1,2}/g)) {
-      await numberInput.addValue(chunk);
-    }
-  } else {
-    await numberInput.setValue(number);
-  }
-
-  if (environmentIs(BROWSERS.EDGE)) {
-    await browser.waitUntil(async () => (await numberInput.getValue()).replace(/ /g, '') === number);
-  }
-
-  await expiryInput.setValue(expiry);
-  await cvvInput.setValue(cvv);
-
-  await browser.switchToFrame(null);
+  await fillElement(0, SELECTORS.CARD_ELEMENT.NUMBER, number);
+  await fillElement(0, SELECTORS.CARD_ELEMENT.EXPIRY, expiry);
+  await fillElement(0, SELECTORS.CARD_ELEMENT.CVV, cvv);
 }
 
 /**
@@ -250,11 +245,38 @@ async function fillDistinctCardElements ({
   const examples = [number, month, year, cvv];
   for (const example of examples) {
     const i = examples.indexOf(example);
-    await browser.switchToFrame(i);
-    const input = await $(SELECTORS.HOSTED_FIELD_INPUT);
-    await input.setValue(example);
-    await browser.switchToFrame(null);
+    await fillElement(i, SELECTORS.HOSTED_FIELD_INPUT, example);
   }
+}
+
+/**
+ * Fills a cvv Hosted Field with the given value
+ *
+ * @param  {String} options.cvv
+ */
+async function fillCvvElement ({ cvv = EXAMPLES.CVV } = {}) {
+  await fillElement(0, SELECTORS.HOSTED_FIELD_INPUT, cvv);
+}
+
+async function fillElement (frame, selector, val) {
+  await browser.switchToFrame(frame);
+  const input = await $(selector);
+
+  // setvalue's underlying elementSendKeys is slow to act on Android. Thus we chunk the input.
+  if (environmentIs(DEVICES.ANDROID)) {
+    await input.clearValue();
+    for (const chunk of val.match(/.{1,2}/g)) {
+      await input.addValue(chunk);
+    }
+  } else {
+    await input.setValue(val);
+
+    if (environmentIs(BROWSERS.EDGE)) {
+      await browser.waitUntil(async () => (await input.getValue()).replace(/ /g, '') === val);
+    }
+  }
+
+  await browser.switchToFrame(null);
 }
 
 // Action helpers

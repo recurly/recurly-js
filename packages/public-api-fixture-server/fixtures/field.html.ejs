@@ -19,9 +19,13 @@
     }
 
     // Stub broker behavior
-    if (config().type === 'number') {
-      window.addEventListener('message', receivePostMessage, false);
+    function setStubTokenizationElementName (name) {
+      window.stubTokenizationElementName = name;
+      if (config().type === name) {
+        window.addEventListener('message', receivePostMessage, false);
+      }
     }
+    setStubTokenizationElementName('number');
 
     sendMessage(prefix + ':ready', { type: config().type });
 
@@ -39,6 +43,9 @@
 
     function onToken (body) {
       var recurly = new parent.recurly.Recurly(getRecurlyConfig());
+      if (stubTokenizationElementName === 'cvv') {
+        recurly.config.required = ['cvv'];
+      }
       var inputs = body.inputs;
       var id = body.id;
 

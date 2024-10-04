@@ -1,14 +1,12 @@
 import assert from 'assert';
 import after from 'lodash.after';
-import merge from 'lodash.merge';
-import each from 'lodash.foreach';
 import clone from 'component-clone';
 import Promise from 'promise';
 import { Recurly } from '../../lib/recurly';
 import { applyFixtures } from './support/fixtures';
 import { initRecurly, testBed } from './support/helpers';
 
-describe(`Recurly.token`, function () {
+describe('Recurly.token', function () {
   // Some of these tests can take a while to stand up fields and receive reponses
   this.timeout(15000);
 
@@ -120,7 +118,7 @@ describe(`Recurly.token`, function () {
         cardMonthElement.attach(container);
         cardYearElement.attach(container);
 
-        recurly.token(form, (err, token) => {
+        recurly.token(form, (err) => {
           assert.strictEqual(err.code, 'elements-tokenization-not-possible');
           assert.deepEqual(err.found, ['CardMonthElement', 'CardYearElement']);
           done();
@@ -129,16 +127,65 @@ describe(`Recurly.token`, function () {
     });
   });
 
-  function buildRecurly () {
+  describe('Cvv standalone', function () {
+    applyFixtures();
+    buildRecurly();
+
+    describe('when using a HostedField', function () {
+      this.ctx.fixture = () => `
+        <form action="#" id="test-form">
+          <div data-recurly="cvv"></div>
+          <input type="hidden" data-recurly="token" name="recurly-token">
+        </form>
+      `;
+      beforeEach(function () {
+        this.recurly.hostedFields.fields[0].iframe.contentWindow.setStubTokenizationElementName('cvv');
+      });
+
+      describe('when called with a plain object', function () {
+        cvvSuite(plainObjectBuilder);
+      });
+
+      describe('when called with an HTMLFormElement', function () {
+        cvvSuite(formBuilder);
+      });
+    });
+
+    describe('when called with an Elements instance', function () {
+      this.ctx.fixture = () => `
+        <form action="#" id="test-form">
+          <div id="recurly-elements"></div>
+          <input type="hidden" data-recurly="token" name="recurly-token">
+        </form>
+      `;
+
+      function setupStub (builder) {
+        return function (...args) {
+          return builder.call(this, ...args).then(res => {
+            this.elements.elements[0].iframe.contentWindow.setStubTokenizationElementName('cvv');
+            return res;
+          });
+        };
+      }
+
+      cvvSuite(setupStub(elementsBuilder));
+
+      describe('when called with an HTMLFormElement', function () {
+        cvvSuite(setupStub(elementsFormOnlyBuilder));
+      });
+    });
+  });
+
+  function buildRecurly (opts) {
     beforeEach(function (done) {
-      this.recurly = initRecurly();
+      this.recurly = initRecurly(opts);
       this.recurly.ready(() => done());
     });
 
     afterEach(function () {
       this.recurly.destroy();
     });
-  };
+  }
 
   /**
    * For each example, updates corresponding hosted fields and returns all others
@@ -183,14 +230,14 @@ describe(`Recurly.token`, function () {
    */
   function elementsBuilder (example) {
     const form = window.document.querySelector('#test-form');
-    const container = form.querySelector(`#recurly-elements`);
+    const container = form.querySelector('#recurly-elements');
     const elements = this.elements = this.recurly.Elements();
 
     return Promise.all(Object.keys(example).map(key => {
       const val = example[key];
       let el = form.querySelector(`[data-recurly=${key}]`);
 
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         if (el && 'value' in el) {
           el.value = val;
           resolve();
@@ -490,58 +537,7 @@ describe(`Recurly.token`, function () {
         this.recurly.configure({ required: ['cvv'] });
       });
 
-      describe('when cvv is blank', function () {
-        prepareExample(Object.assign({}, valid, {
-          cvv: ''
-        }), builder);
-        it('produces a validation error', function (done) {
-          this.subject((err, token) => {
-            assert.strictEqual(err.code, 'validation');
-            assert.strictEqual(err.fields.length, 1);
-            assert(~err.fields.indexOf('cvv'));
-            assert.strictEqual(err.details.length, 1);
-            assert.strictEqual(err.details[0].field, 'cvv');
-            assert.strictEqual(err.details[0].messages.length, 1);
-            assert.strictEqual(err.details[0].messages[0], "can't be blank");
-            assert(!token);
-            done();
-          });
-        });
-      });
-
-      describe('when cvv is invalid', function () {
-        prepareExample(Object.assign({}, valid, {
-          cvv: '23783564'
-        }), builder);
-
-        it('produces a validation error', function (done) {
-          this.subject((err, token) => {
-            assert.strictEqual(err.code, 'validation');
-            assert.strictEqual(err.fields.length, 1);
-            assert(~err.fields.indexOf('cvv'));
-            assert.strictEqual(err.details.length, 1);
-            assert.strictEqual(err.details[0].field, 'cvv');
-            assert.strictEqual(err.details[0].messages.length, 1);
-            assert.strictEqual(err.details[0].messages[0], 'is invalid');
-            assert(!token);
-            done();
-          });
-        });
-      });
-
-      describe('when cvv is valid', function () {
-        prepareExample(Object.assign({}, valid, {
-          cvv: '123'
-        }), builder);
-
-        it('yields a token', function (done) {
-          this.subject((err, token) => {
-            assert(!err);
-            assert(token);
-            done();
-          });
-        });
-      });
+      cvvSuite(builder, valid);
     });
 
     describe('when a tax_identifier is provided', function () {
@@ -594,6 +590,61 @@ describe(`Recurly.token`, function () {
     });
   }
 
+  function cvvSuite (builder, valid) {
+    describe('when cvv is blank', function () {
+      prepareExample(Object.assign({}, valid, {
+        cvv: ''
+      }), builder);
+      it('produces a validation error', function (done) {
+        this.subject((err, token) => {
+          assert.strictEqual(err.code, 'validation');
+          assert.strictEqual(err.fields.length, 1);
+          assert(~err.fields.indexOf('cvv'));
+          assert.strictEqual(err.details.length, 1);
+          assert.strictEqual(err.details[0].field, 'cvv');
+          assert.strictEqual(err.details[0].messages.length, 1);
+          assert.strictEqual(err.details[0].messages[0], "can't be blank");
+          assert(!token);
+          done();
+        });
+      });
+    });
+
+    describe('when cvv is invalid', function () {
+      prepareExample(Object.assign({}, valid, {
+        cvv: '23783564'
+      }), builder);
+
+      it('produces a validation error', function (done) {
+        this.subject((err, token) => {
+          assert.strictEqual(err.code, 'validation');
+          assert.strictEqual(err.fields.length, 1);
+          assert(~err.fields.indexOf('cvv'));
+          assert.strictEqual(err.details.length, 1);
+          assert.strictEqual(err.details[0].field, 'cvv');
+          assert.strictEqual(err.details[0].messages.length, 1);
+          assert.strictEqual(err.details[0].messages[0], 'is invalid');
+          assert(!token);
+          done();
+        });
+      });
+    });
+
+    describe('when cvv is valid', function () {
+      prepareExample(Object.assign({}, valid, {
+        cvv: '123'
+      }), builder);
+
+      it('yields a token', function (done) {
+        this.subject((err, token) => {
+          assert(!err);
+          assert(token);
+          done();
+        });
+      });
+    });
+  }
+
   function tokenAllMarkupSuite (builder) {
     describe('when given additional required fields', function () {
       beforeEach(function (done) {
@@ -636,7 +687,7 @@ describe(`Recurly.token`, function () {
                 done();
               });
             });
-          })
+          });
         });
 
         describe('when given a blank postal_code', function () {
