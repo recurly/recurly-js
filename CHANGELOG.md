@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.32.0](https://github.com/recurly/recurly-js/tree/v4.32.0) (2024-10-04)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.31.1...v4.32.0)
+
+
+**Merged Pull Requests**
+
+- feat: Add support for tokenizing the CVV standalone [#902](https://github.com/recurly/recurly-js/pull/902) ([cbarton](https://github.com/cbarton))
+
+
+
 ## [v4.31.1](https://github.com/recurly/recurly-js/tree/v4.31.1) (2024-10-01)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.31.0...v4.31.1)
