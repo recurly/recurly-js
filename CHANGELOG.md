@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.32.1](https://github.com/recurly/recurly-js/tree/v4.32.1) (2024-10-25)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.0...v4.32.1)
+
+
+**Merged Pull Requests**
+
+- Allow billingAddress to be passed in via customer options on AlternativePaymentMethod [#904](https://github.com/recurly/recurly-js/pull/904) ([gilv93](https://github.com/gilv93))
+
+
+
 ## [v4.32.0](https://github.com/recurly/recurly-js/tree/v4.32.0) (2024-10-04)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.31.1...v4.32.0)
