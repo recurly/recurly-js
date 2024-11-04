@@ -854,6 +854,20 @@ describe('CheckoutPricing', function () {
     });
 
     describe('Calculations', () => {
+      it('rounds rate coupons correctly', function (done) {
+        this.pricing
+          .adjustment({ amount: 70.99 })
+          .coupon('coop-pct-50')
+          .reprice()
+          .done(price => {
+            assert.equal(price.now.discount, 35.50);
+            assert.equal(price.now.adjustments, 70.99);
+            assert.equal(price.next.discount, 0);
+            assert.equal(price.next.adjustments, 0);
+            done();
+          });
+      });
+
       describe('given a CheckoutPricing containing multiple subscriptions and adjustments', () => {
         beforeEach(function (done) {
           subscriptionPricingFactory('basic', this.recurly, sub => {
@@ -1771,7 +1785,7 @@ describe('CheckoutPricing', function () {
 
             it('discounts only the subscriptions now, and applies no discounts next cycle', function () {
               assert.equal(this.price.now.subtotal, 41.99); // 19.99 + 2 (setup fee) + 20 (adj) + 20 (adj) - $20 discount
-              assert.equal(this.price.now.discount, 20); 
+              assert.equal(this.price.now.discount, 20);
               assert.equal(this.price.next.subscriptions, 19.99);
               assert.equal(this.price.next.discount, 0);
               assert.equal(this.price.now.taxes, 3.67);
