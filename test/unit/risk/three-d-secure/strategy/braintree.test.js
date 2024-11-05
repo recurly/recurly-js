@@ -120,4 +120,45 @@ describe('BraintreeStrategy', function () {
       });
     });
   });
+
+  describe('preflight', function () {
+    beforeEach(function () {
+      const { recurly } = this;
+      this.number = '4111111111111111';
+      this.month = '01';
+      this.year = '2023';
+      this.cvv = '737'
+      recurly.config.risk.threeDSecure.proactive = {
+        enabled: true,
+        gatewayCode: 'test-gateway-code',
+        amount: 50,
+        currency: 'USD'
+      };
+      recurly.request.post = sinon.stub().resolves({
+        paymentMethodNonce: 'test-braintree-nonce',
+        clientToken: '1234',
+        bin: '411111',
+      });
+    });
+
+    it('sends the correct data', function (done) {
+      const { recurly, number, month, year, cvv } = this;
+
+      BraintreeStrategy.preflight({ recurly, number, month, year, cvv }).then(() => {
+        sinon.assert.calledWithMatch(recurly.request.post, {
+          route: '/risk/authentications',
+          data: {
+            gateway_type: BraintreeStrategy.strategyName,
+            gateway_code: 'test-gateway-code',
+            currency: 'USD',
+            number,
+            month,
+            year,
+            cvv
+          }
+        });
+        done();
+      });
+    });
+  });
 });
