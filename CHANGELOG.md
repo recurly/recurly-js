@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.32.2](https://github.com/recurly/recurly-js/tree/v4.32.2) (2024-11-05)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.1...v4.32.2)
+
+
+**Merged Pull Requests**
+
+- fix: discount rounding half up with half cents [#906](https://github.com/recurly/recurly-js/pull/906) ([cbarton](https://github.com/cbarton))
+- add currency to proactive preflights flow [#905](https://github.com/recurly/recurly-js/pull/905) ([gilv93](https://github.com/gilv93))
+
+
+
 ## [v4.32.1](https://github.com/recurly/recurly-js/tree/v4.32.1) (2024-10-25)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.0...v4.32.1)
