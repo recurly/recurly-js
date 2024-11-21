@@ -209,7 +209,7 @@ describe('ThreeDSecure', function () {
         { id: 'action-token-adyen', strategy: AdyenStrategy },
         { id: 'action-token-braintree', strategy: BraintreeStrategy },
         { id: 'action-token-sage-pay', strategy: SagepayStrategy },
-        { id: 'action-token-stripe', strategy: StripeStrategy },
+        { id: 'action-token-stripe-pi', strategy: StripeStrategy },
         { id: 'action-token-test', strategy: TestStrategy },
         { id: 'action-token-wirecard', strategy: WirecardStrategy },
         { id: 'action-token-worldpay', strategy: WorldpayStrategy }
