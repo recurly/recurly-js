@@ -25,7 +25,7 @@ describe('StripeStrategy', function () {
       setupIntent: { id: 'seti-test-id', test: 'result', consistingOf: 'arbitrary-values' }
     };
     this.stripe = {
-      handleCardAction: sinon.stub().resolves(this.paymentIntentResult),
+      handleNextAction: sinon.stub().resolves(this.paymentIntentResult),
       confirmCardSetup: sinon.stub().resolves(this.setupIntentResult)
     };
     window.Stripe = sinon.spy(publishableKey => this.stripe);
@@ -78,8 +78,8 @@ describe('StripeStrategy', function () {
       it('instructs Stripe.js to handle the card action using the client secret', function () {
         const { strategy, target, stripe } = this;
         strategy.attach(target);
-        assert(stripe.handleCardAction.calledOnce);
-        assert(stripe.handleCardAction.calledWithExactly('pi-test-stripe-client-secret'));
+        assert(stripe.handleNextAction.calledOnce);
+        assert(stripe.handleNextAction.calledWithExactly({ clientSecret: 'pi-test-stripe-client-secret' }));
       });
 
       it('emits done with the paymentIntent result', function (done) {
@@ -95,7 +95,7 @@ describe('StripeStrategy', function () {
         beforeEach(function () {
           const { strategy } = this;
           this.exampleResult = { error: { example: 'error', for: 'testing' } };
-          strategy.stripe.handleCardAction = sinon.stub().resolves(this.exampleResult);
+          strategy.stripe.handleNextAction = sinon.stub().resolves(this.exampleResult);
         });
 
         it('emits an error on threeDSecure', function (done) {
