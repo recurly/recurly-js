@@ -1,5 +1,23 @@
 # Changelog
 
+## [v4.32.3](https://github.com/recurly/recurly-js/tree/v4.32.3) (2024-12-10)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.2...v4.32.3)
+
+
+**Merged Pull Requests**
+
+- Uses stripe.handleNextAction for payment intents [#908](https://github.com/recurly/recurly-js/pull/908) ([chrissrogers](https://github.com/chrissrogers))
+- chore: add missing type definitions for Adyen APM [#907](https://github.com/recurly/recurly-js/pull/907) ([cbarton](https://github.com/cbarton))
+
+**Closed Issues**
+
+- Wrong type of AlternativePaymentMethods start and initiate [#885](https://github.com/recurly/recurly-js/issues/885)
+- AlternativePaymentMethodOptions type is missing returnURL [#883](https://github.com/recurly/recurly-js/issues/883)
+- AlternativePaymentMethods type missing iDEAL, Sofort and CashApp [#882](https://github.com/recurly/recurly-js/issues/882)
+- Apple Pay wrongly uses the user's shipping country as billing country [#872](https://github.com/recurly/recurly-js/issues/872)
+
+
 ## [v4.32.2](https://github.com/recurly/recurly-js/tree/v4.32.2) (2024-11-05)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.1...v4.32.2)
