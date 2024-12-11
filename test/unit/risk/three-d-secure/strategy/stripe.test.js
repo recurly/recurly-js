@@ -18,15 +18,11 @@ describe('StripeStrategy', function () {
     this.target = testBed().querySelector('#three-d-secure-container');
     this.sandbox = sinon.createSandbox();
 
-    this.paymentIntentResult = {
+    this.intentResult = {
       paymentIntent: { id: 'pi-test-id', test: 'result', consistingOf: 'arbitrary-values' }
     };
-    this.setupIntentResult = {
-      setupIntent: { id: 'seti-test-id', test: 'result', consistingOf: 'arbitrary-values' }
-    };
     this.stripe = {
-      handleNextAction: sinon.stub().resolves(this.paymentIntentResult),
-      confirmCardSetup: sinon.stub().resolves(this.setupIntentResult)
+      handleNextAction: sinon.stub().resolves(this.intentResult),
     };
     window.Stripe = sinon.spy(publishableKey => this.stripe);
   });
@@ -83,7 +79,7 @@ describe('StripeStrategy', function () {
       });
 
       it('emits done with the paymentIntent result', function (done) {
-        const { strategy, target, paymentIntentResult: { paymentIntent: { id } } } = this;
+        const { strategy, target, intentResult: { paymentIntent: { id } } } = this;
         strategy.on('done', result => {
           assert.deepEqual(result, { id });
           done();
@@ -115,17 +111,20 @@ describe('StripeStrategy', function () {
         const { threeDSecure } = this;
         this.strategy = new StripeStrategy({ threeDSecure, actionToken: actionTokenSetupIntent });
         this.strategy.whenReady(() => done());
+        this.intentResult = {
+          setupIntent: { id: 'pi-test-id', test: 'result', consistingOf: 'arbitrary-values' }
+        };
       });
 
       it('instructs Stripe.js to handle the card action using the client secret', function () {
         const { strategy, target, stripe } = this;
         strategy.attach(target);
-        assert(stripe.confirmCardSetup.calledOnce);
-        assert(stripe.confirmCardSetup.calledWithExactly('seti-test-stripe-client-secret'));
+        assert(stripe.handleNextAction.calledOnce);
+        assert(stripe.handleNextAction.calledWithExactly({ clientSecret: 'seti-test-stripe-client-secret' }));
       });
 
       it('emits done with the setupIntent result', function (done) {
-        const { strategy, target, setupIntentResult: { setupIntent: { id } } } = this;
+        const { strategy, target, intentResult: { setupIntent: { id } } } = this;
         strategy.on('done', result => {
           assert.deepEqual(result, { id });
           done();
@@ -137,7 +136,7 @@ describe('StripeStrategy', function () {
         beforeEach(function () {
           const { strategy } = this;
           this.exampleResult = { error: { example: 'error', for: 'testing' } };
-          strategy.stripe.confirmCardSetup = sinon.stub().resolves(this.exampleResult);
+          strategy.stripe.handleNextAction = sinon.stub().resolves(this.exampleResult);
         });
 
         it('emits an error on threeDSecure', function (done) {
