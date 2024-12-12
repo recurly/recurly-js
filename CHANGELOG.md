@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.32.4](https://github.com/recurly/recurly-js/tree/v4.32.4) (2024-12-12)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.3...v4.32.4)
+
+
+**Merged Pull Requests**
+
+- Fixes Stripe 3-D Secure intent handler specs [#911](https://github.com/recurly/recurly-js/pull/911) ([chrissrogers](https://github.com/chrissrogers))
+- Consolidates Stripe intent next action handler selection [#910](https://github.com/recurly/recurly-js/pull/910) ([chrissrogers](https://github.com/chrissrogers))
+
+
+
 ## [v4.32.3](https://github.com/recurly/recurly-js/tree/v4.32.3) (2024-12-10)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.2...v4.32.3)
