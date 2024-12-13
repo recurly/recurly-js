@@ -25,6 +25,7 @@ export type DirectConfig = {
     logoImageUrl?: string;
     headerImageUrl?: string;
   };
+  payPalComplete?: boolean;
 };
 
 export type PayPalConfig = BraintreeConfig | DirectConfig;
