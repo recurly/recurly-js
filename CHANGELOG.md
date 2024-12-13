@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.32.5](https://github.com/recurly/recurly-js/tree/v4.32.5) (2024-12-13)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.4...v4.32.5)
+
+
+**Merged Pull Requests**
+
+- Pass billingAddress fields for Proactive 3DS [#912](https://github.com/recurly/recurly-js/pull/912) ([gilv93](https://github.com/gilv93))
+
+
+
 ## [v4.32.4](https://github.com/recurly/recurly-js/tree/v4.32.4) (2024-12-12)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.3...v4.32.4)
