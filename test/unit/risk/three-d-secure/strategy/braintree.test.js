@@ -128,6 +128,18 @@ describe('BraintreeStrategy', function () {
       this.month = '01';
       this.year = '2023';
       this.cvv = '737'
+
+      this.addressFields = {
+        first_name: 'John',
+        last_name: 'Doe',
+        address1: '123 Main St',
+        address2: 'Suite 100',
+        city: 'San Francisco',
+        country: 'US',
+        postal_code: '94105',
+        state: 'CA',
+      }
+
       recurly.config.risk.threeDSecure.proactive = {
         enabled: true,
         gatewayCode: 'test-gateway-code',
@@ -142,10 +154,10 @@ describe('BraintreeStrategy', function () {
     });
 
     it('sends the correct data', function (done) {
-      const { recurly, number, month, year, cvv } = this;
+      const { recurly, number, month, year, cvv, addressFields } = this;
 
-      BraintreeStrategy.preflight({ recurly, number, month, year, cvv }).then(() => {
-        sinon.assert.calledWithMatch(recurly.request.post, {
+      BraintreeStrategy.preflight({ recurly, number, month, year, cvv, addressFields }).then(() => {
+        sinon.assert.calledWithExactly(recurly.request.post, {
           route: '/risk/authentications',
           data: {
             gateway_type: BraintreeStrategy.strategyName,
@@ -154,7 +166,8 @@ describe('BraintreeStrategy', function () {
             number,
             month,
             year,
-            cvv
+            cvv,
+            ...addressFields
           }
         });
         done();
