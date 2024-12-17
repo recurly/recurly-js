@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.32.6](https://github.com/recurly/recurly-js/tree/v4.32.6) (2024-12-17)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.5...v4.32.6)
+
+
+**Merged Pull Requests**
+
+- Add multi currency support for Amazon UK and EU [#909](https://github.com/recurly/recurly-js/pull/909) ([gilv93](https://github.com/gilv93))
+
+
+
 ## [v4.32.5](https://github.com/recurly/recurly-js/tree/v4.32.5) (2024-12-13)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.4...v4.32.5)
