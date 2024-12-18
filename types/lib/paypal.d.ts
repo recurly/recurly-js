@@ -1,13 +1,16 @@
 import { Emitter } from './emitter';
 
+export type PayPalDisplayConfig = {
+  locale?: string;
+  displayName?: string;
+  amount?: string;
+}
+
 export type BraintreeConfig = {
   braintree: {
     clientAuthorization: string;
   };
-  display?: {
-    locale?: string;
-    displayName?: string;
-    amount?: string;
+  display?: PayPalDisplayConfig & {
     enableShippingAddress?: boolean;
     shippingAddressOverride?: any;
     shippingAddressEditable?: boolean;
@@ -18,10 +21,7 @@ export type BraintreeConfig = {
 
 export type DirectConfig = {
   gatewayCode?: string;
-  display?: {
-    locale?: string;
-    displayName?: string;
-    amount?: string;
+  display?: PayPalDisplayConfig & {
     logoImageUrl?: string;
     headerImageUrl?: string;
   };
@@ -29,11 +29,7 @@ export type DirectConfig = {
 
 export type PayPalCompleteConfig = {
   payPalComplete?: boolean;
-  display?: {
-    locale?: string;
-    displayName?: string;
-    amount?: string;
-  }
+  display?: PayPalDisplayConfig;
 }
 
 export type PayPalConfig = BraintreeConfig | DirectConfig | PayPalCompleteConfig
