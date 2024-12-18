@@ -25,10 +25,18 @@ export type DirectConfig = {
     logoImageUrl?: string;
     headerImageUrl?: string;
   };
-  payPalComplete?: boolean;
 };
 
-export type PayPalConfig = BraintreeConfig | DirectConfig;
+export type PayPalCompleteConfig = {
+  payPalComplete?: boolean;
+  display?: {
+    locale?: string;
+    displayName?: string;
+    amount?: string;
+  }
+}
+
+export type PayPalConfig = BraintreeConfig | DirectConfig | PayPalCompleteConfig
 
 export type PayPalEvent = 'error' | 'token' | 'cancel' | 'ready';
 
