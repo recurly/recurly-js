@@ -1,5 +1,6 @@
 .DS_Store
 .vscode
+.idea
 build
 node_modules
 tmp
