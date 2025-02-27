@@ -4,17 +4,17 @@ module.exports = {
     'Chrome-Remote': {
       browserName: 'Chrome',
       os: 'OS X',
-      osVersion: 'Catalina'
+      osVersion: 'Sequoia'
     },
     'Firefox-Remote': {
       browserName: 'Firefox',
       os: 'OS X',
-      osVersion: 'Catalina'
+      osVersion: 'Sequoia'
     },
     'Safari-Remote': {
       browserName: 'Safari',
       os: 'OS X',
-      osVersion: 'Catalina',
+      osVersion: 'Sequoia',
       safari: {
         enablePopups: true
       }
@@ -28,21 +28,27 @@ module.exports = {
         enablePopups: true
       }
     },
-    'iOS-16-Remote': {
+    'iOS-18-Remote': {
       browserName: 'safari',
-      deviceName: 'iPhone 14 Pro',
+      deviceName: 'iPhone 14',
       os: 'ios',
-      osVersion: '16',
+      osVersion: '18',
       realMobile: true
     },
-    'iOS-15-Remote': {
+    'iOS-17-Remote': {
       browserName: 'safari',
-      deviceName: 'iPhone 13 Pro',
+      deviceName: 'iPhone 15',
       os: 'ios',
-      osVersion: '15',
+      osVersion: '17',
       realMobile: true
     },
-
+    'Android-14-Remote': {
+      browserName: 'chrome',
+      deviceName: 'Google Pixel 8',
+      os: 'android',
+      osVersion: '14.0',
+      realMobile: true
+    },
     'Android-13-Remote': {
       browserName: 'chrome',
       deviceName: 'Google Pixel 7',
@@ -55,13 +61,6 @@ module.exports = {
       deviceName: 'Google Pixel 6',
       os: 'android',
       osVersion: '12.0',
-      realMobile: true
-    },
-    'Android-11-Remote': {
-      browserName: 'chrome',
-      deviceName: 'Google Pixel 5',
-      os: 'android',
-      osVersion: '11.0',
       realMobile: true
     }
   }
