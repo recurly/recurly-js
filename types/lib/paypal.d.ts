@@ -4,7 +4,7 @@ export type PayPalDisplayConfig = {
   locale?: string;
   displayName?: string;
   amount?: string;
-}
+};
 
 export type BraintreeConfig = {
   braintree: {
@@ -30,9 +30,9 @@ export type DirectConfig = {
 export type PayPalCompleteConfig = {
   payPalComplete?: boolean;
   display?: PayPalDisplayConfig;
-}
+};
 
-export type PayPalConfig = BraintreeConfig | DirectConfig | PayPalCompleteConfig
+export type PayPalConfig = BraintreeConfig | DirectConfig | PayPalCompleteConfig;
 
 export type PayPalEvent = 'error' | 'token' | 'cancel' | 'ready';
 
