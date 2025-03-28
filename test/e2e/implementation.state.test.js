@@ -24,10 +24,6 @@ const sel = {
 describe('Field State', elementAndFieldSuite({
   cardElement: () => {
     it('displays field state on the page', async function () {
-      // Skip Electron due to element blur incompatibility
-      if (environmentIs(BROWSERS.ELECTRON)) {
-        return this.skip();
-      }
       await setupElementsStateOutput();
       await assertCardBehavior();
     });
@@ -83,10 +79,6 @@ describe('Field State', elementAndFieldSuite({
   },
   cardHostedField: async function () {
     it('displays field state on the page', async function () {
-      // Skip Electron due to element blur incompatibility
-      if (environmentIs(BROWSERS.ELECTRON)) {
-        return this.skip();
-      }
       await setupHostedFieldStateOutput();
       await assertCardBehavior({ wrap: card => ({ fields: { card } }) });
     });

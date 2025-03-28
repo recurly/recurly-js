@@ -28,7 +28,6 @@ jobs:
         browser:
           - Chrome
           - Firefox
-          - Electron
     steps:
       - uses: browser-actions/setup-chrome@v1
       - uses: browser-actions/setup-firefox@v1
@@ -50,11 +49,11 @@ jobs:
         browser:
           - Safari-Remote
           - Edge-Remote
-          - iOS-16-Remote
-          - iOS-15-Remote
+          - iOS-18-Remote
+          - iOS-17-Remote
+          - Android-14-Remote
           - Android-13-Remote
           - Android-12-Remote
-          - Android-11-Remote
     steps:
       - uses: actions/checkout@v3
       - name: Unit test
@@ -80,11 +79,11 @@ jobs:
           - Firefox-Remote
           - Safari-Remote
           - Edge-Remote
-          - iOS-16-Remote
-          - iOS-15-Remote
+          - iOS-18-Remote
+          - iOS-17-Remote
+          - Android-14-Remote
           - Android-13-Remote
           - Android-12-Remote
-          - Android-11-Remote
     steps:
       - uses: actions/checkout@v3
       - name: End-to-end test

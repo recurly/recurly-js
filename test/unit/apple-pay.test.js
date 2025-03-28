@@ -5,7 +5,7 @@ import merge from 'lodash.merge';
 import omit from 'lodash.omit';
 import Emitter from 'component-emitter';
 import Promise from 'promise';
-import { initRecurly, nextTick } from './support/helpers';
+import { initRecurly, nextTick, testBed} from './support/helpers';
 import BraintreeLoader from '../../lib/util/braintree-loader';
 import filterSupportedNetworks from '../../lib/recurly/apple-pay/util/filter-supported-networks';
 
@@ -1282,6 +1282,39 @@ function applePayTest (integrationType) {
                 paymentMethod: 'valid-payment-method',
                 ...billingAddress,
               });
+            }));
+          });
+
+          it('when kount is selected, pass the expected parameters to create the token', function (done) {
+            beforeEach(function () {
+              const recurly = this.recurly = initRecurly();
+              recurly.configure({
+                fraud: {
+                  kount: {
+                    dataCollector: true,
+                    form: testBed().querySelector('#test-form')
+                  }
+                }
+              });
+              this.recurly.fraud.profile = { processor: 'kount', sessionId: 'KOUNT_SESSION_ID', udf: {} };
+            });
+
+            this.spyTokenRequest = this.sandbox.spy(this.recurly.request, 'post');
+
+            this.applePay.session.onpaymentauthorized(clone(validAuthorizeEvent));
+            this.applePay.on('token', ensureDone(done, () => {
+              const args = this.spyTokenRequest.getCall(0).args[0];
+              const expectedData = {
+                paymentData: 'valid-payment-data',
+                paymentMethod: 'valid-payment-method',
+                ...billingAddress,
+              };
+
+              if (this.applePay.config.kount) {
+                expectedData.fraud = { processor: 'kount', sessionId: 'KOUNT_SESSION_ID', udf: {} };
+              }
+
+              assert.deepEqual(args.data, expectedData);
             }));
           });
 

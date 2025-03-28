@@ -4,8 +4,7 @@ const memoize = require('memoize-one');
 const TOKEN_PATTERN = /^[\w-]{21,23}$/;
 
 const BROWSERS = {
-  EDGE: ['Edge', 'msedge'],
-  ELECTRON: ['chrome', 'electron'],
+  EDGE: ['Edge', 'msedge', 'MicrosoftEdge'],
   SAFARI: ['Safari'],
   FIREFOX: ['firefox']
 };
@@ -263,17 +262,13 @@ async function fillElement (frame, selector, val) {
   const input = await $(selector);
 
   // setvalue's underlying elementSendKeys is slow to act on Android. Thus we chunk the input.
-  if (environmentIs(DEVICES.ANDROID)) {
+  if (environmentIs(DEVICES.ANDROID) && val) {
     await input.clearValue();
     for (const chunk of val.match(/.{1,2}/g)) {
       await input.addValue(chunk);
     }
   } else {
     await input.setValue(val);
-
-    if (environmentIs(BROWSERS.EDGE)) {
-      await browser.waitUntil(async () => (await input.getValue()).replace(/ /g, '') === val);
-    }
   }
 
   await browser.switchToFrame(null);
@@ -346,13 +341,6 @@ function environmentIs (...conditions) {
   const isMobile = isIos || isAndroid;
 
   for (const condition of conditions) {
-    if (condition === BROWSERS.ELECTRON) {
-      const [ name, envName ] = condition;
-      if (name === browserName && process.env.BROWSER?.toLowerCase() === envName) {
-        return true;
-      }
-    }
-
     if (browsers.includes(condition)) {
       return Array.isArray(condition)
         ? condition.some(c => c === browserName)

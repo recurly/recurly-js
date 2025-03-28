@@ -6,3 +6,4 @@ node_modules
 tmp
 npm-debug.log
 local.log
+logs/
