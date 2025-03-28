@@ -43,7 +43,7 @@ exports.config = Object.assign({
 }, assignPort());
 
 exports.isMobile = isMobile;
-exports.imageComparisonService = imageComparisonService;
+exports.visualService = visualService;
 
 // attributes
 
@@ -118,7 +118,7 @@ function services () {
     definition.push('chromedriver');
   }
 
-  definition.push(imageComparisonService());
+  definition.push(visualService());
 
   return definition;
 }
@@ -127,21 +127,14 @@ function services () {
  * Configuration options for wdio-image-comparison-service
  * @see https://github.com/wswebcreation/webdriver-image-comparison/blob/master/docs/OPTIONS.md#plugin-options
  */
-function imageComparisonService () {
+function visualService () {
   const service = [
-    'image-comparison',
+    'visual',
     {
-      baselineFolder: path.resolve(__dirname, './test/e2e/support/snapshots'),
-      screenshotPath: path.resolve(__dirname, './tmp'),
-      diffPath: path.resolve(__dirname, './tmp/diff'),
+      baselineFolder: path.resolve(__dirname, './test/e2e/support/visual-baseline'),
       formatImageName: `${BROWSER}/{tag}-{width}x{height}`,
-      savePerInstance: true,
-
-      // Change to true and remove snapshots to generate new baselines
-      autoSaveBaseline: false,
-
-      blockOutStatusBar: true,
-      blockOutToolBar: true,
+      screenshotPath: path.resolve(__dirname, 'tmp'),
+      savePerInstance: true
     }
   ];
 
@@ -153,7 +146,7 @@ function assignPort () {
 }
 
 function browserName () {
-  if (DEBUG || isElectron() || isAndroid()) return 'chrome';
+  if (DEBUG || isAndroid()) return 'chrome';
   if (isIos()) return 'safari';
   return BROWSER;
 }
@@ -162,11 +155,6 @@ function chromeOptions () {
   if (DEBUG) {
     return {
       args: ['--auto-open-devtools-for-tabs']
-    };
-  }
-  if (isElectron()) {
-    return {
-      binary: path.resolve(__dirname, 'node_modules/.bin/electron')
     };
   }
   return {};
@@ -193,10 +181,6 @@ function isIos () {
 
 function isAndroid () {
   return BROWSER.toLowerCase().includes('android');
-}
-
-function isElectron () {
-  return BROWSER.toLowerCase() === 'electron';
 }
 
 function isLocal () {
