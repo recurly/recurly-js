@@ -1,5 +1,20 @@
 # Changelog
 
+## [v4.33.0](https://github.com/recurly/recurly-js/tree/v4.33.0) (2025-03-31)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.6...v4.33.0)
+
+
+**Merged Pull Requests**
+
+- Add fraud params to Apple-Pay token [#915](https://github.com/recurly/recurly-js/pull/915) ([jsanderson1130](https://github.com/jsanderson1130))
+- fix: added `payPalComplete` property to PayPal `DirectConfig` type de… [#913](https://github.com/recurly/recurly-js/pull/913) ([magicink](https://github.com/magicink))
+
+**Closed Issues**
+
+- Default Card Element does not work, fails to include data-recurly selectors. [#914](https://github.com/recurly/recurly-js/issues/914)
+
+
 ## [v4.32.6](https://github.com/recurly/recurly-js/tree/v4.32.6) (2024-12-17)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.5...v4.32.6)
