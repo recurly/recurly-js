@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.33.1](https://github.com/recurly/recurly-js/tree/v4.33.1) (2025-04-04)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.33.0...v4.33.1)
+
+
+**Merged Pull Requests**
+
+- Updates Adyen 3-D Secure fallback and component tokenization [#919](https://github.com/recurly/recurly-js/pull/919) ([chrissrogers](https://github.com/chrissrogers))
+
+
+
 ## [v4.33.0](https://github.com/recurly/recurly-js/tree/v4.33.0) (2025-03-31)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.32.6...v4.33.0)
