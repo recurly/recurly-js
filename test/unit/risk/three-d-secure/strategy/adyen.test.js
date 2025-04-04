@@ -125,8 +125,9 @@ describe('AdyenStrategy', function () {
           path: '/three_d_secure/start',
           payload: {
             redirect_url: 'test-url',
-            PaReq: 'test-pa-req',
-            MD: 'test-md'
+            pa_req: 'test-pa-req',
+            md: 'test-md',
+            three_d_secure_action_token_id: fallbackActionToken.id
           },
           container: strategy.container,
           defaultEventName: 'adyen-3ds-challenge'
