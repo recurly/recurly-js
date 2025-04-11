@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.33.2](https://github.com/recurly/recurly-js/tree/v4.33.2) (2025-04-11)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.33.1...v4.33.2)
+
+
+**Merged Pull Requests**
+
+- Fixes Adyen 3-D Secure fallback param construct [#921](https://github.com/recurly/recurly-js/pull/921) ([chrissrogers](https://github.com/chrissrogers))
+- [UPDATE] set analytics to false [#920](https://github.com/recurly/recurly-js/pull/920) ([jsanderson1130](https://github.com/jsanderson1130))
+
+
+
 ## [v4.33.1](https://github.com/recurly/recurly-js/tree/v4.33.1) (2025-04-04)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.33.0...v4.33.1)
