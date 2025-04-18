@@ -4,17 +4,17 @@ module.exports = {
     'Chrome-Remote': {
       browserName: 'Chrome',
       os: 'OS X',
-      osVersion: 'Sequoia'
+      osVersion: 'Sonoma'
     },
     'Firefox-Remote': {
       browserName: 'Firefox',
       os: 'OS X',
-      osVersion: 'Sequoia'
+      osVersion: 'Sonoma'
     },
     'Safari-Remote': {
       browserName: 'Safari',
       os: 'OS X',
-      osVersion: 'Sequoia',
+      osVersion: 'Sonoma',
       safari: {
         enablePopups: true
       }

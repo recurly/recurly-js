@@ -64,6 +64,16 @@ describe('Recurly', function () {
     });
   });
 
+  describe('isCanaryOneThousandthSession', function () {
+    beforeEach(function () { this.subject = this.recurly.isCanaryOneThousandthSession; });
+
+    it('is a Boolean set on sessionStorage as a string', function () {
+      const { subject } = this;
+      assert.strictEqual(typeof subject, 'boolean');
+      assert.strictEqual(subject.toString(), sessionStorage.getItem('__recurly__.isCanaryOneThousandthSession'));
+    });
+  });
+
   describe('configure', function () {
     describe('when called repeatedly', function () {
       it('persists bus recipients', function () {
