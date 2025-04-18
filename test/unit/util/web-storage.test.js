@@ -41,14 +41,14 @@ describe('storage', () => {
 
       it('sets the value if given `otherwise` and the key does not exist', () => {
         assert.strictEqual(fetch({ key: 'test' }), null);
-        fetch({ key: 'test', otherwise: example });
+        fetch({ key: 'test', otherwise: () =>  example });
         assert.strictEqual(fetch({ key: 'test' }), example);
         assert.strictEqual(localStorage.getItem(exampleKey), example);
       });
 
       it('fetches a previously-set value', () => {
         assert.strictEqual(fetch({ key: 'test' }), null);
-        assert.strictEqual(fetch({ key: 'test', otherwise: example }), example);
+        assert.strictEqual(fetch({ key: 'test', otherwise: () =>  example }), example);
         assert.strictEqual(fetch({ key: 'test' }), example);
       });
     });
@@ -85,7 +85,7 @@ describe('storage', () => {
     it('falls back to using a POJO for storage', function () {
       assert.strictEqual(objectStore[exampleKey], undefined);
       assert.strictEqual(fetch({ key: 'test' }), null);
-      fetch({ key: 'test', otherwise: example });
+      fetch({ key: 'test', otherwise: () => example });
       assert.strictEqual(objectStore[exampleKey], example);
       assert.strictEqual(fetch({ key: 'test' }), example);
     });
