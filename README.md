@@ -34,9 +34,12 @@ docker compose up
 If you are having issues with the build, try `make clean`.
 
 ## Test
+
 ```bash
 $ make test
 ```
+
+To run a single test or test group, use mocha's `.only` syntax.
 
 ## License
 
