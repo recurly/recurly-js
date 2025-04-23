@@ -13,11 +13,6 @@ export default function paypal () {
     }
   });
 
-  window.recurly.PayPal({
-    gatewayCode: 'gateway-code',
-    payPalComplete: true,
-  });
-
   // @ts-expect-error
   window.recurly.PayPal('string');
 
