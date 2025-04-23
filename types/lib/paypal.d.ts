@@ -30,7 +30,6 @@ export type DirectConfig = {
 export type PayPalCompleteConfig = {
   payPalComplete?: boolean;
   display?: PayPalDisplayConfig;
-  gatewayCode?: string;
 };
 
 export type PayPalConfig = BraintreeConfig | DirectConfig | PayPalCompleteConfig;
