@@ -279,7 +279,8 @@
   "site": {
     "addressRequirement": "full",
     "name": "Test site",
-    "defaultCurrency": "USD"
+    "defaultCurrency": "USD",
+    "flags": []
   },
   "purchases": [],
   "privacyPolicyUrl": "",
