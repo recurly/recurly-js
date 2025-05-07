@@ -268,6 +268,7 @@ async function fillElement (frame, selector, val) {
       await input.addValue(chunk);
     }
   } else {
+    await input.click();
     await input.setValue(val);
   }
 

@@ -46,6 +46,7 @@ describe('Recurly.js', async function () {
         const expiry = await $(sel.expiry);
         const cvv = await $(sel.cvv);
 
+        await number.click();
         await number.setValue(EXAMPLES.NUMBER);
         await expiry.setValue(EXAMPLES.EXPIRY);
         await cvv.setValue(EXAMPLES.CVV);
@@ -82,6 +83,7 @@ describe('Recurly.js', async function () {
           for (const [value, expect] of examples) {
             await browser.switchToFrame(i++);
             const input = await $(sel.hostedFieldInput);
+            await input.click();
             await input.setValue(value);
             assert.strictEqual(await getValue(input), expect);
             await browser.switchToFrame(null);
