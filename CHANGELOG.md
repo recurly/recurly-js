@@ -1,5 +1,18 @@
 # Changelog
 
+## [v4.34.0](https://github.com/recurly/recurly-js/tree/v4.34.0) (2025-05-07)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.33.2...v4.34.0)
+
+
+**Merged Pull Requests**
+
+- Revert "Revert "Allow gateway code to set specific gateway for paypal complete"" [#926](https://github.com/recurly/recurly-js/pull/926) ([Patrick-Duvall](https://github.com/Patrick-Duvall))
+- Revert "Allow gateway code to set specific gateway for paypal complete" [#925](https://github.com/recurly/recurly-js/pull/925) ([chrissrogers](https://github.com/chrissrogers))
+- Allow gateway code to set specific gateway for paypal complete [#924](https://github.com/recurly/recurly-js/pull/924) ([Patrick-Duvall](https://github.com/Patrick-Duvall))
+
+
+
 ## [v4.33.2](https://github.com/recurly/recurly-js/tree/v4.33.2) (2025-04-11)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.33.1...v4.33.2)
