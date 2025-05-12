@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.34.1](https://github.com/recurly/recurly-js/tree/v4.34.1) (2025-05-12)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.34.0...v4.34.1)
+
+
+**Merged Pull Requests**
+
+- Updates Braintree client dependency to 3.118.2 [#928](https://github.com/recurly/recurly-js/pull/928) ([chrissrogers](https://github.com/chrissrogers))
+
+
+
 ## [v4.34.0](https://github.com/recurly/recurly-js/tree/v4.34.0) (2025-05-07)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.33.2...v4.34.0)
