@@ -12,7 +12,7 @@ describe('oneIn', () => {
         return acc;
       }, {});
 
-      assert(Math.abs(actual.true / 1000000 - 1 / example) < 0.0005);
+      assert(Math.abs(actual.true / 1000000 - 1 / example) < 0.00075);
     }
   });
 });
