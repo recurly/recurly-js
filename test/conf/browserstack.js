@@ -14,7 +14,7 @@ module.exports = {
     'Safari-Remote': {
       browserName: 'Safari',
       os: 'OS X',
-      osVersion: 'Sonoma',
+      osVersion: 'Sequoia',
       safari: {
         enablePopups: true
       }
