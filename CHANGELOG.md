@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.35.0](https://github.com/recurly/recurly-js/tree/v4.35.0) (2025-05-19)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.34.1...v4.35.0)
+
+
+**Merged Pull Requests**
+
+- chore: Update checkout session fixtures [#931](https://github.com/recurly/recurly-js/pull/931) ([sgilrodriguez](https://github.com/sgilrodriguez))
+- Adds Elements canary [#922](https://github.com/recurly/recurly-js/pull/922) ([chrissrogers](https://github.com/chrissrogers))
+
+
+
 ## [v4.34.1](https://github.com/recurly/recurly-js/tree/v4.34.1) (2025-05-12)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.34.0...v4.34.1)
