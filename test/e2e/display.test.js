@@ -23,6 +23,7 @@ describe('when configured with Elements', async function () {
       await createElement(ELEMENT_TYPES.CardElement, { style: { fontFamily: 'Pacifico' }});
       await fillCardElement();
       await clickFirstName();
+      await animationsConclude();
 
       assertVisualRegressionThreshold(await browser.checkElement(await $('.test-bed'), 'elements/card-element'));
     });
@@ -50,6 +51,7 @@ describe('when using a card Hosted Field', async function () {
   it('matches card Hosted Field baseline', async function () {
     await fillCardElement();
     await clickFirstName();
+    await animationsConclude();
 
     assertVisualRegressionThreshold(await browser.checkElement(await $('.test-bed'), 'hosted-fields/card-field'));
   });
@@ -77,4 +79,12 @@ function assertVisualRegressionThreshold (diff, threshold = 0.05) {
 async function clickFirstName () {
   const firstName = await $(sel.firstName);
   await firstName.click();
+}
+
+const seconds = async (t = 0) => new Promise(resolve => setTimeout(() => resolve(), t * 1000));
+
+async function animationsConclude () {
+  if (!environmentIs(BROWSERS.SAFARI)) return;
+
+  return await seconds(2);
 }
