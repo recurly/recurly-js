@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.36.0](https://github.com/recurly/recurly-js/tree/v4.36.0) (2025-05-29)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.35.0...v4.36.0)
+
+
+**Merged Pull Requests**
+
+- Increases tolerance for one-in test randomness [#936](https://github.com/recurly/recurly-js/pull/936) ([chrissrogers](https://github.com/chrissrogers))
+- Adds PayPal SDK support to PayPal Complete service [#935](https://github.com/recurly/recurly-js/pull/935) ([chrissrogers](https://github.com/chrissrogers))
+
+
+
 ## [v4.35.0](https://github.com/recurly/recurly-js/tree/v4.35.0) (2025-05-19)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.34.1...v4.35.0)
