@@ -5,7 +5,8 @@ import AdyenStrategy from '../../../../../lib/recurly/risk/three-d-secure/strate
 import actionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-adyen.json';
 import fingerprintActionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-adyen-fingerprint.json';
 import fallbackActionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-adyen-3ds1.json';
-import componentActionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-adyen-component-redirect.json';
+import componentRedirectActionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-adyen-component-redirect.json';
+import componentThreeDSecureRedirectActionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-adyen-component-three-d-secure-redirect.json';
 import { Frame } from '../../../../../lib/recurly/frame';
 
 describe('AdyenStrategy', function () {
@@ -133,11 +134,11 @@ describe('AdyenStrategy', function () {
       });
     });
 
-    describe('when redirecting for an Adyen Component', () => {
+    describe('when redirecting for an Adyen Component using 3-D Secure', () => {
       beforeEach(function () {
         const { threeDSecure, sandbox, recurly } = this;
         sandbox.spy(recurly, 'Frame');
-        this.strategy = new AdyenStrategy({ threeDSecure, actionToken: componentActionToken });
+        this.strategy = new AdyenStrategy({ threeDSecure, actionToken: componentThreeDSecureRedirectActionToken });
       });
 
       it('redirects using an expected payload', function () {
@@ -151,7 +152,32 @@ describe('AdyenStrategy', function () {
             redirect_url: 'test-url',
             pa_req: 'test-pa-req',
             md: 'test-md',
-            three_d_secure_action_token_id: componentActionToken.id
+            three_d_secure_action_token_id: componentThreeDSecureRedirectActionToken.id
+          },
+          container: strategy.container,
+          defaultEventName: 'adyen-3ds-challenge'
+        }));
+        strategy.remove();
+      });
+    });
+
+    describe('when redirecting for an Adyen Component not using 3-D Secure', () => {
+      beforeEach(function () {
+        const { threeDSecure, sandbox, recurly } = this;
+        sandbox.spy(recurly, 'Frame');
+        this.strategy = new AdyenStrategy({ threeDSecure, actionToken: componentRedirectActionToken });
+      });
+
+      it('redirects using an expected payload', function () {
+        const { recurly, target, strategy } = this;
+        strategy.attach(target);
+        assert(recurly.Frame.calledOnce);
+        assert(recurly.Frame.calledWithMatch({
+          type: Frame.TYPES.WINDOW,
+          path: '/three_d_secure/start',
+          payload: {
+            redirect_url: 'test-url',
+            three_d_secure_action_token_id: componentRedirectActionToken.id
           },
           container: strategy.container,
           defaultEventName: 'adyen-3ds-challenge'
