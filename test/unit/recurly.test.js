@@ -166,6 +166,41 @@ describe('Recurly', function () {
       });
     });
 
+    describe('when preflightDeviceDataCollector is a boolean', function () {
+      describe('and is set to true', function () {
+        it('enabled is set to true', function () {
+          const recurly = new Recurly;
+          recurly.configure(
+            {
+              publicKey: 'fra-2test2',
+              risk: {
+                threeDSecure: {
+                  preflightDeviceDataCollector: true
+                }
+              }
+            });
+          
+          assert.strictEqual(recurly.config.risk.threeDSecure.preflightDeviceDataCollector.enabled, true);
+        });
+      });
+      describe('and is set to false', function () {
+        it('enabled is false', function () {
+          const recurly = new Recurly;
+          recurly.configure(
+            {
+              publicKey: 'fra-2test2',
+              risk: {
+                threeDSecure: {
+                  preflightDeviceDataCollector: false
+                }
+              }
+            });
+          
+          assert.strictEqual(recurly.config.risk.threeDSecure.preflightDeviceDataCollector.enabled, false);
+        });
+      });
+    });
+
     describe('when proactive3ds', function () {
       describe('is set to true', function() {
         it('returns true', function () {

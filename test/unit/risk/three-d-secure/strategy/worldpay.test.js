@@ -5,6 +5,7 @@ import WorldpayStrategy from '../../../../../lib/recurly/risk/three-d-secure/str
 import actionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-worldpay.json';
 import Promise from 'promise';
 import { Frame } from '../../../../../lib/recurly/frame';
+import { enabled } from 'debug/src/browser';
 
 describe('WorldpayStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -88,17 +89,60 @@ describe('WorldpayStrategy', function () {
       simulatePreflightResponse();
     });
 
-    describe('device data collection disabled', function () {
-      beforeEach(function() {
-        this.recurly.config.risk.threeDSecure.preflightDeviceDataCollector = false;
+    describe.only('device data collection', function () {
+      describe('device data collection disabled when set to false', function () {
+        beforeEach(function() {
+          this.recurly.config.risk.threeDSecure.preflightDeviceDataCollector = {
+            enabled: false
+          };
+        });
+
+        it('does not construct a frame to collect a session id', function (done) {
+          const { recurly, Strategy, number, month, year, gateway_code, jwt, poll } = this;
+
+          Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
+            sinon.assert.callCount(recurly.Frame, 0);
+            done();
+          });
+        });
       });
 
-      it('does not construct a frame to collect a session id', function (done) {
-        const { recurly, Strategy, number, month, year, gateway_code, jwt, poll } = this;
+      describe('device data collection enabled when set to true', function () {
+        beforeEach(function() {
+          this.recurly.config.risk.threeDSecure.preflightDeviceDataCollector = {
+            enabled: true
+          };
+        });
+  
+        it('does construct a frame to collect a session id', function (done) {
+          const { recurly, Strategy, number, month, year, gateway_code, jwt, poll, simulatePreflightResponse } = this;
+  
+          Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
+            sinon.assert.callCount(recurly.Frame, 1);
+            done();
+          });
 
-        Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
-          sinon.assert.callCount(recurly.Frame, 0);
-          done();
+          simulatePreflightResponse();
+        });
+      });
+
+      describe('device data collection enabled when object is present', function () {
+        beforeEach(function() {
+          this.recurly.config.risk.threeDSecure.preflightDeviceDataCollector = {
+            enabled: true,
+            billingInfoId: 'test-billing-info-id',
+          };
+        });
+  
+        it('does construct a frame to collect a session id', function (done) {
+          const { recurly, Strategy, number, month, year, gateway_code, jwt, poll, simulatePreflightResponse } = this;
+  
+          Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
+            sinon.assert.callCount(recurly.Frame, 1);
+            done();
+          });
+
+          simulatePreflightResponse();
         });
       });
     });
