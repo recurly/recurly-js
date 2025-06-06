@@ -12,7 +12,11 @@
   "three_d_secure": {
     "params": {
       "type": "redirect",
-      "url": "test-url"
+      "url": "test-url",
+      "data": {
+        "PaReq": "test-pa-req",
+        "MD": "test-md"
+      }
     }
   }
 }
