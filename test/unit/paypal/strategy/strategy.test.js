@@ -1,10 +1,9 @@
 import assert from 'assert';
 import each from 'component-each';
 import merge from 'lodash.merge';
-import { Recurly } from '../../../../lib/recurly';
 import { initRecurly, stubBraintree } from '../../support/helpers';
 
-describe(`PayPalStrategy`, function () {
+describe('PayPalStrategy', function () {
   const validOpts = {};
 
   stubBraintree();

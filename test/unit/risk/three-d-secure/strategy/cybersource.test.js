@@ -84,7 +84,7 @@ describe('CybersourceStrategy', function () {
     });
 
     it('resolves when a session id is received', function (done) {
-      const { recurly, Strategy, sessionId, number, month, year, gateway_code, jwt, poll } = this;
+      const { recurly, Strategy, sessionId, number, month, year, gateway_code, poll } = this;
 
       Strategy.preflight({ recurly, number, month, year, gateway_code }).then(preflightResponse => {
         assert.strictEqual(preflightResponse.results.session_id, sessionId);
@@ -96,14 +96,14 @@ describe('CybersourceStrategy', function () {
 
     describe('device data collection', function () {
       describe('device data collection disabled when set to false', function () {
-        beforeEach(function() {
+        beforeEach(function () {
           this.recurly.config.risk.threeDSecure.preflightDeviceDataCollector = {
             enabled: false
-          }
+          };
         });
 
         it('does not construct a frame to collect a session id', function (done) {
-          const { recurly, Strategy, number, month, year, gateway_code, jwt, poll } = this;
+          const { recurly, Strategy, number, month, year, gateway_code } = this;
 
           Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
             sinon.assert.callCount(recurly.Frame, 0);
@@ -113,14 +113,14 @@ describe('CybersourceStrategy', function () {
       });
 
       describe('device data collection enabled when set to true', function () {
-        beforeEach(function() {
+        beforeEach(function () {
           this.recurly.config.risk.threeDSecure.preflightDeviceDataCollector = {
             enabled: true
           };
         });
   
         it('does construct a frame to collect a session id', function (done) {
-          const { recurly, Strategy, number, month, year, gateway_code, jwt, poll } = this;
+          const { recurly, Strategy, number, month, year, gateway_code } = this;
   
           Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
             sinon.assert.callCount(recurly.Frame, 1);
@@ -130,7 +130,7 @@ describe('CybersourceStrategy', function () {
       });
 
       describe('device data collection enabled when object is preset', function () {
-        beforeEach(function() {
+        beforeEach(function () {
           this.recurly.config.risk.threeDSecure.preflightDeviceDataCollector = {
             enabled: true,
             billingInfoId: 'test-billing-info-id',
@@ -138,7 +138,7 @@ describe('CybersourceStrategy', function () {
         });
   
         it('does construct a frame to collect a session id', function (done) {
-          const { recurly, Strategy, number, month, year, gateway_code, jwt, poll } = this;
+          const { recurly, Strategy, number, month, year, gateway_code } = this;
   
           Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
             sinon.assert.callCount(recurly.Frame, 1);

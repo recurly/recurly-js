@@ -1,7 +1,7 @@
 import { applyFixtures } from './support/fixtures';
 import assert from 'assert';
 import { initRecurly, stubWindowOpen, testBed } from './support/helpers';
-import { Frame } from '../../lib/recurly/frame'
+import { Frame } from '../../lib/recurly/frame';
 
 describe('Recurly.Frame', function () {
   const path = '/frame_mock';
@@ -28,7 +28,7 @@ describe('Recurly.Frame', function () {
   });
 
   afterEach(function () {
-    const { frame, sandbox, recurly } = this;
+    const { frame, sandbox } = this;
     sandbox.restore();
     if (frame) frame.destroy();
   });
@@ -47,7 +47,7 @@ describe('Recurly.Frame', function () {
   });
 
   it('listens for the frame event', function () {
-    const { sandbox, newWindowEventName, frame } = this;
+    const { newWindowEventName, frame } = this;
     assert(frame.hasListeners(newWindowEventName));
   });
 
@@ -95,8 +95,6 @@ describe('Recurly.Frame', function () {
 
   describe('when the browser is detected to be IE', function () {
     beforeEach(function () {
-      const { sandbox } = this;
-
       document.documentMode = 'test';
 
       // rerun this to account for IE mocking

@@ -7,7 +7,6 @@ const {
   environmentIs,
   fillCardElement,
   fillDistinctCardElements,
-  fillCvvElement,
   init
 } = require('./support/helpers');
 
@@ -20,7 +19,7 @@ describe('when configured with Elements', async function () {
 
   describe('CardElement', async function () {
     it('matches CardElement baseline', async function () {
-      await createElement(ELEMENT_TYPES.CardElement, { style: { fontFamily: 'Pacifico' }});
+      await createElement(ELEMENT_TYPES.CardElement, { style: { fontFamily: 'Pacifico' } });
       await fillCardElement();
       await clickFirstName();
       await animationsConclude();
@@ -31,6 +30,7 @@ describe('when configured with Elements', async function () {
 
   describe('distinct elements', async function () {
     it('matches distinct elements baseline', async function () {
+      // eslint-disable-next-line no-unused-vars
       const { CardElement, ...distinctElements } = ELEMENT_TYPES;
       for (const element in distinctElements) {
         await createElement(element, { style: { fontFamily: 'Pacifico' } });

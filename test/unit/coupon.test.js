@@ -3,7 +3,7 @@ import assert from 'assert';
 import { Recurly } from '../../lib/recurly';
 import { initRecurly } from './support/helpers';
 
-describe(`Recurly.coupon`, () => {
+describe('Recurly.coupon', () => {
   let valid = { coupon: 'coop' };
 
   beforeEach(function () {
@@ -28,7 +28,6 @@ describe(`Recurly.coupon`, () => {
   });
 
   describe('when providing a plan code', () => {
-    let valid = { plan: 'basic', coupon: 'coop' };
     const invalidPlan = { plan: 'invalid', coupon: 'coop' };
     const invalidCoupon = { plan: 'basic', coupon: 'coop-invalid' };
 

@@ -42,7 +42,7 @@ describe('Recurly', function () {
   describe('id', function () {
     beforeEach(function () { this.subject = this.recurly.id; });
     it(...isAUid());
-  })
+  });
 
   describe('deviceId', function () {
     beforeEach(function () { this.subject = this.recurly.deviceId; });
@@ -202,7 +202,7 @@ describe('Recurly', function () {
     });
 
     describe('when proactive3ds', function () {
-      describe('is set to true', function() {
+      describe('is set to true', function () {
         it('returns true', function () {
           const recurly = initRecurly({
             risk: {
@@ -216,12 +216,12 @@ describe('Recurly', function () {
           assert.strictEqual(recurly.config.risk.threeDSecure.proactive.enabled, true);
         });
       });
-      describe('is not set', function() {
+      describe('is not set', function () {
         it('returns false', function () {
           const recurly = initRecurly({});
           assert.strictEqual(recurly.config.risk.threeDSecure.proactive.enabled, false);
         });
-      })
+      });
     });
   });
 
@@ -242,7 +242,7 @@ describe('Recurly', function () {
       assert.strictEqual(recurly.hasListeners('test-event'), false);
       recurly.emit('test-event');
 
-      listener.reset()
+      listener.reset();
       assert(listener.notCalled);
     });
 

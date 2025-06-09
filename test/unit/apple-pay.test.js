@@ -5,7 +5,7 @@ import merge from 'lodash.merge';
 import omit from 'lodash.omit';
 import Emitter from 'component-emitter';
 import Promise from 'promise';
-import { initRecurly, nextTick, testBed} from './support/helpers';
+import { initRecurly, nextTick, testBed } from './support/helpers';
 import BraintreeLoader from '../../lib/util/braintree-loader';
 import filterSupportedNetworks from '../../lib/recurly/apple-pay/util/filter-supported-networks';
 
@@ -1443,7 +1443,7 @@ function assertInitError (applePay, code, other) {
   assert.equal(applePay.initError.code, code);
   if (other) {
     for (let prop in other) {
-      if (other.hasOwnProperty(prop)) {
+      if (Object.hasOwn(other, prop)) {
         assert.equal(applePay.initError[prop], other[prop]);
       }
     }

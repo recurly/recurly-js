@@ -2,7 +2,7 @@ import assert from 'assert';
 import { Recurly } from '../../lib/recurly';
 import { initRecurly } from './support/helpers';
 
-describe(`Recurly.item`, () => {
+describe('Recurly.item', () => {
   beforeEach(function () {
     this.sandbox = sinon.createSandbox();
     this.recurly = initRecurly();

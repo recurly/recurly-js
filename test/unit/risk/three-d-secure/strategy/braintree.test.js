@@ -75,15 +75,15 @@ describe('BraintreeStrategy', function () {
     });
 
     it('instructs Braintree.js to handle the card action using the client secret', function (done) {
-      const { strategy, target, braintree } = this;
+      const { strategy, target } = this;
 
       strategy.attach(target);
-      strategy.on('done', result => {
+      strategy.on('done', () => {
         assert(this.threeDSecureInstance.verifyCard.calledOnce);
         assert(this.threeDSecureInstance.verifyCard.calledWithExactly({
           amount: 50,
-          nonce: "test-braintree-nonce",
-          bin: "test-braintree-bin",
+          nonce: 'test-braintree-nonce',
+          bin: 'test-braintree-bin',
           challengeRequested: true,
           collectDeviceData: true,
           onLookupComplete: sinon.match.func
@@ -127,7 +127,7 @@ describe('BraintreeStrategy', function () {
       this.number = '4111111111111111';
       this.month = '01';
       this.year = '2023';
-      this.cvv = '737'
+      this.cvv = '737';
 
       this.addressFields = {
         first_name: 'John',
@@ -138,7 +138,7 @@ describe('BraintreeStrategy', function () {
         country: 'US',
         postal_code: '94105',
         state: 'CA',
-      }
+      };
 
       recurly.config.risk.threeDSecure.proactive = {
         enabled: true,

@@ -32,7 +32,7 @@ export function initRecurly (recurly, opts) {
 export function testBed () {
   let el = window.document.getElementById('dom-testbed');
   if (!el) {
-    el = window.document.createElement('div')
+    el = window.document.createElement('div');
     el.id = 'dom-testbed';
     window.document.body.appendChild(el);
   }
@@ -47,11 +47,11 @@ export function stubBraintree () {
   beforeEach(() => {
     const create = (opt, cb) => cb(null, {
       tokenize: (opts, cb) => {
-        cb(null, {})
+        cb(null, {});
 
         return {
           close: () => {}
-        }
+        };
       }
     });
 
@@ -80,7 +80,7 @@ export function stubAsMobileDevice () {
   beforeEach(function () {
     this.mobileStubSandbox = sinon.createSandbox();
     if (bowser.mobile === true) return;
-    if (!bowser.hasOwnProperty('mobile')) bowser.mobile = undefined;
+    if (!Object.hasOwn(bowser, 'mobile')) bowser.mobile = undefined;
     this.mobileStubSandbox.stub(bowser, 'mobile').value(true);
   });
 
@@ -97,7 +97,7 @@ export function stubAsNonMobileDevice () {
   });
 
   afterEach(function () {
-    this.mobileStubSandbox.restore()
+    this.mobileStubSandbox.restore();
   });
 }
 

@@ -33,9 +33,9 @@ describe('Recurly.Bus', function () {
         exampleEmitter.on('bus:added', bus => {
           assert.strictEqual(bus, this.bus);
           done();
-        })
+        });
         this.bus.add(exampleEmitter);
-      })
+      });
     });
 
     describe('when adding a cross-domain iframe window recipient', function () {

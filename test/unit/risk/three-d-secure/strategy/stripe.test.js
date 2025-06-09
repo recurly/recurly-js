@@ -4,7 +4,6 @@ import { initRecurly, testBed } from '../../../support/helpers';
 import StripeStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/stripe';
 import actionTokenPaymentIntent from '@recurly/public-api-test-server/fixtures/tokens/action-token-stripe-pi.json';
 import actionTokenSetupIntent from '@recurly/public-api-test-server/fixtures/tokens/action-token-stripe-seti.json';
-import Promise from 'promise';
 
 describe('StripeStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -14,7 +13,8 @@ describe('StripeStrategy', function () {
   beforeEach(function () {
     const recurly = this.recurly = initRecurly();
     const risk = recurly.Risk();
-    const threeDSecure = this.threeDSecure = risk.ThreeDSecure({ actionTokenId: 'action-token-test' });
+
+    this.threeDSecure = risk.ThreeDSecure({ actionTokenId: 'action-token-test' });
     this.target = testBed().querySelector('#three-d-secure-container');
     this.sandbox = sinon.createSandbox();
 
@@ -24,7 +24,7 @@ describe('StripeStrategy', function () {
     this.stripe = {
       handleNextAction: sinon.stub().resolves(this.intentResult),
     };
-    window.Stripe = sinon.spy(publishableKey => this.stripe);
+    window.Stripe = sinon.spy(() => this.stripe);
   });
 
   afterEach(function () {
@@ -34,7 +34,7 @@ describe('StripeStrategy', function () {
   });
 
   it('instantiates Stripe.js with the Stripe publishable key', function (done) {
-    window.Stripe = sinon.spy(publishableKey => this.stripe);
+    window.Stripe = sinon.spy(() => this.stripe);
     const { threeDSecure } = this;
     const strategy = new StripeStrategy({ threeDSecure, actionToken: actionTokenPaymentIntent });
 
@@ -59,7 +59,7 @@ describe('StripeStrategy', function () {
         assert.strictEqual(error.code, '3ds-vendor-load-error');
         assert.strictEqual(error.vendor, 'Stripe');
         done();
-      })
+      });
     });
   });
 

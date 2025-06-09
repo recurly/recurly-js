@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { applyFixtures } from '../../support/fixtures';
 import { initRecurly } from '../../support/helpers';
-import PricingAttachment from '../../../../lib/recurly/pricing/subscription/attachment'
+import PricingAttachment from '../../../../lib/recurly/pricing/subscription/attachment';
 
 describe('Recurly.Pricing.attach', function () {
   beforeEach(function (done) {
@@ -32,7 +32,7 @@ describe('Recurly.Pricing.attach', function () {
     it('attaches to the given container', function () {
       const attachment = this.pricing.attachment;
       assert(attachment instanceof PricingAttachment);
-      assert(attachment.container === container())
+      assert(attachment.container === container());
     });
 
     describe('when pre-populated with a valid coupon code', function () {
@@ -98,7 +98,7 @@ describe('Recurly.Pricing.attach', function () {
             done();
           });
         });
-      })
+      });
     });
 
     describe('when pre-populated with a valid gift card redemption code', function () {

@@ -6,7 +6,6 @@ import {
   stubAsNonMobileDevice
 } from './support/helpers';
 import { HostedField } from '../../lib/recurly/hosted-field';
-import { Recurly } from '../../lib/recurly';
 
 describe('Recurly.HostedField', function () {
   applyFixtures();
@@ -88,7 +87,7 @@ function buildHostedFieldExample (opts = {}) {
   return function (done) {
     this.hostedField = new HostedField(Object.assign({}, {
       type: 'number',
-      selector: `[data-recurly=number]`,
+      selector: '[data-recurly=number]',
       recurly: this.recurly.config
     }, opts));
     this.hostedField.emit('hostedField:ready', { type: 'number' });

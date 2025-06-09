@@ -12,7 +12,7 @@ describe('IntervalWorker', () => {
   afterEach(function () {
     // Destroy any workers that have not already been destroyed
     if (this.worker && this.worker._intervalId) this.worker.destroy();
-  })
+  });
 
   it('requires a perform function', function () {
     assert.throws(() => new IntervalWorker(), Error, 'Invalid perform function');
@@ -30,27 +30,32 @@ describe('IntervalWorker', () => {
   });
 
   it('calls the perform function with a jobId', function (done) {
-    const start = Date.now();
-    const worker = this.worker = new IntervalWorker({ period: 1, perform: ({ jobId }) => {
-      assert.strictEqual(jobId, 0);
-      worker.destroy();
-      done();
-    }});
+    const worker = this.worker = new IntervalWorker({
+      period: 1,
+      perform: ({ jobId }) => {
+        assert.strictEqual(jobId, 0);
+        worker.destroy();
+        done();
+      }
+    });
     worker.start();
   });
 
   it('calls the perform function at the period interval', function (done) {
     const then = Date.now();
-    const worker = this.worker = new IntervalWorker({ period: 500, perform: () => {
-      const lapse = Date.now() - then;
-      if (lapse > 600) {
-        console.log(`WARN: Lapse > 100ms`)
+    const worker = this.worker = new IntervalWorker({
+      period: 500,
+      perform: () => {
+        const lapse = Date.now() - then;
+        if (lapse > 600) {
+          console.log('WARN: Lapse > 100ms');
+        }
+        assert(lapse >= 450);
+        assert(lapse <= 650);
+        worker.destroy();
+        done();
       }
-      assert(lapse >= 450);
-      assert(lapse <= 650);
-      worker.destroy();
-      done();
-    }});
+    });
     worker.start();
   });
 

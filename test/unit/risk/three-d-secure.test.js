@@ -1,14 +1,13 @@
 import assert from 'assert';
 import Promise from 'promise';
 import { applyFixtures } from '../support/fixtures';
-import { initRecurly, nextTick, testBed } from '../support/helpers';
+import { initRecurly, testBed } from '../support/helpers';
 import { factory, ThreeDSecure } from '../../../lib/recurly/risk/three-d-secure/three-d-secure';
 import AdyenStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/adyen';
 import BraintreeStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/braintree';
 import SagepayStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/sage-pay';
 import StripeStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/stripe';
 import TestStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/test';
-import ThreeDSecureStrategy from '../../../lib/recurly/risk/three-d-secure/strategy';
 import WirecardStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/wirecard';
 import WorldpayStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/worldpay';
 
@@ -66,7 +65,7 @@ describe('ThreeDSecure', function () {
       assert.strictEqual(threeDSecure.risk, riskStub);
     });
 
-    it('sets challengeWindowSize from options', function(){
+    it('sets challengeWindowSize from options', function (){
       const challengeWindowSize = ThreeDSecure.CHALLENGE_WINDOW_SIZE_03_500_X_600;
       const { actionTokenId, riskStub } = this;
       const threeDSecure = factory.call(riskStub, { actionTokenId, challengeWindowSize });
@@ -110,7 +109,7 @@ describe('ThreeDSecure', function () {
   
       it('resolves with preflight results from strategies', function (done) {
         const { recurly, bin, preflights } = this;
-        const returnValue = ThreeDSecure.preflight({ recurly, bin, preflights })
+        ThreeDSecure.preflight({ recurly, bin, preflights })
           .done(({ risk }) => {
             const [{ processor, results }] = risk;
             assert.strictEqual(Array.isArray(risk), true);
@@ -122,7 +121,7 @@ describe('ThreeDSecure', function () {
     });
 
     context('when a strategy does not return results', function () {
-      beforeEach(function() {
+      beforeEach(function () {
         this.sandbox.stub(ThreeDSecure, 'getStrategyForGatewayType').callsFake(() => ({
           preflight: this.sandbox.stub().usingPromise(Promise).resolves(undefined)
         }));
@@ -136,7 +135,7 @@ describe('ThreeDSecure', function () {
           done();
         });
       });
-    })
+    });
   });
 
   it('adds itself to the provided Risk instance', function () {
@@ -263,7 +262,7 @@ describe('ThreeDSecure', function () {
     });
   });
 
-  describe('challengeWindowSize', function() {
+  describe('challengeWindowSize', function () {
     it('validates', function () {
       const challengeWindowSize = 'xx';
       const { risk, actionTokenId } = this;
@@ -277,7 +276,7 @@ describe('ThreeDSecure', function () {
       const threeDSecure = new ThreeDSecure({ risk, actionTokenId });
       assert.strictEqual(threeDSecure.challengeWindowSize, ThreeDSecure.CHALLENGE_WINDOW_SIZE_DEFAULT);
     });
-  })
+  });
 
   describe('attach', function () {
     it('defers to the strategy', function (done) {
@@ -314,7 +313,7 @@ describe('ThreeDSecure', function () {
 
       threeDSecure.attach(container);
       threeDSecure.whenReady(() => done());
-    })
+    });
 
     it('defers to the strategy', function () {
       const { threeDSecure, sandbox } = this;
@@ -347,7 +346,7 @@ describe('ThreeDSecure', function () {
         assert.deepStrictEqual(token, {
           type: 'three_d_secure_action_result',
           id: '3dsart-id-test'
-        })
+        });
         done();
       });
 

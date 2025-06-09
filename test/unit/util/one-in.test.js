@@ -6,7 +6,7 @@ describe('oneIn', () => {
     const examples = [1000, 100, 10];
 
     for (const example of examples) {
-      const actual = Array.from(Array(1000000)).reduce((acc, i) => {
+      const actual = Array.from(Array(1000000)).reduce(acc => {
         const result = oneIn(example);
         acc[result] = (acc[result] + 1) || 1;
         return acc;

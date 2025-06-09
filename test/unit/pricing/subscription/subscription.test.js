@@ -44,7 +44,7 @@ describe('Recurly.Pricing.Subscription', function () {
           country: 'US',
           postal_code: '94110' // tax literal for test
         })
-        .giftcard("hundred-dollar-card")
+        .giftcard('hundred-dollar-card')
         .done(function (price) {
           assert.equal(price.now.gift_card, '23.91');
           assert.equal(price.next.gift_card, '21.74');
@@ -176,7 +176,7 @@ describe('Recurly.Pricing.Subscription', function () {
             assert.equal(price.next.tax, '1.75');
             done();
           });
-      })
+      });
     });
 
     describe('given specific tax amounts', () => {
@@ -340,7 +340,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'US'
         })
-        .giftcard("super-gift-card")
+        .giftcard('super-gift-card')
         .done(function (price) {
           assert.equal(price.now.total, '1.99');
           assert.equal(price.next.total, '19.99');
@@ -354,7 +354,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'US'
         })
-        .giftcard("super-gift-card")
+        .giftcard('super-gift-card')
         .done(function (price) {
           assert.equal(price.now.gift_card, '20.00');
           assert.equal(price.next.gift_card, '0.00');
@@ -368,7 +368,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'US'
         })
-        .giftcard("hundred-dollar-card")
+        .giftcard('hundred-dollar-card')
         .done(function (price) {
           assert.equal(price.now.gift_card, '81.96');
           assert.equal(price.next.gift_card, '18.04');
@@ -384,7 +384,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'US'
         })
-        .giftcard("hundred-dollar-card")
+        .giftcard('hundred-dollar-card')
         .done(function (price) {
           assert.equal(price.now.gift_card, '21.99');
           assert.equal(price.next.gift_card, '19.99');
@@ -461,7 +461,7 @@ describe('Recurly.Pricing.Subscription', function () {
         .then((giftcard) => assert(!giftcard))
         .done(function (price) {
           assert.equal(price.now.gift_card, undefined);
-          assert.equal(price.now.total,"21.99");
+          assert.equal(price.now.total,'21.99');
           assert(emitted, true);
           done();
         });

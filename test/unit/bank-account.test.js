@@ -12,7 +12,7 @@ describe('Recurly.bankAccount', function () {
     this.recurly.ready(done);
   });
 
-  describe(`Recurly.bankAccount.token`, function () {
+  describe('Recurly.bankAccount.token', function () {
     const valid = {
       routing_number: '123456780',
       account_number: '1987649876',
@@ -128,24 +128,24 @@ describe('Recurly.bankAccount', function () {
           });
         });
 
-      describe('when given a valid Bacs', function () {
-        const validBacs = {
-          account_number: '55779911',
-          account_number_confirmation: '55779911',
-          sort_code: '200000',
-          name_on_account: 'Sir John Smith',
-          type: 'bacs'
-        };
+        describe('when given a valid Bacs', function () {
+          const validBacs = {
+            account_number: '55779911',
+            account_number_confirmation: '55779911',
+            sort_code: '200000',
+            name_on_account: 'Sir John Smith',
+            type: 'bacs'
+          };
 
-        it('yields a token', function (done) {
-          const { recurly } = this;
-          recurly.bankAccount.token(validBacs, (err, token) => {
-            assert(!err);
-            assert(token.id);
-            done();
+          it('yields a token', function (done) {
+            const { recurly } = this;
+            recurly.bankAccount.token(validBacs, (err, token) => {
+              assert(!err);
+              assert(token.id);
+              done();
+            });
           });
         });
-      });
       });
 
       describe('when given a valid BECS', function () {
@@ -173,6 +173,8 @@ describe('Recurly.bankAccount', function () {
   describe('Recurly.bankAccount.bankInfo', function () {
     context('Bacs Bank Account', function () {
       it('requires a account_number_confirmation', function (done) {
+        const { recurly } = this;
+
         const invalidBacs = {
           account_number: '55779911',
           sort_code: '200000',
@@ -180,7 +182,7 @@ describe('Recurly.bankAccount', function () {
           type: 'bacs',
         };
 
-        recurly.bankAccount.token(invalidBacs, (err, token) => {
+        recurly.bankAccount.token(invalidBacs, (err) => {
           assert(err);
           assert(~err.message.indexOf('validating'));
           done();
@@ -194,6 +196,7 @@ describe('Recurly.bankAccount', function () {
       };
 
       it('requires a callback', function () {
+        const { recurly } = this;
         try {
           recurly.bankAccount.bankInfo(valid);
         } catch (e) {
@@ -202,6 +205,7 @@ describe('Recurly.bankAccount', function () {
       });
 
       it('requires a routingNumber', function () {
+        const { recurly } = this;
         recurly.bankAccount.bankInfo({}, (err, bankInfo) => {
           assert.strictEqual(err.code, 'validation');
           assert.strictEqual(err.fields.length, 1);

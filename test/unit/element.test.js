@@ -1,10 +1,8 @@
-import after from 'lodash.after';
 import { applyFixtures } from './support/fixtures';
 import assert from 'assert';
 import Element from '../../lib/recurly/element';
 import Elements from '../../lib/recurly/elements';
 import { initRecurly, createNativeEvent, stubAsNonMobileDevice, stubAsMobileDevice } from './support/helpers';
-import { Recurly } from '../../lib/recurly';
 
 describe('Element', function () {
   class ElementsStub extends Elements {
@@ -32,20 +30,20 @@ describe('Element', function () {
     const validOptions = this.validOptions = {
       elements,
       ...validConfig
-    }
+    };
     const element = this.element = new Element(validOptions);
     this.validParentSelector = '#recurly-elements';
     this.validParentElement = document.querySelector(this.validParentSelector);
 
     // These simulate messages an element expects to receive from a frame
-    this.messageName = name => `element:${element.id}:${name}`
+    this.messageName = name => `element:${element.id}:${name}`;
     this.sendMessage = name => element.bus.send(this.messageName(name));
   });
 
   it('requires an elements instance', function () {
     const { elements } = this;
     assert.throws(() => new Element());
-    assert.doesNotThrow(() => new Element({ elements }))
+    assert.doesNotThrow(() => new Element({ elements }));
   });
 
   it('configures the instance', function () {
@@ -111,7 +109,7 @@ describe('Element', function () {
       });
     });
 
-    it(`emits the 'attach' event`, function (done) {
+    it('emits the \'attach\' event', function (done) {
       const { element, validParentElement } = this;
       element.once('attach', element => {
         assert.strictEqual(element, element);
@@ -135,13 +133,10 @@ describe('Element', function () {
 
         it('returns the instance', function () {
           const { element, validParentElement } = this;
-          const attachSpy = sinon.spy(() => element.attach(validParentElement));
-          element.on('attach', () => {
-            assert(attachSpy.calledTwice);
-            done();
-          });
-          assert.strictEqual(attachSpy(), element);
-          assert.strictEqual(attachSpy(), element);
+          sinon.spy(element, 'attach');
+          assert.strictEqual(element.attach(validParentElement), element);
+          assert.strictEqual(element.attach(validParentElement), element);
+          assert(element.attach.calledTwice);
         });
       });
 
@@ -203,7 +198,7 @@ describe('Element', function () {
         assert(!~element.bus.recipients.indexOf(element.window));
       });
 
-      it(`removes any dangling 'ready' message listeners`, function () {
+      it('removes any dangling \'ready\' message listeners', function () {
         const { element, messageName, sendMessage } = this;
         const listener = sinon.stub();
         element.on(messageName('ready'), listener);
@@ -212,7 +207,7 @@ describe('Element', function () {
         assert(listener.notCalled);
       });
 
-      it(`emits the 'remove' event`, function (done) {
+      it('emits the \'remove\' event', function (done) {
         const { element } = this;
         element.once('remove', element => {
           assert.strictEqual(element, element);
@@ -353,7 +348,7 @@ describe('Element', function () {
   });
 
   describe('Element.focus', function () {
-    it(`sends the 'focus!' message`, function () {
+    it('sends the \'focus!\' message', function () {
       const { element, messageName } = this;
       sinon.spy(element.bus, 'send');
       element.focus();
@@ -551,7 +546,7 @@ describe('Element', function () {
     });
 
     it('returns an Array of HTMLElements', function () {
-      const { element, example } = this;
+      const { example } = this;
       assert(Array.isArray(example));
       example.forEach(item => assert(item instanceof HTMLElement));
     });
@@ -572,7 +567,7 @@ describe('Element', function () {
     });
 
     describe('onStateChange', function () {
-      it(`is called when the 'state:change' bus message is sent`, function (done) {
+      it('is called when the \'state:change\' bus message is sent', function (done) {
         const { element, messageName, sendMessage } = this;
         sinon.spy(element, 'onStateChange');
         element.on(messageName('state:change'), () => {
@@ -607,7 +602,7 @@ describe('Element', function () {
           assert.deepEqual(example, element.state);
         });
 
-        it(`emits the 'change' event, passing the new state`, function (done) {
+        it('emits the \'change\' event, passing the new state', function (done) {
           const { element, example } = this;
           element.on('change', state => {
             assert.deepEqual(state, element.state);
@@ -627,7 +622,7 @@ describe('Element', function () {
     });
 
     describe('onFocus', function () {
-      it(`emits 'focus' when the 'focus' bus message is sent`, function (done) {
+      it('emits \'focus\' when the \'focus\' bus message is sent', function (done) {
         const { element, sendMessage } = this;
         element.on('focus', () => done());
         sendMessage('focus');
@@ -635,7 +630,7 @@ describe('Element', function () {
     });
 
     describe('onBlur', function () {
-      it(`emits 'blur' when the 'blur' bus message is sent`, function (done) {
+      it('emits \'blur\' when the \'blur\' bus message is sent', function (done) {
         const { element, sendMessage } = this;
         element.on('blur', () => done());
         sendMessage('blur');
@@ -681,7 +676,7 @@ describe('Element', function () {
         });
         attachElement();
 
-        it(`calls focus on the previous tabbable HTMLElement when called with 'previous'`, function () {
+        it('calls focus on the previous tabbable HTMLElement when called with \'previous\'', function () {
           const { element } = this;
           const example = document.querySelector('#test-tab-prev');
           sinon.spy(example, 'focus');
@@ -690,7 +685,7 @@ describe('Element', function () {
           example.focus.restore();
         });
 
-        it(`calls focus on the next tabbable HTMLElement when called with 'next'`, function () {
+        it('calls focus on the next tabbable HTMLElement when called with \'next\'', function () {
           const { element } = this;
           const example = document.querySelector('#test-tab-next');
           sinon.spy(example, 'focus');
@@ -700,9 +695,9 @@ describe('Element', function () {
         });
       });
 
-      describe(`when the 'tab:previous' message is sent`, function () {
+      describe('when the \'tab:previous\' message is sent', function () {
         beforeEach(function () {
-          const { element, messageName } = this
+          const { element, messageName } = this;
           element.bus.send(messageName('tab:previous'));
         });
 
@@ -712,9 +707,9 @@ describe('Element', function () {
         });
       });
 
-      describe(`when the 'tab:next' message is sent`, function () {
+      describe('when the \'tab:next\' message is sent', function () {
         beforeEach(function () {
-          const { element, messageName } = this
+          const { element, messageName } = this;
           element.bus.send(messageName('tab:next'));
         });
 
@@ -726,7 +721,7 @@ describe('Element', function () {
     });
 
     describe('onSubmit', function () {
-      it(`emits 'submit' when the 'submit' bus message is sent`, function (done) {
+      it('emits \'submit\' when the \'submit\' bus message is sent', function (done) {
         const { element, sendMessage } = this;
         element.on('submit', () => done());
         sendMessage('submit');

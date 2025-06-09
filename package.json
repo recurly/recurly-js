@@ -68,6 +68,7 @@
     "css-minimizer-webpack-plugin": "^5.0.0",
     "current-git-branch": "^1.1.0",
     "eslint": "^6.8.0",
+    "eslint-plugin-no-only-tests": "^3.3.0",
     "geckodriver": "^3.2.0",
     "glob": "^7.1.6",
     "karma": "^6.4.2",
