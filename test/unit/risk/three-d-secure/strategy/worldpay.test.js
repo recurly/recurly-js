@@ -89,7 +89,7 @@ describe('WorldpayStrategy', function () {
       simulatePreflightResponse();
     });
 
-    describe.only('device data collection', function () {
+    describe('device data collection', function () {
       describe('device data collection disabled when set to false', function () {
         beforeEach(function() {
           this.recurly.config.risk.threeDSecure.preflightDeviceDataCollector = {
