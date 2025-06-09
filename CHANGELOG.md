@@ -1,5 +1,20 @@
 # Changelog
 
+## [v4.37.0](https://github.com/recurly/recurly-js/tree/v4.37.0) (2025-06-09)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.36.0...v4.37.0)
+
+
+**Merged Pull Requests**
+
+- Adds ApplePayRecurringPaymentDateUnit type values [#938](https://github.com/recurly/recurly-js/pull/938) ([chrissrogers](https://github.com/chrissrogers))
+- Add BillingInfoId field to preflightDeviceDataCollector [#934](https://github.com/recurly/recurly-js/pull/934) ([arzitney](https://github.com/arzitney))
+
+**Closed Issues**
+
+- Missing types for ApplePayRecurringPaymentDateUnit [#932](https://github.com/recurly/recurly-js/issues/932)
+
+
 ## [v4.36.0](https://github.com/recurly/recurly-js/tree/v4.36.0) (2025-05-29)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.35.0...v4.36.0)
