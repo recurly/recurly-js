@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.37.1](https://github.com/recurly/recurly-js/tree/v4.37.1) (2025-06-09)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.37.0...v4.37.1)
+
+
+**Merged Pull Requests**
+
+- Revert test [#940](https://github.com/recurly/recurly-js/pull/940) ([arzitney](https://github.com/arzitney))
+
+
+
 ## [v4.37.0](https://github.com/recurly/recurly-js/tree/v4.37.0) (2025-06-09)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.36.0...v4.37.0)
