@@ -323,7 +323,7 @@ describe('Request', () => {
         this.request.request.usingPromise(Promise).resolves({ success: true });
       });
 
-      afterEach(function () { this.request.request.restore(); })
+      afterEach(function () { this.request.request.restore(); });
 
       it('returns and caches successful responses', function (done) {
         this.request.cached({ method: 'get', route: 'test', data }).done(res => {
@@ -335,9 +335,9 @@ describe('Request', () => {
 
       it(`invokes recurly.request on the first call, and not on the
           second, with identical responses for both requests`, function (done) {
-        this.request.cached({ method: 'get', route: 'test', data }).done(res => {
+        this.request.cached({ method: 'get', route: 'test', data }).done(() => {
           assert(this.request.request.calledOnce);
-          this.request.cached({ method: 'get', route: 'test', data }).done(res => {
+          this.request.cached({ method: 'get', route: 'test', data }).done(() => {
             assert(this.request.request.calledOnce);
             assert.equal(Object.keys(this.request.cache).length, 1);
             done();
@@ -363,7 +363,7 @@ describe('Request', () => {
       });
 
       it('executes the queue once configured', function (done) {
-        const step = res => {
+        const step = () => {
           assert.strictEqual(this.recurly.listeners('configured').length, 0);
           done();
         };
@@ -391,7 +391,7 @@ describe('Request', () => {
     describe('given all error responses', () => {
       beforeEach(function () {
         sinon.stub(this.request, 'request');
-        this.request.request.usingPromise(Promise).rejects({ code: 'not-found'});
+        this.request.request.usingPromise(Promise).rejects({ code: 'not-found' });
       });
 
       it('responds with an error', function (done) {
@@ -414,7 +414,7 @@ describe('Request', () => {
           .done(() => {
             assert(this.request.request.calledTwice);
             done();
-          })
+          });
       });
 
       it('spreads a long request set across multiple requests with given a custom size', function (done) {
@@ -422,7 +422,7 @@ describe('Request', () => {
           .done(() => {
             assert.equal(this.request.request.callCount, 20);
             done();
-          })
+          });
       });
 
       it('responds with the first response if it is an object', function (done) {
@@ -430,7 +430,7 @@ describe('Request', () => {
           .done(res => {
             assert.equal(res.success, true);
             done();
-          })
+          });
       });
 
       it('responds with a flattened response set if the responses are arrays', function (done) {
@@ -440,15 +440,13 @@ describe('Request', () => {
             assert.equal(set.length, 20);
             set.forEach(res => assert.equal(res.success, true));
             done();
-          })
+          });
       });
     });
   });
 
   describe('Request.jsonp', () => {
     beforeEach(function () {
-      const { timeout } = this.request;
-
       this.exampleOkUrl = this.recurly.url('/mock-200');
       this.exampleErrUrl = this.recurly.url('/mock-200-err');
 
@@ -496,7 +494,7 @@ describe('Request', () => {
     });
 
     it('encodes the payload in the querystring', function () {
-      const { exampleOkUrl, expectedOptions } = this;
+      const { exampleOkUrl } = this;
 
       const examplePayload = {
         arbitrary: 'data payload!',
@@ -533,7 +531,7 @@ describe('Request', () => {
       }).then(response => {
         assert.strictEqual(response, '');
         done();
-      }, err => {});
+      });
     });
 
     it('rejects when the response is shaped like an error', function (done) {

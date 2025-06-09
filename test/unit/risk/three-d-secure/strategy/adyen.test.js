@@ -1,5 +1,4 @@
 import assert from 'assert';
-import Promise from 'promise';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import AdyenStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/adyen';
@@ -7,7 +6,7 @@ import actionToken from '@recurly/public-api-test-server/fixtures/tokens/action-
 import fingerprintActionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-adyen-fingerprint.json';
 import fallbackActionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-adyen-3ds1.json';
 import componentActionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-adyen-component-redirect.json';
-import { Frame } from '../../../../../lib/recurly/frame'
+import { Frame } from '../../../../../lib/recurly/frame';
 
 describe('AdyenStrategy', function () {
   this.ctx.fixture = 'threeDSecure';
@@ -32,10 +31,7 @@ describe('AdyenStrategy', function () {
     };
     this.adyenService = { mount: sinon.spy() };
     this.adyenCheckout = {
-      create: sinon.spy((serviceType, opts) => {
-        const token = opts.fingerprintToken || opts.challengeToken;
-        return this.adyenService;
-      })
+      create: sinon.spy(() => this.adyenService)
     };
     window.AdyenCheckout = sinon.spy(() => this.adyenCheckout);
 

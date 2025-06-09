@@ -66,7 +66,7 @@ describe('Risk', function () {
 
   describe('Risk.preflight', function () {
     beforeEach(function () {
-      const { sandbox, recurly } = this;
+      const { sandbox } = this;
       this.bin = '411111';
       this.recurly = initRecurly({ publicKey: 'test-preflight-key' });
       this.stubPreflightResults = { risk: [{ arbitrary: 'results' }], tokenType: undefined };
@@ -80,7 +80,7 @@ describe('Risk', function () {
         .done(results => {
           assert(recurly.request.get.calledOnce);
           assert(recurly.request.get.calledWithMatch({ route: '/risk/preflights' }));
-          assert.deepStrictEqual(results, stubPreflightResults)
+          assert.deepStrictEqual(results, stubPreflightResults);
           done();
         });
     });
@@ -92,7 +92,7 @@ describe('Risk', function () {
           errors('risk-preflight-timeout', { processor: 'test' }),
           { arbitrary: 'preflight-results-2' },
           errors('risk-preflight-timeout', { processor: 'test-2' })
-        ], tokenType: undefined};
+        ], tokenType: undefined };
         ThreeDSecure.preflight.usingPromise(Promise).resolves(this.stubPreflightResults);
       });
 
@@ -141,7 +141,7 @@ describe('Risk', function () {
 
       it('adds a RiskConcern inheritant', function () {
         const { risk, riskStub } = this;
-        class Example extends RiskConcern {};
+        class Example extends RiskConcern {}
         const example = new Example({ risk: riskStub });
         risk.add(example);
         assert.strictEqual(risk.concerns.length, 1);

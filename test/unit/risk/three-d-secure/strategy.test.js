@@ -39,7 +39,7 @@ describe('ThreeDSecureStrategy', function () {
 
       it('has a data-recurly attribute', function () {
         const { container } = this.strategy;
-        assert.strictEqual(container.getAttribute('data-recurly'), 'three-d-secure-container')
+        assert.strictEqual(container.getAttribute('data-recurly'), 'three-d-secure-container');
       });
 
       describe('dimensions', function () {

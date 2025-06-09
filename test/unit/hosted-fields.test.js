@@ -1,8 +1,7 @@
 import assert from 'assert';
 import { applyFixtures } from './support/fixtures';
 import { initRecurly, stubAsMobileDevice } from './support/helpers';
-import HostedField from '../../lib/recurly/hosted-field';
-import { FIELD_TYPES, HostedFields } from '../../lib/recurly/hosted-fields';
+import { FIELD_TYPES } from '../../lib/recurly/hosted-fields';
 
 describe('Recurly.HostedFields', function () {
   applyFixtures();

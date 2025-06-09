@@ -6,6 +6,7 @@ const {
   fillElement,
   init,
   recurlyEnvironment,
+  TOKEN_TYPES,
   tokenize
 } = require('./support/helpers');
 
@@ -150,7 +151,7 @@ describe('Recurly.js', async function () {
       }, sel);
 
       assert.strictEqual(err, null);
-      assertIsAToken(token, expectedType="bacs_bank_account");
+      assertIsAToken(token, TOKEN_TYPES.BACS_BANK_ACCOUNT);
     });
   });
 
@@ -190,12 +191,13 @@ describe('Recurly.js', async function () {
       }, sel);
 
       assert.strictEqual(err, null);
+      assert(token.id);
     });
   });
 
   describe('fraud', async function () {
     beforeEach(async function () {
-      await browser.url(`e2e`);
+      await browser.url('e2e');
       await browser.executeAsync(function (recurlyEnvironment, done) {
         const config = {
           api: recurlyEnvironment.api,

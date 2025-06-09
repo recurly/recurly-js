@@ -1,16 +1,8 @@
 const assert = require('assert');
 const {
-  BROWSERS,
-  createElement,
-  DEVICES,
-  ELEMENT_TYPES,
   elementAndFieldSuite,
-  environmentIs,
-  EXAMPLES,
   fillCardElement,
-  fillDistinctCardElements,
-  fillElement,
-  init
+  fillElement
 } = require('./support/helpers');
 
 const sel = {
@@ -255,7 +247,7 @@ async function assertDistinctCardBehavior (...expectations) {
   }
 }
 
-async function assertInputStateChange(example, frame, expectation) {
+async function assertInputStateChange (example, frame, expectation) {
   const blurTriggerEl = await $(sel.firstName);
   const output = await $(sel.output);
 

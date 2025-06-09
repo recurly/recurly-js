@@ -65,7 +65,7 @@ describe('Recurly.giftCard', function () {
     it('accepts options.code as options.giftcard', function (done) {
       recurly.giftCard({ giftcard: valid.code }, (err, giftCard) => {
         assert(!err);
-        assert(giftCard)
+        assert(giftCard);
         done();
       });
     });

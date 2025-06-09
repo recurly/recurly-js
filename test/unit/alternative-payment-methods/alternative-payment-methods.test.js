@@ -37,7 +37,7 @@ describe('Recurly.AlternativePaymentMethods', () => {
     sandbox.restore();
   });
 
-  describe("start", () => {
+  describe('start', () => {
     describe('validations', () => {
       const requiredFields = [
         'allowedPaymentMethods',
@@ -115,14 +115,14 @@ describe('Recurly.AlternativePaymentMethods', () => {
       });
     });
 
-    it("make a GET /js/v1/payment_methods/list with the needed params", (done) => {
+    it('make a GET /js/v1/payment_methods/list with the needed params', (done) => {
       sandbox.stub(recurly.request, 'get').resolves({ });
       paymentMethods = recurly.AlternativePaymentMethods(params);
 
       paymentMethods.start()
         .then(() => assertDone(done, () => {
           assert.equal(recurly.request.get.called, true);
-          assert.deepEqual(recurly.request.get.getCall(0).args[0].route, "/payment_methods/list");
+          assert.deepEqual(recurly.request.get.getCall(0).args[0].route, '/payment_methods/list');
           assert.deepEqual(recurly.request.get.getCall(0).args[0].data, {
             allowedPaymentMethods: ['boleto'],
             blockedPaymentMethods: ['iDeal'],

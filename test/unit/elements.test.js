@@ -151,8 +151,8 @@ describe('Elements', function () {
     });
 
     it('destroys its bus instance', function () {
-      const { elements, cardElementExample } = this;
-      const { bus } = elements
+      const { elements } = this;
+      const { bus } = elements;
       sinon.spy(bus, 'destroy');
       assert.strictEqual(bus.destroy.called, false);
       elements.destroy();
@@ -161,7 +161,7 @@ describe('Elements', function () {
   });
 
   describe('Elements.sendPeerAnnounce', function () {
-    it(`sends the 'elements:peer-announce' message`, function () {
+    it('sends the \'elements:peer-announce\' message', function () {
       const { elements, cardElementExample } = this;
       const name = 'elements:peer-announce';
       const payload = { ids: [cardElementExample.id] };
@@ -189,7 +189,7 @@ describe('Elements', function () {
         elements.sendPeerAnnounce.restore();
       });
 
-      it(`is called when an Element emits the 'attach' event`, function () {
+      it('is called when an Element emits the \'attach\' event', function () {
         const { elements, cardElementExample } = this;
         sinon.spy(elements, 'onElementAttach');
         elements.add(cardElementExample);
@@ -301,7 +301,7 @@ describe('Elements', function () {
       });
 
       function doesNotSendElementsMessages () {
-        return [`does not send the 'elements:ready!' or announce messages`, function () {
+        return ['does not send the \'elements:ready!\' or announce messages', function () {
           const { elements } = this;
           elements.sendPeerAnnounce.resetHistory();
           elements.onElementAttach();
@@ -311,7 +311,7 @@ describe('Elements', function () {
       }
 
       function sendsElementsMessages () {
-        return [`sends the 'elements:ready!' and announce messages`, function () {
+        return ['sends the \'elements:ready!\' and announce messages', function () {
           const { elements } = this;
           const { bus } = elements;
           elements.sendPeerAnnounce.resetHistory();
@@ -333,7 +333,7 @@ describe('Elements', function () {
         elements.onElementSubmit.restore();
       });
 
-      it(`emits the 'submit' event`, function (done) {
+      it('emits the \'submit\' event', function (done) {
         const { elements } = this;
         sinon.spy(elements, 'emit');
         elements.on('submit', () => {

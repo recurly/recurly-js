@@ -1,5 +1,4 @@
 import assert from 'assert';
-import * as loadScript from 'load-script';
 import loadScriptPromise from '../../../lib/util/load-script-promise';
 
 describe('loadScriptPromise', () => {

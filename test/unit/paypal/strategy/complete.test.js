@@ -17,7 +17,8 @@ describe('CompleteStrategy', function () {
     const target = this.target = '#test-form';
     this.sandbox = sinon.createSandbox();
     this.recurly = initRecurly();
-    window.paypal = this.paypalSdkStub = { Buttons: sinon.stub() };
+    this.payPalSdkButtonRenderStub = sinon.stub();
+    window.paypal = this.paypalSdkStub = { Buttons: sinon.stub().returns({ render: this.payPalSdkButtonRenderStub }) };
     this.initPaypal = (opts = { payPalComplete: { target } }) => this.recurly.PayPal(opts);
     this.paypalInitialized = async () => {
       while (this.paypalSdkStub.Buttons.callCount === 0) {
@@ -35,14 +36,19 @@ describe('CompleteStrategy', function () {
     assert.throws(() => this.initPaypal({ payPalComplete: { target: '' } }), { message });
   });
 
-  it('provides the target to the PayPal SDK', function () {
-    const paypal = this.initPaypal();
+  it('provides the target to the PayPal SDK', async function () {
+    this.initPaypal();
+
+    await this.paypalInitialized();
+
+    assert(this.payPalSdkButtonRenderStub.calledWithMatch(this.target));
   });
 
   it('provides buttonOptions to the PayPal SDK', async function () {
     const { target } = this;
     const buttonOptions = { arbitrary: 'options' };
-    const paypal = this.initPaypal({
+
+    this.initPaypal({
       payPalComplete: {
         target,
         buttonOptions
@@ -74,7 +80,7 @@ describe('CompleteStrategy', function () {
     });
 
     this.paypalInitialized().then(() => {
-      this.paypalSdkStub.Buttons.getCall(0).firstArg.onApprove({ vaultSetupToken: 'mock' })
+      this.paypalSdkStub.Buttons.getCall(0).firstArg.onApprove({ vaultSetupToken: 'mock' });
     });
   });
 
@@ -88,7 +94,7 @@ describe('CompleteStrategy', function () {
     });
 
     this.paypalInitialized().then(() => {
-      this.paypalSdkStub.Buttons.getCall(0).firstArg.onError(example)
+      this.paypalSdkStub.Buttons.getCall(0).firstArg.onError(example);
     });
   });
 
@@ -110,7 +116,7 @@ describe('CompleteStrategy', function () {
         Buttons: sinon.stub()
       };
       const paypal = this.initPaypal();
-      assert.strictEqual(await paypal.strategy.withSdk(), stub)
+      assert.strictEqual(await paypal.strategy.withSdk(), stub);
       delete window.paypal;
     });
   });

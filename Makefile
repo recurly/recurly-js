@@ -1,7 +1,7 @@
 bin = node_modules/.bin
 coveralls = $(bin)/coveralls
 wdio = $(bin)/wdio
-eslint = $(bin)/eslint ./lib
+eslint = $(bin)/eslint
 karma = $(bin)/karma start
 server = $(bin)/webpack serve --hot --port 8020
 webpack = $(bin)/webpack
@@ -51,10 +51,19 @@ test-e2e-ci: build $(src) $(tests)
 test-types: types
 	@$(dtslint) test/types
 	@$(dtslint) types
-lint: build
-	@$(eslint)
-lint-fix: build
-	@$(eslint) --fix
+
+lint: lint-lib lint-test
+lint-lib: node_modules
+	@$(eslint) ./lib
+lint-test: lint-test-unit lint-test-e2e
+lint-test-unit: node_modules
+	@$(eslint) ./test/unit -c ./.eslintrc.test.unit.js
+lint-test-e2e: node_modules
+	@$(eslint) ./test/e2e -c ./.eslintrc.test.e2e.js
+lint-fix:
+	@$(eslint) ./lib --fix
+	@$(eslint) ./test/unit -c ./.eslintrc.test.unit.js --fix
+	@$(eslint) ./test/e2e -c ./.eslintrc.test.e2e.js --fix
 
 node_modules: package.json
 	@npm install --silent --no-audit
@@ -64,4 +73,4 @@ clean:
 
 .PHONY: server server-http
 .PHONY: test-ci test-unit test-unit-ci test-unit-cov-ci test-e2e test-e2e-ci test-types
-.PHONY: lint lint-fix clean
+.PHONY: lint lint-lib lint-test lint-test-unit lint-test-e2e lint-fix clean

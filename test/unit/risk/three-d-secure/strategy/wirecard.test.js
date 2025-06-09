@@ -3,8 +3,7 @@ import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import WirecardStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/wirecard';
 import actionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-wirecard.json';
-import Promise from 'promise';
-import { Frame}  from '../../../../../lib/recurly/frame';
+import { Frame }  from '../../../../../lib/recurly/frame';
 
 describe('WirecardStrategy', function () {
   this.ctx.fixture = 'threeDSecure';

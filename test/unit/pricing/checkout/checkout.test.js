@@ -120,7 +120,7 @@ describe('CheckoutPricing', function () {
               .subscription(this.subscriptionPricingExample)
               .reprice()
               .then(price => {
-                assert.equal(price.currency.code, 'USD')
+                assert.equal(price.currency.code, 'USD');
               })
               .subscription(this.subscriptionPricingExampleGBP)
               .catch(err => {
@@ -201,7 +201,7 @@ describe('CheckoutPricing', function () {
       const part = after(examples.length, done);
 
       examples.forEach((valid, i) => {
-        this.pricing.adjustment({ amount: valid }).done(price => {
+        this.pricing.adjustment({ amount: valid }).done(() => {
           assert.strictEqual(this.pricing.items.adjustments[i].amount, Number(valid));
           part();
         });
@@ -222,7 +222,7 @@ describe('CheckoutPricing', function () {
     });
 
     it('has a default quantity of 1', function (done) {
-      this.pricing.adjustment({ amount: 3.99 }).done(price => {
+      this.pricing.adjustment({ amount: 3.99 }).done(() => {
         assert.equal(this.pricing.items.adjustments[0].quantity, 1);
         done();
       });
@@ -243,7 +243,7 @@ describe('CheckoutPricing', function () {
       const part = after(examples.length, done);
 
       examples.forEach((coerce, i) => {
-        this.pricing.adjustment({ amount: 7, quantity: coerce }).done(e => {
+        this.pricing.adjustment({ amount: 7, quantity: coerce }).done(() => {
           assert.equal(this.pricing.items.adjustments[i].quantity, 3);
           part();
         });
@@ -258,7 +258,7 @@ describe('CheckoutPricing', function () {
         this.pricing.adjustment({
           amount: 7,
           taxExempt: example[0]
-        }).done(e => {
+        }).done(() => {
           assert.equal(this.pricing.items.adjustments[i].taxExempt, example[1]);
           part();
         });
@@ -439,7 +439,7 @@ describe('CheckoutPricing', function () {
             amount: 0,
             quantity: 1,
           })
-          .done(price => {
+          .done(() => {
             assert.equal(firstAdjustment.amount, 25);
             assert.equal(firstAdjustment.id, 'adjustment-0');
             assert.equal(firstAdjustment.quantity, 10);
@@ -543,7 +543,7 @@ describe('CheckoutPricing', function () {
           const { pricing, valid } = this;
           pricing
             .adjustment({ ...valid, currency: 'CAD' })
-            .done(price => {
+            .done(() => {
               const newAdjustment = pricing.items.adjustments[1];
               assert.strictEqual(pricing.items.adjustments.length, 2);
               assert.strictEqual(newAdjustment.amount, 60);
@@ -568,7 +568,7 @@ describe('CheckoutPricing', function () {
               });
           });
 
-          it('does not allow taxExempt or taxCode to be overridden', function () {
+          it('does not allow taxExempt or taxCode to be overridden', function (done) {
             const { pricing, valid } = this;
             const { itemCode } = valid;
             pricing
@@ -607,7 +607,7 @@ describe('CheckoutPricing', function () {
               });
           });
 
-          it('does not allow taxExempt or taxCode to change', function () {
+          it('does not allow taxExempt or taxCode to change', function (done) {
             const { pricing } = this;
             const newAdjustment = pricing.items.adjustments[0];
             assert.strictEqual(newAdjustment.taxCode, null);
@@ -683,7 +683,7 @@ describe('CheckoutPricing', function () {
 
   describe('CheckoutPricing#coupon', () => {
     it('accepts a blank coupon code and does not assign a coupon', function (done) {
-      this.pricing.coupon(null).done(price => {
+      this.pricing.coupon(null).done(() => {
         assert.equal(this.pricing.items.coupon, undefined);
         done();
       });
@@ -777,18 +777,18 @@ describe('CheckoutPricing', function () {
         return this.pricing.coupon(valid);
       });
 
-      it(`accepts a blank coupon code and unsets the existing coupon`, function (done) {
+      it('accepts a blank coupon code and unsets the existing coupon', function (done) {
         const { sandbox } = this;
         const part = after(2, done);
         const errorSpy = sandbox.spy();
         assert.equal(this.pricing.items.coupon.code, valid);
         this.pricing.on('error', errorSpy);
         this.pricing.coupon()
-          .then(coupon => {
+          .then(() => {
             assert.equal(this.pricing.items.coupon, undefined);
             part();
           })
-          .done(price => {
+          .done(() => {
             assert.equal(errorSpy.callCount, 0);
             part();
           });
@@ -812,7 +812,7 @@ describe('CheckoutPricing', function () {
           .done();
       });
 
-      describe('unset.coupon event', function (done) {
+      describe('unset.coupon event', function () {
         it('emits and pasaes the prior coupon', function (done) {
           this.pricing.on('unset.coupon', priorCoupon => {
             assert.equal(priorCoupon.code, valid);
@@ -1068,7 +1068,7 @@ describe('CheckoutPricing', function () {
 
           describe('applies to adjustments and specific subscriptions not on the checkout instance', () => {
             beforeEach(applyCoupon('coop-fixed-adjustments-plan-notbasic-500'));
-            it(`discounts the adjustments now, and nothing on the next cycle`, function () {
+            it('discounts the adjustments now, and nothing on the next cycle', function () {
               assert.equal(this.price.now.subscriptions, 43.98);
               assert.equal(this.price.now.adjustments, 32.44);
               assert.equal(this.price.now.discount, 32.44);
@@ -1152,7 +1152,7 @@ describe('CheckoutPricing', function () {
 
           describe('applies to all plans on the account level', () => {
             beforeEach(applyCoupon('coop-free-trial-acct'));
-            it(`applies the free trial to all subscriptions`, function () {
+            it('applies the free trial to all subscriptions', function () {
               assert.equal(this.price.now.subscriptions, 9); // setup fees
               assert.equal(this.price.now.adjustments, 32.44);
               assert.equal(this.price.now.discount, 0);
@@ -1169,7 +1169,7 @@ describe('CheckoutPricing', function () {
               assert.equal(this.subscriptionPricingExampleThree.items.coupon, undefined);
             });
             beforeEach(applyCoupon('coop-free-trial'));
-            it(`applies the free trial to the most valuable subscription`, function () {
+            it('applies the free trial to the most valuable subscription', function () {
               assert.equal(this.price.now.subscriptions, 48.98); // 21.99 * 2 + 5 (setup fee)
               assert.equal(this.price.now.adjustments, 32.44);
               assert.equal(this.price.now.discount, 0);
@@ -1183,7 +1183,7 @@ describe('CheckoutPricing', function () {
 
           describe('applies to specific plans on the checkout instance', () => {
             beforeEach(applyCoupon('coop-free-trial-plan-basic'));
-            it(`applies the free trial to the specific subscription`, function () {
+            it('applies the free trial to the specific subscription', function () {
               assert.equal(this.price.now.subscriptions, 119.08); // 21.99 + 2 (setup fee) + 95.09
               assert.equal(this.price.now.adjustments, 32.44);
               assert.equal(this.price.now.discount, 0);
@@ -1198,7 +1198,7 @@ describe('CheckoutPricing', function () {
 
           describe('applies to specific plans not on the checkout instance', () => {
             beforeEach(applyCoupon('coop-free-trial-plan-notbasic'));
-            it(`applies no free trial`, function () {
+            it('applies no free trial', function () {
               assert.equal(this.price.now.subscriptions, 139.07); // 21.99 * 2 + 95.09
               assert.equal(this.price.now.adjustments, 32.44);
               assert.equal(this.price.now.discount, 0);
@@ -1223,7 +1223,7 @@ describe('CheckoutPricing', function () {
                 assert.equal(this.subscriptionPricingExampleFour.items.coupon, undefined);
               });
               beforeEach(applyCoupon('coop-free-trial'));
-              it(`applies the free trial to the subscription with a free trial`, function () {
+              it('applies the free trial to the subscription with a free trial', function () {
                 assert.equal(this.price.now.subscriptions, 141.07); // 21.99 * 2 + 95.09 + 2 (setup fee)
                 assert.equal(this.price.now.adjustments, 32.44);
                 assert.equal(this.price.now.discount, 0);
@@ -1284,7 +1284,7 @@ describe('CheckoutPricing', function () {
         this.pricing.giftCard('super-gift-card');
       });
 
-      describe('when applying a gift card when one is already present', function (done) {
+      describe('when applying a gift card when one is already present', function () {
         beforeEach(applyGiftCard('hundred-dollar-card'));
 
         it('replaces the gift card', function (done) {
@@ -1442,7 +1442,7 @@ describe('CheckoutPricing', function () {
         this.pricing.giftCard('super-gift-card');
       });
 
-      describe('when applying a gift card when one is already present', function (done) {
+      describe('when applying a gift card when one is already present', function () {
         beforeEach(applyGiftCard('hundred-dollar-card'));
 
         it('replaces the gift card', function (done) {
@@ -1513,7 +1513,7 @@ describe('CheckoutPricing', function () {
           part();
         })
         .address({ country: 'DE', postalCode: 'DE-code' })
-        .done(price => {
+        .done(() => {
           assert.equal(this.pricing.items.address.country, 'DE');
           assert.equal(this.pricing.items.address.postalCode, 'DE-code');
           assert.equal(this.pricing.items.address.vatNumber, undefined);
@@ -1540,7 +1540,7 @@ describe('CheckoutPricing', function () {
       this.pricing.shippingAddress(valid).then(address => {
         assert.equal(JSON.stringify(this.pricing.items.shippingAddress), JSON.stringify(address));
         address.country = 'spoofed';
-        assert.equal(this.pricing.items.shippingAddress.country, valid.country)
+        assert.equal(this.pricing.items.shippingAddress.country, valid.country);
         done();
       });
     });
@@ -1554,7 +1554,7 @@ describe('CheckoutPricing', function () {
           part();
         })
         .shippingAddress({ country: 'DE', postalCode: 'DE-code' })
-        .done(price => {
+        .done(() => {
           assert.equal(this.pricing.items.shippingAddress.country, 'DE');
           assert.equal(this.pricing.items.shippingAddress.postalCode, 'DE-code');
           assert.equal(this.pricing.items.shippingAddress.vatNumber, undefined);
@@ -1657,7 +1657,7 @@ describe('CheckoutPricing', function () {
             sandbox.spy(this.recurly, 'tax');
             pricing
               .reprice()
-              .then(price => {
+              .then(() => {
                 assert(this.recurly.tax.calledWith(sinon.match({ taxCode: 'valid-tax-code' })));
                 assert(this.recurly.tax.calledWith(sinon.match({ taxCode: 'test-tax-code-adj-1' })));
                 assert(this.recurly.tax.calledWith(sinon.match({ taxCode: 'test-tax-code-adj-2' })));
@@ -1738,7 +1738,7 @@ describe('CheckoutPricing', function () {
                 assert.equal(pricing.items.address.vatNumber, 'on-address');
                 assert.equal(pricing.items.tax.vatNumber, 'on-tax-info');
               })
-              .done(price => {
+              .done(() => {
                 assert(recurly.tax.lastCall.calledWith(sinon.match({ vatNumber: 'on-tax-info' })));
                 done();
               });
@@ -1756,7 +1756,7 @@ describe('CheckoutPricing', function () {
               .subscription(subscriptionPricingExample)
               .address(address)
               .shippingAddress(shippingAddress)
-              .done(price => {
+              .done(() => {
                 assert(recurly.tax.lastCall.calledWith(sinon.match(shippingAddress)));
                 done();
               });
@@ -1842,5 +1842,5 @@ function applyGiftCard (code) {
     return this.pricing.giftCard(code).reprice().then(price => {
       this.price = price;
     });
-  }
+  };
 }

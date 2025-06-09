@@ -1,5 +1,4 @@
 import assert from 'assert';
-import after from 'lodash.after';
 import { BraintreeStrategy } from '../../../lib/recurly/venmo/strategy/braintree';
 import {
   initRecurly,
@@ -7,7 +6,7 @@ import {
   stubWindowOpen
 } from '../support/helpers';
 
-describe(`Recurly.Venmo`, function () {
+describe('Recurly.Venmo', function () {
   stubWindowOpen();
   stubBraintree();
 
@@ -29,6 +28,6 @@ describe(`Recurly.Venmo`, function () {
       this.venmo.destroy();
       assert.equal(this.venmo.strategy, undefined);
       assert(this.venmo.off.calledOnce);
-    })
-  })
+    });
+  });
 });

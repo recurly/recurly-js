@@ -95,7 +95,7 @@ describe('Recurly.tax', function () {
         country: 'US',
         postal_code: '70118',
         tax_code: 'digital'
-      }, function (err, taxes) {
+      }, function (err) {
         assert(!err);
         assert(spy.calledOnce);
         assert(spy.calledWithMatch(sinon.match({ data: { tax_code: 'digital' } })));
@@ -112,7 +112,7 @@ describe('Recurly.tax', function () {
       recurly.tax({
         country: 'GB',
         vat_number: 'GB0000'
-      }, function (err, taxes) {
+      }, function (err) {
         assert(!err);
         assert(spy.calledOnce);
         assert(spy.calledWithMatch(sinon.match({ data: { vat_number: 'GB0000' } })));
