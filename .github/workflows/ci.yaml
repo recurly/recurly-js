@@ -10,16 +10,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check:
+  lint:
     runs-on: ubuntu-latest
-    name: Check
+    name: Lint
     steps:
       - uses: actions/checkout@v3
       - name: Lint
         run: make lint
       - name: Types
         run: make test-types
-  unit_test:
+  test_local:
     runs-on: ubuntu-latest
     name: Unit test
     strategy:
@@ -39,14 +39,19 @@ jobs:
           DISPLAY: :99
         with:
           run: make test-unit-ci
-  unit_test_remote:
+  test_remote:
     runs-on: ubuntu-latest
-    name: Unit test
+    name: ${{matrix.type}} test (${{matrix.browser}})
     strategy:
       max-parallel: 5
       fail-fast: false
       matrix:
+        type:
+          - Unit
+          - End-to-end
         browser:
+          - Chrome-Remote # no unit
+          - Firefox-Remote # no unit
           - Safari-Remote
           - Edge-Remote
           - iOS-18-Remote
@@ -55,8 +60,10 @@ jobs:
           - Android-13-Remote
           - Android-12-Remote
     steps:
+      - uses: ahmadnassri/action-workflow-queue@v1
       - uses: actions/checkout@v3
       - name: Unit test
+        if: ${{ matrix.type == 'Unit' && matrix.browser != 'Chrome-Remote' && matrix.browser != 'Firefox-Remote' }}
         uses: nick-fields/retry@v2
         env:
           BROWSER: ${{ matrix.browser }}
@@ -66,27 +73,8 @@ jobs:
           timeout_minutes: 12
           max_attempts: 2
           command: make test-unit-ci
-  e2e_test:
-    runs-on: ubuntu-latest
-    name: End-to-end test
-    needs: unit_test_remote
-    strategy:
-      max-parallel: 5
-      fail-fast: false
-      matrix:
-        browser:
-          - Chrome-Remote
-          - Firefox-Remote
-          - Safari-Remote
-          - Edge-Remote
-          - iOS-18-Remote
-          - iOS-17-Remote
-          - Android-14-Remote
-          - Android-13-Remote
-          - Android-12-Remote
-    steps:
-      - uses: actions/checkout@v3
       - name: End-to-end test
+        if: ${{ matrix.type == 'End-to-end' }}
         uses: nick-fields/retry@v2
         env:
           BROWSER: ${{ matrix.browser }}
@@ -115,20 +103,18 @@ jobs:
     name: Verify required checks
     if: ${{ always() }}
     needs:
-      - check
-      - unit_test
-      - unit_test_remote
-      - e2e_test
+      - lint
+      - test_local
+      - test_remote
       - integration_test
     steps:
       - name: Check status for pull requests
         if: |-
           ${{
             github.event_name == 'pull_request'
-            && needs.check.result != 'success'
-            && needs.unit_test.result != 'success'
-            && needs.unit_test_remote.result != 'success'
-            && needs.e2e_test.result != 'success'
+            && needs.lint.result != 'success'
+            && needs.test_local.result != 'success'
+            && needs.test_remote.result != 'success'
             && needs.integration_test.result != 'success'
           }}
         run: exit 1
@@ -136,9 +122,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish artifacts
     needs:
-      - check
-      - unit_test
-      - unit_test_remote
+      - lint
+      - test_local
+      - test_remote
     steps:
       - uses: actions/checkout@v3
       - uses: browser-actions/setup-chrome@v1
