@@ -31,6 +31,7 @@ app.use(route.all('/api-proxy/*', proxy(proxyUrl.origin, {
   }
 })));
 app.use(route.get('/hosted-field/*', proxy(`${proxyUrl.origin.replace('api.', 'js.')}/`)));
+app.use(route.get(/\/js\/v1\/field\.(js|css)/, proxy(proxyUrl.origin.replace('/js/v1', '/'))));
 
 // Request parsing
 koaQs(app);
