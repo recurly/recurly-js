@@ -6,22 +6,46 @@ on:
   pull_request:
 
 concurrency:
-  group: '${{ github.workflow }} @ ${{ github.head_ref || github.ref_name }}'
+  group: '${{github.workflow}} @ ${{github.head_ref || github.ref_name}}'
   cancel-in-progress: true
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
     name: Lint
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Lint
         run: make lint
-      - name: Types
+      - name: Lint types
         run: make test-types
-  test_local:
+  analyze:
+    name: Analyze
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+          config: |
+            name: Recurly Security Tests
+            query-filters:
+            paths-ignore:
+              - '**/node_modules'
+              - '**/*test*'
+          queries: + security-and-quality
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        continue-on-error: true
+        with:
+          category: /language:javascript
+  test_local:
     name: Unit test
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -35,13 +59,13 @@ jobs:
       - name: Unit test
         uses: coactions/setup-xvfb@v1
         env:
-          BROWSER: ${{ matrix.browser }}
+          BROWSER: ${{matrix.browser}}
           DISPLAY: :99
         with:
           run: make test-unit-ci
   test_remote:
-    runs-on: ubuntu-latest
     name: ${{matrix.type}} test (${{matrix.browser}})
+    runs-on: ubuntu-latest
     strategy:
       max-parallel: 5
       fail-fast: false
@@ -63,30 +87,30 @@ jobs:
       - uses: ahmadnassri/action-workflow-queue@v1
       - uses: actions/checkout@v3
       - name: Unit test
-        if: ${{ matrix.type == 'Unit' && matrix.browser != 'Chrome-Remote' && matrix.browser != 'Firefox-Remote' }}
+        if: ${{matrix.type == 'Unit' && matrix.browser != 'Chrome-Remote' && matrix.browser != 'Firefox-Remote'}}
         uses: nick-fields/retry@v2
         env:
-          BROWSER: ${{ matrix.browser }}
-          BROWSER_STACK_USERNAME: ${{ secrets.BROWSER_STACK_USERNAME }}
-          BROWSER_STACK_ACCESS_KEY: ${{ secrets.BROWSER_STACK_ACCESS_KEY }}
+          BROWSER: ${{matrix.browser}}
+          BROWSER_STACK_USERNAME: ${{secrets.BROWSER_STACK_USERNAME}}
+          BROWSER_STACK_ACCESS_KEY: ${{secrets.BROWSER_STACK_ACCESS_KEY}}
         with:
           timeout_minutes: 12
           max_attempts: 2
           command: make test-unit-ci
       - name: End-to-end test
-        if: ${{ matrix.type == 'End-to-end' }}
+        if: ${{matrix.type == 'End-to-end'}}
         uses: nick-fields/retry@v2
         env:
-          BROWSER: ${{ matrix.browser }}
-          BROWSER_STACK_USERNAME: ${{ secrets.BROWSER_STACK_USERNAME }}
-          BROWSER_STACK_ACCESS_KEY: ${{ secrets.BROWSER_STACK_ACCESS_KEY }}
+          BROWSER: ${{matrix.browser}}
+          BROWSER_STACK_USERNAME: ${{secrets.BROWSER_STACK_USERNAME}}
+          BROWSER_STACK_ACCESS_KEY: ${{secrets.BROWSER_STACK_ACCESS_KEY}}
         with:
           timeout_minutes: 16
           max_attempts: 2
           command: make test-e2e-ci
   integration_test:
-    runs-on: ubuntu-latest
     name: Integration test with react-recurly
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -94,16 +118,17 @@ jobs:
           path: vendor
       - name: react-recurly
         env:
-          RECURLY_JS_SHA: ${{ github.sha }}
+          RECURLY_JS_SHA: ${{github.sha}}
         run: |-
           cd vendor
           make test
   verify:
-    runs-on: ubuntu-latest
     name: Verify required checks
-    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    if: ${{always()}}
     needs:
       - lint
+      - analyze
       - test_local
       - test_remote
       - integration_test
@@ -113,16 +138,18 @@ jobs:
           ${{
             github.event_name == 'pull_request'
             && needs.lint.result != 'success'
+            && needs.analyze.result != 'success'
             && needs.test_local.result != 'success'
             && needs.test_remote.result != 'success'
             && needs.integration_test.result != 'success'
           }}
         run: exit 1
   publish:
-    runs-on: ubuntu-latest
     name: Publish artifacts
+    runs-on: ubuntu-latest
     needs:
       - lint
+      - analyze
       - test_local
       - test_remote
     steps:
@@ -133,15 +160,15 @@ jobs:
       - name: Report coverage
         uses: coactions/setup-xvfb@v1
         env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
           DISPLAY: :99
         with:
           run: make test-unit-cov-ci
       - uses: google-github-actions/auth@v1
         with:
-          credentials_json: ${{ secrets.GCR_QA_PUBLIC_DEVOPS_SA }}
+          credentials_json: ${{secrets.GCR_QA_PUBLIC_DEVOPS_SA}}
       - uses: google-github-actions/upload-cloud-storage@v1
         with:
           path: build
-          destination: ${{ secrets.ARTIFACT_BUCKET_NAME }}/recurly-js/${{ github.sha }}/
+          destination: ${{secrets.ARTIFACT_BUCKET_NAME}}/recurly-js/${{github.sha}}/
           parent: false
