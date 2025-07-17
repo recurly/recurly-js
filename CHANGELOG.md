@@ -1,5 +1,21 @@
 # Changelog
 
+## [v4.38.0](https://github.com/recurly/recurly-js/tree/v4.38.0) (2025-07-17)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.37.1...v4.38.0)
+
+
+**Merged Pull Requests**
+
+- Adds Engage loader [#948](https://github.com/recurly/recurly-js/pull/948) ([chrissrogers](https://github.com/chrissrogers))
+- fix(types): `ApplePayPaymentRequest.supportedNetworks` is an array [#942](https://github.com/recurly/recurly-js/pull/942) ([cbarton](https://github.com/cbarton))
+- Adds support for iDeal redirects using Adyen Components [#939](https://github.com/recurly/recurly-js/pull/939) ([chrissrogers](https://github.com/chrissrogers))
+
+**Closed Issues**
+
+- Bad typings for apple pay instace factory [#917](https://github.com/recurly/recurly-js/issues/917)
+
+
 ## [v4.37.1](https://github.com/recurly/recurly-js/tree/v4.37.1) (2025-06-09)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.37.0...v4.37.1)
