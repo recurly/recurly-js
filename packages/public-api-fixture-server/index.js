@@ -70,6 +70,7 @@ app.use(route.post('/apple_pay/token', json));
 app.use(route.get('/bank', json));
 app.use(route.get('/bank_redirect/banks', json));
 app.use(route.get('/coupons/:id', json));
+app.use(route.get('/engage/settings', json));
 app.use(route.get('/events', ok));
 app.use(route.post('/events', ok));
 app.use(route.get('/field.html', html('field')));
