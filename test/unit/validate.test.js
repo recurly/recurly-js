@@ -165,4 +165,98 @@ describe('Recurly.validate', function () {
       assert(false === recurly.validate.cvv('123456'));
     });
   });
+
+  describe('cvvWithCardNumber', function () {
+    describe('American Express cards', function () {
+      const amexCard = '378282246310005'; // Valid Amex test card number
+
+      it('should return true for 4-digit CVV with American Express card', function () {
+        assert(true === recurly.validate.cvvWithCardNumber('1234', amexCard));
+        assert(true === recurly.validate.cvvWithCardNumber(1234, amexCard));
+      });
+
+      it('should return false for 3-digit CVV with American Express card', function () {
+        assert(false === recurly.validate.cvvWithCardNumber('123', amexCard));
+        assert(false === recurly.validate.cvvWithCardNumber(123, amexCard));
+      });
+
+      it('should return false for 2-digit CVV with American Express card', function () {
+        assert(false === recurly.validate.cvvWithCardNumber('12', amexCard));
+        assert(false === recurly.validate.cvvWithCardNumber(12, amexCard));
+      });
+
+      it('should return false for 5-digit CVV with American Express card', function () {
+        assert(false === recurly.validate.cvvWithCardNumber('12345', amexCard));
+        assert(false === recurly.validate.cvvWithCardNumber(12345, amexCard));
+      });
+    });
+
+    describe('Visa cards', function () {
+      const visaCard = '4111111111111111'; // Valid Visa test card number
+
+      it('should return true for 3-digit CVV with Visa card', function () {
+        assert(true === recurly.validate.cvvWithCardNumber('123', visaCard));
+        assert(true === recurly.validate.cvvWithCardNumber(123, visaCard));
+      });
+
+      it('should return false for 4-digit CVV with Visa card', function () {
+        assert(false === recurly.validate.cvvWithCardNumber('1234', visaCard));
+        assert(false === recurly.validate.cvvWithCardNumber(1234, visaCard));
+      });
+
+      it('should return false for 2-digit CVV with Visa card', function () {
+        assert(false === recurly.validate.cvvWithCardNumber('12', visaCard));
+        assert(false === recurly.validate.cvvWithCardNumber(12, visaCard));
+      });
+
+      it('should return false for 5-digit CVV with Visa card', function () {
+        assert(false === recurly.validate.cvvWithCardNumber('12345', visaCard));
+        assert(false === recurly.validate.cvvWithCardNumber(12345, visaCard));
+      });
+    });
+
+    describe('MasterCard cards', function () {
+      const masterCard = '5555555555554444'; // Valid MasterCard test card number
+
+      it('should return true for 3-digit CVV with MasterCard', function () {
+        assert(true === recurly.validate.cvvWithCardNumber('123', masterCard));
+      });
+
+      it('should return false for 4-digit CVV with MasterCard', function () {
+        assert(false === recurly.validate.cvvWithCardNumber('1234', masterCard));
+      });
+    });
+
+    describe('Unknown card types', function () {
+      const unknownCard = '1234567890123456'; // Invalid card number
+
+      it('should return true for both 3 and 4-digit CVV with unknown card types', function () {
+        assert(true === recurly.validate.cvvWithCardNumber('123', unknownCard));
+        assert(true === recurly.validate.cvvWithCardNumber('1234', unknownCard));
+      });
+
+      it('should return false for invalid CVV lengths with unknown card types', function () {
+        assert(false === recurly.validate.cvvWithCardNumber('12', unknownCard));
+        assert(false === recurly.validate.cvvWithCardNumber('12345', unknownCard));
+      });
+    });
+
+    describe('Edge cases', function () {
+      it('should handle no card number by falling back to generic validation', function () {
+        assert(true === recurly.validate.cvvWithCardNumber('123', ''));
+        assert(true === recurly.validate.cvvWithCardNumber('1234', ''));
+        assert(false === recurly.validate.cvvWithCardNumber('12', ''));
+      });
+
+      it('should trim CVV input', function () {
+        assert(true === recurly.validate.cvvWithCardNumber(' 1234 ', '378282246310005'));
+        assert(true === recurly.validate.cvvWithCardNumber('  123  ', '4111111111111111'));
+      });
+
+      it('should return false for non-numeric CVV', function () {
+        assert(false === recurly.validate.cvvWithCardNumber('12a3', '378282246310005'));
+        assert(false === recurly.validate.cvvWithCardNumber('abc', '4111111111111111'));
+      });
+    });
+  });
 });

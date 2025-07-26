@@ -3,4 +3,5 @@ export type Validate = {
   cardType: (cardNumber: string | number, partial: boolean) => boolean;
   expiry: (month: string | number, year: string | number) => boolean;
   cvv: (cvv: string | number) => boolean;
+  cvvWithCardNumber: (cvv: string | number, cardNumber: string | number) => boolean;
 };
