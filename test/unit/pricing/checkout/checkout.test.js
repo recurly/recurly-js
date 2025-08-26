@@ -1,6 +1,7 @@
 import assert from 'assert';
 import after from 'lodash.after';
 import isEqual from 'lodash.isequal';
+import sinon from 'sinon';
 import { initRecurly } from '../../support/helpers';
 
 describe('CheckoutPricing', function () {
@@ -52,6 +53,10 @@ describe('CheckoutPricing', function () {
           assert.equal(this.pricing.price.now.items.length, 1);
           assert.equal(price.now.total, subscriptionTotalNow);
           assert.equal(price.next.total, subscriptionTotalNext);
+
+          const plan = this.subscriptionPricingExample.items.plan;
+          assert.equal(plan.price.USD.symbol, '$');
+
           done();
         });
     });
@@ -1844,3 +1849,235 @@ function applyGiftCard (code) {
     });
   };
 }
+
+describe('Recurly.Pricing.Checkout with price segments', function () {
+  beforeEach(function () {
+    this.recurly = initRecurly();
+    this.pricing = this.recurly.Pricing.Checkout();
+  });
+
+  describe('with price segments', function () {
+    it('should include price segments in the pricing response when available', function (done) {
+      const subscriptionPricing = this.recurly.Pricing.Subscription();
+      subscriptionPricing
+        .plan('multiple-currencies', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .done(() => {
+          this.pricing
+            .subscription(subscriptionPricing)
+            .address({
+              country: 'US',
+              postal_code: 'NoTax'
+            })
+            .done(function (_price) {
+              // Access price segments through the subscription pricing instance
+              const subscriptionPrice = subscriptionPricing.price;
+              assert(subscriptionPrice.base.plan.price_segments, 'Price segments should be present in subscription pricing');
+              assert(Array.isArray(subscriptionPrice.base.plan.price_segments), 'Price segments should be an array');
+              assert(subscriptionPrice.base.plan.price_segments.length > 0, 'Price segments should not be empty');
+
+              const segment = subscriptionPrice.base.plan.price_segments[0];
+              assert(segment.id, 'Price segment should have an id');
+              assert(segment.code, 'Price segment should have a code');
+              assert(typeof segment.unit_amount === 'number', 'Price segment should have a unit_amount');
+
+              done();
+            });
+        });
+    });
+
+    it('should include price segments when plan has them', function (done) {
+      const subscriptionPricing = this.recurly.Pricing.Subscription();
+      subscriptionPricing
+        .plan('basic', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .done(() => {
+          this.pricing
+            .subscription(subscriptionPricing)
+            .address({
+              country: 'US',
+              postal_code: 'NoTax'
+            })
+            .done(function (_price) {
+              // Access price segments through the subscription pricing instance
+              const subscriptionPrice = subscriptionPricing.price;
+              assert(subscriptionPrice.base.plan.price_segments, 'Basic plan should have price segments');
+              assert(Array.isArray(subscriptionPrice.base.plan.price_segments), 'Price segments should be an array');
+              done();
+            });
+        });
+    });
+
+    it('should not mutate original plan object when calculating planPrice', function (done) {
+      const subscriptionPricing = this.recurly.Pricing.Subscription();
+      subscriptionPricing
+        .plan('multiple-currencies', { quantity: 2 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .done(() => {
+          this.pricing
+            .subscription(subscriptionPricing)
+            .address({
+              country: 'US',
+              postal_code: 'NoTax'
+            })
+            .done((_price) => {
+              const plan = subscriptionPricing.items.plan;
+              assert(!plan.price.USD.amount, 'Original plan should not have amount property');
+              assert(plan.price.USD.unit_amount === 19.99, 'Original plan unit_amount should be unchanged');
+              assert(plan.price.USD.symbol === '$', 'Original plan symbol should be unchanged');
+              assert(plan.price.USD.setup_fee === 2.0, 'Original plan setup_fee should be unchanged');
+              assert(plan.price.USD.price_segments, 'Original plan should still have price_segments');
+
+              assert.equal(subscriptionPricing.price.now.plan, '39.98');
+              done();
+            });
+        });
+    });
+
+    it('should handle multiple price segments correctly', function (done) {
+      const subscriptionPricing = this.recurly.Pricing.Subscription();
+      subscriptionPricing
+        .plan('multiple-currencies', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .done(() => {
+          this.pricing
+            .subscription(subscriptionPricing)
+            .address({
+              country: 'US',
+              postal_code: 'NoTax'
+            })
+            .done(function (_price) {
+              const subscriptionPrice = subscriptionPricing.price;
+              const segments = subscriptionPrice.base.plan.price_segments;
+              assert(segments.length >= 2, 'Should have multiple price segments');
+
+              segments.forEach((segment, index) => {
+                assert(segment.id, `Segment ${index} should have an id`);
+                assert(segment.code, `Segment ${index} should have a code`);
+                assert(typeof segment.unit_amount === 'number', `Segment ${index} should have a numeric unit_amount`);
+              });
+
+              done();
+            });
+        });
+    });
+
+    it('should preserve price segments when plan quantity changes', function (done) {
+      const subscriptionPricing = this.recurly.Pricing.Subscription();
+      subscriptionPricing
+        .plan('multiple-currencies', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .done(() => {
+          subscriptionPricing
+            .plan('multiple-currencies', { quantity: 3 })
+            .done(() => {
+              this.pricing
+                .subscription(subscriptionPricing)
+                .address({
+                  country: 'US',
+                  postal_code: 'NoTax'
+                })
+                .done(function (_price) {
+                  const subscriptionPrice = subscriptionPricing.price;
+                  assert(subscriptionPrice.base.plan.price_segments, 'Price segments should still be present after quantity change');
+                  assert(Array.isArray(subscriptionPrice.base.plan.price_segments), 'Price segments should still be an array');
+
+                  assert.equal(subscriptionPrice.now.plan, '59.97');
+                  done();
+                });
+            });
+        });
+    });
+
+    it('should include price segments in subscription pricing when available', function (done) {
+      const subscriptionPricing = this.recurly.Pricing.Subscription();
+      subscriptionPricing
+        .plan('multiple-currencies', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .done(() => {
+          this.pricing
+            .subscription(subscriptionPricing)
+            .address({
+              country: 'US',
+              postal_code: 'NoTax'
+            })
+            .done(function (_price) {
+              const subscriptionPrice = subscriptionPricing.price;
+              assert(subscriptionPrice, 'Should have subscription pricing');
+              assert(subscriptionPrice.base.plan.price_segments, 'Subscription pricing should have price segments');
+              assert(Array.isArray(subscriptionPrice.base.plan.price_segments), 'Subscription price segments should be an array');
+
+              done();
+            });
+        });
+    });
+
+    it('should not include price segments when plan does not have them', function (done) {
+      const mockPlan = {
+        code: 'no-segments-plan',
+        name: 'No Segments Plan',
+        period: { interval: 'months', length: 1 },
+        price: {
+          USD: {
+            unit_amount: 29.99,
+            symbol: '$',
+            setup_fee: 0
+          }
+        },
+        addons: [],
+        tax_exempt: false
+      };
+
+      this.pricing.recurly.request.get = (options) => {
+        if (options.route && options.route.includes('/plans/no-segments-plan')) {
+          if (options.done) {
+            options.done(null, mockPlan);
+          }
+        } else {
+          if (options.done) {
+            options.done(new Error('Plan not found'));
+          }
+        }
+      };
+
+      const subscriptionPricing = this.recurly.Pricing.Subscription();
+      subscriptionPricing
+        .plan('no-segments-plan', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .done(() => {
+          this.pricing
+            .subscription(subscriptionPricing)
+            .address({
+              country: 'US',
+              postal_code: 'NoTax'
+            })
+            .done(function (_price) {
+              const subscriptionPrice = subscriptionPricing.price;
+              assert(!subscriptionPrice.base.plan.price_segments, 'Plan without segments should not have price_segments property');
+              done();
+            });
+        });
+    });
+  });
+});

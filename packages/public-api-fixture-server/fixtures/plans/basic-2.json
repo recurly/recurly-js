@@ -7,8 +7,21 @@
   },
   "price": {
     "USD": {
+      "unit_amount": 90.09,
+      "symbol": "$",
       "setup_fee": 5.0,
-      "unit_amount": 90.09
+      "price_segments": [
+        {
+          "id": "1234567890",
+          "code": "segment-usd-1",
+          "unit_amount": 99.99
+        },
+        {
+          "id": "1234567891",
+          "code": "segment-usd-2",
+          "unit_amount": 8.50
+        }
+      ]
     }
   },
   "addons": [],
