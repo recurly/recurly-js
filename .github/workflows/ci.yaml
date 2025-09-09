@@ -167,8 +167,24 @@ jobs:
       - uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{secrets.GCR_QA_PUBLIC_DEVOPS_SA}}
-      - uses: google-github-actions/upload-cloud-storage@v1
+      - name: Upload to Google Cloud Storage
+        uses: google-github-actions/upload-cloud-storage@v1
         with:
           path: build
           destination: ${{secrets.ARTIFACT_BUCKET_NAME}}/recurly-js/${{github.sha}}/
           parent: false
+          process_gcloudignore: false
+      - name: Upload to Google Cloud Storage for pull requests
+        if: ${{github.event_name == 'pull_request'}}
+        uses: google-github-actions/upload-cloud-storage@v1
+        with:
+          path: build
+          destination: ${{secrets.ARTIFACT_BUCKET_NAME}}/recurly-js/pull-request--${{github.event.number}}/
+          parent: false
+          process_gcloudignore: false
+      - name: Summarize
+        run: |
+          echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{github.sha}}\`" >> $GITHUB_STEP_SUMMARY
+          $(${{github.event_name == 'pull_request'}} = true) && echo "- \`pull-request--${{github.event.number}}\`" >> $GITHUB_STEP_SUMMARY
