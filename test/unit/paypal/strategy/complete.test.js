@@ -106,8 +106,14 @@ describe('CompleteStrategy', function () {
       assert.strictEqual(await paypal.strategy.withSdk(), window.paypal);
       assert(paypal.strategy.loadScriptPromise.calledWithMatch(
         'https://www.paypal.com/sdk/js?client-id=test-client-id'
+        + '&merchant-id=test-merchant-id'
         + '&disable-funding=paylater,bancontact,blik,eps,giropay,ideal,mercadopago,mybank,p24,sepa,sofort',
-        { attrs: { 'data-user-id-token': 'test-id-token' } }
+        {
+          attrs: {
+            'data-partner-attribution-id': 'test-bn-code',
+            'data-user-id-token': 'test-id-token'
+          }
+        }
       ));
     });
 

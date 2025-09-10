@@ -1,4 +1,6 @@
 {
   "client_id": "test-client-id",
-  "id_token": "test-id-token"
+  "id_token": "test-id-token",
+  "merchant_id": "test-merchant-id",
+  "partner_attribution_id": "test-bn-code"
 }
