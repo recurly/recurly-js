@@ -5,6 +5,7 @@ import { initRecurly, testBed } from '../support/helpers';
 import { factory, ThreeDSecure } from '../../../lib/recurly/risk/three-d-secure/three-d-secure';
 import AdyenStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/adyen';
 import BraintreeStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/braintree';
+import EbanxStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/ebanx';
 import SagepayStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/sage-pay';
 import StripeStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/stripe';
 import TestStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/test';
