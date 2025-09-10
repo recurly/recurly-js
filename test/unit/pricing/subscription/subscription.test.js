@@ -15,10 +15,13 @@ describe('Recurly.Pricing.Subscription', function () {
           country: 'US',
           postal_code: 'NoTax'
         })
-        .done(function (price) {
+        .done((price) => {
           assert.equal(price.taxes.length, 0);
           assert.equal(price.now.tax, '0.00');
           assert.equal(price.next.tax, '0.00');
+          assert.equal(this.pricing.items.plan.price.USD.symbol, '$');
+          assert(Array.isArray(this.pricing.items.plan.price.USD.price_segments));
+          assert.equal(this.pricing.items.plan.price.USD.price_segments.length, 2);
           done();
         });
     });
@@ -222,6 +225,10 @@ describe('Recurly.Pricing.Subscription', function () {
             assert.equal(price.next.addons, '1.00');
             assert.equal(price.now.total, '22.99');
             assert.equal(price.next.total, '20.99');
+            assert.equal(this.pricing.items.plan.price.USD.symbol, '$');
+            assert(Array.isArray(this.pricing.items.plan.price.USD.price_segments));
+            assert.equal(this.pricing.items.plan.price.USD.price_segments[0].id, '1234567890');
+            assert.equal(this.pricing.items.plan.price.USD.price_segments[0].code, 'segment-usd-1');
             done();
           });
       });

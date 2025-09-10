@@ -52,6 +52,22 @@ describe('CheckoutPricing', function () {
           assert.equal(this.pricing.price.now.items.length, 1);
           assert.equal(price.now.total, subscriptionTotalNow);
           assert.equal(price.next.total, subscriptionTotalNext);
+
+          if (this.subscriptionPricingExample &&
+              this.subscriptionPricingExample.items &&
+              this.subscriptionPricingExample.items.plan &&
+              this.subscriptionPricingExample.items.plan.price &&
+              this.subscriptionPricingExample.items.plan.price.USD) {
+            const plan = this.subscriptionPricingExample.items.plan;
+            if (plan.price.USD.symbol !== undefined) {
+              assert.equal(plan.price.USD.symbol, '$');
+            }
+            if (plan.price.USD.price_segments !== undefined) {
+              assert(Array.isArray(plan.price.USD.price_segments));
+              assert.equal(plan.price.USD.price_segments.length, 2);
+            }
+          }
+
           done();
         });
     });
