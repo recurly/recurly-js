@@ -7,8 +7,21 @@
   },
   "price": {
     "GBP": {
+      "unit_amount": 14.0,
+      "symbol": "£",
       "setup_fee": 0,
-      "unit_amount": 14.0
+      "price_segments": [
+        {
+          "id": "1234567890",
+          "code": "segment-gbp-1",
+          "unit_amount": 99.99
+        },
+        {
+          "id": "1234567891",
+          "code": "segment-gbp-2",
+          "unit_amount": 8.50
+        }
+      ]
     }
   },
   "addons": [],
