@@ -70,6 +70,7 @@ describe('Recurly.validate', function () {
       assert.strictEqual(recurly.validate.cardType('5041751111111116'), 'elo');
       assert.strictEqual(recurly.validate.cardType('6362971111111117'), 'elo');
       assert.strictEqual(recurly.validate.cardType('5066991111111118'), 'elo');
+      assert.strictEqual(recurly.validate.cardType('6509130000000016'), 'elo');
     });
 
     it('should parse Hipercard', function () {
@@ -84,7 +85,6 @@ describe('Recurly.validate', function () {
     it('should parse maestro', function () {
       assert.strictEqual(recurly.validate.cardType('627781000000000'), 'maestro');
       assert.strictEqual(recurly.validate.cardType('6010999990139424'), 'maestro');
-      assert.strictEqual(recurly.validate.cardType('6011040090139424'), 'maestro');
       assert.strictEqual(recurly.validate.cardType('6219803011113245'), 'maestro');
     });
 
