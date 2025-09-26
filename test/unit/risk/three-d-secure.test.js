@@ -5,6 +5,7 @@ import { initRecurly, testBed } from '../support/helpers';
 import { factory, ThreeDSecure } from '../../../lib/recurly/risk/three-d-secure/three-d-secure';
 import AdyenStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/adyen';
 import BraintreeStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/braintree';
+import EbanxStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/ebanx';
 import SagepayStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/sage-pay';
 import StripeStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/stripe';
 import TestStrategy from '../../../lib/recurly/risk/three-d-secure/strategy/test';
@@ -211,7 +212,8 @@ describe('ThreeDSecure', function () {
         { id: 'action-token-stripe-pi', strategy: StripeStrategy },
         { id: 'action-token-test', strategy: TestStrategy },
         { id: 'action-token-wirecard', strategy: WirecardStrategy },
-        { id: 'action-token-worldpay', strategy: WorldpayStrategy }
+        { id: 'action-token-worldpay', strategy: WorldpayStrategy },
+        { id: 'action-token-ebanx', strategy: EbanxStrategy },
       ].forEach(({ id: actionTokenId, strategy }) => {
         const threeDSecure = new ThreeDSecure({ risk, actionTokenId });
         threeDSecure.whenReady(() => {
