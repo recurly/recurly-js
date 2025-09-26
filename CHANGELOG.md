@@ -1,5 +1,19 @@
 # Changelog
 
+## [v4.38.1](https://github.com/recurly/recurly-js/tree/v4.38.1) (2025-09-26)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.38.0...v4.38.1)
+
+
+**Merged Pull Requests**
+
+- Expands ELO BIN range [#959](https://github.com/recurly/recurly-js/pull/959) ([chrissrogers](https://github.com/chrissrogers))
+- Json response pricing [#958](https://github.com/recurly/recurly-js/pull/958) ([McTraque](https://github.com/McTraque))
+- Adds Partner Attribution ID and Merchant ID to PayPal Complete SDK load [#954](https://github.com/recurly/recurly-js/pull/954) ([chrissrogers](https://github.com/chrissrogers))
+- Block BNPL from Google Pay [#953](https://github.com/recurly/recurly-js/pull/953) ([ftovaro-recurly](https://github.com/ftovaro-recurly))
+
+
+
 ## [v4.38.0](https://github.com/recurly/recurly-js/tree/v4.38.0) (2025-07-17)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.37.1...v4.38.0)
