@@ -1,5 +1,13 @@
 # Changelog
 
+## [v4.39.0](https://github.com/recurly/recurly-js/tree/v4.39.0) (2025-10-01)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.38.1...v4.39.0)
+
+
+
+
+
 ## [v4.38.1](https://github.com/recurly/recurly-js/tree/v4.38.1) (2025-09-26)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.38.0...v4.38.1)
