@@ -65,11 +65,12 @@ describe('Recurly.validate', function () {
       assert.strictEqual(recurly.validate.cardType('372546612345678'), 'american_express');
     });
 
-    it('should parse ELO', function () {
-      assert.strictEqual(recurly.validate.cardType('6363681111111115'), 'elo');
+    it('should parse Elo', function () {
       assert.strictEqual(recurly.validate.cardType('5041751111111116'), 'elo');
-      assert.strictEqual(recurly.validate.cardType('6362971111111117'), 'elo');
       assert.strictEqual(recurly.validate.cardType('5066991111111118'), 'elo');
+      assert.strictEqual(recurly.validate.cardType('5091516900129341'), 'elo');
+      assert.strictEqual(recurly.validate.cardType('6362971111111117'), 'elo');
+      assert.strictEqual(recurly.validate.cardType('6363681111111115'), 'elo');
       assert.strictEqual(recurly.validate.cardType('6509130000000016'), 'elo');
     });
 
@@ -110,10 +111,9 @@ describe('Recurly.validate', function () {
 
     it('should parse partial numbers if instructed', function () {
       assert.strictEqual(recurly.validate.cardType('3725', true), 'american_express');
-      assert.strictEqual(recurly.validate.cardType('62109400', true), 'union_pay');
-      assert.strictEqual(recurly.validate.cardType('62', true), 'union_pay');
-      assert.strictEqual(recurly.validate.cardType('4', true), 'visa');
-      assert.strictEqual(recurly.validate.cardType('4', true), 'visa');
+      assert.strictEqual(recurly.validate.cardType('62213000', true), 'union_pay');
+      assert.strictEqual(recurly.validate.cardType('6272', true), 'union_pay');
+      assert.strictEqual(recurly.validate.cardType('44', true), 'visa');
     });
   });
 
