@@ -1,10 +1,13 @@
 # Changelog
 
-## [v4.39.0](https://github.com/recurly/recurly-js/tree/v4.39.0) (2025-10-01)
+## [v4.39.1](https://github.com/recurly/recurly-js/tree/v4.39.1) (2025-10-22)
 
-[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.38.1...v4.39.0)
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.38.1...v4.39.1)
 
 
+**Merged Pull Requests**
+
+- Updates BIN ranges [#962](https://github.com/recurly/recurly-js/pull/962) ([chrissrogers](https://github.com/chrissrogers))
 
 
 
