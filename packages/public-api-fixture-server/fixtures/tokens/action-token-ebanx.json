@@ -1,0 +1,17 @@
+{
+  "type": "three_d_secure_action",
+  "id": "action-token-ebanx",
+  "gateway": {
+    "code": "ebanx_test_gateway",
+    "type": "ebanx"
+  },
+  "transaction": {
+    "amount": 50,
+    "amount_in_cents": 5000
+  },
+  "three_d_secure": {
+    "params": {
+      "url": "https://3dsecure.ebanx.com/challenge/test-redirect-url"
+    }
+  }
+}
