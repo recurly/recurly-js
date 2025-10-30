@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.40.0](https://github.com/recurly/recurly-js/tree/v4.40.0) (2025-10-30)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.39.1...v4.40.0)
+
+
+**Merged Pull Requests**
+
+- Adds support for Ebanx redirect handling [#957](https://github.com/recurly/recurly-js/pull/957) ([gilv93](https://github.com/gilv93))
+
+
+
 ## [v4.39.1](https://github.com/recurly/recurly-js/tree/v4.39.1) (2025-10-22)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.38.1...v4.39.1)
