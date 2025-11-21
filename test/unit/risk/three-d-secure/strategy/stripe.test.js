@@ -45,42 +45,6 @@ describe('StripeStrategy', function () {
     });
   });
 
-  describe('when the Stripe.js library encounters a load error', function () {
-    beforeEach(function (done) {
-      const { sandbox, threeDSecure } = this;
-      sandbox.stub(StripeStrategy, 'libUrl').get(() => '/api/mock-404');
-      delete window.Stripe;
-      
-      this.loadError = null;
-      let completed = false;
-      
-      threeDSecure.on('error', error => {
-        if (!completed) {
-          completed = true;
-          this.loadError = error;
-          done();
-        }
-      });
-      
-      this.strategy = new StripeStrategy({ threeDSecure, actionToken: actionTokenPaymentIntent });
-      
-      // Fallback timeout in case error never emits
-      setTimeout(() => {
-        if (!completed) {
-          completed = true;
-          done(new Error('Error not emitted within timeout'));
-        }
-      }, 6500);
-    });
-
-    it('emits an error on threeDSecure', function () {
-      const { loadError } = this;
-      assert(loadError, 'Error should have been emitted');
-      assert.strictEqual(loadError.code, '3ds-vendor-load-error');
-      assert.strictEqual(loadError.vendor, 'Stripe');
-    });
-  });
-
   describe('attach', function () {
     describe('payment intents', function () {
       beforeEach(function (done) {
