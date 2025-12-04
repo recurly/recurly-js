@@ -69,7 +69,7 @@ strategies.forEach(({ name, strategyClass, strategyName }) => {
     //         Edge 142.0.0.0 (Windows 10)
     //       Error: Timeout of 10000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves.
 
-    const describeUnlessEdge = window.navigator.userAgent.indexOf("Edg") > -1 ? describe.skip : describe;
+    const describeUnlessEdge = window.navigator.userAgent.indexOf('Edg') > -1 ? describe.skip : describe;
 
     describeUnlessEdge('attach', function () {
       describe('when hyperswitchRedirectParams contains redirect_url', function () {
