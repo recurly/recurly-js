@@ -43,6 +43,7 @@ describe('AdyenStrategy', function () {
   afterEach(function () {
     const { sandbox } = this;
     delete window.AdyenCheckout;
+    this.strategy.remove();
     sandbox.restore();
   });
 
@@ -60,6 +61,7 @@ describe('AdyenStrategy', function () {
       const { sandbox, threeDSecure } = this;
       sandbox.stub(AdyenStrategy, 'libUrl').get(() => '/api/mock-404');
       delete window.AdyenCheckout;
+      this.strategy.remove();
       this.strategy = new AdyenStrategy({ threeDSecure, actionToken });
     });
 
@@ -93,6 +95,7 @@ describe('AdyenStrategy', function () {
     describe('when fingerprinting', function () {
       beforeEach(function (done) {
         const { threeDSecure } = this;
+        this.strategy.remove();
         this.strategy = new AdyenStrategy({ threeDSecure, actionToken: fingerprintActionToken });
         this.strategy.whenReady(() => done());
       });
@@ -130,7 +133,6 @@ describe('AdyenStrategy', function () {
           container: strategy.container,
           defaultEventName: 'adyen-3ds-challenge'
         }));
-        strategy.remove();
       });
     });
 
@@ -138,6 +140,7 @@ describe('AdyenStrategy', function () {
       beforeEach(function () {
         const { threeDSecure, sandbox, recurly } = this;
         sandbox.spy(recurly, 'Frame');
+        this.strategy.remove();
         this.strategy = new AdyenStrategy({ threeDSecure, actionToken: componentThreeDSecureRedirectActionToken });
       });
 
@@ -157,7 +160,6 @@ describe('AdyenStrategy', function () {
           container: strategy.container,
           defaultEventName: 'adyen-3ds-challenge'
         }));
-        strategy.remove();
       });
     });
 
@@ -165,6 +167,7 @@ describe('AdyenStrategy', function () {
       beforeEach(function () {
         const { threeDSecure, sandbox, recurly } = this;
         sandbox.spy(recurly, 'Frame');
+        this.strategy.remove();
         this.strategy = new AdyenStrategy({ threeDSecure, actionToken: componentRedirectActionToken });
       });
 
@@ -182,7 +185,6 @@ describe('AdyenStrategy', function () {
           container: strategy.container,
           defaultEventName: 'adyen-3ds-challenge'
         }));
-        strategy.remove();
       });
     });
   });
@@ -204,6 +206,7 @@ describe('AdyenStrategy', function () {
   function setupFallback () {
     const { threeDSecure, sandbox, recurly } = this;
     sandbox.spy(recurly, 'Frame');
+    this.strategy.remove();
     this.strategy = new AdyenStrategy({ threeDSecure, actionToken: fallbackActionToken });
   }
 });

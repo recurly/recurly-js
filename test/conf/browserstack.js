@@ -23,7 +23,7 @@ module.exports = {
       browserName: 'Edge',
       browserVersion: 'latest',
       os: 'Windows',
-      osVersion: '10',
+      osVersion: '11',
       edge: {
         enablePopups: true
       }

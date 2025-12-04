@@ -21,6 +21,7 @@ describe('TestStrategy', function () {
   });
 
   afterEach(function () {
+    this.strategy.remove();
     this.sandbox.restore();
   });
 
