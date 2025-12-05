@@ -18,6 +18,10 @@ describe('Recurly.HostedFields', function () {
     });
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   describe('initialization', function () {
     it('builds fields collection', function () {
       for (let i = 0; i < this.hostedFields.fields.length; i++) {

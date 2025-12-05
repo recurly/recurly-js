@@ -14,6 +14,7 @@ describe('Recurly', function () {
   });
 
   afterEach(function () {
+    this.recurly.destroy();
     this.sandbox.reset();
   });
 
@@ -84,6 +85,7 @@ describe('Recurly', function () {
         assert.strictEqual(!!~recurly.bus.recipients.indexOf(stub), true);
         recurly.configure({ publicKey: 'test-2' });
         assert.strictEqual(!!~recurly.bus.recipients.indexOf(stub), true);
+        recurly.destroy();
       });
 
       describe('when hostedFields are not finished initializing', function () {
@@ -127,6 +129,7 @@ describe('Recurly', function () {
               assert(recurly.off.calledWithExactly('hostedFields:ready'));
               assert(recurly.off.calledWithExactly('hostedFields:state:change'));
               assert(recurly.off.calledWithExactly('hostedField:submit'));
+              recurly.destroy();
               done();
             });
           });
@@ -156,12 +159,14 @@ describe('Recurly', function () {
         it('returns the default api url', function () {
           const recurly = initRecurly({ publicKey: 'fra-3test3', api: SAMPLE_API });
           assert.strictEqual(recurly.config.api, SAMPLE_API);
+          recurly.destroy();
         });
       });
       describe('when publicKey is from us and api is passed', function () {
         it('returns the default api url', function () {
           const recurly = initRecurly({ publicKey: 'ewr-3test3', api: SAMPLE_API });
           assert.strictEqual(recurly.config.api, SAMPLE_API);
+          recurly.destroy();
         });
       });
     });
@@ -214,12 +219,14 @@ describe('Recurly', function () {
             }
           });
           assert.strictEqual(recurly.config.risk.threeDSecure.proactive.enabled, true);
+          recurly.destroy();
         });
       });
       describe('is not set', function () {
         it('returns false', function () {
           const recurly = initRecurly({});
           assert.strictEqual(recurly.config.risk.threeDSecure.proactive.enabled, false);
+          recurly.destroy();
         });
       });
     });

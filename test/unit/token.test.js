@@ -458,6 +458,10 @@ describe('Recurly.token', function () {
         this.recurly.fraud.on('ready', part);
       });
 
+      afterEach(function () {
+        this.recurly.destroy();
+      });
+
       prepareExample(Object.assign({}, valid, {
         fraud_session_id: '9a87s6dfaso978ljk'
       }), builder);
@@ -652,6 +656,10 @@ describe('Recurly.token', function () {
           required: ['country', 'postal_code', 'unrelated_configured_field']
         });
         this.recurly.ready(done);
+      });
+
+      afterEach(function () {
+        this.recurly.destroy();
       });
 
       describe('when given a blank required value', function () {

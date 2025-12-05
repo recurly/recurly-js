@@ -15,10 +15,9 @@ describe('DirectStrategy', function () {
   });
 
   afterEach(function () {
-    const { sandbox } = this;
-    const { Frame } = this.recurly;
-    Frame.getCalls().forEach(c => c.returnValue.destroy());
-    sandbox.restore();
+    this.recurly.Frame.getCalls().forEach(c => c.returnValue.destroy());
+    this.recurly.destroy();
+    this.sandbox.restore();
   });
 
   it('passes the description to the API start endpoint', function () {

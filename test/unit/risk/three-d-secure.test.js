@@ -40,13 +40,12 @@ describe('ThreeDSecure', function () {
   });
 
   afterEach(function () {
-    const { sandbox } = this;
-    const { Frame } = this.recurly;
     delete window.AdyenCheckout;
     delete window.braintree;
     delete window.Stripe;
-    Frame.getCalls().forEach(c => c.returnValue.destroy());
-    sandbox.restore();
+    this.recurly.Frame.getCalls().forEach(c => c.returnValue.destroy());
+    this.recurly.destroy();
+    this.sandbox.restore();
   });
 
   describe('factory', function () {

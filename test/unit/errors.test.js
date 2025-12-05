@@ -10,6 +10,10 @@ describe('errors', () => {
     this.recurly = initRecurly();
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   it('throws when the requested error is not in the directory', function () {
     assert.throws(() => errors(invalid), Error, 'invalid error');
   });

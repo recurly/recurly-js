@@ -12,6 +12,10 @@ describe('Recurly.bankAccount', function () {
     this.recurly.ready(done);
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   describe('Recurly.bankAccount.token', function () {
     const valid = {
       routing_number: '123456780',

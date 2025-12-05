@@ -20,7 +20,8 @@ describe('EbanxStrategy', function () {
   });
 
   afterEach(function () {
-    const { sandbox, strategy } = this;
+    const { recurly, sandbox, strategy } = this;
+    recurly.destroy();
     strategy.remove();
     sandbox.restore();
   });

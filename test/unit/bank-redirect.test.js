@@ -8,10 +8,12 @@ describe('Recurly.BankRedirect', function () {
     this.recurly = initRecurly({ });
     this.bankRedirect = this.recurly.BankRedirect();
     this.recurly.ready(() => done());
+    this.sandbox = sinon.createSandbox();
   });
 
   afterEach(function () {
     this.recurly.destroy();
+    this.sandbox.restore();
   });
 
   describe('iDeal', function () {
@@ -142,12 +144,7 @@ describe('Recurly.BankRedirect', function () {
           invoice_uuid: 'invoice123'
         };
 
-        this.sandbox = sinon.createSandbox();
         this.sandbox.spy(this.recurly, 'Frame');
-      });
-
-      afterEach(function () {
-        this.sandbox.restore();
       });
 
       validateBankRedirectStart({
@@ -282,12 +279,7 @@ describe('Recurly.BankRedirect', function () {
           invoice_uuid: 'invoice123'
         };
 
-        this.sandbox = sinon.createSandbox();
         this.sandbox.spy(this.recurly, 'Frame');
-      });
-
-      afterEach(function () {
-        this.sandbox.restore();
       });
 
       validateBankRedirectStart({

@@ -41,10 +41,10 @@ describe('AdyenStrategy', function () {
   });
 
   afterEach(function () {
-    const { sandbox } = this;
     delete window.AdyenCheckout;
+    this.recurly.destroy();
     this.strategy.remove();
-    sandbox.restore();
+    this.sandbox.restore();
   });
 
   it('instantiates AdyenCheckout', function (done) {
