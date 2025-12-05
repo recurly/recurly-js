@@ -10,6 +10,10 @@ describe('Recurly.Pricing.attach', function () {
     this.pricing = this.recurly.Pricing();
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   applyFixtures();
 
   const container = () => window.document.querySelector('#test-pricing');

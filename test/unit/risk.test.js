@@ -14,6 +14,7 @@ describe('Risk', function () {
   });
 
   afterEach(function () {
+    this.recurly.destroy();
     this.sandbox.restore();
   });
 
@@ -71,6 +72,10 @@ describe('Risk', function () {
       this.recurly = initRecurly({ publicKey: 'test-preflight-key' });
       this.stubPreflightResults = { risk: [{ arbitrary: 'results' }], tokenType: undefined };
       sandbox.stub(ThreeDSecure, 'preflight').usingPromise(Promise).resolves(this.stubPreflightResults);
+    });
+
+    afterEach(function () {
+      this.recurly.destroy();
     });
 
     it('retrieves preflight parameters from the API and resolves with results', function (done) {

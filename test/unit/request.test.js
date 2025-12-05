@@ -9,6 +9,12 @@ describe('Request', () => {
   beforeEach(function () {
     const recurly = this.recurly = initRecurly();
     this.request = new Request({ recurly });
+    this.sandbox = sinon.createSandbox();
+  });
+
+  afterEach(function () {
+    this.recurly.destroy();
+    this.sandbox.restore();
   });
 
   describe('Request.timeout', () => {
@@ -54,6 +60,10 @@ describe('Request', () => {
         this.request = new Request({ recurly });
       });
 
+      afterEach(function () {
+        this.recurly.destroy();
+      });
+
       it('returns recurly.parentVersion', function () {
         assert.strictEqual(this.request.version, this.recurly.config.parentVersion);
         assert.strictEqual(this.request.version, 'test-parent-version');
@@ -63,13 +73,8 @@ describe('Request', () => {
 
   describe('External API', () => {
     beforeEach(function () {
-      sinon.spy(this.request, 'request');
-      sinon.spy(this.request, 'cached');
-    });
-
-    afterEach(function () {
-      this.request.request.restore();
-      this.request.cached.restore();
+      this.sandbox.spy(this.request, 'request');
+      this.sandbox.spy(this.request, 'cached');
     });
 
     const example = {
@@ -121,7 +126,7 @@ describe('Request', () => {
 
   describe('Request.request', () => {
     it('Handles an empty response', function (done) {
-      const stub = sinon.stub();
+      const stub = this.sandbox.stub();
       this.request.request({ method: 'post', route: '/events' })
         .done(res => {
           assert.strictEqual(res, undefined);
@@ -131,8 +136,9 @@ describe('Request', () => {
     });
 
     describe('Additional parameters', () => {
-      beforeEach(function () { sinon.spy(this.request, 'xhr'); });
-      afterEach(function () { this.request.xhr.restore(); });
+      beforeEach(function () {
+        this.sandbox.spy(this.request, 'xhr');
+      });
 
       it('Applies Recurly.version to the request', function () {
         let data = { example: 0 };
@@ -163,10 +169,12 @@ describe('Request', () => {
       beforeEach(function () {
         const recurly = this.recurly = initRecurly({ cors: false });
         this.request = new Request({ recurly });
+        this.sandbox.spy(this.request, 'jsonp');
       });
 
-      beforeEach(function () { sinon.spy(this.request, 'jsonp'); });
-      afterEach(function () { this.request.jsonp.restore(); });
+      afterEach(function () {
+        this.recurly.destroy();
+      });
 
       it('invokes Request.jsonp', function () {
         assert.strictEqual(this.request.shouldUseXHR, false);
@@ -182,15 +190,18 @@ describe('Request', () => {
         this.request = new Request({ recurly });
       });
 
+      afterEach(function () {
+        this.recurly.destroy();
+      });
+
       it('invokes Request.xhr', function () {
-        sinon.spy(this.request, 'xhr');
+        this.sandbox.spy(this.request, 'xhr');
         this.request.request({ method: 'get', route: 'test' });
         assert(this.request.xhr.calledOnce);
         assert(this.request.xhr.calledWithMatch({
           method: 'get',
           url: sinon.match('test')
         }));
-        this.request.xhr.restore();
       });
 
       describe('downstream request.xhr network calls', () => {
@@ -238,15 +249,9 @@ describe('Request', () => {
         });
 
         beforeEach(function () {
-          sinon.spy(this.XHR.prototype, 'open');
-          sinon.spy(this.XHR.prototype, 'send');
-          sinon.spy(this.XHR.prototype, 'setRequestHeader');
-        });
-
-        afterEach(function () {
-          this.XHR.prototype.open.restore();
-          this.XHR.prototype.send.restore();
-          this.XHR.prototype.setRequestHeader.restore();
+          this.sandbox.spy(this.XHR.prototype, 'open');
+          this.sandbox.spy(this.XHR.prototype, 'send');
+          this.sandbox.spy(this.XHR.prototype, 'setRequestHeader');
         });
 
         describe('when performing a POST request', () => {
@@ -301,11 +306,10 @@ describe('Request', () => {
     const data = { arbitrary: 'payload' };
 
     it('on first call, invokes Request.request with identical parameters', function () {
-      sinon.spy(this.request, 'request');
+      this.sandbox.spy(this.request, 'request');
       this.request.cached({ method: 'get', route: 'test', data });
       assert(this.request.request.calledOnce);
       assert(this.request.request.calledWithMatch({ method: 'get', route: 'test', data }));
-      this.request.request.restore();
     });
 
     it('returns and does not cache error responses', function (done) {
@@ -319,11 +323,9 @@ describe('Request', () => {
 
     describe('given a successful response', () => {
       beforeEach(function () {
-        sinon.stub(this.request, 'request');
+        this.sandbox.stub(this.request, 'request');
         this.request.request.usingPromise(Promise).resolves({ success: true });
       });
-
-      afterEach(function () { this.request.request.restore(); });
 
       it('returns and caches successful responses', function (done) {
         this.request.cached({ method: 'get', route: 'test', data }).done(res => {
@@ -356,6 +358,10 @@ describe('Request', () => {
         this.request = new Request({ recurly });
       });
 
+      afterEach(function () {
+        this.recurly.destroy();
+      });
+
       it('adds the request to the queue', function () {
         assert.strictEqual(this.recurly.listeners('configured').length, 0);
         this.request.queued(args);
@@ -375,11 +381,10 @@ describe('Request', () => {
     });
 
     it('executes immediately when recurly is configured', function () {
-      sinon.spy(this.request, 'request');
+      this.sandbox.spy(this.request, 'request');
       this.request.queued(args);
       assert(this.request.request.calledOnce);
       assert(this.request.request.calledWithMatch(args));
-      this.request.request.restore();
     });
   });
 
@@ -390,7 +395,7 @@ describe('Request', () => {
 
     describe('given all error responses', () => {
       beforeEach(function () {
-        sinon.stub(this.request, 'request');
+        this.sandbox.stub(this.request, 'request');
         this.request.request.usingPromise(Promise).rejects({ code: 'not-found' });
       });
 
@@ -405,7 +410,7 @@ describe('Request', () => {
 
     describe('given successful responses', () => {
       beforeEach(function () {
-        sinon.stub(this.request, 'request');
+        this.sandbox.stub(this.request, 'request');
         this.request.request.usingPromise(Promise).resolves({ success: true });
       });
 
@@ -449,13 +454,7 @@ describe('Request', () => {
     beforeEach(function () {
       this.exampleOkUrl = this.recurly.url('/mock-200');
       this.exampleErrUrl = this.recurly.url('/mock-200-err');
-
-      sinon.spy(Request, 'makeJsonpRequest');
-    });
-
-    afterEach(function () {
-      if (!('restore' in Request.makeJsonpRequest)) return;
-      Request.makeJsonpRequest.restore();
+      this.sandbox.spy(Request, 'makeJsonpRequest');
     });
 
     it('makes a call to the specified url', function () {

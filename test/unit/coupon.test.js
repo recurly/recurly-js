@@ -10,6 +10,10 @@ describe('Recurly.coupon', () => {
     this.recurly = initRecurly();
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   it('requires a callback', function () {
     try {
       this.recurly.coupon(valid);

@@ -28,7 +28,10 @@ describe('CompleteStrategy', function () {
     };
   });
 
-  afterEach(() => delete window.paypal);
+  afterEach(function () {
+    this.recurly.destroy();
+    delete window.paypal;
+  });
 
   it('requires a target', function () {
     const message = "Missing PayPal configuration option: 'payPalComplete.target'";

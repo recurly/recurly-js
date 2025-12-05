@@ -31,8 +31,8 @@ describe('StripeStrategy', function () {
   });
 
   afterEach(function () {
-    const { sandbox } = this;
-    sandbox.restore();
+    this.recurly.destroy();
+    this.sandbox.restore();
     delete window.Stripe;
   });
 

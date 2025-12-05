@@ -19,11 +19,13 @@ export function initRecurly (recurly, opts) {
 
     // prevents itinerant event logging workers from dispatching
     sinon.stub(recurly.reporter, 'send');
+    sinon.stub(recurly.engage, 'load');
   }
 
   recurly.configure(merge({
     publicKey: 'test',
-    api: `${window.location.protocol}//${window.location.host}/api`
+    api: `${window.location.protocol}//${window.location.host}/api`,
+    timeout: 5000
   }, opts));
 
   return recurly;

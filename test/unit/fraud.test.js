@@ -25,6 +25,7 @@ describe('Recurly.fraud', function () {
           assert.strictEqual(err.code, 'fraud-data-collector-request-failed');
           assert.strictEqual(err.error.code, 'feature-not-enabled');
           assert.strictEqual(err.error.message, 'Fraud detection feature is not enabled for this site');
+          recurly.destroy();
           done();
         });
       });
@@ -46,6 +47,7 @@ describe('Recurly.fraud', function () {
           assert.strictEqual(form.children[0].getAttribute('data-recurly'), 'fraud_session_id');
           assert.strictEqual(form.children[1].getAttribute('src'), '/api/mock-200');
           assert.strictEqual(form.children[2].className, 'kaxsdc');
+          recurly.destroy();
           done();
         });
       });
@@ -87,6 +89,7 @@ describe('Recurly.fraud', function () {
               assert.strictEqual(form.children[0].getAttribute('data-recurly'), 'fraud_session_id');
               assert.strictEqual(form.children[1].getAttribute('src'), '/api/mock-200');
               assert.strictEqual(form.children[2].className, 'kaxsdc');
+              recurly.destroy();
               done();
             });
 
@@ -115,6 +118,7 @@ describe('Recurly.fraud', function () {
         recurly.on('error', err => {
           assert.strictEqual(err.code, 'fraud-data-collector-request-failed');
           assert.strictEqual(err.error, 'Kount SDK failed to load.');
+          recurly.destroy();
           done();
         });
 
@@ -135,6 +139,7 @@ describe('Recurly.fraud', function () {
             assert(form.querySelector('input[data-recurly=fraud_session_id][type=hidden]'));
             assert(form.querySelector('script[src="/api/mock-200"]'));
             assert(form.querySelector('div[class=kaxsdc]'));
+            recurly.destroy();
             done();
           });
         });
@@ -149,6 +154,7 @@ describe('Recurly.fraud', function () {
 
             recurly.on('error', err => {
               assert.strictEqual(err.code, 'fraud-data-collector-missing-form');
+              recurly.destroy();
               done();
             });
           });
@@ -182,6 +188,7 @@ describe('Recurly.fraud', function () {
         assert.strictEqual(fraudnetScript.getAttribute('src'), '/api/mock-200');
 
         recurly.destroy();
+        recurly.destroy();
         done();
       });
     });
@@ -201,6 +208,7 @@ describe('Recurly.fraud', function () {
         assert.strictEqual(form.children.length, 3);
         recurly.fraud.destroy();
         assert.strictEqual(form.children.length, 0);
+        recurly.destroy();
         done();
       });
     });

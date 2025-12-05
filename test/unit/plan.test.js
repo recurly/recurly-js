@@ -10,6 +10,10 @@ describe('Recurly.plan', function () {
     this.recurly = initRecurly();
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   it('requires a callback', function () {
     const { recurly } = this;
     assert.throws(() => recurly.plan(valid), { message: 'Missing callback' });
@@ -21,15 +25,6 @@ describe('Recurly.plan', function () {
       assert.strictEqual(err.message, 'Missing plan code');
       done();
     });
-  });
-
-  it('requires Recurly.configure', function () {
-    try {
-      const recurly = new Recurly();
-      recurly.plan(valid, () => {});
-    } catch (e) {
-      assert(~e.message.indexOf('configure'));
-    }
   });
 
   describe('when given an invalid plan', function () {

@@ -18,6 +18,11 @@ describe('Recurly.Venmo', function () {
     this.sandbox = sinon.createSandbox();
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+    this.sandbox.restore();
+  });
+
   it('uses a Braintree strategy by default', function () {
     assert(this.venmo.strategy instanceof BraintreeStrategy);
   });

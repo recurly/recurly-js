@@ -100,6 +100,7 @@ describe('Google Pay BNPL guard', function () {
   });
 
   afterEach(function () {
+    this.recurly.destroy();
     this.sandbox.restore();
     if (this.cleanGoogleAPIStub) this.cleanGoogleAPIStub();
   });

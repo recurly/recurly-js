@@ -18,6 +18,11 @@ describe('BraintreeStrategy', function () {
     this.paypal.on('ready', done);
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+    this.sandbox.restore();
+  });
+
   describe('start', function () {
     it('calls tokenize through braintree', function () {
       this.sandbox.spy(this.paypal.strategy.paypal, 'tokenize');

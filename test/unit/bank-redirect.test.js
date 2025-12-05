@@ -146,10 +146,6 @@ describe('Recurly.BankRedirect', function () {
         this.sandbox.spy(this.recurly, 'Frame');
       });
 
-      afterEach(function () {
-        this.sandbox.restore();
-      });
-
       validateBankRedirectStart({
         requiredFields: ['payment_method_type', 'invoice_uuid', 'issuer_id'],
       });
@@ -284,10 +280,6 @@ describe('Recurly.BankRedirect', function () {
 
         this.sandbox = sinon.createSandbox();
         this.sandbox.spy(this.recurly, 'Frame');
-      });
-
-      afterEach(function () {
-        this.sandbox.restore();
       });
 
       validateBankRedirectStart({

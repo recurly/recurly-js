@@ -1856,6 +1856,10 @@ describe('Recurly.Pricing.Checkout with price segments', function () {
     this.pricing = this.recurly.Pricing.Checkout();
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   describe('with price segments', function () {
     it('should include price segments in the pricing response when available', function (done) {
       const subscriptionPricing = this.recurly.Pricing.Subscription();

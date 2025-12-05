@@ -28,9 +28,9 @@ describe('Recurly.Frame', function () {
   });
 
   afterEach(function () {
-    const { frame, sandbox } = this;
-    sandbox.restore();
-    if (frame) frame.destroy();
+    this.recurly.destroy();
+    this.sandbox.restore();
+    this.frame?.destroy();
   });
 
   it('calls window.open', function () {

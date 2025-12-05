@@ -7,6 +7,10 @@ describe('Recurly.Pricing.Subscription', function () {
     this.pricing = this.recurly.Pricing.Subscription();
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   describe('with taxation', () => {
     it('should not append tax elements if there is no tax', function (done) {
       this.pricing

@@ -79,6 +79,7 @@ describe('Google Pay', function () {
   });
 
   afterEach(function () {
+    this.recurly.destroy();
     this.sandbox.restore();
 
     if (this.cleanGoogleAPIStub) {

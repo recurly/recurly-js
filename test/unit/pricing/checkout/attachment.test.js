@@ -12,6 +12,10 @@ describe('CheckoutPricing#attach', function () {
     this.pricing = this.recurly.Pricing.Checkout();
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   applyFixtures();
 
   describe('when no container is given', function () {

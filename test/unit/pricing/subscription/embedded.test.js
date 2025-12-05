@@ -22,6 +22,10 @@ describe('EmbeddedSubscriptionPricing', () => {
     this.embeddedSubscriptionPricing = new EmbeddedSubscriptionPricing(this.subscriptionPricing);
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   describe('disabling methods', () => {
     it('Disables methods on the SubscriptionPricing instance', function () {
       DISABLED_METHODS.forEach(method => {

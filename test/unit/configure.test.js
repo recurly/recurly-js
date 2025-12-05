@@ -12,6 +12,10 @@ describe('Recurly.configure', function () {
     this.recurly = new Recurly();
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   describe('when options.publicKey is not given', function () {
     beforeEach(function () {
       const { api } = this;
@@ -295,7 +299,7 @@ describe('Recurly.configure', function () {
         }
       });
       assert.strictEqual(recurly.configured, true);
-      recurly.ready(done);
+      recurly.ready(() => done());
     }
   });
 });

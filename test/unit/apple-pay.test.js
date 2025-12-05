@@ -129,6 +129,7 @@ function applePayTest (integrationType) {
     });
 
     afterEach(function () {
+      this.recurly.destroy();
       delete window.braintree;
     });
 
@@ -1286,19 +1287,6 @@ function applePayTest (integrationType) {
           });
 
           it('when kount is selected, pass the expected parameters to create the token', function (done) {
-            beforeEach(function () {
-              const recurly = this.recurly = initRecurly();
-              recurly.configure({
-                fraud: {
-                  kount: {
-                    dataCollector: true,
-                    form: testBed().querySelector('#test-form')
-                  }
-                }
-              });
-              this.recurly.fraud.profile = { processor: 'kount', sessionId: 'KOUNT_SESSION_ID', udf: {} };
-            });
-
             this.spyTokenRequest = this.sandbox.spy(this.recurly.request, 'post');
 
             this.applePay.session.onpaymentauthorized(clone(validAuthorizeEvent));
