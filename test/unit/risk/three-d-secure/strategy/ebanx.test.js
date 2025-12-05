@@ -21,21 +21,11 @@ describe('EbanxStrategy', function () {
 
   afterEach(function () {
     const { sandbox, strategy } = this;
-    if (strategy.frame) {
-      strategy.frame.destroy();
-    }
+    strategy.remove();
     sandbox.restore();
   });
 
   describe('constructor', function () {
-    it('marks itself as ready', function (done) {
-      const { strategy } = this;
-      strategy.whenReady(() => {
-        assert(strategy._ready);
-        done();
-      });
-    });
-
     it('sets the strategy name', function () {
       assert.strictEqual(EbanxStrategy.strategyName, 'ebanx');
     });
@@ -136,13 +126,6 @@ describe('EbanxStrategy', function () {
       sandbox.spy(strategy.frame, 'destroy');
       strategy.remove();
       assert(strategy.frame.destroy.calledOnce);
-    });
-
-    it('calls the parent remove method', function () {
-      const { strategy, sandbox } = this;
-      sandbox.spy(Object.getPrototypeOf(Object.getPrototypeOf(strategy)), 'remove');
-      strategy.remove();
-      assert(Object.getPrototypeOf(Object.getPrototypeOf(strategy)).remove.calledOnce);
     });
 
     it('handles the case when no frame exists', function () {

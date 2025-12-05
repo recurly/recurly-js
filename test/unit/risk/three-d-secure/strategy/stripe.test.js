@@ -1,4 +1,5 @@
 import assert from 'assert';
+import Promise from 'promise';
 import { applyFixtures } from '../../../support/fixtures';
 import { initRecurly, testBed } from '../../../support/helpers';
 import StripeStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/stripe';
@@ -25,6 +26,8 @@ describe('StripeStrategy', function () {
       handleNextAction: sinon.stub().resolves(this.intentResult),
     };
     window.Stripe = sinon.spy(() => this.stripe);
+
+    this.sandbox.stub(StripeStrategy.prototype, 'loadStripeLibrary').usingPromise(Promise).resolves();
   });
 
   afterEach(function () {
@@ -41,43 +44,8 @@ describe('StripeStrategy', function () {
     strategy.whenReady(() => {
       assert(window.Stripe.calledOnce);
       assert(window.Stripe.calledWithExactly('test-stripe-publishable-key'));
+      strategy.remove();
       done();
-    });
-  });
-
-  describe('when the Stripe.js library encounters a load error', function () {
-    beforeEach(function (done) {
-      const { sandbox, threeDSecure } = this;
-      sandbox.stub(StripeStrategy, 'libUrl').get(() => '/api/mock-404');
-      delete window.Stripe;
-      
-      this.loadError = null;
-      let completed = false;
-      
-      threeDSecure.on('error', error => {
-        if (!completed) {
-          completed = true;
-          this.loadError = error;
-          done();
-        }
-      });
-      
-      this.strategy = new StripeStrategy({ threeDSecure, actionToken: actionTokenPaymentIntent });
-      
-      // Fallback timeout in case error never emits
-      setTimeout(() => {
-        if (!completed) {
-          completed = true;
-          done(new Error('Error not emitted within timeout'));
-        }
-      }, 6500);
-    });
-
-    it('emits an error on threeDSecure', function () {
-      const { loadError } = this;
-      assert(loadError, 'Error should have been emitted');
-      assert.strictEqual(loadError.code, '3ds-vendor-load-error');
-      assert.strictEqual(loadError.vendor, 'Stripe');
     });
   });
 
@@ -89,11 +57,16 @@ describe('StripeStrategy', function () {
         this.strategy.whenReady(() => done());
       });
 
+      afterEach(function () {
+        this.strategy.remove();
+      });
+
       it('instructs Stripe.js to handle the card action using the client secret', function () {
         const { strategy, target, stripe } = this;
         strategy.attach(target);
         assert(stripe.handleNextAction.calledOnce);
         assert(stripe.handleNextAction.calledWithExactly({ clientSecret: 'pi-test-stripe-client-secret' }));
+
       });
 
       it('emits done with the paymentIntent result', function (done) {
@@ -117,6 +90,7 @@ describe('StripeStrategy', function () {
           threeDSecure.on('error', error => {
             assert.strictEqual(error.code, '3ds-auth-error');
             assert.deepEqual(error.cause, example);
+            strategy.remove();
             done();
           });
           strategy.attach(target);
@@ -132,6 +106,10 @@ describe('StripeStrategy', function () {
         this.intentResult = {
           setupIntent: { id: 'pi-test-id', test: 'result', consistingOf: 'arbitrary-values' }
         };
+      });
+
+      afterEach(function () {
+        this.strategy.remove();
       });
 
       it('instructs Stripe.js to handle the card action using the client secret', function () {

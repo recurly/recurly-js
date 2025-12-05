@@ -39,8 +39,9 @@ describe('BraintreeStrategy', function () {
   });
 
   afterEach(function () {
-    const { sandbox } = this;
+    const { sandbox, strategy } = this;
     sandbox.restore();
+    strategy.remove();
     delete window.braintree;
   });
 
@@ -49,6 +50,7 @@ describe('BraintreeStrategy', function () {
       const { sandbox, threeDSecure } = this;
       sandbox.stub(BraintreeLoader, 'loadModules').rejects();
       delete window.braintree;
+      this.strategy.remove();
       this.strategy = new BraintreeStrategy({ threeDSecure, actionToken });
     });
 
