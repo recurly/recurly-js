@@ -44,11 +44,14 @@ jobs:
         with:
           category: /language:javascript
   test_local:
-    name: Unit test
+    name: ${{matrix.test-type}} test (${{matrix.browser}})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        test-type:
+          - Unit
+          - End-to-end
         browser:
           - Chrome
           - Firefox
@@ -57,25 +60,32 @@ jobs:
       - uses: browser-actions/setup-firefox@v1
       - uses: actions/checkout@v3
       - name: Unit test
+        if: ${{matrix.test-type == 'Unit'}}
         uses: coactions/setup-xvfb@v1
         env:
           BROWSER: ${{matrix.browser}}
           DISPLAY: :99
         with:
           run: make test-unit-ci
+      - name: End-to-end test
+        if: ${{matrix.test-type == 'End-to-end'}}
+        uses: coactions/setup-xvfb@v1
+        env:
+          BROWSER: ${{matrix.browser}}
+          DISPLAY: :99
+        with:
+          run: make test-e2e-ci
   test_remote:
-    name: ${{matrix.type}} test (${{matrix.browser}})
+    name: ${{matrix.test-type}} test (${{matrix.browser}})
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 5
       fail-fast: false
       matrix:
-        type:
+        test-type:
           - Unit
           - End-to-end
         browser:
-          - Chrome-Remote # no unit
-          - Firefox-Remote # no unit
           - Safari-Remote
           - Edge-Remote
           - iOS-18-Remote
@@ -87,7 +97,7 @@ jobs:
       - uses: ahmadnassri/action-workflow-queue@v1
       - uses: actions/checkout@v3
       - name: Unit test
-        if: ${{matrix.type == 'Unit' && matrix.browser != 'Chrome-Remote' && matrix.browser != 'Firefox-Remote'}}
+        if: ${{matrix.test-type == 'Unit'}}
         uses: nick-fields/retry@v2
         env:
           BROWSER: ${{matrix.browser}}
@@ -98,7 +108,7 @@ jobs:
           max_attempts: 2
           command: make test-unit-ci
       - name: End-to-end test
-        if: ${{matrix.type == 'End-to-end'}}
+        if: ${{matrix.test-type == 'End-to-end'}}
         uses: nick-fields/retry@v2
         env:
           BROWSER: ${{matrix.browser}}
