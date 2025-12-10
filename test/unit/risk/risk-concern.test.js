@@ -4,9 +4,13 @@ import RiskConcern from '../../../lib/recurly/risk/risk-concern';
 
 describe('RiskConcern', function () {
   beforeEach(function () {
-    const recurly = initRecurly();
+    const recurly = this.recurly = initRecurly();
     this.riskStub = { add: sinon.stub(), remove: sinon.stub(), recurly };
     this.riskConcern = new RiskConcern({ risk: this.riskStub });
+  });
+
+  afterEach(function () {
+    this.recurly.destroy();
   });
 
   it('adds itself to the provided Risk instance', function () {

@@ -11,6 +11,11 @@ describe('Recurly.Pricing.Subscription.TieredPricingCalculator', function () {
     this.recurly = initRecurly();
     this.pricing = this.recurly.Pricing.Subscription();
   });
+
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   describe('with tiered addons', () => {
     it('should apply the tiered cost to the addon price', function (done) {
       const tieredAddon = TIERED_PLAN.addons.filter((addon) => { return addon.code === 'tiered'; })[0];

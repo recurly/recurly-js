@@ -19,6 +19,10 @@ describe('Elements', function () {
     this.cardElementExample = this.elementsStub.CardElement();
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   it('has factory properties that return Element instances', function () {
     [
       'CardElement',

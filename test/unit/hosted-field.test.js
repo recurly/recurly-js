@@ -17,6 +17,10 @@ describe('Recurly.HostedField', function () {
     this.recurly.ready(done);
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   describe('when instantiated on a mobile device', function () {
     stubAsMobileDevice();
     beforeEach(buildHostedFieldExample());

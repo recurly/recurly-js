@@ -14,6 +14,7 @@ describe('Engage', () => {
   });
 
   afterEach(function () {
+    this.recurly.destroy();
     this.sandbox.restore();
   });
 

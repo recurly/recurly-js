@@ -40,6 +40,10 @@ describe('Element', function () {
     this.sendMessage = name => element.bus.send(this.messageName(name));
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   it('requires an elements instance', function () {
     const { elements } = this;
     assert.throws(() => new Element());

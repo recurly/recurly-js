@@ -21,6 +21,7 @@ describe('TestStrategy', function () {
   });
 
   afterEach(function () {
+    this.recurly.destroy();
     this.strategy.remove();
     this.sandbox.restore();
   });

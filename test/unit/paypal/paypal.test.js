@@ -17,6 +17,11 @@ describe('Recurly.PayPal', function () {
     this.sandbox = sinon.createSandbox();
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+    this.sandbox.restore();
+  });
+
   it('uses a direct PayPal strategy by default', function () {
     assert(this.paypal.strategy instanceof DirectStrategy);
   });

@@ -1,5 +1,4 @@
 import assert from 'assert';
-import { Recurly } from '../../lib/recurly';
 import { initRecurly } from './support/helpers';
 
 describe('Recurly.plan', function () {
@@ -8,6 +7,10 @@ describe('Recurly.plan', function () {
 
   beforeEach(function () {
     this.recurly = initRecurly();
+  });
+
+  afterEach(function () {
+    this.recurly.destroy();
   });
 
   it('requires a callback', function () {
@@ -21,15 +24,6 @@ describe('Recurly.plan', function () {
       assert.strictEqual(err.message, 'Missing plan code');
       done();
     });
-  });
-
-  it('requires Recurly.configure', function () {
-    try {
-      const recurly = new Recurly();
-      recurly.plan(valid, () => {});
-    } catch (e) {
-      assert(~e.message.indexOf('configure'));
-    }
   });
 
   describe('when given an invalid plan', function () {

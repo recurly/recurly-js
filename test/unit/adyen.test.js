@@ -7,6 +7,10 @@ describe('Recurly.Adyen', function () {
     this.adyen = this.recurly.Adyen();
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   let validPayload = {
     invoiceUuid: 'asdf1234',
     countryCode: 'US',

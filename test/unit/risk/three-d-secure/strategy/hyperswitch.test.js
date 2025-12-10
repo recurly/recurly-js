@@ -33,7 +33,8 @@ strategies.forEach(({ name, strategyClass, strategyName }) => {
     });
 
     afterEach(function () {
-      const { sandbox, strategy } = this;
+      const { recurly, sandbox, strategy } = this;
+      recurly.destroy();
       strategy.remove();
       sandbox.restore();
     });
@@ -56,22 +57,7 @@ strategies.forEach(({ name, strategyClass, strategyName }) => {
       });
     });
 
-    // FIXME:
-    //
-    // These tests lead to a downstream timeout on Edge
-    //
-    // example
-    //
-    // FAILED TESTS:
-    //   Recurly.tax
-    //     when given a taxable US postal code
-    //       ✖ yields a tax type and rate
-    //         Edge 142.0.0.0 (Windows 10)
-    //       Error: Timeout of 10000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves.
-
-    const describeUnlessEdge = window.navigator.userAgent.indexOf('Edg') > -1 ? describe.skip : describe;
-
-    describeUnlessEdge('attach', function () {
+    describe('attach', function () {
       describe('when hyperswitchRedirectParams contains redirect_url', function () {
         it('calls redirect method', function () {
           const { strategy, target, sandbox } = this;
@@ -198,7 +184,7 @@ strategies.forEach(({ name, strategyClass, strategyName }) => {
       });
     });
 
-    describeUnlessEdge('remove', function () {
+    describe('remove', function () {
       beforeEach(function () {
         const { strategy, target } = this;
         strategy.attach(target);

@@ -13,6 +13,10 @@ describe('PayPalStrategy', function () {
     this.paypal = this.recurly.PayPal(validOpts);
   });
 
+  afterEach(function () {
+    this.recurly.destroy();
+  });
+
   describe('when given custom display options', function () {
     const validDisplayOptions = {
       amount: '100.0',

@@ -39,7 +39,8 @@ describe('BraintreeStrategy', function () {
   });
 
   afterEach(function () {
-    const { sandbox, strategy } = this;
+    const { recurly, sandbox, strategy } = this;
+    recurly.destroy();
     sandbox.restore();
     strategy.remove();
     delete window.braintree;
