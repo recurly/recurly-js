@@ -73,10 +73,41 @@ describe('CompleteStrategy', function () {
     );
   });
 
+  it('passes gatewayCode to the setup token request', async function () {
+    const { target } = this;
+    const gatewayCode = 'test-gateway-code';
+    const postSpy = this.sandbox.spy(this.recurly.request, 'post');
+
+    this.initPaypal({ payPalComplete: { target }, gatewayCode });
+    await this.paypalInitialized();
+    const setupTokenId = await this.paypalSdkStub.Buttons.getCall(0).firstArg.createVaultSetupToken();
+
+    assert(postSpy.calledWithMatch({ data: { gateway_code: gatewayCode } }));
+    assert.strictEqual(setupTokenId, 'test-paypal-setup-token-id');
+  });
+
   it('creates a billing token', function (done) {
     const paypal = this.initPaypal();
 
     paypal.on('token', token => {
+      assert.strictEqual(token.type, 'paypal_complete_paypal');
+      assert.strictEqual(token.id, 'test-paypal-complete-billing-token-id');
+      done();
+    });
+
+    this.paypalInitialized().then(() => {
+      this.paypalSdkStub.Buttons.getCall(0).firstArg.onApprove({ vaultSetupToken: 'mock' });
+    });
+  });
+
+  it('passes gatewayCode to the billing token request', function (done) {
+    const { target } = this;
+    const gatewayCode = 'test-gateway-code';
+    const postSpy = this.sandbox.spy(this.recurly.request, 'post');
+    const paypal = this.initPaypal({ payPalComplete: { target }, gatewayCode });
+
+    paypal.on('token', token => {
+      assert(postSpy.calledWithMatch({ data: { gateway_code: gatewayCode } }));
       assert.strictEqual(token.type, 'paypal_complete_paypal');
       assert.strictEqual(token.id, 'test-paypal-complete-billing-token-id');
       done();
