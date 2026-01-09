@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.41.0](https://github.com/recurly/recurly-js/tree/v4.41.0) (2026-01-09)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.40.1...v4.41.0)
+
+
+**Merged Pull Requests**
+
+- Add additional Elo bin ranges [#969](https://github.com/recurly/recurly-js/pull/969) ([btruncali1](https://github.com/btruncali1))
+
+
+
 ## [v4.40.1](https://github.com/recurly/recurly-js/tree/v4.40.1) (2026-01-09)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.40.0...v4.40.1)
