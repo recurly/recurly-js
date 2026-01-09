@@ -1,5 +1,18 @@
 # Changelog
 
+## [v4.40.1](https://github.com/recurly/recurly-js/tree/v4.40.1) (2026-01-09)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.40.0...v4.40.1)
+
+
+**Merged Pull Requests**
+
+- Adds request destruction [#967](https://github.com/recurly/recurly-js/pull/967) ([chrissrogers](https://github.com/chrissrogers))
+- fix: Fix Stripe flaky test [#965](https://github.com/recurly/recurly-js/pull/965) ([warangochavarria](https://github.com/warangochavarria))
+- feat: Handle Hyperswitch 3DS redirect [#964](https://github.com/recurly/recurly-js/pull/964) ([warangochavarria](https://github.com/warangochavarria))
+
+
+
 ## [v4.40.0](https://github.com/recurly/recurly-js/tree/v4.40.0) (2025-10-30)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.39.1...v4.40.0)
