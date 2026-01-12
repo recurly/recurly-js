@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.41.1](https://github.com/recurly/recurly-js/tree/v4.41.1) (2026-01-12)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.41.0...v4.41.1)
+
+
+**Merged Pull Requests**
+
+- fix(paypal): support `gatewayCode` option in complete flow [#971](https://github.com/recurly/recurly-js/pull/971) ([cbarton](https://github.com/cbarton))
+
+
+
 ## [v4.41.0](https://github.com/recurly/recurly-js/tree/v4.41.0) (2026-01-09)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.40.1...v4.41.0)
