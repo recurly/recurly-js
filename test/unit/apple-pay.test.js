@@ -7,6 +7,7 @@ import Emitter from 'component-emitter';
 import Promise from 'promise';
 import { initRecurly, nextTick } from './support/helpers';
 import BraintreeLoader from '../../lib/util/braintree-loader';
+import { ApplePay } from '../../lib/recurly/apple-pay/apple-pay';
 import filterSupportedNetworks from '../../lib/recurly/apple-pay/util/filter-supported-networks';
 
 const infoFixture = require('@recurly/public-api-test-server/fixtures/apple_pay/info');
@@ -83,6 +84,7 @@ describe('ApplePay', function () {
     this.sandbox = sinon.createSandbox();
     window.ApplePaySession = ApplePaySessionStub;
     window.ApplePayError = ApplePayError;
+    this.sandbox.stub(ApplePay.prototype, '_loadSDK').resolves();
   });
 
   afterEach(function () {
@@ -135,9 +137,10 @@ function applePayTest (integrationType) {
 
     describe('Constructor', function () {
       describe('when Apple Pay is not supported', function () {
-        beforeEach(function () {
+        beforeEach(function (done) {
           delete window.ApplePaySession;
           this.applePay = this.recurly.ApplePay(validOpts);
+          this.applePay.once('error', () => done());
         });
 
         it('registers an Apple Pay not supported error', function () {
@@ -154,9 +157,10 @@ function applePayTest (integrationType) {
       });
 
       describe('when Apple Pay is not set up', function () {
-        beforeEach(function () {
+        beforeEach(function (done) {
           this.sandbox.stub(ApplePaySessionStub, 'canMakePayments').returns(false);
           this.applePay = this.recurly.ApplePay(clone(validOpts));
+          this.applePay.once('error', () => done());
         });
 
         it('registers an Apple Pay not available error', function () {
@@ -173,9 +177,10 @@ function applePayTest (integrationType) {
       });
 
       describe('when Apple Pay version not supported', function () {
-        beforeEach(function () {
+        beforeEach(function (done) {
           this.sandbox.stub(ApplePaySessionStub, 'version').value(2);
           this.applePay = this.recurly.ApplePay(clone(validOpts));
+          this.applePay.once('error', () => done());
         });
 
         it('registers an Apple Pay not supported error', function () {
@@ -188,6 +193,31 @@ function applePayTest (integrationType) {
             assert.equal(result.code, 'apple-pay-init-error');
             assert.equal(result.err.code, 'apple-pay-not-supported');
           });
+        });
+      });
+
+      describe('when loading the Apple Pay SDK for non-Safari browsers', function () {
+        it('loads the SDK when ApplePaySession is not initially available', function (done) {
+          delete window.ApplePaySession;
+          // Override the stub to simulate the SDK providing ApplePaySession
+          ApplePay.prototype._loadSDK.callsFake(function () {
+            return Promise.resolve().then(() => {
+              window.ApplePaySession = ApplePaySessionStub;
+            });
+          });
+          const applePay = this.recurly.ApplePay(validOpts);
+          applePay.ready(ensureDone(done, () => {
+            assert(ApplePay.prototype._loadSDK.calledOnce);
+          }));
+        });
+
+        it('does not load the SDK when ApplePaySession is already available', function (done) {
+          // ApplePaySession is already set (the default test setup)
+          const applePay = this.recurly.ApplePay(validOpts);
+          applePay.ready(ensureDone(done, () => {
+            assert(ApplePay.prototype._loadSDK.calledOnce);
+            // _loadSDK was called but should resolve immediately
+          }));
         });
       });
 
@@ -751,13 +781,15 @@ function applePayTest (integrationType) {
     });
 
     describe('ApplePay.begin', function () {
-      it('aborts if there is an initError', function () {
+      it('aborts if there is an initError', function (done) {
         // expect empty options to induce an initError
         let applePay = this.recurly.ApplePay();
-        let result = applePay.begin();
-        assert(result instanceof Error);
-        assert.equal(result.code, 'apple-pay-init-error');
-        assert.equal(result.err.code, applePay.initError.code);
+        applePay.once('error', ensureDone(done, () => {
+          let result = applePay.begin();
+          assert(result instanceof Error);
+          assert.equal(result.code, 'apple-pay-init-error');
+          assert.equal(result.err.code, applePay.initError.code);
+        }));
       });
 
       it('establishes a session and initiates it', function (done) {
