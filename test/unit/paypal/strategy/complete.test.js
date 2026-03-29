@@ -152,6 +152,19 @@ describe('CompleteStrategy', function () {
       }));
     });
 
+    it('sanitizes the plan name in the billing_plan (replaces underscores/hyphens with spaces, removes special chars)', async function () {
+      const { target } = this;
+      const pricing = await checkoutPricingFactory('basic-name-sanitize', this.recurly);
+      const postSpy = this.sandbox.spy(this.recurly.request, 'post');
+
+      this.initPaypal({ payPalComplete: { target, pricing } });
+      await this.paypalInitialized();
+      await this.paypalSdkStub.Buttons.getCall(0).firstArg.createVaultSetupToken();
+
+      const setupTokenCall = postSpy.getCalls().find(c => c.args[0].route === '/paypal_complete/setup_tokens');
+      assert.strictEqual(setupTokenCall.args[0].data.billing_plan.name, 'Basic Plan Name Special');
+    });
+
     it('includes one_time_charges.setup_fee and total_amount when the plan has a setup fee', async function () {
       const { target } = this;
       const pricing = await checkoutPricingFactory('basic', this.recurly);
