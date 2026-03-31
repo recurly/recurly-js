@@ -141,7 +141,7 @@ describe('CompleteStrategy', function () {
       assert(paypal.strategy.loadScriptPromise.calledWithMatch(
         'https://www.paypal.com/sdk/js?client-id=test-client-id'
         + '&merchant-id=test-merchant-id'
-        + '&disable-funding=paylater,bancontact,blik,eps,giropay,ideal,mercadopago,mybank,p24,sepa,sofort',
+        + '&disable-funding=bancontact,blik,eps,giropay,ideal,mercadopago,mybank,p24,sepa,sofort',
         {
           attrs: {
             'data-partner-attribution-id': 'test-bn-code',
