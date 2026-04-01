@@ -1,0 +1,17 @@
+{
+  "code": "basic-name-sanitize",
+  "name": "Basic_Plan-Name! Special",
+  "period": {
+    "interval": "months",
+    "length": 1
+  },
+  "price": {
+    "USD": {
+      "unit_amount": 9.99,
+      "symbol": "$",
+      "setup_fee": 0
+    }
+  },
+  "addons": [],
+  "tax_exempt": false
+}
