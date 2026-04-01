@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.41.2](https://github.com/recurly/recurly-js/tree/v4.41.2) (2026-04-01)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.41.1...v4.41.2)
+
+
+**Merged Pull Requests**
+
+- Remove paylater from DISABLE_FUNDING array for PayPal Complete integration [#976](https://github.com/recurly/recurly-js/pull/976) ([gilv93](https://github.com/gilv93))
+- Add usagePattern and billingPlan support to PayPal Complete [#973](https://github.com/recurly/recurly-js/pull/973) ([chrissrogers](https://github.com/chrissrogers))
+
+
+
 ## [v4.41.1](https://github.com/recurly/recurly-js/tree/v4.41.1) (2026-01-12)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.41.0...v4.41.1)
