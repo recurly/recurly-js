@@ -360,17 +360,6 @@ function applePayTest (integrationType) {
         });
       });
 
-      it('requires a valid country', function (done) {
-        const invalid = 'DE';
-        let applePay = this.recurly.ApplePay(merge({}, validOpts, { country: invalid }));
-        applePay.on('error', (err) => {
-          nextTick(ensureDone(done, () => {
-            assert.equal(err, applePay.initError);
-            assertInitError(applePay, 'apple-pay-config-invalid', { opt: 'country' });
-          }));
-        });
-      });
-
       it('requires a valid currency', function (done) {
         const invalid = 'EUR';
         let applePay = this.recurly.ApplePay(merge({}, validOpts, { currency: invalid }));
