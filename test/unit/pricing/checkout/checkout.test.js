@@ -1242,6 +1242,28 @@ describe('CheckoutPricing', function () {
           });
         });
       });
+
+      describe('with a plan that has a free trial', () => {
+        beforeEach(function (done) {
+          subscriptionPricingFactory('free-trial', this.recurly, sub => {
+            this.pricing
+              .subscription(sub)
+              .coupon('coop-pct-50')
+              .done((price) => {
+                this.price = price;
+                done();
+              });
+          });
+        });
+        it('applies discounts to the next cycle (after trial)', function () {
+          assert.equal(this.price.now.subscriptions, 2.0); // free-trial has setup cost
+          assert.equal(this.price.now.adjustments, 0);
+          assert.equal(this.price.now.discount, 0);
+          assert.equal(this.price.next.subscriptions, 49.00);
+          assert.equal(this.price.next.adjustments, 0);
+          assert.equal(this.price.next.discount, 24.50);// 50% of subscription price
+        });
+      });
     });
   });
 
