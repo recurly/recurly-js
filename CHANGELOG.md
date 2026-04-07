@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.42.1](https://github.com/recurly/recurly-js/tree/v4.42.1) (2026-04-07)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.42.0...v4.42.1)
+
+
+**Merged Pull Requests**
+
+- Fixes formatting for lint [#980](https://github.com/recurly/recurly-js/pull/980) ([chrissrogers](https://github.com/chrissrogers))
+
+
+
 ## [v4.42.0](https://github.com/recurly/recurly-js/tree/v4.42.0) (2026-04-07)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.41.2...v4.42.0)
