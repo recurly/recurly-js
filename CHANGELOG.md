@@ -1,5 +1,18 @@
 # Changelog
 
+## [v4.42.0](https://github.com/recurly/recurly-js/tree/v4.42.0) (2026-04-07)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.41.2...v4.42.0)
+
+
+**Merged Pull Requests**
+
+- chore(apple pay): remove country code validation [#979](https://github.com/recurly/recurly-js/pull/979) ([cbarton](https://github.com/cbarton))
+- Calculate coupon discount on plans with free trials [#974](https://github.com/recurly/recurly-js/pull/974) ([jswhetstone](https://github.com/jswhetstone))
+- fix: add removeItem property to objectStore fallback in web-storage [#970](https://github.com/recurly/recurly-js/pull/970) ([arijitchhatui](https://github.com/arijitchhatui))
+
+
+
 ## [v4.41.2](https://github.com/recurly/recurly-js/tree/v4.41.2) (2026-04-01)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.41.1...v4.41.2)
