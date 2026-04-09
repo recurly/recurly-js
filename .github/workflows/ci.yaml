@@ -212,3 +212,4 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- \`${{github.sha}}\`" >> $GITHUB_STEP_SUMMARY
           $(${{github.event_name == 'pull_request'}} = true) && echo "- \`pull-request--${{github.event.number}}\`" >> $GITHUB_STEP_SUMMARY
+          exit 0
