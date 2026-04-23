@@ -22,10 +22,10 @@ const staticConfig = {
   browsers: [BROWSER],
   singleRun: true,
   concurrency: Infinity,
-  browserDisconnectTimeout: 800000,
+  browserDisconnectTimeout: 60000,
   browserDisconnectTolerance : 4,
-  browserNoActivityTimeout: 800000,
-  captureTimeout: 800000,
+  browserNoActivityTimeout: 60000,
+  captureTimeout: 60000,
   customLaunchers: {
     ChromeHeadlessNoSandbox: {
       base: 'ChromeHeadless',
