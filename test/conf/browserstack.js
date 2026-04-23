@@ -28,39 +28,32 @@ module.exports = {
         enablePopups: true
       }
     },
+    'iOS-26-Remote': {
+      browserName: 'safari',
+      deviceName: 'iPhone 17 Pro',
+      os: 'ios',
+      osVersion: '26',
+      realMobile: true
+    },
     'iOS-18-Remote': {
       browserName: 'safari',
-      deviceName: 'iPhone 14',
+      deviceName: 'iPhone 16 Pro',
       os: 'ios',
       osVersion: '18',
       realMobile: true
     },
-    'iOS-17-Remote': {
-      browserName: 'safari',
-      deviceName: 'iPhone 15',
-      os: 'ios',
-      osVersion: '17',
+    'Android-16-Remote': {
+      browserName: 'chrome',
+      deviceName: 'Google Pixel 10 Pro',
+      os: 'android',
+      osVersion: '16.0',
       realMobile: true
     },
-    'Android-14-Remote': {
+    'Android-15-Remote': {
       browserName: 'chrome',
-      deviceName: 'Google Pixel 8',
+      deviceName: 'Google Pixel 9 Pro',
       os: 'android',
-      osVersion: '14.0',
-      realMobile: true
-    },
-    'Android-13-Remote': {
-      browserName: 'chrome',
-      deviceName: 'Google Pixel 7',
-      os: 'android',
-      osVersion: '13.0',
-      realMobile: true
-    },
-    'Android-12-Remote': {
-      browserName: 'chrome',
-      deviceName: 'Google Pixel 6',
-      os: 'android',
-      osVersion: '12.0',
+      osVersion: '15.0',
       realMobile: true
     }
   }

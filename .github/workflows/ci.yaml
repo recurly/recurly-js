@@ -95,11 +95,10 @@ jobs:
         browser:
           - Safari-Remote
           - Edge-Remote
+          - iOS-26-Remote
           - iOS-18-Remote
-          - iOS-17-Remote
-          - Android-14-Remote
-          - Android-13-Remote
-          - Android-12-Remote
+          - Android-16-Remote
+          - Android-15-Remote
     steps:
       - uses: ahmadnassri/action-workflow-queue@v1
       - uses: actions/checkout@v3
