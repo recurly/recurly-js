@@ -156,7 +156,7 @@ describe('BraintreeStrategy', function () {
       });
     });
 
-    it('sends the correct data', function (done) {
+    it('sends the correct data without a token', function (done) {
       const { recurly, number, month, year, cvv, addressFields } = this;
 
       BraintreeStrategy.preflight({ recurly, number, month, year, cvv, addressFields }).then(() => {
@@ -171,6 +171,24 @@ describe('BraintreeStrategy', function () {
             year,
             cvv,
             ...addressFields
+          }
+        });
+        done();
+      });
+    });
+
+    it('sends the correct data with only a token', function (done) {
+      const { recurly } = this;
+      const token = { id: 'test-token-id' };
+
+      BraintreeStrategy.preflight({ recurly, token }).then(() => {
+        sinon.assert.calledWithExactly(recurly.request.post, {
+          route: '/risk/authentications',
+          data: {
+            gateway_type: BraintreeStrategy.strategyName,
+            gateway_code: 'test-gateway-code',
+            token_id: 'test-token-id',
+            currency: 'USD',
           }
         });
         done();

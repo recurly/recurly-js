@@ -111,6 +111,16 @@ describe('CybersourceStrategy', function () {
             done();
           });
         });
+
+        it('does not construct a frame when a token is provided', function (done) {
+          const { recurly, Strategy, gateway_code } = this;
+          const token = { id: 'test-token-id' };
+
+          Strategy.preflight({ recurly, gateway_code, token }).then(() => {
+            sinon.assert.callCount(recurly.Frame, 0);
+            done();
+          });
+        });
       });
 
       describe('device data collection enabled when set to true', function () {
@@ -119,12 +129,23 @@ describe('CybersourceStrategy', function () {
             enabled: true
           };
         });
-  
+
         it('does construct a frame to collect a session id', function (done) {
           const { recurly, Strategy, number, month, year, gateway_code } = this;
-  
+
           Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
             sinon.assert.callCount(recurly.Frame, 1);
+            done();
+          });
+        });
+
+        it('does construct a frame when a token is provided', function (done) {
+          const { recurly, Strategy, gateway_code, poll } = this;
+          const token = { id: 'test-token-id' };
+
+          Strategy.preflight({ recurly, gateway_code, token }).then(() => {
+            sinon.assert.callCount(recurly.Frame, 1);
+            clearInterval(poll);
             done();
           });
         });
@@ -137,10 +158,10 @@ describe('CybersourceStrategy', function () {
             billingInfoId: 'test-billing-info-id',
           };
         });
-  
+
         it('does construct a frame to collect a session id', function (done) {
           const { recurly, Strategy, number, month, year, gateway_code } = this;
-  
+
           Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
             sinon.assert.callCount(recurly.Frame, 1);
             done();
