@@ -13,8 +13,12 @@ if (shouldInstrument()) {
   });
 }
 
+const testFiles = process.env.TEST_FILES
+  ? process.env.TEST_FILES.split(',').map(f => `./${f.trim()}`)
+  : glob.sync('./test/unit/**/*.test.js');
+
 module.exports = {
-  entry: glob.sync('./test/unit/**/*.test.js'),
+  entry: testFiles,
   mode: 'development',
   output: {
     path: path.join(__dirname, 'build'),

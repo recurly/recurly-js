@@ -41,6 +41,7 @@ describe('CybersourceStrategy', function () {
       this.year = '2023';
       this.gateway_code = 'test-gateway-code';
       this.jwt = 'test-preflight-jwt';
+      this.token = { id: 'test-token-id' };
       this.poll = setInterval(() => {
         // Stubs expected message format from Cybersource DDC
         recurly.bus.emit('raw-message', {
@@ -53,9 +54,9 @@ describe('CybersourceStrategy', function () {
     });
 
     it('returns a promise', function (done) {
-      const { recurly, Strategy, number, month, year, gateway_code, poll } = this;
+      const { recurly, Strategy, number, month, year, gateway_code, token, poll } = this;
 
-      const retValue = Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
+      const retValue = Strategy.preflight({ recurly, number, month, year, gateway_code, token }).then(() => {
         clearInterval(poll);
         done();
       });
@@ -64,9 +65,9 @@ describe('CybersourceStrategy', function () {
     });
 
     it('constructs a frame to collect a session id', function (done) {
-      const { recurly, Strategy, number, month, year, gateway_code, jwt, poll } = this;
+      const { recurly, Strategy, number, month, year, gateway_code, token, jwt, poll } = this;
 
-      Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
+      Strategy.preflight({ recurly, number, month, year, gateway_code, token }).then(() => {
         sinon.assert.callCount(recurly.Frame, 1);
         assert(recurly.Frame.calledWithMatch({
           path: '/risk/data_collector',
@@ -85,9 +86,9 @@ describe('CybersourceStrategy', function () {
     });
 
     it('resolves when a session id is received', function (done) {
-      const { recurly, Strategy, sessionId, number, month, year, gateway_code, poll } = this;
+      const { recurly, Strategy, sessionId, number, month, year, gateway_code, token, poll } = this;
 
-      Strategy.preflight({ recurly, number, month, year, gateway_code }).then(preflightResponse => {
+      Strategy.preflight({ recurly, number, month, year, gateway_code, token }).then(preflightResponse => {
         assert.strictEqual(preflightResponse.results.session_id, sessionId);
 
         clearInterval(poll);
@@ -111,6 +112,16 @@ describe('CybersourceStrategy', function () {
             done();
           });
         });
+
+        it('does construct a frame when a token is provided', function (done) {
+          const { recurly, Strategy, number, month, year, gateway_code, token, poll } = this;
+
+          Strategy.preflight({ recurly, number, month, year, gateway_code, token }).then(() => {
+            sinon.assert.callCount(recurly.Frame, 1);
+            clearInterval(poll);
+            done();
+          });
+        });
       });
 
       describe('device data collection enabled when set to true', function () {
@@ -119,11 +130,11 @@ describe('CybersourceStrategy', function () {
             enabled: true
           };
         });
-  
+
         it('does construct a frame to collect a session id', function (done) {
-          const { recurly, Strategy, number, month, year, gateway_code } = this;
-  
-          Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
+          const { recurly, Strategy, number, month, year, gateway_code, token } = this;
+
+          Strategy.preflight({ recurly, number, month, year, gateway_code, token }).then(() => {
             sinon.assert.callCount(recurly.Frame, 1);
             done();
           });
@@ -137,11 +148,11 @@ describe('CybersourceStrategy', function () {
             billingInfoId: 'test-billing-info-id',
           };
         });
-  
+
         it('does construct a frame to collect a session id', function (done) {
-          const { recurly, Strategy, number, month, year, gateway_code } = this;
-  
-          Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
+          const { recurly, Strategy, number, month, year, gateway_code, token } = this;
+
+          Strategy.preflight({ recurly, number, month, year, gateway_code, token }).then(() => {
             sinon.assert.callCount(recurly.Frame, 1);
             done();
           });

@@ -34,6 +34,8 @@ test: test-unit test-e2e
 test-ci: test-unit-ci test-e2e-ci
 test-unit: build build/test-unit.js
 	@$(karma) karma.conf.js
+test-unit-file: build
+	TEST_FILES=$(FILES) $(webpack) --config webpack.test.config.js && $(karma) karma.conf.js
 test-unit-debug: build build/test-unit.js
 	BROWSER=ChromeDebug $(karma) karma.conf.js
 test-unit-ci: build build/test-unit.js
