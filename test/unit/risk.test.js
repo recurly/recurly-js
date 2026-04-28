@@ -90,6 +90,16 @@ describe('Risk', function () {
         });
     });
 
+    it('forwards the token to ThreeDSecure.preflight when provided', function (done) {
+      const { recurly } = this;
+      const token = { id: 'test-token-id' };
+      Risk.preflight({ recurly, token })
+        .done(() => {
+          assert(ThreeDSecure.preflight.calledWithMatch(sinon.match({ token })));
+          done();
+        });
+    });
+
     describe('when some results are timeouts', function () {
       beforeEach(function () {
         this.stubPreflightResults = { risk: [

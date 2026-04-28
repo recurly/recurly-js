@@ -158,13 +158,15 @@ describe('BraintreeStrategy', function () {
 
     it('sends the correct data', function (done) {
       const { recurly, number, month, year, cvv, addressFields } = this;
+      const token = { id: 'test-token-id' };
 
-      BraintreeStrategy.preflight({ recurly, number, month, year, cvv, addressFields }).then(() => {
+      BraintreeStrategy.preflight({ recurly, number, month, year, cvv, addressFields, token }).then(() => {
         sinon.assert.calledWithExactly(recurly.request.post, {
           route: '/risk/authentications',
           data: {
-            gateway_type: BraintreeStrategy.strategyName,
+            gateway_type: 'braintree_blue',
             gateway_code: 'test-gateway-code',
+            token_id: 'test-token-id',
             currency: 'USD',
             number,
             month,

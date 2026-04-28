@@ -3,6 +3,7 @@ import recurlyError from '../../../lib/recurly/errors';
 import BraintreeLoader from '../../../lib/util/braintree-loader';
 import { initRecurly, nextTick, assertDone, stubGooglePaymentAPI } from '../support/helpers';
 import dom from '../../../lib/util/dom';
+import { Risk } from '../../../lib/recurly/risk';
 
 const INTEGRATION = {
   DIRECT: 'Direct Integration',
@@ -819,6 +820,7 @@ function googlePayTest (integrationType) {
                         },
                       },
                       gateway_code: 'gateway_123',
+                      browser: Risk.browserInfo,
                     }
                   };
 
@@ -868,6 +870,22 @@ function googlePayTest (integrationType) {
               });
             });
 
+            context('when fraud params are configured', function () {
+              beforeEach(function () {
+                this.recurly.fraud = { params: sinon.stub().returns([{ processor: 'kount', session_id: 'SESSION_123' }]), destroy: sinon.stub() };
+              });
+
+              it('includes fraud params and browser info in the token POST request', function (done) {
+                this.clickGooglePayButton(result => {
+                  result.on('token', () => assertDone(done, () => {
+                    const postData = this.recurly.request.post.getCall(0).args[0].data;
+                    assert.deepEqual(postData.fraud, [{ processor: 'kount', session_id: 'SESSION_123' }]);
+                    assert.deepEqual(postData.browser, Risk.browserInfo);
+                  }));
+                });
+              });
+            });
+
             context('when Recurly fails creating the token', function () {
               beforeEach(function () {
                 this.stubRequestOpts.token = Promise.reject(recurlyError('api-error'));
@@ -901,6 +919,87 @@ function googlePayTest (integrationType) {
                       id: 'TOKEN_123',
                     });
                   }));
+                });
+              });
+            });
+
+            context('when the token type is not credit_card', function () {
+              beforeEach(function () {
+                this.stubRequestOpts.token = Promise.resolve({ id: 'TOKEN_123', type: 'paypal' });
+                this.sandbox.stub(Risk, 'preflight');
+              });
+
+              it('does not call Risk.preflight', function (done) {
+                this.clickGooglePayButton(result => {
+                  result.on('token', () => assertDone(done, () => {
+                    assert.equal(Risk.preflight.called, false);
+                  }));
+                });
+              });
+            });
+
+            context('when the token type is credit_card', function () {
+              beforeEach(function () {
+                this.creditCardToken = { id: 'TOKEN_123', type: 'credit_card' };
+                this.stubRequestOpts.token = Promise.resolve(this.creditCardToken);
+              });
+
+              context('when Risk.preflight returns no risk data', function () {
+                beforeEach(function () {
+                  this.sandbox.stub(Risk, 'preflight').resolves({ risk: [] });
+                });
+
+                it('emits the original token without calling PUT', function (done) {
+                  const putStub = this.sandbox.stub(this.recurly.request, 'put');
+                  this.clickGooglePayButton(result => {
+                    result.on('token', token => assertDone(done, () => {
+                      assert.deepEqual(token, this.creditCardToken);
+                      assert.equal(putStub.called, false);
+                    }));
+                  });
+                });
+              });
+
+              context('when Risk.preflight returns risk data', function () {
+                beforeEach(function () {
+                  this.riskData = { processor: 'cybersource', session_id: 'abc123' };
+                  this.sandbox.stub(Risk, 'preflight').resolves({ risk: [this.riskData] });
+                });
+
+                it('calls PUT /tokens/:id with the risk data', function (done) {
+                  const putStub = this.sandbox.stub(this.recurly.request, 'put').resolves(this.creditCardToken);
+                  this.clickGooglePayButton(result => {
+                    result.on('token', () => assertDone(done, () => {
+                      sinon.assert.calledWithExactly(putStub, {
+                        route: `/tokens/${this.creditCardToken.id}`,
+                        data: { risk: [this.riskData] },
+                      });
+                    }));
+                  });
+                });
+
+                it('emits the token returned by PUT', function (done) {
+                  const updatedToken = { id: 'TOKEN_123', type: 'credit_card', three_d_secure: 'data' };
+                  this.sandbox.stub(this.recurly.request, 'put').resolves(updatedToken);
+                  this.clickGooglePayButton(result => {
+                    result.on('token', token => assertDone(done, () => {
+                      assert.deepEqual(token, updatedToken);
+                    }));
+                  });
+                });
+              });
+
+              context('when Risk.preflight throws', function () {
+                beforeEach(function () {
+                  this.sandbox.stub(Risk, 'preflight').rejects(new Error('preflight error'));
+                });
+
+                it('emits the original token anyway', function (done) {
+                  this.clickGooglePayButton(result => {
+                    result.on('token', token => assertDone(done, () => {
+                      assert.deepEqual(token, this.creditCardToken);
+                    }));
+                  });
                 });
               });
             });
