@@ -1,3 +1,4 @@
+const browserstack = require('browserstack-local');
 const branchName = require('current-git-branch');
 const staticConfig = require('./karma.conf').staticConfig;
 const {
@@ -8,15 +9,18 @@ const {
 const {
   BROWSER = 'Chrome',
   REPORT_COVERAGE = false,
-  GITHUB_RUN_ID
+  GITHUB_RUN_ID,
+  BROWSER_STACK_USERNAME,
+  BROWSER_STACK_ACCESS_KEY
 } = process.env;
-
+const LOCAL_IDENTIFIER = `${Math.round(Math.random() * 100)}-${Date.now()}`;
+const browserStackLocal = new browserstack.Local();
 const BROWSER_STACK_CAPABILITY = browserStackCapabilities[BROWSER];
 
 function runner (config) {
   const cfg = Object.assign({}, staticConfig, {
     reporters: ['mocha'],
-    logLevel: config.LOG_INFO,
+    logLevel: config.LOG_DEBUG,
     browsers: [BROWSER],
     customLaunchers: customLaunchers(),
     hostname: hostname()
@@ -27,23 +31,8 @@ function runner (config) {
   }
 
   if (BROWSER_STACK_CAPABILITY) {
-    let localIdentifier = `${Math.round(Math.random() * 100)}-${Date.now()}`;
-
-    cfg.browserStack = {
-      project,
-      build: `${GITHUB_RUN_ID || `local unit [${branchName()}]`}`,
-      autoAcceptAlerts: true,
-      forceLocal: true,
-      'browserstack.local': true,
-      'browserstack.debug': true,
-      'browserstack.console': 'verbose',
-      'browserstack.networkLogs': true,
-      captureTimeout: 1200,
-      pollingTimeout: 4000,
-      timeout: 1200,
-      localIdentifier,
-    };
-    cfg.reporters.push('BrowserStack');
+    cfg.captureTimeout = 120000;
+    cfg.browserNoActivityTimeout = 120000;
   }
 
   console.log(cfg);
@@ -52,6 +41,14 @@ function runner (config) {
 }
 
 require('@recurly/public-api-test-server');
+
+browserStackLocal.start({ key: BROWSER_STACK_ACCESS_KEY, localIdentifier: LOCAL_IDENTIFIER }, () => {
+  if (browserStackLocal.isRunning()) {
+    console.log(`BrowserStack Local initialized`);
+  } else {
+    console.warn(`BrowserStack Local not initialized`);
+  }
+});
 
 module.exports = runner;
 
@@ -64,49 +61,45 @@ function customLaunchers () {
   };
 
   if (BROWSER_STACK_CAPABILITY) {
-    launchers[BROWSER] = toLegacyLauncher(BROWSER_STACK_CAPABILITY);
+    launchers[BROWSER] = toLauncherConfig(BROWSER_STACK_CAPABILITY);
   }
 
   return launchers;
 }
 
-/**
- * karma-browserstack-launcher only supports the legacy
- * JSONWP WebDriver protocol
- *
- * @param {Object} capability
- * @return {Object}
- */
-function toLegacyLauncher (capability) {
-  const capabilities = Object.assign({}, capability);
-  const translations = {
-    browserName: 'browser',
-    browserVersion: 'browser_version',
-    deviceName: 'device',
-    osVersion: 'os_version',
-    realMobile: 'real_mobile'
-  };
-  for (const [newCap, oldCap] of Object.entries(translations)) {
-    if (capabilities[newCap]) {
-      delete Object.assign(capabilities, { [oldCap]: capabilities[newCap] })[newCap];
+function toLauncherConfig (capability) {
+  const { browserName, browserVersion, os, osVersion, deviceName, realMobile, safari, edge } = capability;
+
+  return {
+    base: 'WebDriver',
+    config: {
+      hostname: 'hub.browserstack.com',
+      port: 80,
+      path: '/wd/hub',
+      user: BROWSER_STACK_USERNAME,
+      pwd: BROWSER_STACK_ACCESS_KEY
+    },
+    browserName,
+    ...(browserVersion && { browserVersion }),
+    'bstack:options': {
+      userName: BROWSER_STACK_USERNAME,
+      accessKey: BROWSER_STACK_ACCESS_KEY,
+      projectName: project,
+      buildName: `${GITHUB_RUN_ID || `local unit [${branchName()}]`}`,
+      autoAcceptAlerts: true,
+      local: true,
+      localIdentifier: LOCAL_IDENTIFIER,
+      debug: true,
+      consoleLogs: 'verbose',
+      networkLogs: true,
+      ...(os && { os }),
+      ...(osVersion && { osVersion }),
+      ...(deviceName && { deviceName }),
+      ...(realMobile !== undefined && { realMobile }),
+      ...(safari && { safari }),
+      ...(edge && { edge })
     }
-  }
-  capabilities.base = 'BrowserStack';
-
-  // Csutom transformations
-  if (capabilities.ie) {
-    capabilities.os_version = '10';
-    capabilities['browserstack.ie.enablePopups'] = capabilities.ie.enablePopups;
-    delete capabilities.ie;
-  } else if (capabilities.edge) {
-    capabilities['browserstack.edge.enablePopups'] = capabilities.edge.enablePopups;
-    delete capabilities.edge;
-  } else if (capabilities.safari) {
-    capabilities['browserstack.safari.enablePopups'] = capabilities.safari.enablePopups;
-    delete capabilities.safari;
-  }
-
-  return capabilities;
+  };
 }
 
 function hostname () {
