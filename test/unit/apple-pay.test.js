@@ -7,6 +7,7 @@ import Emitter from 'component-emitter';
 import Promise from 'promise';
 import { initRecurly, nextTick } from './support/helpers';
 import BraintreeLoader from '../../lib/util/braintree-loader';
+import { Risk } from '../../lib/recurly/risk';
 import filterSupportedNetworks from '../../lib/recurly/apple-pay/util/filter-supported-networks';
 
 const infoFixture = require('@recurly/public-api-test-server/fixtures/apple_pay/info');
@@ -1270,6 +1271,7 @@ function applePayTest (integrationType) {
               assert.deepEqual(args.data, {
                 paymentData: 'valid-payment-data',
                 paymentMethod: 'valid-payment-method',
+                browser: Risk.browserInfo,
                 ...billingAddress,
               });
             }));
@@ -1284,6 +1286,7 @@ function applePayTest (integrationType) {
               const expectedData = {
                 paymentData: 'valid-payment-data',
                 paymentMethod: 'valid-payment-method',
+                browser: Risk.browserInfo,
                 ...billingAddress,
               };
 
@@ -1295,7 +1298,7 @@ function applePayTest (integrationType) {
             }));
           });
 
-          it('passes the non address parameters to create the token', function (done) {
+          it('passes the non address parameters and browser info to create the token', function (done) {
             this.spyTokenRequest = this.sandbox.spy(this.recurly.request, 'post');
             this.applePay.config.form = clone(inputNotAddressFields);
             this.applePay.begin(); // the form has changed!
@@ -1307,6 +1310,7 @@ function applePayTest (integrationType) {
                 paymentData: 'valid-payment-data',
                 paymentMethod: 'valid-payment-method',
                 ...inputNotAddressFields,
+                browser: Risk.browserInfo,
                 ...billingAddress,
               });
             }));
@@ -1328,6 +1332,7 @@ function applePayTest (integrationType) {
                   applePayPayment: {
                     paymentData: 'valid-payment-data',
                     paymentMethod: 'valid-payment-method',
+                    browser: Risk.browserInfo,
                     ...billingAddress,
                   },
                 }
