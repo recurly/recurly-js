@@ -10,7 +10,7 @@ import BraintreeLoader from '../../lib/util/braintree-loader';
 import { Risk } from '../../lib/recurly/risk';
 import filterSupportedNetworks from '../../lib/recurly/apple-pay/util/filter-supported-networks';
 
-const infoFixture = require('@recurly/public-api-test-server/fixtures/apple_pay/info');
+import infoFixture from '@recurly/public-api-test-server/fixtures/apple_pay/info';
 
 const INTEGRATION = {
   DIRECT: 'Direct Integration',
