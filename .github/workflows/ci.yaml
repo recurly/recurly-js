@@ -75,6 +75,13 @@ jobs:
           DISPLAY: :99
         with:
           run: make test-e2e-ci
+      - name: Upload visual regression artifacts
+        if: ${{failure() && matrix.test-type == 'End-to-end'}}
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-${{matrix.browser}}-${{github.run_id}}
+          path: tmp/
+          if-no-files-found: ignore
   test_remote:
     name: ${{matrix.test-type}} test (${{matrix.browser}})
     runs-on: ubuntu-latest
@@ -118,6 +125,13 @@ jobs:
           timeout_minutes: 16
           max_attempts: 2
           command: make test-e2e-ci
+      - name: Upload visual regression artifacts
+        if: ${{failure() && matrix.test-type == 'End-to-end'}}
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-${{matrix.browser}}-${{github.run_id}}
+          path: tmp/
+          if-no-files-found: ignore
   integration_test:
     name: Integration test with react-recurly
     runs-on: ubuntu-latest
