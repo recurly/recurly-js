@@ -2,44 +2,39 @@ bin = node_modules/.bin
 coveralls = $(bin)/coveralls
 wdio = $(bin)/wdio
 eslint = $(bin)/eslint
-karma = $(bin)/karma start
-server = $(bin)/webpack serve --hot --port 8020
-webpack = $(bin)/webpack
+wtr = $(bin)/wtr
 tsc = $(bin)/tsc
 dtslint = $(bin)/dtslint
-src = index.js $(shell find . -type f -name '*.js' ! -path './build/*' -o -name '*.css' ! -path './build/*')
+build_lib  = node scripts/esbuild/build.js
+build_test = node scripts/esbuild/build-test.js
+serve      = node scripts/esbuild/serve.js
+src = index.js $(shell find . -type f -name '*.js' ! -path './build/*' ! -path './node_modules/*' -o -name '*.css' ! -path './build/*' ! -path './node_modules/*')
 tests = $(shell find test -type f -name '*.js')
 
-ifdef RECURLY_JS_CERT
-	server_opts = --server-type https --server-options-cert $(RECURLY_JS_CERT) --server-options-key $(RECURLY_JS_KEY)
-else
-	server_opts = --server-type http
-endif
-
 server: build
-	@$(server) $(server_opts)
+	@$(serve)
 server-http: build
-	@$(server)
+	@RECURLY_JS_CERT= RECURLY_JS_KEY= $(serve)
 
 build: build/recurly.min.js
 build/recurly.js: index.js $(src) node_modules
 	@mkdir -p $(@D)
-	@$(webpack)
+	@$(build_lib)
 build/recurly.min.js: build/recurly.js
-	@$(webpack) --mode production
+	@$(build_lib) --minify
 build/test-unit.js: $(src) $(tests)
-	@$(webpack) --config webpack.test.config.js
+	@$(build_test)
 
 test: test-unit test-e2e
 test-ci: test-unit-ci test-e2e-ci
-test-unit: build build/test-unit.js
-	@$(karma) karma.conf.js
-test-unit-file: build
-	TEST_FILES=$(FILES) $(webpack) --config webpack.test.config.js && $(karma) karma.conf.js
-test-unit-debug: build build/test-unit.js
-	BROWSER=ChromeDebug $(karma) karma.conf.js
-test-unit-ci: build build/test-unit.js
-	@$(karma) karma.ci.conf.js
+test-unit:
+	@$(wtr) --config web-test-runner.config.mjs
+test-unit-file:
+	@$(wtr) --config web-test-runner.config.mjs --files $(TEST_FILES)
+test-unit-debug:
+	@$(wtr) --config web-test-runner.config.mjs --watch
+test-unit-ci:
+	@$(wtr) --config web-test-runner.ci.config.mjs
 test-unit-cov-ci: export REPORT_COVERAGE = true
 test-unit-cov-ci: test-unit-ci
 	@cat ./build/reports/coverage/lcov.info | $(coveralls)
@@ -74,5 +69,5 @@ clean:
 	@rm -rf node_modules build tmp
 
 .PHONY: server server-http
-.PHONY: test-ci test-unit test-unit-ci test-unit-cov-ci test-e2e test-e2e-ci test-types
+.PHONY: test-ci test-unit test-unit-file test-unit-ci test-unit-cov-ci test-e2e test-e2e-ci test-types
 .PHONY: lint lint-lib lint-test lint-test-unit lint-test-e2e lint-fix clean

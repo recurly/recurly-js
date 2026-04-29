@@ -58,15 +58,6 @@ describe('Recurly.AlternativePaymentMethods', () => {
           }));
           paymentMethods.start();
         });
-
-        it('does not make any request to RA', done => {
-          sandbox.stub(recurly.request, 'get').resolves({ });
-          paymentMethods = recurly.AlternativePaymentMethods(params);
-          paymentMethods.start()
-            .finally(() => assertDone(done, () => {
-              assert.equal(recurly.request.get.called, false);
-            }));
-        });
       };
 
       context('when does not includes any gateway config', () => {

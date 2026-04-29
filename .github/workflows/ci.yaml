@@ -63,14 +63,14 @@ jobs:
       - uses: browser-actions/setup-chrome@v2
       - uses: browser-actions/setup-firefox@v1
       - uses: actions/checkout@v6
+      - name: Install Playwright browsers
+        if: ${{matrix.test-type == 'Unit'}}
+        run: npx playwright install --with-deps chromium firefox
       - name: Unit test
         if: ${{matrix.test-type == 'Unit'}}
-        uses: coactions/setup-xvfb@v1.0.1
         env:
           BROWSER: ${{matrix.browser}}
-          DISPLAY: :99
-        with:
-          run: make test-unit-ci
+        run: make test-unit-ci
       - name: End-to-end test
         if: ${{matrix.test-type == 'End-to-end'}}
         uses: coactions/setup-xvfb@v1.0.1
@@ -185,16 +185,14 @@ jobs:
       - test_remote
     steps:
       - uses: actions/checkout@v6
-      - uses: browser-actions/setup-chrome@v2
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
       - name: Build
         run: make build
       - name: Report coverage
-        uses: coactions/setup-xvfb@v1.0.1
         env:
           COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
-          DISPLAY: :99
-        with:
-          run: make test-unit-cov-ci
+        run: make test-unit-cov-ci
       - uses: google-github-actions/auth@v3
         with:
           credentials_json: ${{secrets.GCR_QA_PUBLIC_DEVOPS_SA}}

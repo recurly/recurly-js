@@ -1,7 +1,6 @@
 import assert from 'assert';
 import after from 'lodash.after';
 import isEqual from 'lodash.isequal';
-import sinon from 'sinon';
 import { initRecurly } from '../../support/helpers';
 
 describe('CheckoutPricing', function () {
