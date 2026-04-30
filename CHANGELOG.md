@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.43.0](https://github.com/recurly/recurly-js/tree/v4.43.0) (2026-04-30)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.42.1...v4.43.0)
+
+
+**Merged Pull Requests**
+
+- feat(wallet-pay): include browser info and fraud params in token requests [#982](https://github.com/recurly/recurly-js/pull/982) ([cbarton](https://github.com/cbarton))
+
+
+
 ## [v4.42.1](https://github.com/recurly/recurly-js/tree/v4.42.1) (2026-04-07)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.42.0...v4.42.1)
