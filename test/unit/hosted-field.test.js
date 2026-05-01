@@ -12,9 +12,8 @@ describe('Recurly.HostedField', function () {
 
   this.ctx.fixture = 'minimal';
 
-  beforeEach(function (done) {
+  beforeEach(function () {
     this.recurly = initRecurly();
-    this.recurly.ready(done);
   });
 
   afterEach(function () {

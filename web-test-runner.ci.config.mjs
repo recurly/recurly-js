@@ -3,7 +3,10 @@ import { browserstackLauncher } from '@web/test-runner-browserstack';
 import { fromRollup } from '@web/dev-server-rollup';
 import rollupNodeResolve from '@rollup/plugin-node-resolve';
 import rollupCommonjs from '@rollup/plugin-commonjs';
+import { build as esbuildBuild } from 'esbuild';
 import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
+import path from 'path';
 import http from 'http';
 
 const require = createRequire(import.meta.url);
@@ -18,6 +21,9 @@ const {
   BROWSER_STACK_USERNAME,
   BROWSER_STACK_ACCESS_KEY,
 } = process.env;
+
+const __projectRoot = path.dirname(fileURLToPath(import.meta.url));
+const PROCESS_SHIM = path.join(__projectRoot, 'scripts/esbuild/process-shim.js');
 
 const IS_REPORT_COVERAGE = REPORT_COVERAGE === 'true';
 const BUILD_NAME = GITHUB_RUN_ID || `local unit [${branchName()}]`;
@@ -38,6 +44,49 @@ function jsonPlugin () {
       if (!context.path.endsWith('.json')) return;
       context.type = 'text/javascript';
       context.body = `export default ${context.body};`;
+    },
+  };
+}
+
+// Bundle CJS npm packages on demand with esbuild so the browser receives proper ESM.
+// fromRollup(commonjs) transforms files individually and can't handle packages whose
+// CJS pattern (e.g. debug's `module.exports = require('./common')(exports)`) produces
+// ambiguous named-vs-default exports.
+const ESM_BUNDLE_PREFIX = '/__esm/';
+const esbundleCache = new Map();
+
+function esbuildBundlePlugin () {
+  return {
+    name: 'esbuild-bundle',
+    resolveImport ({ source }) {
+      if (source.startsWith('.') || source.startsWith('/') || source.startsWith('http')) return;
+      if (source === 'sinon') return; // loaded as UMD script tag
+      return `${ESM_BUNDLE_PREFIX}${encodeURIComponent(source)}.js`;
+    },
+    async serve (context) {
+      if (!context.path.startsWith(ESM_BUNDLE_PREFIX)) return;
+      const encoded = context.path.slice(ESM_BUNDLE_PREFIX.length, -3);
+      const pkgName = decodeURIComponent(encoded);
+      if (esbundleCache.has(pkgName)) {
+        return { body: esbundleCache.get(pkgName), type: 'js' };
+      }
+      try {
+        const result = await esbuildBuild({
+          entryPoints: [pkgName],
+          bundle: true,
+          format: 'esm',
+          platform: 'browser',
+          write: false,
+          inject: [PROCESS_SHIM],
+          define: { 'process.env.NODE_ENV': '"test"' },
+          loader: { '.json': 'json' },
+        });
+        const body = result.outputFiles[0].text;
+        esbundleCache.set(pkgName, body);
+        return { body, type: 'js' };
+      } catch (err) {
+        console.error(`[esbuild-bundle] Failed to bundle "${pkgName}":`, err.message);
+      }
     },
   };
 }
@@ -103,6 +152,7 @@ export default {
   browsers: getBrowserLaunchers(),
   plugins: [
     jsonPlugin(),
+    esbuildBundlePlugin(),
     nodeResolve({ browser: true, preferBuiltins: false }),
     commonjs({ exclude: ['**/sinon/**'] }),
   ],

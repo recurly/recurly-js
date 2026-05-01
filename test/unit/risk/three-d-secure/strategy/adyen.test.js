@@ -59,9 +59,8 @@ describe('AdyenStrategy', function () {
   describe('when the adyen.js library encounters a load error', function () {
     beforeEach(function () {
       const { sandbox, threeDSecure } = this;
-      sandbox.stub(AdyenStrategy, 'libUrl').get(() => '/api/mock-404');
-      delete window.AdyenCheckout;
       this.strategy.remove();
+      sandbox.stub(AdyenStrategy.prototype, 'loadAdyenLibrary').rejects(new Error('load failed'));
       this.strategy = new AdyenStrategy({ threeDSecure, actionToken });
     });
 

@@ -254,6 +254,7 @@ function apiProxyMiddleware () {
         },
         proxyRes => {
           ctx.status = proxyRes.statusCode;
+          Object.entries(proxyRes.headers).forEach(([name, value]) => ctx.set(name, value));
           const chunks = [];
           proxyRes.on('data', chunk => chunks.push(chunk));
           proxyRes.on('end', () => { ctx.body = Buffer.concat(chunks); resolve(); });
@@ -261,7 +262,7 @@ function apiProxyMiddleware () {
         }
       );
       proxyReq.on('error', reject);
-      proxyReq.end();
+      ctx.req.pipe(proxyReq);
     });
   };
 }
@@ -287,6 +288,10 @@ export default {
       <head><meta charset="utf-8"></head>
       <body>
         <script src="/node_modules/sinon/pkg/sinon.js"></script>
+        <script type="module">
+          import { Recurly } from '/lib/recurly.js';
+          window.recurly = new Recurly();
+        </script>
         <script type="module" src="${testFramework}"></script>
       </body>
     </html>

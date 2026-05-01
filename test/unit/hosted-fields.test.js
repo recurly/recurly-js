@@ -8,13 +8,14 @@ describe('Recurly.HostedFields', function () {
 
   this.ctx.fixture = 'all';
 
-  beforeEach(function (done) {
+  beforeEach(function () {
     const recurly = this.recurly = initRecurly();
-
-    recurly.ready(() => {
-      this.hostedFields = recurly.hostedFields;
-      this.hostedField = recurly.hostedFields.fields[0];
-      done();
+    this.hostedFields = recurly.hostedFields;
+    this.hostedField = recurly.hostedFields.fields[0];
+    // Simulate hosted fields becoming ready so readyState advances and
+    // subsequent recurly.configure() calls don't destroy hostedFields.
+    recurly.hostedFields.fields.forEach(({ type }) => {
+      recurly.bus.send('hostedField:ready', { type });
     });
   });
 
@@ -37,11 +38,10 @@ describe('Recurly.HostedFields', function () {
   describe('tabbing', function () {
     stubAsMobileDevice();
 
-    beforeEach(function (done) {
+    beforeEach(function () {
       this.sandbox = sinon.createSandbox();
       this.sandbox.spy(this.hostedFields, 'onTab');
       this.sandbox.spy(this.hostedFields, 'tabbableItems');
-      this.recurly.ready(() => done());
     });
 
     afterEach(function () {

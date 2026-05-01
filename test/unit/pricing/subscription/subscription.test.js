@@ -463,7 +463,8 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'US'
         })
-        .giftcard('invalid');
+        .giftcard('invalid')
+        .catch(() => {});
     });
 
     it('emits an event when the gift card is set', function (done) {
@@ -482,14 +483,15 @@ describe('Recurly.Pricing.Subscription', function () {
 
     it('emits an event when the gift card is unset', function (done) {
       this.pricing
-        .on('unset.gift_card', function () {
+        .once('unset.gift_card', function () {
           done();
         })
         .plan('basic', { quantity: 1 })
         .address({
           country: 'US'
         })
-        .giftcard('australian-card');
+        .giftcard('australian-card')
+        .catch(() => {});
     });
 
     it('emits an error event when the giftcard currency doesnt match the config currency', function (done) {
@@ -502,7 +504,8 @@ describe('Recurly.Pricing.Subscription', function () {
         .address({
           country: 'AUD'
         })
-        .giftcard('australian-card');
+        .giftcard('australian-card')
+        .catch(() => {});
     });
 
     it('emits an unset event when a giftcard is cleared and removes giftcard from the pricing', function (done) {
@@ -755,7 +758,8 @@ describe('Recurly.Pricing.Subscription', function () {
           country: 'US',
           postal_code: 'NoTax'
         })
-        .coupon('coop-invalid');
+        .coupon('coop-invalid')
+        .catch(() => {});
     });
 
     it('emits an unset event when a coupon is cleared', function (done) {

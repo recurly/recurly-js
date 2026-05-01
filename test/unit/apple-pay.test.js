@@ -825,7 +825,7 @@ function applePayTest (integrationType) {
                 displayName: 'My Great Store',
               }
             }));
-            applePay.ready(ensureDone(done, () => {
+            applePay.ready(() => {
               applePay.session.on('completeMerchantValidation', ensureDone(done, () => {
                 assert.ok(applePay.braintree.applePay.performValidation.calledWith({
                   validationURL: 'valid-test-url',
@@ -833,7 +833,7 @@ function applePayTest (integrationType) {
                 }));
               }));
               applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
-            }));
+            });
           });
 
           it('calls the completeMerchantValidation with the merchant session', function (done) {
