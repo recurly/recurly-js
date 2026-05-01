@@ -142,6 +142,11 @@ describe('Recurly.fraud', function () {
             recurly.destroy();
             done();
           });
+
+          // Simulate hosted fields becoming ready so fraud can proceed
+          recurly.hostedFields.fields.forEach(({ type }) => {
+            recurly.bus.send('hostedField:ready', { type });
+          });
         });
 
         describe('when no form occupied by recurly.hostedFields exists', function () {

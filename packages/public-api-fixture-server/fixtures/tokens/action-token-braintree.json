@@ -3,7 +3,7 @@
   "id": "action-token-braintree",
   "gateway": {
     "code": "1234567890",
-    "type": "braintree",
+    "type": "braintree_blue",
     "credentials": {}
   },
   "transaction": {

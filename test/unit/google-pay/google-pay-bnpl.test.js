@@ -116,7 +116,7 @@ describe('Google Pay BNPL guard', function () {
       // Ensure we don’t emit a token
       emitter.on('token', () => done(new Error('expected to not emit a token event')));
       // Expect BNPL error and no tokenization call
-      emitter.on('error', (err) => assertDone(done, () => {
+      emitter.once('error', (err) => assertDone(done, () => {
         assert.ok(err);
         assert.equal(err.code, 'google-pay-bnpl-not-supported');
         assert.equal(this.recurly.request.post.called, false, 'should not call /google_pay/token');

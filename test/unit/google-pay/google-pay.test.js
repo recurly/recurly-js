@@ -169,7 +169,7 @@ function googlePayTest (integrationType) {
 
         it('load the libs', function (done) {
           const result = this.recurly.GooglePay(this.googlePayOpts);
-          result.on('error', (err) => assertDone(done, () => {
+          result.once('error', (err) => assertDone(done, () => {
             assert(BraintreeLoader.loadModules.calledWith('googlePayment', 'dataCollector'));
             assert.ok(err);
             assert.equal(err.code, 'google-pay-init-error');
@@ -191,6 +191,7 @@ function googlePayTest (integrationType) {
     context('when fails requesting to Recurly the merchant Google Pay info', function () {
       beforeEach(function () {
         this.stubRequestOpts.info = Promise.reject(recurlyError('api-error'));
+        this.stubRequestOpts.info.catch(() => {});
         this.stubRequestAndGoogleApi();
       });
 
@@ -754,6 +755,7 @@ function googlePayTest (integrationType) {
           context('when fails retrieving the user Payment Data', function () {
             beforeEach(function () {
               this.stubGoogleAPIOpts.loadPaymentData = Promise.reject('boom');
+              this.stubGoogleAPIOpts.loadPaymentData.catch(() => {});
             });
 
             it('emits the same error that the retrieving process throws', function (done) {
@@ -889,6 +891,7 @@ function googlePayTest (integrationType) {
             context('when Recurly fails creating the token', function () {
               beforeEach(function () {
                 this.stubRequestOpts.token = Promise.reject(recurlyError('api-error'));
+                this.stubRequestOpts.token.catch(() => {});
               });
 
               it('emits an api-error', function (done) {

@@ -27,13 +27,13 @@ build/test-unit.js: $(src) $(tests)
 
 test: test-unit test-e2e
 test-ci: test-unit-ci test-e2e-ci
-test-unit:
+test-unit: node_modules
 	@$(wtr) --config web-test-runner.config.mjs
-test-unit-file:
+test-unit-file: node_modules
 	@$(wtr) --config web-test-runner.config.mjs --files $(TEST_FILES)
-test-unit-debug:
+test-unit-debug: node_modules
 	@$(wtr) --config web-test-runner.config.mjs --watch
-test-unit-ci:
+test-unit-ci: node_modules
 	@$(wtr) --config web-test-runner.ci.config.mjs
 test-unit-cov-ci: export REPORT_COVERAGE = true
 test-unit-cov-ci: test-unit-ci

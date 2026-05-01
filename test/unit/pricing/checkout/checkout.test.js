@@ -1288,7 +1288,7 @@ describe('CheckoutPricing', function () {
           assert(err.code === 'not-found');
           done();
         });
-        this.pricing.giftCard('invalid');
+        this.pricing.giftCard('invalid').catch(() => {});
       });
     });
 
@@ -1436,7 +1436,7 @@ describe('CheckoutPricing', function () {
           assert(err.code === 'not-found');
           done();
         });
-        this.pricing.giftCard('invalid');
+        this.pricing.giftCard('invalid').catch(() => {});
       });
     });
 

@@ -205,7 +205,7 @@ describe('ThreeDSecure', function () {
   describe('when an actionTokenId is valid', function () {
     it('sets the strategy according to the gateway type of the action token', function (done) {
       const { risk } = this;
-      [
+      const cases = [
         { id: 'action-token-adyen', strategy: AdyenStrategy },
         { id: 'action-token-braintree', strategy: BraintreeStrategy },
         { id: 'action-token-ebanx', strategy: EbanxStrategy },
@@ -215,13 +215,17 @@ describe('ThreeDSecure', function () {
         { id: 'action-token-test', strategy: TestStrategy },
         { id: 'action-token-wirecard', strategy: WirecardStrategy },
         { id: 'action-token-worldpay', strategy: WorldpayStrategy },
-      ].forEach(({ id: actionTokenId, strategy }) => {
-        const threeDSecure = new ThreeDSecure({ risk, actionTokenId });
-        threeDSecure.whenReady(() => {
-          assert(threeDSecure.strategy instanceof strategy);
-          done();
-        });
-      });
+      ];
+      Promise.all(cases.map(({ id: actionTokenId, strategy }) =>
+        new Promise((resolve, reject) => {
+          const threeDSecure = new ThreeDSecure({ risk, actionTokenId });
+          threeDSecure.on('error', reject);
+          threeDSecure.whenReady(() => {
+            assert(threeDSecure.strategy instanceof strategy);
+            resolve();
+          });
+        })
+      )).then(() => done()).catch(done);
     });
 
     it('constructs the strategy with the action token', function (done) {
