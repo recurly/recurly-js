@@ -33,7 +33,7 @@ test-unit-file: node_modules
 	@$(wtr) --config web-test-runner.config.mjs --files $(TEST_FILES)
 test-unit-debug: node_modules
 	@$(wtr) --config web-test-runner.config.mjs --watch
-test-unit-ci: node_modules
+test-unit-ci: node_modules playwright-browsers
 	@$(wtr) --config web-test-runner.ci.config.mjs
 test-unit-cov-ci: export REPORT_COVERAGE = true
 test-unit-cov-ci: test-unit-ci
@@ -65,9 +65,13 @@ lint-fix:
 node_modules: package.json
 	@npm install --silent --no-audit
 
+playwright-browsers:
+	@npx playwright install --with-deps chromium firefox
+
 clean:
 	@rm -rf node_modules build tmp
 
 .PHONY: server server-http
 .PHONY: test-ci test-unit test-unit-file test-unit-ci test-unit-cov-ci test-e2e test-e2e-ci test-types
 .PHONY: lint lint-lib lint-test lint-test-unit lint-test-e2e lint-fix clean
+.PHONY: playwright-browsers

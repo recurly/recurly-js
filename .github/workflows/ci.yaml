@@ -63,9 +63,9 @@ jobs:
       - uses: browser-actions/setup-chrome@v2
       - uses: browser-actions/setup-firefox@v1
       - uses: actions/checkout@v6
-      - name: Install Playwright browsers
-        if: ${{matrix.test-type == 'Unit'}}
-        run: npx playwright install --with-deps chromium firefox
+      # - name: Install Playwright browsers
+      #   if: ${{matrix.test-type == 'Unit'}}
+      #   run: npx playwright install --with-deps chromium firefox
       - name: Unit test
         if: ${{matrix.test-type == 'Unit'}}
         env:
