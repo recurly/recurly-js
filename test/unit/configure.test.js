@@ -276,20 +276,22 @@ describe('Recurly.configure', function () {
       const numberOne = testBed().querySelector('#number-1');
       const numberTwo = testBed().querySelector('#number-2');
 
-      configureRecurly(recurly, '1', () => nextTick(() => {
+      configureRecurly(recurly, '1');
+      nextTick(() => {
         assert.strictEqual(numberOne.children.length, 1);
         assert.strictEqual(numberTwo.children.length, 0);
         assert(numberOne.querySelector('iframe') instanceof HTMLIFrameElement);
-        configureRecurly(recurly, '2', () => nextTick(() => {
+        configureRecurly(recurly, '2');
+        nextTick(() => {
           assert.strictEqual(numberOne.children.length, 0);
           assert.strictEqual(numberTwo.children.length, 1);
           assert(numberTwo.querySelector('iframe') instanceof HTMLIFrameElement);
           done();
-        }));
-      }));
+        });
+      });
     });
 
-    function configureRecurly (recurly, index, done) {
+    function configureRecurly (recurly, index) {
       initRecurly(recurly, {
         fields: {
           number: `#number-${index}`,
@@ -299,7 +301,6 @@ describe('Recurly.configure', function () {
         }
       });
       assert.strictEqual(recurly.configured, true);
-      recurly.ready(() => done());
     }
   });
 });

@@ -146,7 +146,7 @@ describe('Recurly.Frame', function () {
     });
 
     it('removes window close listener', function () {
-      sinon.spy(global, 'clearInterval');
+      this.sandbox.spy(window, 'clearInterval');
       this.frame.destroy();
       assert(clearInterval.calledWith(this.frame.windowCloseListenerTick));
     });
@@ -163,10 +163,9 @@ describe('Recurly.Frame', function () {
     });
 
     describe('when given a container', function () {
-      beforeEach(function (done) {
+      beforeEach(function () {
         const { recurly } = this;
         this.frame = recurly.Frame({ path, payload, type: Frame.TYPES.IFRAME, container: testBed() });
-        this.frame.on('done', () => done());
       });
 
       it('injects an iframe into the container', function () {
@@ -185,10 +184,9 @@ describe('Recurly.Frame', function () {
       });
 
       describe('when configured to use hostname auth', function () {
-        beforeEach(function (done) {
+        beforeEach(function () {
           this.recurly.configure({ hostname: 'test-hostname.recurly.com' });
           this.frame = this.recurly.Frame({ path, payload, type: Frame.TYPES.IFRAME, container: testBed() });
-          this.frame.on('done', () => done());
         });
 
         it('assigns the value in the URL', function () {

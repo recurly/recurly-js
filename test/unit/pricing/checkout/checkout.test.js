@@ -1,7 +1,6 @@
 import assert from 'assert';
 import after from 'lodash.after';
 import isEqual from 'lodash.isequal';
-import sinon from 'sinon';
 import { initRecurly } from '../../support/helpers';
 
 describe('CheckoutPricing', function () {
@@ -1289,7 +1288,7 @@ describe('CheckoutPricing', function () {
           assert(err.code === 'not-found');
           done();
         });
-        this.pricing.giftCard('invalid');
+        this.pricing.giftCard('invalid').catch(() => {});
       });
     });
 
@@ -1437,7 +1436,7 @@ describe('CheckoutPricing', function () {
           assert(err.code === 'not-found');
           done();
         });
-        this.pricing.giftCard('invalid');
+        this.pricing.giftCard('invalid').catch(() => {});
       });
     });
 
