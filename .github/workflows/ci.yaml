@@ -14,7 +14,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Lint
         run: make lint
       - name: Lint types
@@ -27,8 +27,8 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@v3
-      - uses: github/codeql-action/init@v3
+      - uses: actions/checkout@v6
+      - uses: github/codeql-action/init@v4
         with:
           languages: javascript
           config: |
@@ -39,13 +39,17 @@ jobs:
               - '**/*test*'
           queries: + security-and-quality
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         continue-on-error: true
         with:
           category: /language:javascript
   test_local:
     name: ${{matrix.test-type}} test (${{matrix.browser}})
     runs-on: ubuntu-latest
+    env:
+      # TODO(SWI-5336): coactions/setup-xvfb has no node24 release yet (latest: v1.0.1 still uses node16).
+      # Remove once a node24-compatible version is available upstream.
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     strategy:
       fail-fast: false
       matrix:
@@ -56,12 +60,12 @@ jobs:
           - Chrome
           - Firefox
     steps:
-      - uses: browser-actions/setup-chrome@v1
+      - uses: browser-actions/setup-chrome@v2
       - uses: browser-actions/setup-firefox@v1
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Unit test
         if: ${{matrix.test-type == 'Unit'}}
-        uses: coactions/setup-xvfb@v1
+        uses: coactions/setup-xvfb@v1.0.1
         env:
           BROWSER: ${{matrix.browser}}
           DISPLAY: :99
@@ -69,7 +73,7 @@ jobs:
           run: make test-unit-ci
       - name: End-to-end test
         if: ${{matrix.test-type == 'End-to-end'}}
-        uses: coactions/setup-xvfb@v1
+        uses: coactions/setup-xvfb@v1.0.1
         env:
           BROWSER: ${{matrix.browser}}
           DISPLAY: :99
@@ -77,7 +81,7 @@ jobs:
           run: make test-e2e-ci
       - name: Upload visual regression artifacts
         if: ${{failure() && matrix.test-type == 'End-to-end'}}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: visual-regression-${{matrix.browser}}-${{github.run_id}}
           path: tmp/
@@ -102,10 +106,10 @@ jobs:
           - Android-12-Remote
     steps:
       - uses: ahmadnassri/action-workflow-queue@v1
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Unit test
         if: ${{matrix.test-type == 'Unit'}}
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v4
         env:
           BROWSER: ${{matrix.browser}}
           BROWSER_STACK_USERNAME: ${{secrets.BROWSER_STACK_USERNAME}}
@@ -116,7 +120,7 @@ jobs:
           command: make test-unit-ci
       - name: End-to-end test
         if: ${{matrix.test-type == 'End-to-end'}}
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v4
         env:
           BROWSER: ${{matrix.browser}}
           BROWSER_STACK_USERNAME: ${{secrets.BROWSER_STACK_USERNAME}}
@@ -127,7 +131,7 @@ jobs:
           command: make test-e2e-ci
       - name: Upload visual regression artifacts
         if: ${{failure() && matrix.test-type == 'End-to-end'}}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: visual-regression-${{matrix.browser}}-${{github.run_id}}
           path: tmp/
@@ -136,7 +140,7 @@ jobs:
     name: Integration test with react-recurly
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           repository: recurly/react-recurly
           path: vendor
@@ -171,28 +175,32 @@ jobs:
   publish:
     name: Publish artifacts
     runs-on: ubuntu-latest
+    env:
+      # TODO(SWI-5336): coactions/setup-xvfb has no node24 release yet (latest: v1.0.1 still uses node16).
+      # Remove once a node24-compatible version is available upstream.
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     needs:
       - lint
       - analyze
       - test_local
       - test_remote
     steps:
-      - uses: actions/checkout@v3
-      - uses: browser-actions/setup-chrome@v1
+      - uses: actions/checkout@v6
+      - uses: browser-actions/setup-chrome@v2
       - name: Build
         run: make build
       - name: Report coverage
-        uses: coactions/setup-xvfb@v1
+        uses: coactions/setup-xvfb@v1.0.1
         env:
           COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
           DISPLAY: :99
         with:
           run: make test-unit-cov-ci
-      - uses: google-github-actions/auth@v1
+      - uses: google-github-actions/auth@v3
         with:
           credentials_json: ${{secrets.GCR_QA_PUBLIC_DEVOPS_SA}}
       - name: Upload to Google Cloud Storage
-        uses: google-github-actions/upload-cloud-storage@v1
+        uses: google-github-actions/upload-cloud-storage@v3
         with:
           path: build
           destination: ${{secrets.ARTIFACT_BUCKET_NAME}}/recurly-js/${{github.sha}}/
@@ -200,7 +208,7 @@ jobs:
           process_gcloudignore: false
       - name: Upload to Google Cloud Storage for pull requests
         if: ${{github.event_name == 'pull_request'}}
-        uses: google-github-actions/upload-cloud-storage@v1
+        uses: google-github-actions/upload-cloud-storage@v3
         with:
           path: build
           destination: ${{secrets.ARTIFACT_BUCKET_NAME}}/recurly-js/pull-request--${{github.event.number}}/
