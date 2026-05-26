@@ -4,10 +4,6 @@ on:
     types:
       - published
 
-env:
-  # TODO(SWI-5336): Temporary — forces all JS actions to node24 for validation. Remove before merge.
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   Publish:
     runs-on: ubuntu-latest
