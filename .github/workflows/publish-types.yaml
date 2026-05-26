@@ -9,11 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Recurly-js
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
         with:
           path: recurly-js
       - name: Checkout DefinitelyTyped
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
         with:
           repository: DefinitelyTyped/DefinitelyTyped
           ref: master
@@ -34,7 +34,7 @@ jobs:
           out_version=$(cat recurly-js/package.json | jq '.version' -r )
           echo ::set-output name=version::$out_version
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v8
         with:
           path: DefinitelyTyped
           commit-message: Updates recurly-js types
