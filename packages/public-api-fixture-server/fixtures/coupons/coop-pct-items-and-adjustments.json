@@ -1,0 +1,15 @@
+{
+  "code": "coop-pct-items-and-adjustments",
+  "name": "Test coupon: 15% off non-plan charges, item-restricted, no subscription discount",
+  "discount": {
+    "rate": 0.15
+  },
+  "plans": [],
+  "single_use": false,
+  "applies_to_non_plan_charges": true,
+  "applies_to_plans": false,
+  "applies_to_all_plans": false,
+  "applies_to_items": true,
+  "item_codes": [],
+  "redemption_resource": "account"
+}
