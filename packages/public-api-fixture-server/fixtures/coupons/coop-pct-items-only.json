@@ -1,0 +1,14 @@
+{
+  "code": "coop-pct-items-only",
+  "name": "Test coupon: 15% off, applies_to_plans true AND applies_to_items true (item-restricted — no subscription discount)",
+  "discount": {
+    "rate": 0.15
+  },
+  "plans": [],
+  "single_use": false,
+  "applies_to_non_plan_charges": false,
+  "applies_to_plans": true,
+  "applies_to_all_plans": true,
+  "applies_to_items": true,
+  "redemption_resource": "account"
+}

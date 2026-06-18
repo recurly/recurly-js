@@ -991,6 +991,44 @@ describe('CheckoutPricing', function () {
               assert.equal(this.price.next.discount, 0);
             });
           });
+
+          describe('item-restricted coupons (applies_to_items: true)', () => {
+            describe('given a coupon with applies_to_items absent (baseline — no regression)', () => {
+              beforeEach(applyCoupon('coop-pct-subscriptions'));
+              it('discounts subscriptions as normal', function () {
+                assert.equal(this.price.now.subscriptions, 43.98);
+                assert.equal(this.price.now.adjustments, 32.44);
+                assert.equal(this.price.now.discount, 6.0);
+                assert.equal(this.price.next.subscriptions, 39.98);
+                assert.equal(this.price.next.adjustments, 0);
+                assert.equal(this.price.next.discount, 6.0);
+              });
+            });
+
+            describe('given a coupon with applies_to_items true and applies_to_plans true', () => {
+              beforeEach(applyCoupon('coop-pct-items-only'));
+              it('does not discount subscriptions even though applies_to_plans is true', function () {
+                assert.equal(this.price.now.subscriptions, 43.98);
+                assert.equal(this.price.now.adjustments, 32.44);
+                assert.equal(this.price.now.discount, 0);
+                assert.equal(this.price.next.subscriptions, 39.98);
+                assert.equal(this.price.next.adjustments, 0);
+                assert.equal(this.price.next.discount, 0);
+              });
+            });
+
+            describe('given a coupon with applies_to_items true and applies_to_non_plan_charges true', () => {
+              beforeEach(applyCoupon('coop-pct-items-and-adjustments'));
+              it('discounts adjustments but not subscriptions', function () {
+                assert.equal(this.price.now.subscriptions, 43.98);
+                assert.equal(this.price.now.adjustments, 32.44);
+                assert.equal(this.price.now.discount, 4.87); // 15% of 32.44
+                assert.equal(this.price.next.subscriptions, 39.98);
+                assert.equal(this.price.next.adjustments, 0);
+                assert.equal(this.price.next.discount, 0);
+              });
+            });
+          });
         });
 
         /**
