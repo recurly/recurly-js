@@ -217,6 +217,61 @@ describe('Recurly.Pricing.Subscription', function () {
 
   describe('with addons', () => {
     describe('with fixed addons', () => {
+      it('preserves sub-cent precision for a flat add-on (unit_amount path)', function (done) {
+        this.pricing
+          .plan('basic', { quantity: 1 })
+          .addon('sub-cent-addon', { quantity: 2 })
+          .done(price => {
+            assert.equal(price.base.addons['sub-cent-addon'], '0.001234000');
+            assert.equal(price.addons['sub-cent-addon'], '0.002468000');
+            done();
+          });
+      });
+
+      it('preserves sub-cent precision for a flat add-on (unit_amount_decimal path)', function (done) {
+        this.pricing
+          .plan('basic', { quantity: 1 })
+          .addon('sub-cent-decimal-addon', { quantity: 2 })
+          .done(price => {
+            assert.equal(price.base.addons['sub-cent-decimal-addon'], '0.001234000');
+            assert.equal(price.addons['sub-cent-decimal-addon'], '0.002468000');
+            done();
+          });
+      });
+
+      it('preserves sub-cent precision for a flat add-on with a value below 1e-6 (unit_amount_decimal path)', function (done) {
+        this.pricing
+          .plan('basic', { quantity: 1 })
+          .addon('sub-cent-tiny-decimal-addon', { quantity: 2 })
+          .done(price => {
+            assert.equal(price.base.addons['sub-cent-tiny-decimal-addon'], '0.000000123');
+            assert.equal(price.addons['sub-cent-tiny-decimal-addon'], '0.000000246');
+            done();
+          });
+      });
+
+      it('preserves sub-cent precision for a tiered add-on (unit_amount_decimal path)', function (done) {
+        this.pricing
+          .plan('basic', { quantity: 1 })
+          .addon('sub-cent-tiered-decimal-addon', { quantity: 2 })
+          .done(price => {
+            assert.equal(price.base.addons['sub-cent-tiered-decimal-addon'], '0.001234000');
+            assert.equal(price.addons['sub-cent-tiered-decimal-addon'], '0.002468000');
+            done();
+          });
+      });
+
+      it('emits standard 2-decimal output for a normal add-on', function (done) {
+        this.pricing
+          .plan('basic', { quantity: 1 })
+          .addon('snarf', { quantity: 1 })
+          .done(price => {
+            assert.equal(price.base.addons['snarf'], '1.00');
+            assert.equal(price.addons['snarf'], '1.00');
+            done();
+          });
+      });
+
       it('updates the price accordingly', function (done) {
         this.pricing
           .plan('basic', { quantity: 1 })
