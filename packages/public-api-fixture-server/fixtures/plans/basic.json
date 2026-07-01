@@ -38,6 +38,58 @@
     "usage_percentage": null,
     "usage_type": null
   },{
+    "add_on_type": "fixed",
+    "name": "Sub-cent Addon",
+    "code": "sub-cent-addon",
+    "quantity": 1,
+    "tier_type": "flat",
+    "price": {
+      "USD": {
+        "unit_amount": 0.001234
+      }
+    },
+    "usage_percentage": null,
+    "usage_type": null
+  },{
+    "add_on_type": "fixed",
+    "name": "Sub-cent Decimal Addon",
+    "code": "sub-cent-decimal-addon",
+    "quantity": 1,
+    "tier_type": "flat",
+    "price": {
+      "USD": {
+        "unit_amount": 0,
+        "unit_amount_decimal": "0.001234"
+      }
+    },
+    "usage_percentage": null,
+    "usage_type": null
+  },{
+    "add_on_type": "fixed",
+    "name": "Sub-cent Tiny Decimal Addon",
+    "code": "sub-cent-tiny-decimal-addon",
+    "quantity": 1,
+    "tier_type": "flat",
+    "price": {
+      "USD": {
+        "unit_amount": 0,
+        "unit_amount_decimal": "0.000000123"
+      }
+    },
+    "usage_percentage": null,
+    "usage_type": null
+  },{
+    "add_on_type": "fixed",
+    "name": "Sub-cent Tiered Decimal Addon",
+    "code": "sub-cent-tiered-decimal-addon",
+    "quantity": 1,
+    "tier_type": "tiered",
+    "tiers": [
+      { "ending_quantity": 10, "currencies": [{ "currency_code": "USD", "unit_amount_decimal": "0.001234", "unit_amount": null }] },
+      { "ending_quantity": 999999999, "currencies": [{ "currency_code": "USD", "unit_amount_decimal": "0.000500", "unit_amount": null }] }
+    ],
+    "price": {}
+  },{
     "add_on_type": "usage",
     "code": "with_usage",
     "name": "WithUsage",
