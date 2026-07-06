@@ -1,5 +1,19 @@
 # Changelog
 
+## [v4.44.0](https://github.com/recurly/recurly-js/tree/v4.44.0) (2026-07-06)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.43.0...v4.44.0)
+
+
+**Merged Pull Requests**
+
+- feat(pricing): support sub-cent add-on prices via unit_amount_decimal [#987](https://github.com/recurly/recurly-js/pull/987) ([Jhonatanssal](https://github.com/Jhonatanssal))
+- fix(checkout-pricing): skip subscription discount for item-restricted coupons [#986](https://github.com/recurly/recurly-js/pull/986) ([marcelo-m-leite](https://github.com/marcelo-m-leite))
+- ci: Remediate Node.js 20 deprecation [#984](https://github.com/recurly/recurly-js/pull/984) ([jparrabedoya](https://github.com/jparrabedoya))
+- chore: parallelize preflights [#983](https://github.com/recurly/recurly-js/pull/983) ([cbarton](https://github.com/cbarton))
+
+
+
 ## [v4.43.0](https://github.com/recurly/recurly-js/tree/v4.43.0) (2026-04-30)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.42.1...v4.43.0)
