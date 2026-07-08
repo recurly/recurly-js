@@ -86,6 +86,10 @@ export default {
     ...sharedConfig.coverageConfig,
     report: IS_REPORT_COVERAGE,
   },
+  // BrowserStack real devices (iOS/Android) reject executeAsyncScript, which
+  // IFrameManager uses when concurrency > 1. Force concurrency: 1 so WTR
+  // uses SessionManager (synchronous execute only) for all BrowserStack runs.
+  ...(BS_CAP ? { concurrency: 1 } : {}),
   browserStartTimeout: BS_CAP ? 120000 : 60000,
   testsStartTimeout: BS_CAP ? 120000 : 60000,
   testsFinishTimeout: BS_CAP ? 300000 : 600000,
