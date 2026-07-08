@@ -105,6 +105,12 @@ app.use(route.post('/tokens', json));
 
 app.listen(port, () => {
   log(`Ready on ${port}`);
+}).on('error', err => {
+  if (err.code === 'EADDRINUSE') {
+    log(`Port ${port} already in use, using existing server`);
+  } else {
+    throw err;
+  }
 });
 
 /**
