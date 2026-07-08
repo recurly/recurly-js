@@ -236,6 +236,14 @@ export function addExtensionPlugin () {
 
 // ---------- API proxy ----------
 
+// Hop-by-hop headers must not be forwarded by proxies (RFC 2616 §14.10).
+// Forwarding Connection: keep-alive causes Edge to reuse connections the WTR
+// proxy has already closed, producing BrowserStack tunnel errors in tests.
+const HOP_BY_HOP_HEADERS = new Set([
+  'connection', 'keep-alive', 'proxy-authenticate', 'proxy-authorization',
+  'te', 'trailer', 'transfer-encoding', 'upgrade',
+]);
+
 export function apiProxyMiddleware () {
   return async (ctx, next) => {
     if (!ctx.path.startsWith('/api')) return next();
@@ -251,7 +259,9 @@ export function apiProxyMiddleware () {
         },
         proxyRes => {
           ctx.status = proxyRes.statusCode;
-          Object.entries(proxyRes.headers).forEach(([name, value]) => ctx.set(name, value));
+          Object.entries(proxyRes.headers).forEach(([name, value]) => {
+            if (!HOP_BY_HOP_HEADERS.has(name.toLowerCase())) ctx.set(name, value);
+          });
           const chunks = [];
           proxyRes.on('data', chunk => chunks.push(chunk));
           proxyRes.on('end', () => { ctx.body = Buffer.concat(chunks); resolve(); });
@@ -259,7 +269,11 @@ export function apiProxyMiddleware () {
         }
       );
       proxyReq.on('error', reject);
-      ctx.req.pipe(proxyReq);
+      if (ctx.method === 'GET' || ctx.method === 'HEAD') {
+        proxyReq.end();
+      } else {
+        ctx.req.pipe(proxyReq);
+      }
     });
   };
 }

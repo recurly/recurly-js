@@ -235,6 +235,7 @@ describe('ThreeDSecure', function () {
 
   describe('when an actionTokenId is valid', function () {
     it('sets the strategy according to the gateway type of the action token', function (done) {
+      this.timeout(20000); // 9 concurrent API calls; allow extra time on slow remote connections
       const { risk } = this;
       const cases = [
         { id: 'action-token-adyen', strategy: AdyenStrategy },

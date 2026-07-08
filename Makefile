@@ -46,8 +46,8 @@ test-e2e-debug: build $(src) $(tests)
 test-e2e-ci: build $(src) $(tests)
 	@$(wdio) wdio.ci.conf.js
 test-types: types
-	@$(dtslint) test/types
-	@$(dtslint) types
+	@$(dtslint) test/types --localTs node_modules/typescript/lib
+	@$(dtslint) types --localTs node_modules/typescript/lib
 
 lint: lint-lib lint-test
 lint-lib: node_modules
