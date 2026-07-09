@@ -84,6 +84,7 @@ function toBSCapabilities (cap) {
   if (cap.osVersion) result.os_version = cap.osVersion;
   if (cap.deviceName) result.device = cap.deviceName;
   if (cap.realMobile !== undefined) result.real_mobile = cap.realMobile;
+  result['browserstack.consoleLogs'] = 'errors';
 
   return result;
 }
@@ -112,6 +113,12 @@ export default {
     ...sharedConfig.coverageConfig,
     report: IS_REPORT_COVERAGE,
   },
+  // iOS 26 Safari can't establish WebSocket connections from iframes, so
+  // IFrameManager never receives the test-ready signal. SessionManager
+  // (concurrency: 1) navigates the top-level window directly, avoiding iframes.
+  // Other BrowserStack browsers (Safari-Remote, Edge-Remote) break with
+  // concurrency: 1, so this is scoped to iOS-26-Remote only.
+  ...(BROWSER === 'iOS-26-Remote' ? { concurrency: 1 } : {}),
   browserStartTimeout: BS_CAP ? 120000 : 60000,
   testsStartTimeout: BS_CAP ? 120000 : 60000,
   testsFinishTimeout: BS_CAP ? 300000 : 600000,
