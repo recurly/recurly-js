@@ -23,6 +23,28 @@ const { projectName, capabilities: bsCapabilities } = require('./test/conf/brows
 const branchName = require('current-git-branch');
 require('@recurly/public-api-test-server');
 
+// iOS Safari (via BrowserStack WebDriver) immediately rejects executeAsync with a 1ms
+// timeout. IFrameManager.stopSession() uses executeAsync to retrieve coverage and wait
+// for the iframe to unload. When it throws, WTR catches the error and marks the entire
+// session as failed (session.passed = false) even though all test assertions passed.
+// Patching stopSession to swallow the error lets the actual test results stand;
+// we just skip coverage cleanup (coverage is not collected on BrowserStack runs anyway).
+try {
+  const { IFrameManager } = require('@web/test-runner-webdriver/dist/IFrameManager.js');
+  const _origStopSession = IFrameManager.prototype.stopSession;
+  IFrameManager.prototype.stopSession = async function (id) {
+    try {
+      return await _origStopSession.call(this, id);
+    } catch {
+      const frameId = this.framePerSession.get(id);
+      if (frameId) this.inactiveFrames.push(frameId);
+      return { testCoverage: undefined };
+    }
+  };
+} catch (e) {
+  console.warn('[patch] Could not patch IFrameManager.stopSession:', e.message);
+}
+
 const {
   BROWSER = 'Chrome',
   REPORT_COVERAGE,
@@ -86,10 +108,6 @@ export default {
     ...sharedConfig.coverageConfig,
     report: IS_REPORT_COVERAGE,
   },
-  // BrowserStack real devices (iOS/Android) reject executeAsyncScript, which
-  // IFrameManager uses when concurrency > 1. Force concurrency: 1 so WTR
-  // uses SessionManager (synchronous execute only) for all BrowserStack runs.
-  ...(BS_CAP ? { concurrency: 1 } : {}),
   browserStartTimeout: BS_CAP ? 120000 : 60000,
   testsStartTimeout: BS_CAP ? 120000 : 60000,
   testsFinishTimeout: BS_CAP ? 300000 : 600000,

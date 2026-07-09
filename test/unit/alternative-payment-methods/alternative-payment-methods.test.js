@@ -96,6 +96,7 @@ describe('Recurly.AlternativePaymentMethods', () => {
 
     describe('destroy', () => {
       it('removes the web component', done => {
+        sandbox.stub(recurly.request, 'get').rejects(new Error('not-found'));
         paymentMethods = recurly.AlternativePaymentMethods(params);
         paymentMethods.start()
           .then(() => {
