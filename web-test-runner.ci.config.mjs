@@ -30,7 +30,11 @@ require('@recurly/public-api-test-server');
 // Patching stopSession to swallow the error lets the actual test results stand;
 // we just skip coverage cleanup (coverage is not collected on BrowserStack runs anyway).
 try {
-  const { IFrameManager } = require('@web/test-runner-webdriver/dist/IFrameManager.js');
+  // @web/test-runner-webdriver restricts its exports map to the package root, so we
+  // resolve the package's CJS entry and navigate to IFrameManager.js from there.
+  const wtrWdPath = require.resolve('@web/test-runner-webdriver');
+  const iframeManagerPath = wtrWdPath.replace('/index.js', '/IFrameManager.js');
+  const { IFrameManager } = require(iframeManagerPath);
   const _origStopSession = IFrameManager.prototype.stopSession;
   IFrameManager.prototype.stopSession = async function (id) {
     try {

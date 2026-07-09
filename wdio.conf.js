@@ -134,7 +134,10 @@ function visualService () {
       baselineFolder: path.resolve(__dirname, './test/e2e/support/visual-baseline'),
       formatImageName: `${BROWSER}/{tag}-{width}x{height}`,
       screenshotPath: path.resolve(__dirname, 'tmp'),
-      savePerInstance: true
+      savePerInstance: true,
+      // Auto-save when no baseline exists (e.g. new device configs). Commit
+      // the generated images to enable regression comparison on future runs.
+      autoSaveBaseline: true
     }
   ];
 

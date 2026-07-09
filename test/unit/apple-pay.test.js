@@ -241,9 +241,10 @@ function applePayTest (integrationType) {
       });
 
       describe('when given options.pricing', function () {
-        beforeEach(function () {
+        beforeEach(function (done) {
           const pricing = this.pricing = this.recurly.Pricing.Checkout();
           this.applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing }));
+          this.applePay.ready(done);
         });
 
         it('binds a pricing instance', function (done) {
