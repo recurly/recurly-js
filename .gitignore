@@ -1,9 +1,9 @@
+.claude/worktrees
 .DS_Store
-.vscode
 .idea
+.vscode
 build
 node_modules
 tmp
 npm-debug.log
 local.log
-logs/
