@@ -5,6 +5,7 @@ import { fromRollup } from '@web/dev-server-rollup';
 import rollupNodeResolve from '@rollup/plugin-node-resolve';
 import rollupCommonjs from '@rollup/plugin-commonjs';
 import { createRequire } from 'module';
+import { ciReporter } from './test/reporter/ci-reporter.mjs';
 import {
   assertShimPlugin,
   promiseShimPlugin,
@@ -156,6 +157,7 @@ function getBrowserLaunchers () {
 
 export default {
   ...sharedConfig,
+  reporters: [ciReporter()],
   browsers: getBrowserLaunchers(),
   plugins: [
     assertShimPlugin(),
