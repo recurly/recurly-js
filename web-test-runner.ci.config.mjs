@@ -31,10 +31,14 @@ require('@recurly/public-api-test-server');
 // we just skip coverage cleanup (coverage is not collected on BrowserStack runs anyway).
 try {
   // @web/test-runner-webdriver restricts its exports map to the package root, so we
-  // resolve the package's CJS entry and navigate to IFrameManager.js from there.
+  // resolve the package's CJS entry and navigate to sibling files from there.
   const wtrWdPath = require.resolve('@web/test-runner-webdriver');
-  const iframeManagerPath = wtrWdPath.replace('/index.js', '/IFrameManager.js');
-  const { IFrameManager } = require(iframeManagerPath);
+
+  // IFrameManager.stopSession uses executeAsync to wait for iframe unload. iOS Safari
+  // (via BrowserStack WebDriver) immediately rejects executeAsync with a 1ms timeout,
+  // causing WTR to mark every passing session as failed. Swallow the error so real
+  // test results stand; coverage is not collected on BrowserStack runs anyway.
+  const { IFrameManager } = require(wtrWdPath.replace('/index.js', '/IFrameManager.js'));
   const _origStopSession = IFrameManager.prototype.stopSession;
   IFrameManager.prototype.stopSession = async function (id) {
     try {
@@ -45,8 +49,27 @@ try {
       return { testCoverage: undefined };
     }
   };
+
+  // SessionManager.stopSession navigates to about:blank between test files. On iOS 26
+  // (iPhone 17 Pro via BrowserStack) this leaves the browser in a state where the next
+  // navigateTo() call hangs for the full testsStartTimeout (120 s), making every other
+  // test file time out. Skip the about:blank navigation — the incoming navigateTo(testUrl)
+  // in startSession replaces the page anyway, so no stale code runs between tests.
+  const { SessionManager } = require(wtrWdPath.replace('/index.js', '/SessionManager.js'));
+  const { validateBrowserResult } = require(wtrWdPath.replace('/index.js', '/coverage.js'));
+  SessionManager.prototype.stopSession = async function (id) {
+    let testCoverage;
+    try {
+      const rv = await this.driver.execute(
+        'return (function(){ return { testCoverage: window.__coverage__ }; })()'
+      );
+      if (validateBrowserResult(rv)) testCoverage = rv.testCoverage;
+    } catch { /* no coverage on BrowserStack */ }
+    this.urlMap.delete(id);
+    return { testCoverage: this.config.coverage ? testCoverage : undefined };
+  };
 } catch (e) {
-  console.warn('[patch] Could not patch IFrameManager.stopSession:', e.message);
+  console.warn('[patch] Could not patch WTR session managers:', e.message);
 }
 
 const {
