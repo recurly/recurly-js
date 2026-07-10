@@ -51,10 +51,11 @@ try {
   };
 
   // SessionManager.stopSession navigates to about:blank between test files. On iOS 26
-  // (iPhone 17 Pro via BrowserStack) this leaves the browser in a state where the next
-  // navigateTo() call hangs for the full testsStartTimeout (120 s), making every other
-  // test file time out. Skip the about:blank navigation — the incoming navigateTo(testUrl)
-  // in startSession replaces the page anyway, so no stale code runs between tests.
+  // (iPhone 17 Pro via BrowserStack) the next navigateTo(testUrl) call hangs for the full
+  // testsStartTimeout (120 s) whenever the browser is sitting at about:blank, causing every
+  // other test file to time out. Navigating to the test server root (same origin, real HTTP
+  // URL) instead of about:blank avoids the hang; iOS 26 Safari can navigate from a real
+  // HTTP URL to the next test URL without issue.
   const { SessionManager } = require(wtrWdPath.replace('/index.js', '/SessionManager.js'));
   const { validateBrowserResult } = require(wtrWdPath.replace('/index.js', '/coverage.js'));
   SessionManager.prototype.stopSession = async function (id) {
@@ -65,7 +66,15 @@ try {
       );
       if (validateBrowserResult(rv)) testCoverage = rv.testCoverage;
     } catch { /* no coverage on BrowserStack */ }
+    const testUrl = this.urlMap.get(id);
     this.urlMap.delete(id);
+    try {
+      // Navigate to the WTR server root rather than about:blank.
+      // iOS 26 Safari hangs on the subsequent navigateTo(testUrl) when the current
+      // URL is about:blank; navigating to any real HTTP page first avoids this.
+      const idleUrl = testUrl ? testUrl.split('?')[0] : 'about:blank';
+      await this.driver.navigateTo(idleUrl);
+    } catch { /* ignore navigation errors */ }
     return { testCoverage: this.config.coverage ? testCoverage : undefined };
   };
 } catch (e) {
