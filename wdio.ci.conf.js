@@ -65,6 +65,7 @@ if (useBrowserstack) {
 const config = {
   ...defaultConfig,
   ...{
+    logLevel: 'warn',
     capabilities: [
       {
         browserName: BROWSER
@@ -73,6 +74,7 @@ const config = {
     baseUrl: 'http://localhost:9877',
     maxInstances: 1,
     services: [visualService()],
+    reporters: [['spec', { onlyFailures: true }]],
     onPrepare: () => {
       if (useBrowserstack && isMobile()) {
         process.env.API_PROXY = 'http://bs-local.com:9877/api-proxy';
