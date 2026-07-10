@@ -69,8 +69,8 @@ describe('when using distinct card Hosted Fields', async function () {
 });
 
 function assertVisualRegressionThreshold (diff, threshold = 0.05) {
-  if (environmentIs(DEVICES.ANDROID) || environmentIs(BROWSERS.EDGE)) {
-    threshold = 15;
+  if (environmentIs(DEVICES.ANDROID) || environmentIs(BROWSERS.EDGE) || environmentIs(BROWSERS.SAFARI)) {
+    threshold = 1;
   }
 
   assert(diff <= threshold, `${diff} is above the threshold of ${threshold}`);

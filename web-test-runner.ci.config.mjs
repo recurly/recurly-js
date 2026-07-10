@@ -122,6 +122,7 @@ const BS_CAP = bsCapabilities[BROWSER];
 const PLAYWRIGHT_PRODUCTS = {
   Chrome: 'chromium',
   Firefox: 'firefox',
+  Edge: 'msedge',
 };
 
 const nodeResolve = fromRollup(rollupNodeResolve);

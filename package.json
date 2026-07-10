@@ -83,6 +83,7 @@
     "sinon": "^9.0.3",
     "typescript": "^5.0.4",
     "wdio-chromedriver-service": "^8.1.1",
+    "wdio-edgedriver-service": "^3.0.3",
     "wdio-geckodriver-service": "^4.1.1"
   }
 }

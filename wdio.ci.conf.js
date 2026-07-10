@@ -2,7 +2,7 @@ const { spawnSync } = require('child_process');
 const { mkdirSync } = require('fs');
 const path = require('path');
 const branchName = require('current-git-branch');
-const { config: defaultConfig, isMobile, visualService } = require('./wdio.conf');
+const { config: defaultConfig, isMobile, isEdge, browserName, visualService } = require('./wdio.conf');
 const {
   projectName,
   capabilities: browserStackCapabilities
@@ -67,14 +67,19 @@ if (useBrowserstack) {
 const config = {
   ...defaultConfig,
   ...{
+    logLevel: 'warn',
     capabilities: [
       {
-        browserName: BROWSER
+        browserName: browserName()
       }
     ],
     baseUrl: 'http://localhost:9877',
     maxInstances: 1,
-    services: [visualService()],
+    reporters: [['spec', { onlyFailures: true }]],
+    services: [
+      isEdge() ? 'edgedriver' : null,
+      visualService()
+    ].filter(Boolean),
     onPrepare: () => {
       if (useBrowserstack && isMobile()) {
         process.env.API_PROXY = 'http://bs-local.com:9877/api-proxy';

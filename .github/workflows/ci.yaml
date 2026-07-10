@@ -59,9 +59,11 @@ jobs:
         browser:
           - Chrome
           - Firefox
+          - Edge
     steps:
       - uses: browser-actions/setup-chrome@v2
       - uses: browser-actions/setup-firefox@v1
+      - uses: browser-actions/setup-msedge@v1
       - uses: actions/checkout@v6
       - name: Unit test
         if: ${{matrix.test-type == 'Unit'}}
@@ -95,7 +97,6 @@ jobs:
           - End-to-end
         browser:
           - Safari-Remote
-          - Edge-Remote
           - iOS-26-Remote
           - iOS-18-Remote
           - Android-16-Remote

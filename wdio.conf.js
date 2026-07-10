@@ -43,6 +43,8 @@ exports.config = Object.assign({
 }, assignPort());
 
 exports.isMobile = isMobile;
+exports.isEdge = isEdge;
+exports.browserName = browserName;
 exports.visualService = visualService;
 
 // attributes
@@ -112,7 +114,9 @@ function onPrepare () {
 function services () {
   const definition = [];
 
-  if (browserName() === 'firefox') {
+  if (isEdge()) {
+    definition.push('edgedriver');
+  } else if (browserName() === 'firefox') {
     definition.push('geckodriver');
   } else {
     definition.push('chromedriver');
@@ -151,6 +155,7 @@ function assignPort () {
 function browserName () {
   if (DEBUG || isAndroid()) return 'chrome';
   if (isIos()) return 'safari';
+  if (isEdge()) return 'MicrosoftEdge';
   return BROWSER;
 }
 
@@ -184,6 +189,10 @@ function isIos () {
 
 function isAndroid () {
   return BROWSER.toLowerCase().includes('android');
+}
+
+function isEdge () {
+  return BROWSER === 'Edge';
 }
 
 function isLocal () {
