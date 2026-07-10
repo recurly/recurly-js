@@ -70,7 +70,12 @@ const config = {
     logLevel: 'warn',
     capabilities: [
       {
-        browserName: browserName()
+        browserName: browserName(),
+        ...(isEdge() && {
+          'ms:edgeOptions': {
+            args: ['--no-sandbox', '--disable-dev-shm-usage']
+          }
+        })
       }
     ],
     baseUrl: 'http://localhost:9877',

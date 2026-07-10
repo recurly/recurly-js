@@ -123,7 +123,6 @@ const BS_CAP = bsCapabilities[BROWSER];
 const PLAYWRIGHT_PRODUCTS = {
   Chrome: 'chromium',
   Firefox: 'firefox',
-  Edge: 'msedge',
 };
 
 const nodeResolve = fromRollup(rollupNodeResolve);
@@ -153,6 +152,15 @@ function getBrowserLaunchers () {
   if (BS_CAP) {
     return [browserstackLauncher({ capabilities: toBSCapabilities(BS_CAP) })];
   }
+  if (BROWSER === 'Edge') {
+    return [playwrightLauncher({
+      product: 'chromium',
+      launchOptions: {
+        channel: 'msedge',
+        args: ['--no-sandbox', '--disable-dev-shm-usage'],
+      },
+    })];
+  }
   return [playwrightLauncher({ product: PLAYWRIGHT_PRODUCTS[BROWSER] || 'chromium' })];
 }
 
@@ -178,8 +186,10 @@ export default {
   // IFrameManager never receives the test-ready signal. SessionManager
   // (concurrency: 1) navigates the top-level window directly, avoiding iframes.
   // Other BrowserStack browsers (Safari-Remote, Edge-Remote) break with
-  // concurrency: 1, so this is scoped to iOS-26-Remote only.
-  ...(BROWSER === 'iOS-26-Remote' ? { concurrency: 1 } : {}),
+  // concurrency: 1, so this is scoped to iOS-26-Remote and local Edge only.
+  // Local Edge (msedge Playwright channel) exhausts browser page slots at the
+  // default concurrency, causing the last queued files to hit browserStartTimeout.
+  ...(['iOS-26-Remote', 'Edge'].includes(BROWSER) ? { concurrency: 1 } : {}),
   browserStartTimeout: BS_CAP ? 120000 : 60000,
   testsStartTimeout: BS_CAP ? 120000 : 60000,
   testsFinishTimeout: BS_CAP ? 300000 : 600000,
