@@ -51,14 +51,38 @@ try {
   };
 
   // SessionManager.stopSession navigates to about:blank between test files. On iOS 26
-  // (iPhone 17 Pro via BrowserStack) the next navigateTo(testUrl) call hangs for the full
-  // testsStartTimeout (120 s) whenever the browser is sitting at about:blank, causing every
-  // other test file to time out. Navigating to the test server root (same origin, real HTTP
-  // URL) instead of about:blank avoids the hang; iOS 26 Safari can navigate from a real
-  // HTTP URL to the next test URL without issue.
+  // (iPhone 17 Pro via BrowserStack) the next navigateTo(testUrl) call hangs whenever the
+  // browser is at about:blank after a clean test run — but navigating directly from one
+  // test page to the next (testUrl_N → testUrl_N+1) works fine. The root cause is that
+  // iOS 26 Safari via BrowserStack only rejects navigations from non-WTR pages (about:blank,
+  // BrowserStack landing page) to WTR test pages.
+  //
+  // Strategy: track whether each startSession's navigation is still pending when stopSession
+  // is called. If it is (timeout case), we navigate to about:blank to cancel the stuck
+  // WebDriver command — the next test file then navigates from about:blank and succeeds
+  // because the stuck command clears the timing issue. If it is not pending (clean success),
+  // we skip the navigation so the browser stays on the test page, and the next test's
+  // navigateTo runs testUrl_N → testUrl_N+1 which iOS 26 Safari handles correctly.
   const { SessionManager } = require(wtrWdPath.replace('/index.js', '/SessionManager.js'));
   const { validateBrowserResult } = require(wtrWdPath.replace('/index.js', '/coverage.js'));
+  const _origSMStartSession = SessionManager.prototype.startSession;
+  SessionManager.prototype.startSession = async function (id, url) {
+    this._sessionWithPendingNav = id;
+    try {
+      await _origSMStartSession.call(this, id, url);
+    } finally {
+      // Only clear the flag if this session is still the active pending one.
+      // A newer session may have already set the flag — don't overwrite it.
+      if (this._sessionWithPendingNav === id) {
+        this._sessionWithPendingNav = null;
+      }
+    }
+  };
   SessionManager.prototype.stopSession = async function (id) {
+    // If this session's navigation was still in-flight when stopSession was called,
+    // we're recovering from a testsStartTimeout — navigate to about:blank to cancel
+    // the stuck WebDriver command. Otherwise skip the navigation.
+    const wasNavigationPending = this._sessionWithPendingNav === id;
     let testCoverage;
     try {
       const rv = await this.driver.execute(
@@ -66,15 +90,17 @@ try {
       );
       if (validateBrowserResult(rv)) testCoverage = rv.testCoverage;
     } catch { /* no coverage on BrowserStack */ }
-    const testUrl = this.urlMap.get(id);
     this.urlMap.delete(id);
-    try {
-      // Navigate to the WTR server root rather than about:blank.
-      // iOS 26 Safari hangs on the subsequent navigateTo(testUrl) when the current
-      // URL is about:blank; navigating to any real HTTP page first avoids this.
-      const idleUrl = testUrl ? testUrl.split('?')[0] : 'about:blank';
-      await this.driver.navigateTo(idleUrl);
-    } catch { /* ignore navigation errors */ }
+    if (wasNavigationPending) {
+      // Cancel the stuck pending navigation by navigating to about:blank.
+      // The next startSession will navigate from about:blank, which iOS 26 Safari
+      // handles after the stuck command has been cleared.
+      try {
+        await this.driver.navigateTo('about:blank');
+      } catch { /* ignore if navigation fails */ }
+    }
+    // If not pending (clean success): don't navigate. The browser stays at testUrl_N,
+    // and the next startSession navigates testUrl_N → testUrl_N+1 (works on iOS 26).
     return { testCoverage: this.config.coverage ? testCoverage : undefined };
   };
 } catch (e) {
