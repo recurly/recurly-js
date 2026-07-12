@@ -169,11 +169,13 @@ jobs:
         if: |-
           ${{
             github.event_name == 'pull_request'
-            && needs.lint.result != 'success'
-            && needs.analyze.result != 'success'
-            && needs.test_local.result != 'success'
-            && needs.test_remote.result != 'success'
-            && needs.integration_test.result != 'success'
+            && (
+              needs.lint.result != 'success'
+              || needs.analyze.result != 'success'
+              || needs.test_local.result != 'success'
+              || needs.test_remote.result != 'success'
+              || needs.integration_test.result != 'success'
+            )
           }}
         run: exit 1
   publish:

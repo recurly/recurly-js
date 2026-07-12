@@ -74,8 +74,18 @@ function throws (fn, expected, message) {
   let threw = false, err;
   try { fn(); } catch (e) { threw = true; err = e; }
   if (!threw) throw new AssertionError(message || 'Expected function to throw');
-  if (expected instanceof RegExp && !expected.test(err && err.message)) {
-    throw new AssertionError(message || ('Expected error matching ' + expected), err && err.message, expected);
+  if (expected == null) return;
+  if (expected instanceof RegExp) {
+    if (!expected.test(err && err.message))
+      throw new AssertionError(message || ('Expected error matching ' + expected), err && err.message, expected);
+  } else if (typeof expected === 'function') {
+    if (!(err instanceof expected))
+      throw new AssertionError(message || ('Expected error to be instance of ' + expected.name), err, expected);
+  } else if (typeof expected === 'object') {
+    for (const key of Object.keys(expected)) {
+      if (err == null || err[key] !== expected[key])
+        throw new AssertionError(message || ('Expected error.' + key + ' to equal ' + JSON.stringify(expected[key])), err && err[key], expected[key]);
+    }
   }
 }
 
