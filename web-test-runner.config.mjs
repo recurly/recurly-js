@@ -1,4 +1,7 @@
 import { playwrightLauncher } from '@web/test-runner-playwright';
+import { fromRollup } from '@web/dev-server-rollup';
+import rollupNodeResolve from '@rollup/plugin-node-resolve';
+import rollupCommonjs from '@rollup/plugin-commonjs';
 import { createRequire } from 'module';
 import {
   assertShimPlugin,
@@ -14,6 +17,9 @@ require('@recurly/public-api-test-server');
 
 const IS_REPORT_COVERAGE = process.env.REPORT_COVERAGE === 'true';
 
+const nodeResolve = fromRollup(rollupNodeResolve);
+const commonjs = fromRollup(rollupCommonjs);
+
 const PLAYWRIGHT_PRODUCTS = {
   Chrome: 'chromium',
   Firefox: 'firefox',
@@ -27,9 +33,11 @@ export default {
   plugins: [
     assertShimPlugin(),
     promiseShimPlugin(),
-    esbuildBundlePlugin(),
     jsonPlugin(),
+    esbuildBundlePlugin(),
     addExtensionPlugin(),
+    nodeResolve({ browser: true, preferBuiltins: false }),
+    commonjs({ exclude: ['**/sinon/**'] }),
   ],
   coverage: IS_REPORT_COVERAGE,
   coverageConfig: {

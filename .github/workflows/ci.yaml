@@ -69,6 +69,7 @@ jobs:
         if: ${{matrix.browser == 'Edge'}}
         run: |
           DRIVER=$(which msedgedriver 2>/dev/null || find /usr /opt -name msedgedriver -type f 2>/dev/null | head -1)
+          if [ -z "$DRIVER" ]; then echo "msedgedriver not found on PATH or in /usr, /opt"; exit 1; fi
           cp "$DRIVER" /tmp/msedgedriver
           chmod +x /tmp/msedgedriver
       - uses: actions/checkout@v6
