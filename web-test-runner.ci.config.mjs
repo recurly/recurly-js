@@ -69,6 +69,7 @@ try {
   const { SessionManager } = require(wtrWdPath.replace('/index.js', '/SessionManager.js'));
   const { validateBrowserResult } = require(wtrWdPath.replace('/index.js', '/coverage.js'));
   const _origSMStartSession = SessionManager.prototype.startSession;
+  const _origSMStopSession = SessionManager.prototype.stopSession;
   SessionManager.prototype.startSession = async function (id, url) {
     this._sessionWithPendingNav = id;
     try {
@@ -85,26 +86,32 @@ try {
     // If this session's navigation was still in-flight when stopSession was called,
     // we're recovering from a testsStartTimeout — navigate to about:blank to cancel
     // the stuck WebDriver command. Otherwise skip the navigation.
-    const wasNavigationPending = this._sessionWithPendingNav === id;
-    let testCoverage;
     try {
-      const rv = await this.driver.execute(
-        'return (function(){ return { testCoverage: window.__coverage__ }; })()'
-      );
-      if (validateBrowserResult(rv)) testCoverage = rv.testCoverage;
-    } catch { /* no coverage on BrowserStack */ }
-    this.urlMap.delete(id);
-    if (wasNavigationPending) {
-      // Cancel the stuck pending navigation by navigating to about:blank.
-      // The next startSession will navigate from about:blank, which iOS 26 Safari
-      // handles after the stuck command has been cleared.
+      const wasNavigationPending = this._sessionWithPendingNav === id;
+      let testCoverage;
       try {
-        await this.driver.navigateTo('about:blank');
-      } catch { /* ignore if navigation fails */ }
+        const rv = await this.driver.execute(
+          'return (function(){ return { testCoverage: window.__coverage__ }; })()'
+        );
+        if (validateBrowserResult(rv)) testCoverage = rv.testCoverage;
+      } catch { /* no coverage on BrowserStack */ }
+      this.urlMap.delete(id);
+      if (wasNavigationPending) {
+        // Cancel the stuck pending navigation by navigating to about:blank.
+        // The next startSession will navigate from about:blank, which iOS 26 Safari
+        // handles after the stuck command has been cleared.
+        try {
+          await this.driver.navigateTo('about:blank');
+        } catch { /* ignore if navigation fails */ }
+      }
+      // If not pending (clean success): don't navigate. The browser stays at testUrl_N,
+      // and the next startSession navigates testUrl_N → testUrl_N+1 (works on iOS 26).
+      return { testCoverage: this.config.coverage ? testCoverage : undefined };
+    } catch (e) {
+      // Fall back to original if WTR internals change (e.g. urlMap renamed/removed).
+      console.warn('[patch] SessionManager.stopSession patch failed, using original:', e.message);
+      return _origSMStopSession.call(this, id);
     }
-    // If not pending (clean success): don't navigate. The browser stays at testUrl_N,
-    // and the next startSession navigates testUrl_N → testUrl_N+1 (works on iOS 26).
-    return { testCoverage: this.config.coverage ? testCoverage : undefined };
   };
 } catch (e) {
   console.warn('[patch] Could not patch WTR session managers:', e.message);
