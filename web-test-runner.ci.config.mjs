@@ -1,17 +1,12 @@
 import { EventEmitter } from 'events';
+import { existsSync } from 'fs';
 import { playwrightLauncher } from '@web/test-runner-playwright';
 import { browserstackLauncher } from '@web/test-runner-browserstack';
-import { fromRollup } from '@web/dev-server-rollup';
-import rollupNodeResolve from '@rollup/plugin-node-resolve';
-import rollupCommonjs from '@rollup/plugin-commonjs';
 import { createRequire } from 'module';
 import { ciReporter } from './test/reporter/ci-reporter.mjs';
 import {
-  assertShimPlugin,
-  promiseShimPlugin,
-  esbuildBundlePlugin,
-  jsonPlugin,
-  addExtensionPlugin,
+  makePlugins,
+  PLAYWRIGHT_PRODUCTS,
   sharedConfig,
 } from './web-test-runner.shared.mjs';
 
@@ -41,7 +36,11 @@ try {
   // (via BrowserStack WebDriver) immediately rejects executeAsync with a 1ms timeout,
   // causing WTR to mark every passing session as failed. Swallow the error so real
   // test results stand; coverage is not collected on BrowserStack runs anyway.
-  const { IFrameManager } = require(wtrWdPath.replace('/index.js', '/IFrameManager.js'));
+  const iframeManagerPath = wtrWdPath.replace('/index.js', '/IFrameManager.js');
+  if (!existsSync(iframeManagerPath)) {
+    console.warn(`[patch] IFrameManager.js not found at ${iframeManagerPath} — skipping IFrameManager patch`);
+  } else {
+  const { IFrameManager } = require(iframeManagerPath);
   const _origStopSession = IFrameManager.prototype.stopSession;
   IFrameManager.prototype.stopSession = async function (id) {
     try {
@@ -52,6 +51,7 @@ try {
       return { testCoverage: undefined };
     }
   };
+  }
 
   // SessionManager.stopSession navigates to about:blank between test files. On iOS 26
   // (iPhone 17 Pro via BrowserStack) the next navigateTo(testUrl) call hangs whenever the
@@ -66,8 +66,13 @@ try {
   // because the stuck command clears the timing issue. If it is not pending (clean success),
   // we skip the navigation so the browser stays on the test page, and the next test's
   // navigateTo runs testUrl_N → testUrl_N+1 which iOS 26 Safari handles correctly.
-  const { SessionManager } = require(wtrWdPath.replace('/index.js', '/SessionManager.js'));
-  const { validateBrowserResult } = require(wtrWdPath.replace('/index.js', '/coverage.js'));
+  const sessionManagerPath = wtrWdPath.replace('/index.js', '/SessionManager.js');
+  const coveragePath = wtrWdPath.replace('/index.js', '/coverage.js');
+  if (!existsSync(sessionManagerPath) || !existsSync(coveragePath)) {
+    console.warn(`[patch] SessionManager.js or coverage.js not found — skipping SessionManager patch`);
+  } else {
+  const { SessionManager } = require(sessionManagerPath);
+  const { validateBrowserResult } = require(coveragePath);
   const _origSMStartSession = SessionManager.prototype.startSession;
   const _origSMStopSession = SessionManager.prototype.stopSession;
   SessionManager.prototype.startSession = async function (id, url) {
@@ -113,6 +118,7 @@ try {
       return _origSMStopSession.call(this, id);
     }
   };
+  }
 } catch (e) {
   console.warn('[patch] Could not patch WTR session managers:', e.message);
 }
@@ -128,14 +134,6 @@ const {
 const IS_REPORT_COVERAGE = REPORT_COVERAGE === 'true';
 const BUILD_NAME = GITHUB_RUN_ID || `local unit [${branchName()}]`;
 const BS_CAP = bsCapabilities[BROWSER];
-
-const PLAYWRIGHT_PRODUCTS = {
-  Chrome: 'chromium',
-  Firefox: 'firefox',
-};
-
-const nodeResolve = fromRollup(rollupNodeResolve);
-const commonjs = fromRollup(rollupCommonjs);
 
 function toBSCapabilities (cap) {
   const result = {
@@ -177,15 +175,7 @@ export default {
   ...sharedConfig,
   reporters: [ciReporter()],
   browsers: getBrowserLaunchers(),
-  plugins: [
-    assertShimPlugin(),
-    promiseShimPlugin(),
-    jsonPlugin(),
-    esbuildBundlePlugin(),
-    addExtensionPlugin(),
-    nodeResolve({ browser: true, preferBuiltins: false }),
-    commonjs({ exclude: ['**/sinon/**'] }),
-  ],
+  plugins: makePlugins(),
   coverage: IS_REPORT_COVERAGE,
   coverageConfig: {
     ...sharedConfig.coverageConfig,

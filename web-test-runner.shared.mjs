@@ -1,4 +1,7 @@
 import { build as esbuildBuild } from 'esbuild';
+import { fromRollup } from '@web/dev-server-rollup';
+import rollupNodeResolve from '@rollup/plugin-node-resolve';
+import rollupCommonjs from '@rollup/plugin-commonjs';
 import { existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -21,10 +24,22 @@ AssertionError.prototype.constructor = AssertionError;
 
 function deepEqual (a, b, strict) {
   if (a === b) return true;
-  if (a === null || b === null) return a === b;
+  if (a == null || b == null) return a === b;
   if (typeof a !== typeof b) return false;
+  if (a instanceof Date) return b instanceof Date && a.getTime() === b.getTime();
+  if (a instanceof RegExp) return b instanceof RegExp && String(a) === String(b);
   if (typeof a !== 'object' && typeof a !== 'function') return strict ? a === b : a == b;
   if (Array.isArray(a) !== Array.isArray(b)) return false;
+  if (a instanceof Map) {
+    if (!(b instanceof Map) || a.size !== b.size) return false;
+    for (const [k, v] of a) { if (!b.has(k) || !deepEqual(v, b.get(k), strict)) return false; }
+    return true;
+  }
+  if (a instanceof Set) {
+    if (!(b instanceof Set) || a.size !== b.size) return false;
+    for (const v of a) { if (!b.has(v)) return false; }
+    return true;
+  }
   const ka = Object.keys(a), kb = Object.keys(b);
   if (ka.length !== kb.length) return false;
   for (const k of ka) {
@@ -305,6 +320,27 @@ export function testRunnerHtml (testFramework) {
       </body>
     </html>
   `;
+}
+
+// ---------- shared browser / plugin config ----------
+
+export const PLAYWRIGHT_PRODUCTS = {
+  Chrome: 'chromium',
+  Firefox: 'firefox',
+};
+
+export function makePlugins () {
+  const nodeResolve = fromRollup(rollupNodeResolve);
+  const commonjs = fromRollup(rollupCommonjs);
+  return [
+    assertShimPlugin(),
+    promiseShimPlugin(),
+    jsonPlugin(),
+    esbuildBundlePlugin(),
+    addExtensionPlugin(),
+    nodeResolve({ browser: true, preferBuiltins: false }),
+    commonjs({ exclude: ['**/sinon/**'] }),
+  ];
 }
 
 // ---------- shared config defaults ----------

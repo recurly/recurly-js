@@ -66,7 +66,7 @@ jobs:
       - uses: browser-actions/setup-firefox@v1
         if: ${{matrix.browser == 'Firefox'}}
       - name: Set up EdgeDriver
-        if: ${{matrix.browser == 'Edge'}}
+        if: ${{matrix.browser == 'Edge' && matrix.test-type == 'End-to-end'}}
         run: |
           DRIVER=$(which msedgedriver 2>/dev/null || find /usr /opt -name msedgedriver -type f 2>/dev/null | head -1)
           if [ -z "$DRIVER" ]; then echo "msedgedriver not found on PATH or in /usr, /opt"; exit 1; fi
@@ -224,5 +224,4 @@ jobs:
           echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- \`${{github.sha}}\`" >> $GITHUB_STEP_SUMMARY
-          $(${{github.event_name == 'pull_request'}} = true) && echo "- \`pull-request--${{github.event.number}}\`" >> $GITHUB_STEP_SUMMARY
-          exit 0
+          [[ "${{ github.event_name }}" == "pull_request" ]] && echo "- \`pull-request--${{github.event.number}}\`" >> $GITHUB_STEP_SUMMARY || true
