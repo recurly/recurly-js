@@ -58,6 +58,15 @@ describe('Recurly.AlternativePaymentMethods', () => {
           }));
           paymentMethods.start();
         });
+
+        it('does not make any request to the API', done => {
+          sandbox.stub(recurly.request, 'get').resolves({});
+          paymentMethods = recurly.AlternativePaymentMethods(params);
+          paymentMethods.on('error', () => assertDone(done, () => {
+            assert.equal(recurly.request.get.called, false);
+          }));
+          paymentMethods.start();
+        });
       };
 
       context('when does not includes any gateway config', () => {
@@ -129,7 +138,7 @@ describe('Recurly.AlternativePaymentMethods', () => {
         .catch((err) => done(err));
     });
 
-    context('when RA responds with an unsupported Gateway', () => {
+    context('when the gatewayType is an unsupported Gateway', () => {
       let response;
 
       beforeEach(() => {
@@ -151,7 +160,7 @@ describe('Recurly.AlternativePaymentMethods', () => {
       });
     });
 
-    context('when RA responds with Adyen', () => {
+    context('when the gatewayType is Adyen', () => {
       let response;
 
       beforeEach(() => {

@@ -96,7 +96,7 @@ function doesNotThrow (fn, message) {
 }
 
 function match (actual, regexp, message) {
-  if (!regexp.test(actual)) throw new AssertionError(message || (actual + ' matched ' + regexp), actual, regexp);
+  if (!regexp.test(actual)) throw new AssertionError(message || (actual + ' did not match ' + regexp), actual, regexp);
 }
 
 const assert = ok;

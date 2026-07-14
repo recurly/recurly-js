@@ -6,7 +6,6 @@ wtr = $(bin)/wtr
 tsc = $(bin)/tsc
 dtslint = $(bin)/dtslint
 build_lib  = node scripts/esbuild/build.js
-build_test = node scripts/esbuild/build-test.js
 serve      = node scripts/esbuild/serve.js
 src = index.js $(shell find . -type f -name '*.js' ! -path './build/*' ! -path './node_modules/*' -o -name '*.css' ! -path './build/*' ! -path './node_modules/*')
 tests = $(shell find test -type f -name '*.js')
@@ -22,8 +21,6 @@ build/recurly.js: index.js $(src) node_modules
 	@$(build_lib)
 build/recurly.min.js: build/recurly.js
 	@$(build_lib) --minify
-build/test-unit.js: $(src) $(tests)
-	@$(build_test)
 
 test: test-unit test-e2e
 test-ci: test-unit-ci test-e2e-ci

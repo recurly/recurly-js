@@ -17,7 +17,7 @@ import {
 
 // BrowserStack registers a close listener per concurrent session on the shared
 // WebSocket; raise the limit to avoid MaxListenersExceededWarning.
-EventEmitter.defaultMaxListeners = 0; // 0 = unlimited; avoids warning with many concurrent BrowserStack sessions
+EventEmitter.defaultMaxListeners = 500; // avoids MaxListenersExceededWarning with many concurrent BrowserStack sessions
 
 const require = createRequire(import.meta.url);
 const { projectName, capabilities: bsCapabilities } = require('./test/conf/browserstack.js');
@@ -30,6 +30,8 @@ require('@recurly/public-api-test-server');
 // session as failed (session.passed = false) even though all test assertions passed.
 // Patching stopSession to swallow the error lets the actual test results stand;
 // we just skip coverage cleanup (coverage is not collected on BrowserStack runs anyway).
+// TODO: remove these patches once @web/test-runner-webdriver natively handles the
+// iOS Safari executeAsync rejection — track at https://github.com/modernweb-dev/web/issues
 try {
   // @web/test-runner-webdriver restricts its exports map to the package root, so we
   // resolve the package's CJS entry and navigate to sibling files from there.

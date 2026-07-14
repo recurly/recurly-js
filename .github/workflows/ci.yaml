@@ -121,7 +121,7 @@ jobs:
           BROWSER_STACK_ACCESS_KEY: ${{secrets.BROWSER_STACK_ACCESS_KEY}}
         with:
           timeout_minutes: 12
-          max_attempts: 1
+          max_attempts: 2
           command: make test-unit-ci
       - name: End-to-end test
         if: ${{matrix.test-type == 'End-to-end'}}
@@ -132,7 +132,7 @@ jobs:
           BROWSER_STACK_ACCESS_KEY: ${{secrets.BROWSER_STACK_ACCESS_KEY}}
         with:
           timeout_minutes: 16
-          max_attempts: 1
+          max_attempts: 2
           command: make test-e2e-ci
       - name: Upload visual regression artifacts
         if: ${{failure() && matrix.test-type == 'End-to-end'}}
