@@ -18,6 +18,15 @@ function tabsThroughTheForm () {
     if (environmentIs(DEVICES.IOS)) {
       // iOS requires that each iframe be interacted with before focus directives succeed
       const frames = await browser.$$('iframe');
+
+      // iOS 26 (iPhone 17 Pro): the keyboard "Next" button doesn't advance focus past
+      // a single-iframe CVV element to arbitrary-input-1 — the focus cycles indefinitely.
+      // Multi-iframe configurations (CardElement, distinct card Elements) are unaffected.
+      // Skip until BrowserStack Appium support for iOS 26 single-iframe tab order matures.
+      if (process.env.BROWSER === 'iOS-26-Remote' && frames.length <= 1) {
+        this.skip();
+        return;
+      }
       for (const frame of frames) {
         await browser.switchToFrame(frame);
         await browser.switchToFrame(null);

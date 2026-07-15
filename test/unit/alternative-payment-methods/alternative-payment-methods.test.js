@@ -59,13 +59,13 @@ describe('Recurly.AlternativePaymentMethods', () => {
           paymentMethods.start();
         });
 
-        it('does not make any request to RA', done => {
-          sandbox.stub(recurly.request, 'get').resolves({ });
+        it('does not make any request to the API', done => {
+          sandbox.stub(recurly.request, 'get').resolves({});
           paymentMethods = recurly.AlternativePaymentMethods(params);
-          paymentMethods.start()
-            .finally(() => assertDone(done, () => {
-              assert.equal(recurly.request.get.called, false);
-            }));
+          paymentMethods.on('error', () => assertDone(done, () => {
+            assert.equal(recurly.request.get.called, false);
+          }));
+          paymentMethods.start();
         });
       };
 
@@ -105,6 +105,7 @@ describe('Recurly.AlternativePaymentMethods', () => {
 
     describe('destroy', () => {
       it('removes the web component', done => {
+        sandbox.stub(recurly.request, 'get').rejects(new Error('not-found'));
         paymentMethods = recurly.AlternativePaymentMethods(params);
         paymentMethods.start()
           .then(() => {
@@ -137,7 +138,7 @@ describe('Recurly.AlternativePaymentMethods', () => {
         .catch((err) => done(err));
     });
 
-    context('when RA responds with an unsupported Gateway', () => {
+    context('when the gatewayType is an unsupported Gateway', () => {
       let response;
 
       beforeEach(() => {
@@ -159,7 +160,7 @@ describe('Recurly.AlternativePaymentMethods', () => {
       });
     });
 
-    context('when RA responds with Adyen', () => {
+    context('when the gatewayType is Adyen', () => {
       let response;
 
       beforeEach(() => {

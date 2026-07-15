@@ -10,7 +10,7 @@ import BraintreeLoader from '../../lib/util/braintree-loader';
 import { Risk } from '../../lib/recurly/risk';
 import filterSupportedNetworks from '../../lib/recurly/apple-pay/util/filter-supported-networks';
 
-const infoFixture = require('@recurly/public-api-test-server/fixtures/apple_pay/info');
+import infoFixture from '@recurly/public-api-test-server/fixtures/apple_pay/info';
 
 const INTEGRATION = {
   DIRECT: 'Direct Integration',
@@ -241,9 +241,10 @@ function applePayTest (integrationType) {
       });
 
       describe('when given options.pricing', function () {
-        beforeEach(function () {
+        beforeEach(function (done) {
           const pricing = this.pricing = this.recurly.Pricing.Checkout();
           this.applePay = this.recurly.ApplePay(merge({}, validOpts, { pricing }));
+          this.applePay.ready(done);
         });
 
         it('binds a pricing instance', function (done) {
@@ -825,7 +826,7 @@ function applePayTest (integrationType) {
                 displayName: 'My Great Store',
               }
             }));
-            applePay.ready(ensureDone(done, () => {
+            applePay.ready(() => {
               applePay.session.on('completeMerchantValidation', ensureDone(done, () => {
                 assert.ok(applePay.braintree.applePay.performValidation.calledWith({
                   validationURL: 'valid-test-url',
@@ -833,7 +834,7 @@ function applePayTest (integrationType) {
                 }));
               }));
               applePay.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
-            }));
+            });
           });
 
           it('calls the completeMerchantValidation with the merchant session', function (done) {

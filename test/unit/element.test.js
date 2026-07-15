@@ -80,18 +80,21 @@ describe('Element', function () {
 
       element.once('attach', () => done());
       element.attach(validParentElement);
+      element.bus.send(element.messageName('ready'));
     });
 
     it('accepts a string corresponding to an HTMLElement via selector', function (done) {
       const { element, validParentSelector } = this;
       element.once('attach', () => done());
       element.attach(validParentSelector);
+      element.bus.send(element.messageName('ready'));
     });
 
     it('returns the instance', function (done) {
       const { element, validParentElement } = this;
       element.on('attach', () => done());
       assert.strictEqual(element.attach(validParentElement), element);
+      element.bus.send(element.messageName('ready'));
     });
 
     it('attaches the element.container to the DOM', function (done) {
@@ -102,6 +105,7 @@ describe('Element', function () {
         assertElementAttachedTo(element, validParentElement);
         done();
       });
+      element.bus.send(element.messageName('ready'));
     });
 
     it('adds the iframe window to the bus', function (done) {
@@ -111,6 +115,7 @@ describe('Element', function () {
         assert(~element.bus.recipients.indexOf(element.window));
         done();
       });
+      element.bus.send(element.messageName('ready'));
     });
 
     it('emits the \'attach\' event', function (done) {
@@ -120,6 +125,7 @@ describe('Element', function () {
         done();
       });
       element.attach(validParentElement);
+      element.bus.send(element.messageName('ready'));
     });
 
     describe('when the element is already attached', function () {
@@ -159,6 +165,7 @@ describe('Element', function () {
             assertElementAttachedTo(element, validParentElementTwo);
             done();
           });
+          element.bus.send(element.messageName('ready'));
         });
 
         it('returns the instance', function (done) {
@@ -170,6 +177,7 @@ describe('Element', function () {
           });
           assert.strictEqual(attachSpy(validParentElement), element);
           assert.strictEqual(attachSpy(validParentElementTwo), element);
+          element.bus.send(element.messageName('ready'));
         });
       });
     });
@@ -510,6 +518,7 @@ describe('Element', function () {
       });
       element.attach(validParentElement);
       assertElementAttaching();
+      element.bus.send(element.messageName('ready'));
     });
 
     it('returns false when the element has not started attaching', function () {
@@ -524,6 +533,7 @@ describe('Element', function () {
         done();
       });
       element.attach(validParentElement);
+      element.bus.send(element.messageName('ready'));
     });
   });
 
@@ -736,9 +746,11 @@ describe('Element', function () {
 
 function attachElement () {
   beforeEach(function (done) {
-    const { element, validParentElement } = this;
+    const element = this.element;
+    const { validParentElement } = this;
     element.once('attach', () => done());
     element.attach(validParentElement);
+    element.bus.send(element.messageName('ready'));
   });
 }
 

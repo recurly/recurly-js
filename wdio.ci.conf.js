@@ -1,6 +1,8 @@
 const { spawnSync } = require('child_process');
+const { mkdirSync } = require('fs');
+const path = require('path');
 const branchName = require('current-git-branch');
-const { config: defaultConfig, isMobile, visualService } = require('./wdio.conf');
+const { config: defaultConfig, isMobile, isEdge, browserName, visualService } = require('./wdio.conf');
 const {
   projectName,
   capabilities: browserStackCapabilities
@@ -65,17 +67,35 @@ if (useBrowserstack) {
 const config = {
   ...defaultConfig,
   ...{
+    logLevel: 'warn',
     capabilities: [
       {
-        browserName: BROWSER
+        browserName: browserName(),
+        ...(isEdge() && {
+          'ms:edgeOptions': {
+            args: ['--no-sandbox', '--disable-dev-shm-usage']
+          }
+        })
       }
     ],
     baseUrl: 'http://localhost:9877',
     maxInstances: 1,
-    services: [visualService()],
+    reporters: [['spec', { onlyFailures: true }]],
+    services: [
+      isEdge() ? 'edgedriver' : null,
+      visualService()
+    ].filter(Boolean),
     onPrepare: () => {
       if (useBrowserstack && isMobile()) {
         process.env.API_PROXY = 'http://bs-local.com:9877/api-proxy';
+        // checkBaselineImageExists (webdriver-image-comparison) uses writeFileSync without
+        // mkdirp, so it can't create nested tag subdirs on first run. Pre-create them here
+        // so autoSaveBaseline can copy actual → baseline without ENOENT.
+        const deviceSlug = BROWSER_STACK_CAPABILITY.deviceName.toLowerCase().replace(/ /g, '_');
+        const baselineFolder = visualService()[1].baselineFolder;
+        for (const sub of ['elements', 'hosted-fields']) {
+          mkdirSync(path.join(baselineFolder, deviceSlug, BROWSER, sub), { recursive: true });
+        }
       }
       require('@recurly/public-api-test-server');
     }

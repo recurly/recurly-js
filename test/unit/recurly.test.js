@@ -36,7 +36,7 @@ describe('Recurly', function () {
     it('is the Recurly constructor', function () {
       const { recurly } = this;
       assert.strictEqual(recurly.Recurly, recurly.constructor);
-      assert(recurly.Recurly() instanceof Recurly);
+      assert(new recurly.Recurly() instanceof Recurly);
     });
   });
 
@@ -132,6 +132,11 @@ describe('Recurly', function () {
               recurly.destroy();
               done();
             });
+          });
+
+          // Simulate hosted fields becoming ready so recurly.ready() fires
+          recurly.hostedFields.fields.forEach(({ type }) => {
+            recurly.bus.send('hostedField:ready', { type });
           });
         });
       });

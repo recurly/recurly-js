@@ -157,7 +157,7 @@ describe('Pay with Google', function () {
       });
     });
 
-    context('when there are no availability to pay with Google', function () {
+    context('when there is no availability to pay with Google', function () {
       beforeEach(function () {
         this.stubGoogleAPIOpts.isReadyToPay = Promise.resolve({ response: false });
       });
@@ -174,7 +174,7 @@ describe('Pay with Google', function () {
       });
     });
 
-    context('when there are availability to pay with Google', function () {
+    context('when there is availability to pay with Google', function () {
       it('creates the Google Pay button with the button options provided', function (done) {
         this.stubGoogleApi();
 
