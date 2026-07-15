@@ -8,7 +8,7 @@ export async function getBrowserstackUrl (username, accessKey, buildName) {
     const builds = await res.json();
     const match = builds.find(b => b.automation_build.name === buildName);
     return match
-      ? `https://automate.browserstack.com/builds/${match.automation_build.hashed_id}`
+      ? `https://automate.browserstack.com/dashboard/v2/builds/${match.automation_build.hashed_id}`
       : null;
   } catch {
     return null;

@@ -134,12 +134,26 @@ jobs:
           timeout_minutes: 16
           max_attempts: 2
           command: make test-e2e-ci
-      - name: Log BrowserStack build URL
+      - name: Upload visual regression artifacts
+        if: ${{failure() && matrix.test-type == 'End-to-end'}}
+        uses: actions/upload-artifact@v7
+        with:
+          name: visual-regression-${{matrix.browser}}-${{github.run_id}}
+          path: tmp/
+          if-no-files-found: ignore
+      - name: Summarize
         if: ${{always()}}
         env:
           BROWSER_STACK_USERNAME: ${{secrets.BROWSER_STACK_USERNAME}}
           BROWSER_STACK_ACCESS_KEY: ${{secrets.BROWSER_STACK_ACCESS_KEY}}
         run: |
+          STATUS=$([[ "${{job.status}}" == "success" ]] && echo "✅ Passed" || echo "❌ Failed")
+          {
+            echo "## ${{matrix.test-type}} — ${{matrix.browser}}"
+            echo ""
+            echo "${STATUS}"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
           TEST_TYPE=$([[ "${{matrix.test-type}}" == "Unit" ]] && echo "unit" || echo "e2e")
           BUILD_NAME="${GITHUB_RUN_ID}/${TEST_TYPE}/${{matrix.browser}}"
 
@@ -159,22 +173,16 @@ jobs:
                 if (m) process.stdout.write(m.automation_build.hashed_id);
               } catch {}
             });
-          ")
+          " || true)
 
           if [[ -n "${BUILD_ID}" ]]; then
-            URL="https://automate.browserstack.com/builds/${BUILD_ID}"
+            URL="https://automate.browserstack.com/dashboard/v2/builds/${BUILD_ID}"
             echo "BrowserStack build: ${URL}"
-            echo "### BrowserStack" >> "${GITHUB_STEP_SUMMARY}"
-            echo "" >> "${GITHUB_STEP_SUMMARY}"
-            echo "[${{matrix.test-type}} (${{matrix.browser}})](${URL})" >> "${GITHUB_STEP_SUMMARY}"
+            {
+              echo ""
+              echo "[View on BrowserStack](${URL})"
+            } >> "${GITHUB_STEP_SUMMARY}"
           fi
-      - name: Upload visual regression artifacts
-        if: ${{failure() && matrix.test-type == 'End-to-end'}}
-        uses: actions/upload-artifact@v7
-        with:
-          name: visual-regression-${{matrix.browser}}-${{github.run_id}}
-          path: tmp/
-          if-no-files-found: ignore
   integration_test:
     name: Integration test with react-recurly
     runs-on: ubuntu-latest
@@ -200,6 +208,20 @@ jobs:
       - test_remote
       - integration_test
     steps:
+      - name: Summarize
+        if: ${{always()}}
+        run: |
+          {
+            echo "## Required Checks"
+            echo ""
+            echo "| Check | Status |"
+            echo "| ----- | ------ |"
+            echo "| Lint | ${{needs.lint.result == 'success' && '✅' || '❌'}} \`${{needs.lint.result}}\` |"
+            echo "| Analyze | ${{needs.analyze.result == 'success' && '✅' || '❌'}} \`${{needs.analyze.result}}\` |"
+            echo "| Local tests | ${{needs.test_local.result == 'success' && '✅' || '❌'}} \`${{needs.test_local.result}}\` |"
+            echo "| Remote tests | ${{needs.test_remote.result == 'success' && '✅' || '❌'}} \`${{needs.test_remote.result}}\` |"
+            echo "| Integration test | ${{needs.integration_test.result == 'success' && '✅' || '❌'}} \`${{needs.integration_test.result}}\` |"
+          } >> "${GITHUB_STEP_SUMMARY}"
       - name: Check status for pull requests
         if: |-
           ${{
@@ -254,6 +276,7 @@ jobs:
           parent: false
           process_gcloudignore: false
       - name: Summarize
+        if: ${{always()}}
         run: |
           echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
