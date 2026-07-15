@@ -134,6 +134,40 @@ jobs:
           timeout_minutes: 16
           max_attempts: 2
           command: make test-e2e-ci
+      - name: Log BrowserStack build URL
+        if: ${{always()}}
+        env:
+          BROWSER_STACK_USERNAME: ${{secrets.BROWSER_STACK_USERNAME}}
+          BROWSER_STACK_ACCESS_KEY: ${{secrets.BROWSER_STACK_ACCESS_KEY}}
+        run: |
+          TEST_TYPE=$([[ "${{matrix.test-type}}" == "Unit" ]] && echo "unit" || echo "e2e")
+          BUILD_NAME="${GITHUB_RUN_ID}/${TEST_TYPE}/${{matrix.browser}}"
+
+          RESPONSE=$(curl -sf -u "${BROWSER_STACK_USERNAME}:${BROWSER_STACK_ACCESS_KEY}" \
+            "https://api.browserstack.com/automate/builds.json?limit=20" || true)
+
+          [[ -z "${RESPONSE}" ]] && exit 0
+
+          export BS_BUILD_NAME="${BUILD_NAME}"
+          BUILD_ID=$(echo "${RESPONSE}" | node -e "
+            let d = '';
+            process.stdin.on('data', c => d += c);
+            process.stdin.on('end', () => {
+              try {
+                const builds = JSON.parse(d);
+                const m = builds.find(b => b.automation_build.name === process.env.BS_BUILD_NAME);
+                if (m) process.stdout.write(m.automation_build.hashed_id);
+              } catch {}
+            });
+          ")
+
+          if [[ -n "${BUILD_ID}" ]]; then
+            URL="https://automate.browserstack.com/builds/${BUILD_ID}"
+            echo "BrowserStack build: ${URL}"
+            echo "### BrowserStack" >> "${GITHUB_STEP_SUMMARY}"
+            echo "" >> "${GITHUB_STEP_SUMMARY}"
+            echo "[${{matrix.test-type}} (${{matrix.browser}})](${URL})" >> "${GITHUB_STEP_SUMMARY}"
+          fi
       - name: Upload visual regression artifacts
         if: ${{failure() && matrix.test-type == 'End-to-end'}}
         uses: actions/upload-artifact@v7

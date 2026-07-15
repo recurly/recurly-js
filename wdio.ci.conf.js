@@ -22,6 +22,7 @@ const useBrowserstack = !!BROWSER_STACK_CAPABILITY;
 
 spawnSync('mkdir', ['-p', 'build/reports/e2e/log'] );
 
+
 let driverConfig;
 
 if (useBrowserstack) {
@@ -34,7 +35,7 @@ if (useBrowserstack) {
           ...BROWSER_STACK_CAPABILITY,
           ...{
             projectName,
-            buildName: `${GITHUB_RUN_ID || `Local e2e [${branchName()}]`}`,
+            buildName: GITHUB_RUN_ID ? `${GITHUB_RUN_ID}/e2e/${BROWSER}` : `Local e2e [${branchName()}]`,
             seleniumVersion: '3.141.59',
             appiumVersion: '1.17.0',
             local: true,
@@ -98,6 +99,12 @@ const config = {
         }
       }
       require('@recurly/public-api-test-server');
+    },
+    onComplete: async () => {
+      if (!useBrowserstack || !GITHUB_RUN_ID) return;
+      const { getBrowserstackUrl } = await import('./test/reporter/support.mjs');
+      const url = await getBrowserstackUrl(user, key, `${GITHUB_RUN_ID}/e2e/${BROWSER}`);
+      if (url) console.log(`\nBrowserStack build: ${url}`);
     }
   },
   ...driverConfig
