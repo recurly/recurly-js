@@ -1,6 +1,7 @@
 import { relative } from 'path';
 import { bold, cyan } from 'nanocolors';
 import { formatError } from '@web/test-runner';
+import { getBrowserstackUrl } from './support.mjs';
 
 // Strip ANSI color codes and collapse to a single line for GHA annotations.
 // ::error:: values can't contain newlines, so we collapse them to ' | '.
@@ -83,7 +84,7 @@ export function ciReporter () {
       return [];
     },
 
-    onTestRunFinished ({ sessions }) {
+    async onTestRunFinished ({ sessions }) {
       // Deduplicate test counts across browsers: each logical test is counted once
       // regardless of how many browsers it ran in.
       let passed = 0, failed = 0, skipped = 0;
@@ -115,6 +116,12 @@ export function ciReporter () {
         : `✓ ${fileCount}/${fileCount} test files passed | ${parts.join(', ')}`;
 
       process.stdout.write(`\n${line}\n\n`);
+
+      const { BROWSER_STACK_USERNAME, BROWSER_STACK_ACCESS_KEY, GITHUB_RUN_ID, BROWSER } = process.env;
+      if (BROWSER_STACK_USERNAME && BROWSER_STACK_ACCESS_KEY && GITHUB_RUN_ID) {
+        const url = await getBrowserstackUrl(BROWSER_STACK_USERNAME, BROWSER_STACK_ACCESS_KEY, `${GITHUB_RUN_ID}/unit/${BROWSER}`);
+        if (url) process.stdout.write(`BrowserStack build: ${url}\n`);
+      }
     },
   };
 }

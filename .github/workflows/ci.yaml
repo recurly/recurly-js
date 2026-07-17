@@ -141,6 +141,48 @@ jobs:
           name: visual-regression-${{matrix.browser}}-${{github.run_id}}
           path: tmp/
           if-no-files-found: ignore
+      - name: Summarize
+        if: ${{always()}}
+        env:
+          BROWSER_STACK_USERNAME: ${{secrets.BROWSER_STACK_USERNAME}}
+          BROWSER_STACK_ACCESS_KEY: ${{secrets.BROWSER_STACK_ACCESS_KEY}}
+        run: |
+          STATUS=$([[ "${{job.status}}" == "success" ]] && echo "✅ Passed" || echo "❌ Failed")
+          {
+            echo "## ${{matrix.test-type}} — ${{matrix.browser}}"
+            echo ""
+            echo "${STATUS}"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+          TEST_TYPE=$([[ "${{matrix.test-type}}" == "Unit" ]] && echo "unit" || echo "e2e")
+          BUILD_NAME="${GITHUB_RUN_ID}/${TEST_TYPE}/${{matrix.browser}}"
+
+          RESPONSE=$(curl -sf -u "${BROWSER_STACK_USERNAME}:${BROWSER_STACK_ACCESS_KEY}" \
+            "https://api.browserstack.com/automate/builds.json?limit=20" || true)
+
+          [[ -z "${RESPONSE}" ]] && exit 0
+
+          export BS_BUILD_NAME="${BUILD_NAME}"
+          BUILD_ID=$(echo "${RESPONSE}" | node -e "
+            let d = '';
+            process.stdin.on('data', c => d += c);
+            process.stdin.on('end', () => {
+              try {
+                const builds = JSON.parse(d);
+                const m = builds.find(b => b.automation_build.name === process.env.BS_BUILD_NAME);
+                if (m) process.stdout.write(m.automation_build.hashed_id);
+              } catch {}
+            });
+          " || true)
+
+          if [[ -n "${BUILD_ID}" ]]; then
+            URL="https://automate.browserstack.com/dashboard/v2/builds/${BUILD_ID}"
+            echo "BrowserStack build: ${URL}"
+            {
+              echo ""
+              echo "[View on BrowserStack](${URL})"
+            } >> "${GITHUB_STEP_SUMMARY}"
+          fi
   integration_test:
     name: Integration test with react-recurly
     runs-on: ubuntu-latest
@@ -166,6 +208,20 @@ jobs:
       - test_remote
       - integration_test
     steps:
+      - name: Summarize
+        if: ${{always()}}
+        run: |
+          {
+            echo "## Required Checks"
+            echo ""
+            echo "| Check | Status |"
+            echo "| ----- | ------ |"
+            echo "| Lint | ${{needs.lint.result == 'success' && '✅' || '❌'}} \`${{needs.lint.result}}\` |"
+            echo "| Analyze | ${{needs.analyze.result == 'success' && '✅' || '❌'}} \`${{needs.analyze.result}}\` |"
+            echo "| Local tests | ${{needs.test_local.result == 'success' && '✅' || '❌'}} \`${{needs.test_local.result}}\` |"
+            echo "| Remote tests | ${{needs.test_remote.result == 'success' && '✅' || '❌'}} \`${{needs.test_remote.result}}\` |"
+            echo "| Integration test | ${{needs.integration_test.result == 'success' && '✅' || '❌'}} \`${{needs.integration_test.result}}\` |"
+          } >> "${GITHUB_STEP_SUMMARY}"
       - name: Check status for pull requests
         if: |-
           ${{
@@ -220,6 +276,7 @@ jobs:
           parent: false
           process_gcloudignore: false
       - name: Summarize
+        if: ${{always()}}
         run: |
           echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

@@ -132,7 +132,9 @@ const {
 } = process.env;
 
 const IS_REPORT_COVERAGE = REPORT_COVERAGE === 'true';
-const BUILD_NAME = GITHUB_RUN_ID || `local unit [${branchName()}]`;
+const BUILD_NAME = GITHUB_RUN_ID
+  ? `${GITHUB_RUN_ID}/unit/${BROWSER}`
+  : `local unit [${branchName()}]`;
 const BS_CAP = bsCapabilities[BROWSER];
 
 function toBSCapabilities (cap) {
