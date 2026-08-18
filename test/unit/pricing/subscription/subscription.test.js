@@ -635,6 +635,23 @@ describe('Recurly.Pricing.Subscription', function () {
         });
     });
 
+    // A percentage discount landing on a half cent must round up to the nearest
+    // cent, matching the API which computes the discount in integer cents.
+    // 15% of $34.90 is 523.5¢, so the discount is $5.24.
+    it('rounds a half-cent rate discount up to the nearest cent, matching the API', function (done) {
+      this.pricing
+        .plan('pct-tie-plan', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .coupon('coop-pct-all')
+        .done(function (price) {
+          assert.equal(price.now.discount, '5.24');
+          done();
+        });
+    });
+
     it('should apply a single-use coupon correctly', function (done) {
       this.pricing
         .plan('basic', { quantity: 1 })

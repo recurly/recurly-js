@@ -873,6 +873,21 @@ describe('CheckoutPricing', function () {
           });
       });
 
+      // A percentage discount landing on a half cent must round up to the
+      // nearest cent, matching the API which computes the discount in integer
+      // cents. 15% of $34.90 is 523.5¢, so the discount is $5.24.
+      it('rounds a half-cent rate discount up to the nearest cent, matching the API', function (done) {
+        this.pricing
+          .adjustment({ amount: 34.90 })
+          .coupon('coop-pct-adjustments')
+          .reprice()
+          .done(price => {
+            assert.equal(price.now.discount, 5.24);
+            assert.equal(price.now.adjustments, 34.90);
+            done();
+          });
+      });
+
       describe('given a CheckoutPricing containing multiple subscriptions and adjustments', () => {
         beforeEach(function (done) {
           subscriptionPricingFactory('basic', this.recurly, sub => {
