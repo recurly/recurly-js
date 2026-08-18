@@ -1,0 +1,17 @@
+{
+  "code": "pct-tie-plan",
+  "name": "Pct Tie Plan",
+  "period": {
+    "interval": "months",
+    "length": 1
+  },
+  "price": {
+    "USD": {
+      "unit_amount": 34.90,
+      "symbol": "$",
+      "setup_fee": 0
+    }
+  },
+  "addons": [],
+  "tax_exempt": false
+}

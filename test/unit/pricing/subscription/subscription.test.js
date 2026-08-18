@@ -697,6 +697,20 @@ describe('Recurly.Pricing.Subscription', function () {
         });
     });
 
+    it('rounds a half-cent rate discount up to the nearest cent, matching the API', function (done) {
+      this.pricing
+        .plan('pct-tie-plan', { quantity: 1 })
+        .address({
+          country: 'US',
+          postal_code: 'NoTax'
+        })
+        .coupon('coop-pct-all')
+        .done(function (price) {
+          assert.equal(price.now.discount, '5.24');
+          done();
+        });
+    });
+
     it('should apply a single-use coupon correctly', function (done) {
       this.pricing
         .plan('basic', { quantity: 1 })
