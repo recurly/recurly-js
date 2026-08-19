@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.44.1](https://github.com/recurly/recurly-js/tree/v4.44.1) (2026-08-19)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.44.0...v4.44.1)
+
+
+**Merged Pull Requests**
+
+- fix: Round percentage coupon discounts in integer cents to match API [#993](https://github.com/recurly/recurly-js/pull/993) ([McTraque](https://github.com/McTraque))
+- Worktree ci log output [#989](https://github.com/recurly/recurly-js/pull/989) ([chrissrogers](https://github.com/chrissrogers))
+
+
+
 ## [v4.44.0](https://github.com/recurly/recurly-js/tree/v4.44.0) (2026-07-06)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.43.0...v4.44.0)
@@ -1207,8 +1219,6 @@
 **Merged Pull Requests**
 
 - Fixes Braintree authentication amount display [#556](https://github.com/recurly/recurly-js/pull/556) ([chrissrogers](https://github.com/chrissrogers))
-- Renders Wirecard 3DS challenge as an iframe instead of new window [#555](https://github.com/recurly/recurly-js/pull/555) ([chrissrogers](https://github.com/chrissrogers))
-- adds lint step to travis-ci .yml [#554](https://github.com/recurly/recurly-js/pull/554) ([dbrudner](https://github.com/dbrudner))
 - runs npm audit fix [#550](https://github.com/recurly/recurly-js/pull/550) ([dbrudner](https://github.com/dbrudner))
 
 
@@ -1737,7 +1747,6 @@
 - Enables CORS by default [#269](https://github.com/recurly/recurly-js/pull/269) ([chrissrogers](https://github.com/chrissrogers))
 - Remove UsageAddons from Calculations [#268](https://github.com/recurly/recurly-js/pull/268) ([SteveDugas](https://github.com/SteveDugas))
 - Multiple instances [#267](https://github.com/recurly/recurly-js/pull/267) ([chrissrogers](https://github.com/chrissrogers))
-- Fixes bug around initial pricing not respecting coupons [#264](https://github.com/recurly/recurly-js/pull/264) ([chrissrogers](https://github.com/chrissrogers))
 - Emits a pricing error when a coupon is not found [#263](https://github.com/recurly/recurly-js/pull/263) ([chrissrogers](https://github.com/chrissrogers))
 - Version 4.0.4 [#258](https://github.com/recurly/recurly-js/pull/258) ([snodgrass23](https://github.com/snodgrass23))
 - Adding data-collector module for fraud checking [#254](https://github.com/recurly/recurly-js/pull/254) ([snodgrass23](https://github.com/snodgrass23))
@@ -1923,7 +1932,6 @@
 
 - Don't try to calculate addons if there aren't any addons defined for … [#272](https://github.com/recurly/recurly-js/pull/272) ([SteveDugas](https://github.com/SteveDugas))
 - Remove UsageAddons from Calculations [#268](https://github.com/recurly/recurly-js/pull/268) ([SteveDugas](https://github.com/SteveDugas))
-- Fixes bug around initial pricing not respecting coupons [#264](https://github.com/recurly/recurly-js/pull/264) ([chrissrogers](https://github.com/chrissrogers))
 - Emits a pricing error when a coupon is not found [#263](https://github.com/recurly/recurly-js/pull/263) ([chrissrogers](https://github.com/chrissrogers))
 
 **Closed Issues**
