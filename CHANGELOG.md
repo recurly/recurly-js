@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.44.2](https://github.com/recurly/recurly-js/tree/v4.44.2) (2026-08-21)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.44.1...v4.44.2)
+
+
+**Merged Pull Requests**
+
+- fix: Round percentage coupon discounts to whole cents to match the API [#994](https://github.com/recurly/recurly-js/pull/994) ([McTraque](https://github.com/McTraque))
+
+
+
 ## [v4.44.1](https://github.com/recurly/recurly-js/tree/v4.44.1) (2026-08-19)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.44.0...v4.44.1)
