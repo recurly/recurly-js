@@ -707,6 +707,8 @@ describe('Recurly.Pricing.Subscription', function () {
         .coupon('coop-pct-all')
         .done(function (price) {
           assert.equal(price.now.discount, '5.24');
+          assert.equal(price.now.subtotal, '29.66');
+          assert.equal(price.now.total, '29.66');
           done();
         });
     });
