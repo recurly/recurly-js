@@ -55,6 +55,25 @@ strategies.forEach(({ name, strategyClass, strategyName }) => {
           creq: 'test-creq'
         });
       });
+
+      describe('when the action token has no creq (e.g. a wallet redirect like GCash)', function () {
+        it('extracts only the redirect_url', function () {
+          const { threeDSecure } = this;
+          const noCreqToken = {
+            ...actionToken,
+            three_d_secure: {
+              params: {
+                redirect: { url: 'https://gcash.example.com/redirect' }
+              }
+            }
+          };
+          const strategy = new strategyClass({ threeDSecure, actionToken: noCreqToken });
+
+          assert.deepStrictEqual(strategy.hyperswitchRedirectParams, {
+            redirect_url: 'https://gcash.example.com/redirect'
+          });
+        });
+      });
     });
 
     describe('attach', function () {
@@ -124,22 +143,28 @@ strategies.forEach(({ name, strategyClass, strategyName }) => {
         });
       });
 
-      describe('when hyperswitchRedirectParams exists but creq is missing', function () {
+      describe('when hyperswitchRedirectParams exists but creq is missing (e.g. a wallet redirect like GCash)', function () {
         beforeEach(function () {
-          const { strategy, sandbox, threeDSecure } = this;
+          const { strategy, sandbox } = this;
           sandbox.stub(strategy, 'hyperswitchRedirectParams').value({ redirect_url: 'https://3dsecure.hyperswitch.com/challenge/test-redirect-url' });
-          sandbox.stub(threeDSecure, 'error');
         });
 
-        it('calls threeDSecure.error when creq is missing', function () {
-          const { strategy, target, threeDSecure } = this;
+        it('calls redirect method', function () {
+          const { strategy, target, sandbox } = this;
+          const redirectSpy = sandbox.spy(strategy, 'redirect');
 
           strategy.attach(target);
 
-          assert(threeDSecure.error.calledOnce);
-          assert(threeDSecure.error.calledWith('3ds-auth-error', {
-            cause: 'We could not determine an authentication method'
-          }));
+          assert(redirectSpy.calledOnce);
+        });
+
+        it('does not call threeDSecure.error', function () {
+          const { strategy, target, threeDSecure, sandbox } = this;
+          sandbox.stub(threeDSecure, 'error');
+
+          strategy.attach(target);
+
+          assert(threeDSecure.error.notCalled);
         });
       });
     });
@@ -181,6 +206,28 @@ strategies.forEach(({ name, strategyClass, strategyName }) => {
         assert.strictEqual(payload.three_d_secure_action_token_id, 'action-token-hyperswitch');
         assert.strictEqual(payload.redirect_url, 'https://3dsecure.hyperswitch.com/challenge/test-redirect-url');
         assert.strictEqual(payload.creq, 'test-creq');
+      });
+
+      describe('when the action token has no creq (e.g. a wallet redirect like GCash)', function () {
+        beforeEach(function () {
+          const { strategy, sandbox } = this;
+          sandbox.stub(strategy, 'hyperswitchRedirectParams').value({
+            redirect_url: 'https://gcash.example.com/redirect'
+          });
+        });
+
+        it('creates a frame whose payload omits creq', function () {
+          const { strategy, recurly } = this;
+
+          strategy.redirect();
+
+          const frameCall = recurly.Frame.getCall(0);
+          const { payload } = frameCall.args[0];
+
+          assert.strictEqual(payload.three_d_secure_action_token_id, 'action-token-hyperswitch');
+          assert.strictEqual(payload.redirect_url, 'https://gcash.example.com/redirect');
+          assert.strictEqual('creq' in payload, false);
+        });
       });
     });
 
