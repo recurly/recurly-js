@@ -4,13 +4,15 @@ import { initRecurly, testBed } from '../../../support/helpers';
 import HyperswitchStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/hyperswitch';
 import CheckoutStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/checkout';
 import NuveiStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/nuvei';
+import DlocalStrategy from '../../../../../lib/recurly/risk/three-d-secure/strategy/dlocal';
 import actionToken from '@recurly/public-api-test-server/fixtures/tokens/action-token-hyperswitch.json';
 import { Frame } from '../../../../../lib/recurly/frame';
 
 const strategies = [
   { name: 'HyperswitchStrategy', strategyClass: HyperswitchStrategy, strategyName: 'hyperswitch' },
   { name: 'CheckoutStrategy', strategyClass: CheckoutStrategy, strategyName: 'checkout' },
-  { name: 'NuveiStrategy', strategyClass: NuveiStrategy, strategyName: 'nuvei' }
+  { name: 'NuveiStrategy', strategyClass: NuveiStrategy, strategyName: 'nuvei' },
+  { name: 'DlocalStrategy', strategyClass: DlocalStrategy, strategyName: 'dlocal' }
 ];
 
 strategies.forEach(({ name, strategyClass, strategyName }) => {
