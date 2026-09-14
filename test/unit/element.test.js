@@ -17,6 +17,7 @@ describe('Element', function () {
     const recurly = this.recurly = initRecurly();
     const elements = this.elements = new ElementsStub({ recurly });
     const validConfig = this.validConfig = {
+      coBadgeSelector: true,
       displayIcon: true,
       inputType: 'select',
       style: {
@@ -52,6 +53,7 @@ describe('Element', function () {
 
   it('configures the instance', function () {
     const { element, validOptions } = this;
+    assert.strictEqual(element.config.coBadgeSelector, validOptions.coBadgeSelector);
     assert.strictEqual(element.config.displayIcon, validOptions.displayIcon);
     assert.strictEqual(element.config.inputType, validOptions.inputType);
     assert.strictEqual(element.config.tabIndex, validOptions.tabIndex);
@@ -296,6 +298,7 @@ describe('Element', function () {
       element.configure(Object.assign({}, validOptions, {
         invalidOption: 'test'
       }));
+      assert.strictEqual(element.config.coBadgeSelector, validOptions.coBadgeSelector);
       assert.strictEqual(element.config.displayIcon, validOptions.displayIcon);
       assert.strictEqual(element.config.inputType, validOptions.inputType);
       assert.strictEqual(element.config.tabIndex, validOptions.tabIndex);
