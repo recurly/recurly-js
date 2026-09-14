@@ -1,4 +1,3 @@
-import after from 'lodash.after';
 import assert from 'assert';
 import { IntervalWorker } from '../../lib/recurly/worker';
 
@@ -60,62 +59,73 @@ describe('IntervalWorker', () => {
   });
 
   describe('#start', () => {
-    it('enables the job', function (done) {
-      const { perform } = this;
-      const worker = this.worker = new IntervalWorker(this.validShortPeriod);
-      assert.strictEqual(worker.active, false);
-      assert.strictEqual(perform.called, false);
-      worker.start();
-      assert.strictEqual(worker.active, true);
-      setTimeout(() => {
+    // Uses fake timers instead of real setTimeout windows: a 5ms period checked against a
+    // 5ms window is tight enough to flake on a slow/remote runner (e.g. BrowserStack iOS),
+    // where the interval firing a few ms late leaves `perform` uncalled at assertion time.
+    // Faking the clock makes the tick deterministic regardless of runner speed.
+    it('enables the job', function () {
+      const clock = sinon.useFakeTimers();
+      try {
+        const { perform } = this;
+        const worker = this.worker = new IntervalWorker(this.validShortPeriod);
+        assert.strictEqual(worker.active, false);
+        assert.strictEqual(perform.called, false);
+        worker.start();
+        assert.strictEqual(worker.active, true);
+        clock.tick(5);
         assert.strictEqual(perform.calledOnce, true);
-        done();
-      }, 5);
+      } finally {
+        clock.restore();
+      }
     });
   });
 
   describe('#pause', () => {
-    it('pauses the job', function (done) {
-      const { perform } = this;
-      const part = after(2, () => done());
-      const worker = this.worker = new IntervalWorker(this.validShortPeriod);
-      worker.start();
-      assert.strictEqual(worker.active, true);
+    // See #start above: real setTimeout windows this tight are flaky on slow/remote runners,
+    // so this uses fake timers for deterministic ticking.
+    it('pauses the job', function () {
+      const clock = sinon.useFakeTimers();
+      try {
+        const { perform } = this;
+        const worker = this.worker = new IntervalWorker(this.validShortPeriod);
+        worker.start();
+        assert.strictEqual(worker.active, true);
 
-      setTimeout(() => {
+        clock.tick(5);
         assert.strictEqual(perform.calledOnce, true);
         worker.pause();
         assert.strictEqual(worker.active, false);
-        part();
-      }, 5);
 
-      setTimeout(() => {
+        clock.tick(10);
         assert.strictEqual(perform.calledOnce, true);
         assert.strictEqual(worker.active, false);
-        part();
-      }, 15);
+      } finally {
+        clock.restore();
+      }
     });
   });
 
   describe('#destroy', () => {
-    it('stops the worker', function (done) {
-      const { valid, perform } = this;
-      const part = after(2, () => done());
-      const worker = this.worker = new IntervalWorker({ period: 50, ...valid });
-      worker.start();
+    // See #start above: real setTimeout windows this tight are flaky on slow/remote runners,
+    // so this uses fake timers for deterministic ticking.
+    it('stops the worker', function () {
+      const clock = sinon.useFakeTimers();
+      try {
+        const { valid, perform } = this;
+        const worker = this.worker = new IntervalWorker({ period: 50, ...valid });
+        worker.start();
 
-      setTimeout(() => {
+        clock.tick(75);
         assert.strictEqual(perform.calledOnce, true);
         worker.destroy();
         assert.strictEqual(worker.active, false);
         assert.strictEqual(worker._intervalId, undefined);
-        part();
-      }, 75);
 
-      setTimeout(() => {
+        clock.tick(200);
         assert.strictEqual(perform.calledOnce, true);
-        part();
-      }, 200);
+      } finally {
+        clock.restore();
+      }
     });
 
     it('prevents further calls', function () {
