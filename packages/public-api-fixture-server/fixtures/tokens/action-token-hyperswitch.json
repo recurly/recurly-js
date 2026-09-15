@@ -11,12 +11,8 @@
   },
   "three_d_secure": {
     "params": {
-      "redirect": {
-        "url": "https://3dsecure.hyperswitch.com/challenge/test-redirect-url",
-        "data": {
-          "creq": "test-creq"
-        }
-      }
+      "redirect_url": "https://3dsecure.hyperswitch.com/challenge/test-redirect-url",
+      "creq": "test-creq"
     }
   }
 }

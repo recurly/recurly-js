@@ -65,7 +65,7 @@ strategies.forEach(({ name, strategyClass, strategyName }) => {
             ...actionToken,
             three_d_secure: {
               params: {
-                redirect: { url: 'https://gcash.example.com/redirect' }
+                redirect_url: 'https://gcash.example.com/redirect'
               }
             }
           };
@@ -73,6 +73,50 @@ strategies.forEach(({ name, strategyClass, strategyName }) => {
 
           assert.deepStrictEqual(strategy.hyperswitchRedirectParams, {
             redirect_url: 'https://gcash.example.com/redirect'
+          });
+        });
+      });
+
+      describe('when the action token carries a nested redirect.url/redirect.data.creq (the Adyen/Amazon shape)', function () {
+        it('still extracts redirect_url and creq', function () {
+          const { threeDSecure } = this;
+          const nestedToken = {
+            ...actionToken,
+            three_d_secure: {
+              params: {
+                redirect: {
+                  url: 'https://3dsecure.hyperswitch.com/challenge/nested-redirect-url',
+                  data: { creq: 'nested-creq' }
+                }
+              }
+            }
+          };
+          const strategy = new strategyClass({ threeDSecure, actionToken: nestedToken });
+
+          assert.deepStrictEqual(strategy.hyperswitchRedirectParams, {
+            redirect_url: 'https://3dsecure.hyperswitch.com/challenge/nested-redirect-url',
+            creq: 'nested-creq'
+          });
+        });
+      });
+
+      describe('when the action token carries both a flat redirect_url and a nested redirect.data.creq', function () {
+        it('prefers the flat redirect_url but still picks up the nested creq', function () {
+          const { threeDSecure } = this;
+          const mixedToken = {
+            ...actionToken,
+            three_d_secure: {
+              params: {
+                redirect_url: 'https://gcash.example.com/redirect',
+                redirect: { data: { creq: 'nested-creq' } }
+              }
+            }
+          };
+          const strategy = new strategyClass({ threeDSecure, actionToken: mixedToken });
+
+          assert.deepStrictEqual(strategy.hyperswitchRedirectParams, {
+            redirect_url: 'https://gcash.example.com/redirect',
+            creq: 'nested-creq'
           });
         });
       });
