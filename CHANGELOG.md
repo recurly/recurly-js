@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.44.4](https://github.com/recurly/recurly-js/tree/v4.44.4) (2026-09-15)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.44.3...v4.44.4)
+
+
+**Merged Pull Requests**
+
+- fix: dlocal 3DS strategy for GCash wallet redirects [#997](https://github.com/recurly/recurly-js/pull/997) ([chrissrogers](https://github.com/chrissrogers))
+
+
+
 ## [v4.44.3](https://github.com/recurly/recurly-js/tree/v4.44.3) (2026-09-15)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.44.2...v4.44.3)
