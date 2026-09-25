@@ -103,6 +103,26 @@ describe('Recurly.HostedFields', function () {
       });
     });
 
+    describe('coBadgeSelector', function () {
+      it('passes through the individual field config value', function () {
+        const { recurly, hostedFields } = this;
+        recurly.configure({
+          fields: {
+            number: { coBadgeSelector: true }
+          }
+        });
+
+        const fieldConfig = hostedFields.fieldConfig('number');
+        assert.strictEqual(fieldConfig.coBadgeSelector, true);
+      });
+
+      it('is undefined when unset', function () {
+        const { hostedFields } = this;
+        const fieldConfig = hostedFields.fieldConfig('number');
+        assert.strictEqual(fieldConfig.coBadgeSelector, undefined);
+      });
+    });
+
     describe('tabIndex', function () {
       it('prefers the general field config value', function () {
         const { recurly, hostedFields } = this;
