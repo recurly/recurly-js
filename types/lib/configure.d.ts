@@ -30,6 +30,9 @@ export type RecurlyOptions = {
       proactive?: {
         enabled: true;
         gatewayCode: string;
+        customFields?: {
+          [key: string]: string;
+        }
       }
     }
   };
