@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.45.0](https://github.com/recurly/recurly-js/tree/v4.45.0) (2026-09-25)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.44.4...v4.45.0)
+
+
+**Merged Pull Requests**
+
+- feat: add support for native cobadged cards select [#996](https://github.com/recurly/recurly-js/pull/996) ([cbarton](https://github.com/cbarton))
+
+
+
 ## [v4.44.4](https://github.com/recurly/recurly-js/tree/v4.44.4) (2026-09-15)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.44.3...v4.44.4)
