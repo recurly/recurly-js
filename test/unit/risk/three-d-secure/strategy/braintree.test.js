@@ -122,6 +122,50 @@ describe('BraintreeStrategy', function () {
         strategy.attach(target);
       });
     });
+
+    describe('when customFields are configured', function () {
+      beforeEach(function () {
+        this.customFields = { orderId: '12345', priority: 'high' };
+        this.recurly.config.risk.threeDSecure.proactive.customFields = this.customFields;
+      });
+
+      it('includes them in the verifyCard call to the Braintree 3D Secure Rules Manager', function (done) {
+        const { strategy, target, customFields } = this;
+
+        strategy.attach(target);
+        strategy.on('done', () => {
+          assert(this.threeDSecureInstance.verifyCard.calledWithExactly({
+            amount: 50,
+            nonce: 'test-braintree-nonce',
+            bin: 'test-braintree-bin',
+            challengeRequested: true,
+            collectDeviceData: true,
+            onLookupComplete: sinon.match.func,
+            customFields
+          }));
+
+          done();
+        });
+      });
+    });
+
+    describe('when customFields is an empty object', function () {
+      beforeEach(function () {
+        this.recurly.config.risk.threeDSecure.proactive.customFields = {};
+      });
+
+      it('omits customFields from the verifyCard call', function (done) {
+        const { strategy, target } = this;
+
+        strategy.attach(target);
+        strategy.on('done', () => {
+          const [verifyCardOptions] = this.threeDSecureInstance.verifyCard.getCall(0).args;
+          assert.strictEqual('customFields' in verifyCardOptions, false);
+
+          done();
+        });
+      });
+    });
   });
 
   describe('preflight', function () {
