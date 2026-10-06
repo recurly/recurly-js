@@ -30,6 +30,8 @@ export type RecurlyOptions = {
       proactive?: {
         enabled: true;
         gatewayCode: string;
+        amount?: number;
+        currency?: string;
       }
     }
   };
