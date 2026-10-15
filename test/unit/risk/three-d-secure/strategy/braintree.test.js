@@ -177,6 +177,53 @@ describe('BraintreeStrategy', function () {
       });
     });
 
+    it('sends the billing info id of a stored card with only a cvv', function (done) {
+      const { recurly, cvv } = this;
+      recurly.config.risk.threeDSecure.preflightDeviceDataCollector = {
+        enabled: true,
+        billingInfoId: 'test-billing-info-id'
+      };
+
+      BraintreeStrategy.preflight({ recurly, cvv }).then(() => {
+        sinon.assert.calledWithExactly(recurly.request.post, {
+          route: '/risk/authentications',
+          data: {
+            gateway_type: BraintreeStrategy.strategyName,
+            gateway_code: 'test-gateway-code',
+            currency: 'USD',
+            number: undefined,
+            month: undefined,
+            year: undefined,
+            cvv,
+            billing_info_id: 'test-billing-info-id'
+          }
+        });
+        done();
+      });
+    });
+
+    it('does not send a billing info id with a token', function (done) {
+      const { recurly } = this;
+      const token = { id: 'test-token-id' };
+      recurly.config.risk.threeDSecure.preflightDeviceDataCollector = {
+        enabled: true,
+        billingInfoId: 'test-billing-info-id'
+      };
+
+      BraintreeStrategy.preflight({ recurly, token }).then(() => {
+        sinon.assert.calledWithExactly(recurly.request.post, {
+          route: '/risk/authentications',
+          data: {
+            gateway_type: BraintreeStrategy.strategyName,
+            gateway_code: 'test-gateway-code',
+            token_id: 'test-token-id',
+            currency: 'USD',
+          }
+        });
+        done();
+      });
+    });
+
     it('sends the correct data with only a token', function (done) {
       const { recurly } = this;
       const token = { id: 'test-token-id' };

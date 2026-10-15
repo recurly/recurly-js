@@ -19,6 +19,25 @@ export default function configure () {
     timeout: 60000
   });
 
+  window.recurly.configure({
+    publicKey: 'my-public-key',
+    required: ['cvv'],
+    risk: {
+      threeDSecure: {
+        preflightDeviceDataCollector: {
+          enabled: true,
+          billingInfoId: 'my-billing-info-id'
+        },
+        proactive: {
+          enabled: true,
+          gatewayCode: 'my-gateway-code',
+          amount: 10,
+          currency: 'USD'
+        }
+      }
+    }
+  });
+
   const elementOptions = {
     selector: 'my-selector',
     format: true,
