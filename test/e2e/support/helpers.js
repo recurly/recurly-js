@@ -180,16 +180,32 @@ function init ({ fixture = '', opts = {} } = {}) {
 /**
  * Configures the global recurly singleton on the test suite
  *
+ * Waits for the recurly global before configuring: on remote mobile
+ * devices, browser.url may resolve before the page's scripts have
+ * executed, and recurly.configure would throw if the global is absent
+ *
  * @param {Object} opts to pass to recurly.configure
  * @return {Promise}
  */
 async function configureRecurly (opts = {}) {
-  return await browser.executeAsync(function (opts, done) {
-    recurly.configure(opts);
-    recurly.ready(function () {
-      done();
-    });
+  const result = await browser.executeAsync(function (opts, done) {
+    const deadline = Date.now() + 30000;
+
+    (function poll () {
+      if (typeof window.recurly !== 'undefined') {
+        window.recurly.configure(opts);
+        window.recurly.ready(function () {
+          done(null);
+        });
+      } else if (document.readyState === 'complete' || Date.now() > deadline) {
+        done(`recurly global missing (readyState: ${document.readyState}, url: ${location.href})`);
+      } else {
+        setTimeout(poll, 100);
+      }
+    })();
   }, opts);
+
+  if (result) throw new Error(result);
 }
 
 /**
