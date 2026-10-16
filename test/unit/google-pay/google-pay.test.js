@@ -872,6 +872,122 @@ function googlePayTest (integrationType) {
               });
             });
 
+            context('when billingContactSelectionOrder is provided', function () {
+              const formAddress = {
+                first_name: 'Frank',
+                last_name: 'Isaac',
+                country: 'RF',
+                state: '',
+                city: '',
+                postal_code: '123',
+                address1: '',
+                address2: '',
+              };
+
+              const walletAddress = {
+                first_name: 'John',
+                last_name: 'Smith',
+                country: 'US',
+                state: 'CA',
+                city: 'Mountain View',
+                postal_code: '94043',
+                address1: '1600 Amphitheatre Parkway',
+                address2: '',
+              };
+
+              const assertCallData = function (expectations) {
+                const callData = this.recurly.request.post.getCall(0).args[0].data;
+                Object.entries(expectations).forEach(([field, value]) => assert.equal(callData[field], value));
+              };
+
+              it('exposes the billing contact source constants', function () {
+                assert.equal(this.recurly.GooglePay.FormBillingContact, 'form');
+                assert.equal(this.recurly.GooglePay.WalletBillingContact, 'wallet');
+              });
+
+              it('uses the wallet billing address in full when it is the first source with address data', function (done) {
+                this.googlePayOpts.billingContactSelectionOrder = [
+                  this.recurly.GooglePay.WalletBillingContact,
+                  this.recurly.GooglePay.FormBillingContact,
+                ];
+                this.googlePayOpts.form = formAddress;
+
+                this.clickGooglePayButton(result => {
+                  result.on('token', () => assertDone(done, () => {
+                    assert.equal(this.recurly.request.post.called, true);
+                    assertCallData.call(this, walletAddress);
+                  }));
+                });
+              });
+
+              it('uses the form billing address in full when it is the first source with address data', function (done) {
+                this.googlePayOpts.billingContactSelectionOrder = [
+                  this.recurly.GooglePay.FormBillingContact,
+                  this.recurly.GooglePay.WalletBillingContact,
+                ];
+                this.googlePayOpts.form = formAddress;
+
+                this.clickGooglePayButton(result => {
+                  result.on('token', () => assertDone(done, () => {
+                    assert.equal(this.recurly.request.post.called, true);
+                    assertCallData.call(this, formAddress);
+                  }));
+                });
+              });
+
+              it('falls through to the wallet billing address when the form has no address data', function (done) {
+                this.googlePayOpts.billingContactSelectionOrder = [
+                  this.recurly.GooglePay.FormBillingContact,
+                  this.recurly.GooglePay.WalletBillingContact,
+                ];
+                this.googlePayOpts.form = { vat_number: 'VAT123' };
+
+                this.clickGooglePayButton(result => {
+                  result.on('token', () => assertDone(done, () => {
+                    assert.equal(this.recurly.request.post.called, true);
+                    assertCallData.call(this, { ...walletAddress, vat_number: 'VAT123' });
+                  }));
+                });
+              });
+
+              it('sends no billing address when the sole source has no address data', function (done) {
+                this.googlePayOpts.billingContactSelectionOrder = [this.recurly.GooglePay.FormBillingContact];
+                this.googlePayOpts.form = {
+                  first_name: '',
+                  city: '',
+                  postal_code: '',
+                };
+
+                this.clickGooglePayButton(result => {
+                  result.on('token', () => assertDone(done, () => {
+                    assert.equal(this.recurly.request.post.called, true);
+                    assertCallData.call(this, {
+                      first_name: undefined,
+                      last_name: undefined,
+                      city: undefined,
+                      postal_code: undefined,
+                      address1: undefined,
+                      country: undefined,
+                    });
+                  }));
+                });
+              });
+
+              it('emits a configuration error when the order is invalid', function (done) {
+                this.stubRequestAndGoogleApi();
+                const result = this.recurly.GooglePay({
+                  ...this.googlePayOpts,
+                  billingContactSelectionOrder: ['wallet', 'nonsense'],
+                });
+
+                result.on('error', err => assertDone(done, () => {
+                  assert.ok(err);
+                  assert.equal(err.code, 'google-pay-config-invalid');
+                  assert.match(err.message, /billingContactSelectionOrder/);
+                }));
+              });
+            });
+
             context('when fraud params are configured', function () {
               beforeEach(function () {
                 this.recurly.fraud = { params: sinon.stub().returns([{ processor: 'kount', session_id: 'SESSION_123' }]), destroy: sinon.stub() };

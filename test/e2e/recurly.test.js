@@ -195,26 +195,17 @@ describe('Recurly.js', async function () {
     });
   });
 
-  describe('fraud', async function () {
-    beforeEach(async function () {
-      await browser.url('e2e');
-      await browser.executeAsync(function (recurlyEnvironment, done) {
-        const config = {
-          api: recurlyEnvironment.api,
-          publicKey: recurlyEnvironment.publicKey,
-          fraud: {
-            kount: {
-              dataCollector: true,
-              form: document.querySelector('form')
-            }
+  describe('fraud', function () {
+    beforeEach(init({
+      opts: {
+        fraud: {
+          kount: {
+            dataCollector: true,
+            form: '[data-test=form]'
           }
-        };
-        recurly.configure(config);
-        recurly.ready(function () {
-          done();
-        });
-      }, recurlyEnvironment());
-    });
+        }
+      }
+    }));
 
     it('attaches an input with fraud session ID', async () => {
       const script = await $('form script');

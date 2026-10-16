@@ -373,6 +373,33 @@ function applePayTest (integrationType) {
         });
       });
 
+      describe('billingContactSelectionOrder', function () {
+        it('exposes the billing contact source constants', function () {
+          assert.equal(this.recurly.ApplePay.FormBillingContact, 'form');
+          assert.equal(this.recurly.ApplePay.WalletBillingContact, 'wallet');
+        });
+
+        const invalidOrders = [
+          'form',
+          [],
+          ['form', 'form'],
+          ['wallet', 'form', 'wallet'],
+          ['wallet', 'nonsense'],
+          ['form', 'wallet', 'nonsense'],
+        ];
+
+        invalidOrders.forEach(order => {
+          it(`registers a configuration error for ${JSON.stringify(order)}`, function (done) {
+            let applePay = this.recurly.ApplePay(merge({}, validOpts, { billingContactSelectionOrder: order }));
+            applePay.on('error', () => {
+              nextTick(ensureDone(done, () => {
+                assertInitError(applePay, 'apple-pay-config-invalid', { opt: 'billingContactSelectionOrder' });
+              }));
+            });
+          });
+        });
+      });
+
       describe('options.enforceVersion', function () {
         it('returns an initError if the browser version for requiredShippingContactFields is not met', function (done) {
           this.sandbox.stub(ApplePaySessionStub, 'version').value(4);
@@ -1341,6 +1368,97 @@ function applePayTest (integrationType) {
             }));
           });
         }
+
+        describe('billingContactSelectionOrder', function () {
+          const formAddress = {
+            first_name: 'Bobby',
+            last_name: 'Brown',
+            address1: '19 East 93rd Street',
+            address2: '',
+            city: 'Mill Valley',
+            state: 'CA',
+            postal_code: '94941',
+            country: 'US',
+          };
+
+          const expectedPayloadAddressFor = function (expected) {
+            const payload = {
+              paymentData: 'valid-payment-data',
+              paymentMethod: 'valid-payment-method',
+              browser: Risk.browserInfo,
+              ...expected,
+            };
+
+            if (isBraintreeIntegration) {
+              return {
+                type: 'braintree',
+                payload: {
+                  deviceData: 'DEVICE_DATA',
+                  tokenizePayload: 'TOKENIZED_PAYLOAD',
+                  applePayPayment: payload,
+                },
+              };
+            }
+
+            return payload;
+          };
+
+          function applePayWithOrder (order, form) {
+            return this.recurly.ApplePay(merge({}, validOpts, {
+              billingContactSelectionOrder: order,
+              form,
+            }));
+          }
+
+          const assertTokenPayload = function (expected, done) {
+            this.applePay.session.onpaymentauthorized(clone(validAuthorizeEvent));
+            this.applePay.on('token', ensureDone(done, () => {
+              const args = this.spyTokenRequest.getCall(0).args[0];
+              assert.deepEqual(args.data, expectedPayloadAddressFor(expected));
+            }));
+          };
+
+          beforeEach(function () {
+            this.spyTokenRequest = this.sandbox.spy(this.recurly.request, 'post');
+          });
+
+          it('uses the form billing address in full when it is the first source with address data', function (done) {
+            this.applePay = applePayWithOrder.call(this, [
+              this.recurly.ApplePay.FormBillingContact,
+              this.recurly.ApplePay.WalletBillingContact,
+            ], formAddress);
+
+            this.applePay.ready(() => assertTokenPayload.call(this, { ...formAddress }, done));
+          });
+
+          it('uses the wallet billing contact in full when it is the first source with address data', function (done) {
+            this.applePay = applePayWithOrder.call(this, [
+              this.recurly.ApplePay.WalletBillingContact,
+              this.recurly.ApplePay.FormBillingContact,
+            ], formAddress);
+
+            this.applePay.ready(() => assertTokenPayload.call(this, { ...billingAddress }, done));
+          });
+
+          it('falls through to the wallet billing contact when the form has no address data', function (done) {
+            this.applePay = applePayWithOrder.call(this, [
+              this.recurly.ApplePay.FormBillingContact,
+              this.recurly.ApplePay.WalletBillingContact,
+            ], { tax_identifier: 'tax123' });
+
+            this.applePay.ready(() => assertTokenPayload.call(this, { ...billingAddress, tax_identifier: 'tax123' }, done));
+          });
+
+          it('sends no billing address when the sole source has no address data', function (done) {
+            this.applePay = applePayWithOrder.call(this, [this.recurly.ApplePay.FormBillingContact], {
+              first_name: '',
+              city: '',
+              postal_code: '',
+            });
+
+            this.applePay.ready(() => assertTokenPayload.call(this, {}, done));
+          });
+        });
 
         describe('when payment data is invalid', function () {
           const invalidAuthorizeEvent = {
