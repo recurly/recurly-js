@@ -32,10 +32,10 @@ export type RecurlyOptions = {
         gatewayCode: string;
         amount?: number;
         currency?: string;
-        customFields?: {
-          [key: string]: string;
-        }
-      }
+      };
+      customFields?: {
+        [key: string]: string;
+      };
     }
   };
 

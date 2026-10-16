@@ -126,7 +126,7 @@ describe('BraintreeStrategy', function () {
     describe('when customFields are configured', function () {
       beforeEach(function () {
         this.customFields = { orderId: '12345', priority: 'high' };
-        this.recurly.config.risk.threeDSecure.proactive.customFields = this.customFields;
+        this.recurly.config.risk.threeDSecure.customFields = this.customFields;
       });
 
       it('includes them in the verifyCard call to the Braintree 3D Secure Rules Manager', function (done) {
@@ -151,7 +151,7 @@ describe('BraintreeStrategy', function () {
 
     describe('when customFields is an empty object', function () {
       beforeEach(function () {
-        this.recurly.config.risk.threeDSecure.proactive.customFields = {};
+        this.recurly.config.risk.threeDSecure.customFields = {};
       });
 
       it('omits customFields from the verifyCard call', function (done) {
