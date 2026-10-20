@@ -33,8 +33,10 @@ export type RecurlyOptions = {
         amount?: number;
         currency?: string;
       };
-      customFields?: {
-        [key: string]: string;
+      braintree?: {
+        customFields?: {
+          [key: string]: string;
+        };
       };
     }
   };
