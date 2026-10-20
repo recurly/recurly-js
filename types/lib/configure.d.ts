@@ -32,7 +32,12 @@ export type RecurlyOptions = {
         gatewayCode: string;
         amount?: number;
         currency?: string;
-      }
+      };
+      braintree?: {
+        customFields?: {
+          [key: string]: string;
+        };
+      };
     }
   };
 
