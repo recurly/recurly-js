@@ -169,6 +169,120 @@ describe('CybersourceStrategy', function () {
         });
       });
     });
+
+    describe('when the device data collection preflight times out', function () {
+      beforeEach(function () {
+        const { sandbox, poll } = this;
+        clearInterval(poll); // neutralize the shared profile.completed poll — the timeout must win the race
+        sandbox.stub(CybersourceStrategy, 'PREFLIGHT_TIMEOUT').value(10);
+      });
+
+      it('resolves with a risk-preflight-timeout error rather than rejecting', function (done) {
+        const { recurly, Strategy, number, month, year, gateway_code } = this;
+
+        Strategy.preflight({ recurly, number, month, year, gateway_code }).then(
+          preflightResponse => {
+            assert.strictEqual(preflightResponse.code, 'risk-preflight-timeout');
+            assert.strictEqual(preflightResponse.processor, 'cybersource');
+            done();
+          },
+          err => done(err)
+        );
+      });
+    });
+
+    describe('when the preflight times out once and the retry succeeds', function () {
+      beforeEach(function () {
+        const { sandbox, poll } = this;
+        clearInterval(poll);
+        sandbox.stub(CybersourceStrategy, 'PREFLIGHT_TIMEOUT').value(25);
+      });
+
+      it('retries once and resolves with the session id from the retry', function (done) {
+        const { recurly, Strategy, number, month, year, gateway_code, sessionId } = this;
+
+        // emit only once the retry (second frame) is live, so attempt 1 loses the race
+        const emitOnRetry = () => {
+          if (recurly.Frame.callCount < 2) return setTimeout(emitOnRetry, 5);
+          recurly.bus.emit('raw-message', {
+            data: JSON.stringify({
+              MessageType: 'profile.completed',
+              SessionId: sessionId
+            })
+          });
+        };
+        setTimeout(emitOnRetry, 5);
+
+        Strategy.preflight({ recurly, number, month, year, gateway_code })
+          .then(preflightResponse => {
+            assert.deepStrictEqual(preflightResponse, { results: { session_id: sessionId } });
+            assert.strictEqual(recurly.Frame.callCount, 2);
+            done();
+          })
+          .catch(err => done(err));
+      });
+    });
+
+    describe('when the preflight times out twice', function () {
+      beforeEach(function () {
+        const { sandbox, poll, recurly } = this;
+        clearInterval(poll);
+        sandbox.stub(CybersourceStrategy, 'PREFLIGHT_TIMEOUT').value(10);
+        sandbox.stub(recurly.request, 'post').callsFake(() => Promise.resolve({
+          jwt: 'test-preflight-jwt',
+          deviceDataCollectionUrl: 'https://centinelapistag.cardinalcommerce.com/V1/Cruise/Collect'
+        }));
+        // stub frame creation so the loaded page's own frame-event message cannot
+        // race the timers and self-destroy frames ahead of teardown — keeps destroy counts deterministic
+        sandbox.stub(Frame.prototype, 'create');
+        sandbox.spy(Frame.prototype, 'destroy');
+      });
+
+      it('retries exactly once, tears down each attempt, and resolves with the timeout error', function (done) {
+        const { recurly, Strategy, number, month, year, gateway_code } = this;
+
+        Strategy.preflight({ recurly, number, month, year, gateway_code })
+          .then(preflightResponse => {
+            assert.strictEqual(preflightResponse.code, 'risk-preflight-timeout');
+            assert.strictEqual(preflightResponse.processor, 'cybersource');
+            assert.strictEqual(recurly.request.post.callCount, 2);
+            assert.strictEqual(recurly.Frame.callCount, 2);
+            assert.strictEqual(Frame.prototype.destroy.callCount, 2);
+            done();
+          })
+          .catch(err => done(err));
+      });
+    });
+
+    describe('when the retry authentication setup fails', function () {
+      beforeEach(function () {
+        const { sandbox, poll, recurly } = this;
+        clearInterval(poll);
+        sandbox.stub(CybersourceStrategy, 'PREFLIGHT_TIMEOUT').value(10);
+        sandbox.stub(recurly.request, 'post').callsFake(() => {
+          if (recurly.request.post.callCount === 1) {
+            return Promise.resolve({
+              jwt: 'test-preflight-jwt',
+              deviceDataCollectionUrl: 'https://centinelapistag.cardinalcommerce.com/V1/Cruise/Collect'
+            });
+          }
+          return Promise.reject(new Error('retry authentication setup failed'));
+        });
+      });
+
+      it('degrades without an entry rather than rejecting', function (done) {
+        const { recurly, Strategy, number, month, year, gateway_code } = this;
+
+        Strategy.preflight({ recurly, number, month, year, gateway_code })
+          .then(preflightResponse => {
+            assert.strictEqual(preflightResponse, undefined);
+            assert.strictEqual(recurly.request.post.callCount, 2);
+            assert.strictEqual(recurly.Frame.callCount, 1);
+            done();
+          })
+          .catch(err => done(err));
+      });
+    });
   });
 
   describe('attach', function () {

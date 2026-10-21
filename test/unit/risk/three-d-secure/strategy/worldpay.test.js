@@ -40,7 +40,7 @@ describe('WorldpayStrategy', function () {
       this.jwt = 'test-preflight-jwt';
       this.deviceDataCollectionUrl = 'https://secure-test.worldpay.com/shopper/3ds/ddc.html';
       this.simulatePreflightResponse = () => {
-        // Stubs expected message format from Worldpay DDC
+        // Stubs expected message format from Worldpay DDC - Device Data Collection
         recurly.bus.emit('raw-message', {
           data: JSON.stringify({
             MessageType: 'profile.completed',
@@ -113,10 +113,10 @@ describe('WorldpayStrategy', function () {
             enabled: true
           };
         });
-  
+
         it('does construct a frame to collect a session id', function (done) {
           const { recurly, Strategy, number, month, year, gateway_code, simulatePreflightResponse } = this;
-  
+
           Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
             sinon.assert.callCount(recurly.Frame, 1);
             done();
@@ -133,10 +133,10 @@ describe('WorldpayStrategy', function () {
             billingInfoId: 'test-billing-info-id',
           };
         });
-  
+
         it('does construct a frame to collect a session id', function (done) {
           const { recurly, Strategy, number, month, year, gateway_code, simulatePreflightResponse } = this;
-  
+
           Strategy.preflight({ recurly, number, month, year, gateway_code }).then(() => {
             sinon.assert.callCount(recurly.Frame, 1);
             done();
@@ -144,6 +144,77 @@ describe('WorldpayStrategy', function () {
 
           simulatePreflightResponse();
         });
+      });
+    });
+
+    describe('when the device data collection preflight times out', function () {
+      beforeEach(function () {
+        const { sandbox } = this;
+        sandbox.stub(WorldpayStrategy, 'PREFLIGHT_TIMEOUT').value(10);
+      });
+
+      it('resolves with a risk-preflight-timeout error rather than rejecting', function (done) {
+        const { recurly, Strategy, number, jwt, deviceDataCollectionUrl } = this;
+
+        Strategy.preflight({ recurly, number, jwt, deviceDataCollectionUrl }).then(
+          preflightResponse => {
+            assert.strictEqual(preflightResponse.code, 'risk-preflight-timeout');
+            assert.strictEqual(preflightResponse.processor, 'worldpay');
+            done();
+          },
+          err => done(err)
+        );
+      });
+    });
+
+    describe('when the preflight times out once and the retry succeeds', function () {
+      beforeEach(function () {
+        const { sandbox } = this;
+        sandbox.stub(WorldpayStrategy, 'PREFLIGHT_TIMEOUT').value(25);
+      });
+
+      it('retries once and resolves with the session id from the retry', function (done) {
+        const { recurly, Strategy, number, jwt, deviceDataCollectionUrl, sessionId, simulatePreflightResponse } = this;
+
+        // emit only once the retry (second frame) is live, so attempt 1 loses the race
+        const emitOnRetry = () => {
+          if (recurly.Frame.callCount >= 2) return simulatePreflightResponse();
+          setTimeout(emitOnRetry, 5);
+        };
+        setTimeout(emitOnRetry, 5);
+
+        Strategy.preflight({ recurly, number, jwt, deviceDataCollectionUrl })
+          .then(preflightResponse => {
+            assert.deepStrictEqual(preflightResponse, { results: { session_id: sessionId } });
+            assert.strictEqual(recurly.Frame.callCount, 2);
+            done();
+          })
+          .catch(err => done(err));
+      });
+    });
+
+    describe('when the preflight times out twice', function () {
+      beforeEach(function () {
+        const { sandbox } = this;
+        sandbox.stub(WorldpayStrategy, 'PREFLIGHT_TIMEOUT').value(10);
+        // stub frame creation so the loaded page's own frame-event message cannot
+        // race the timers and self-destroy frames ahead of teardown — keeps destroy counts deterministic
+        sandbox.stub(Frame.prototype, 'create');
+        sandbox.spy(Frame.prototype, 'destroy');
+      });
+
+      it('retries exactly once, tears down each attempt, and resolves with the timeout error', function (done) {
+        const { recurly, Strategy, number, jwt, deviceDataCollectionUrl } = this;
+
+        Strategy.preflight({ recurly, number, jwt, deviceDataCollectionUrl })
+          .then(preflightResponse => {
+            assert.strictEqual(preflightResponse.code, 'risk-preflight-timeout');
+            assert.strictEqual(preflightResponse.processor, 'worldpay');
+            assert.strictEqual(recurly.Frame.callCount, 2);
+            assert.strictEqual(Frame.prototype.destroy.callCount, 2);
+            done();
+          })
+          .catch(err => done(err));
       });
     });
   });

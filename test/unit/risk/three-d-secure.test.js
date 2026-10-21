@@ -1,5 +1,6 @@
 import assert from 'assert';
 import Promise from 'promise';
+import errors from '../../../lib/recurly/errors';
 import { applyFixtures } from '../support/fixtures';
 import { initRecurly, testBed } from '../support/helpers';
 import { factory, ThreeDSecure } from '../../../lib/recurly/risk/three-d-secure/three-d-secure';
@@ -166,6 +167,25 @@ describe('ThreeDSecure', function () {
         assert.strictEqual(calls.length, 2, 'both preflights should start before either resolves');
         calls[0].resolve({ results: { data: 'a' } });
         calls[1].resolve({ results: { data: 'b' } });
+      });
+    });
+
+    context('when a strategy resolves with a preflight timeout error', function () {
+      beforeEach(function () {
+        this.sandbox.stub(ThreeDSecure, 'getStrategyForGatewayType').callsFake(() => ({
+          preflight: this.sandbox.stub().usingPromise(Promise).resolves(
+            errors('risk-preflight-timeout', { processor: 'test-gateway-type' })
+          )
+        }));
+      });
+
+      it('does not include the timeout error in the risk results', function (done) {
+        const { recurly, bin, preflights } = this;
+        ThreeDSecure.preflight({ recurly, bin, preflights }).done(returnValue => {
+          assert(Array.isArray(returnValue.risk));
+          assert.strictEqual(returnValue.risk.length, 0);
+          done();
+        });
       });
     });
   });
