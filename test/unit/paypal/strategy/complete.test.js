@@ -385,6 +385,53 @@ describe('CompleteStrategy', function () {
       assert(postSpy.calledWithMatch({ data: { usage_pattern: 'RECURRING_POSTPAID' } }));
     });
 
+    it('derives usage_pattern as RECURRING_PREPAID and pricing_model as VARIABLE when the plan has ramp intervals', async function () {
+      const { target } = this;
+      const pricing = await checkoutPricingFactory('basic-ramp', this.recurly);
+      const postSpy = this.sandbox.spy(this.recurly.request, 'post');
+
+      this.initPaypal({ payPalComplete: { target, pricing } });
+      await this.paypalInitialized();
+      await this.paypalSdkStub.Buttons.getCall(0).firstArg.createVaultSetupToken();
+
+      assert(postSpy.calledWithMatch({
+        data: {
+          usage_pattern: 'RECURRING_PREPAID',
+          billing_plan: {
+            billing_cycles: [sinon.match({
+              pricing_scheme: { pricing_model: 'VARIABLE' }
+            })]
+          }
+        }
+      }));
+    });
+
+    it('derives usage_pattern as RECURRING_POSTPAID and pricing_model as VARIABLE when a usage add-on is selected on a ramp plan', async function () {
+      const { target } = this;
+      const sub = await subscriptionPricingFactory('basic-ramp-with-usage', this.recurly);
+      await new Promise(resolve => sub.addon('with_usage').done(resolve));
+      const checkout = await new Promise(resolve => {
+        const c = this.recurly.Pricing.Checkout();
+        c.subscription(sub).done(() => resolve(c));
+      });
+      const postSpy = this.sandbox.spy(this.recurly.request, 'post');
+
+      this.initPaypal({ payPalComplete: { target, pricing: checkout } });
+      await this.paypalInitialized();
+      await this.paypalSdkStub.Buttons.getCall(0).firstArg.createVaultSetupToken();
+
+      assert(postSpy.calledWithMatch({
+        data: {
+          usage_pattern: 'RECURRING_POSTPAID',
+          billing_plan: {
+            billing_cycles: [sinon.match({
+              pricing_scheme: { pricing_model: 'VARIABLE' }
+            })]
+          }
+        }
+      }));
+    });
+
     it('derives usage_pattern from the first subscription when multiple are present', async function () {
       const { target } = this;
       const sub1 = await subscriptionPricingFactory('basic-2', this.recurly);

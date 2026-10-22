@@ -1,0 +1,27 @@
+{
+  "code": "basic-ramp",
+  "name": "Ramp",
+  "period": {
+    "interval": "months",
+    "length": 12
+  },
+  "price": {
+    "USD": {
+      "unit_amount": 19.99,
+      "symbol": "$",
+      "setup_fee": 0
+    }
+  },
+  "addons": [],
+  "tax_exempt": false,
+  "ramp_intervals": [
+    {
+      "starting_billing_cycle": 1,
+      "prices": [{ "currency_code": "USD", "unit_amount": 19.99 }]
+    },
+    {
+      "starting_billing_cycle": 13,
+      "prices": [{ "currency_code": "USD", "unit_amount": 29.99 }]
+    }
+  ]
+}
