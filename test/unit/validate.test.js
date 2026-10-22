@@ -41,6 +41,9 @@ describe('Recurly.validate', function () {
     it('should parse discover', function () {
       assert.strictEqual(recurly.validate.cardType('6011000090139424'), 'discover');
       assert.strictEqual(recurly.validate.cardType('6011039990139424'), 'discover');
+      assert.strictEqual(recurly.validate.cardType('6043550000000000'), 'discover');
+      assert.strictEqual(recurly.validate.cardType('6500870000000008'), 'discover');
+      assert.strictEqual(recurly.validate.cardType('5896578742026538'), 'discover');
     });
 
     it('should parse union_pay', function () {
@@ -59,6 +62,8 @@ describe('Recurly.validate', function () {
       assert.strictEqual(recurly.validate.cardType('5555555555554444'), 'master');
       assert.strictEqual(recurly.validate.cardType('2222000222222224'), 'master');
       assert.strictEqual(recurly.validate.cardType('2720989999999955'), 'master');
+      assert.strictEqual(recurly.validate.cardType('5062224607440872'), 'master');
+      assert.strictEqual(recurly.validate.cardType('2869000000000006'), 'master');
     });
 
     it('should parse american_express', function () {
@@ -87,6 +92,12 @@ describe('Recurly.validate', function () {
       assert.strictEqual(recurly.validate.cardType('627781000000000'), 'maestro');
       assert.strictEqual(recurly.validate.cardType('6010999990139424'), 'maestro');
       assert.strictEqual(recurly.validate.cardType('6219803011113245'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('5061990000000000'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('5064510000000000'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('6043540000000000'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('6043560000000000'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('5896560000000000'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('5896580000000000'), 'maestro');
     });
 
     it('should parse unknown', function () {
