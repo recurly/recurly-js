@@ -100,24 +100,63 @@ describe('Risk', function () {
         });
     });
 
-    describe('when some results are timeouts', function () {
+    describe('when the risk array contains timeout errors', function () {
       beforeEach(function () {
         this.stubPreflightResults = { risk: [
-          { arbitrary: 'preflight-results' },
+          { processor: 'test', gateway_code: 'gc-1', results: { session_id: 'sid-1' } },
           errors('risk-preflight-timeout', { processor: 'test' }),
-          { arbitrary: 'preflight-results-2' },
+          { processor: 'test-2', gateway_code: 'gc-2', results: { session_id: 'sid-2' } },
           errors('risk-preflight-timeout', { processor: 'test-2' })
         ], tokenType: undefined };
         ThreeDSecure.preflight.usingPromise(Promise).resolves(this.stubPreflightResults);
       });
 
-      it('filters out those timeout results', function (done) {
+      it('filters out the timeout errors, keeping well-formed results', function (done) {
         const { recurly, bin, stubPreflightResults } = this;
         Risk.preflight({ recurly, bin })
           .done(results => {
             assert.strictEqual(results.risk.length, 2);
             assert.deepStrictEqual(results.risk[0], stubPreflightResults.risk[0]);
             assert.deepStrictEqual(results.risk[1], stubPreflightResults.risk[2]);
+            done();
+          });
+      });
+    });
+
+    context('when one preflight times out and another succeeds', function () {
+      beforeEach(function () {
+        const { recurly, sandbox } = this;
+        ThreeDSecure.preflight.restore(); // run the real map+reduce, not the parent stub
+        sandbox.stub(recurly.request, 'get').usingPromise(Promise).resolves({
+          preflights: [
+            { gateway: { type: 'test-timeout' }, params: { gateway_code: 'tc-1' } },
+            { gateway: { type: 'test-success' }, params: { gateway_code: 'ts-1' } }
+          ]
+        });
+        const strategies = {
+          'test-timeout': {
+            preflight: sandbox.stub().usingPromise(Promise).resolves(
+              errors('risk-preflight-timeout', { processor: 'test-timeout' })
+            )
+          },
+          'test-success': {
+            preflight: sandbox.stub().usingPromise(Promise).resolves({
+              results: { session_id: 'sid-1' },
+              tokenType: 'three_d_secure_proactive_action'
+            })
+          }
+        };
+        sandbox.stub(ThreeDSecure, 'getStrategyForGatewayType').callsFake(type => strategies[type]);
+      });
+
+      it('filters the timeout entry and keeps the successful result', function (done) {
+        const { recurly, bin } = this;
+        Risk.preflight({ recurly, bin })
+          .done(({ risk, tokenType }) => {
+            assert.deepStrictEqual(risk, [
+              { processor: 'test-success', gateway_code: 'ts-1', results: { session_id: 'sid-1' } }
+            ]);
+            assert.strictEqual(tokenType, 'three_d_secure_proactive_action');
             done();
           });
       });
