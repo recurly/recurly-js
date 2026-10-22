@@ -172,8 +172,13 @@ function elementAndFieldSuite ({
  */
 function init ({ fixture = '', opts = {} } = {}) {
   return async () => {
+    const label = fixture || 'default';
+    const start = Date.now();
     await browser.url(`e2e/${fixture}`);
-    return await configureRecurly(Object.assign({}, recurlyEnvironment(), opts));
+    console.log(`[boot-timing] ${label}: browser.url resolved in ${Date.now() - start}ms`);
+    const configureStart = Date.now();
+    await configureRecurly(Object.assign({}, recurlyEnvironment(), opts));
+    console.log(`[boot-timing] ${label}: configureRecurly resolved in ${Date.now() - configureStart}ms (total ${Date.now() - start}ms)`);
   };
 }
 
