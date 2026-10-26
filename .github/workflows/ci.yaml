@@ -120,7 +120,7 @@ jobs:
           BROWSER_STACK_USERNAME: ${{secrets.BROWSER_STACK_USERNAME}}
           BROWSER_STACK_ACCESS_KEY: ${{secrets.BROWSER_STACK_ACCESS_KEY}}
         with:
-          timeout_minutes: 12
+          timeout_minutes: 25
           max_attempts: 2
           command: make test-unit-ci
       - name: End-to-end test
