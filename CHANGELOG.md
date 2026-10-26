@@ -1,5 +1,16 @@
 # Changelog
 
+## [v4.45.3](https://github.com/recurly/recurly-js/tree/v4.45.3) (2026-10-26)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.45.2...v4.45.3)
+
+
+**Merged Pull Requests**
+
+- bump playwright [#1009](https://github.com/recurly/recurly-js/pull/1009) ([mroman-recurly](https://github.com/mroman-recurly))
+
+
+
 ## [v4.45.2](https://github.com/recurly/recurly-js/tree/v4.45.2) (2026-10-26)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.45.1...v4.45.2)
