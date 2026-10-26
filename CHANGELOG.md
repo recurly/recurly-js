@@ -1,5 +1,21 @@
 # Changelog
 
+## [v4.45.1](https://github.com/recurly/recurly-js/tree/v4.45.1) (2026-10-26)
+
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.45.0...v4.45.1)
+
+
+**Merged Pull Requests**
+
+- Paypal setup token for plans with ramp intervals [#1006](https://github.com/recurly/recurly-js/pull/1006) ([jsaninpineda](https://github.com/jsaninpineda))
+- fix: retry device data collection on 15s timeout - Worldpay & Cybersource [#1003](https://github.com/recurly/recurly-js/pull/1003) ([btruncali1](https://github.com/btruncali1))
+- feat: add billingContactSelectionOrder option to Apple Pay and Google Pay [#1002](https://github.com/recurly/recurly-js/pull/1002) ([cbarton](https://github.com/cbarton))
+- Forward `billingInfoId` in the Braintree proactive 3-D Secure preflight [#1001](https://github.com/recurly/recurly-js/pull/1001) ([javimbk](https://github.com/javimbk))
+- allow passing custom fields to BrainTree's rules manager [#998](https://github.com/recurly/recurly-js/pull/998) ([clarkstuth](https://github.com/clarkstuth))
+-  Add PayPay as a new Adyen APM [#991](https://github.com/recurly/recurly-js/pull/991) ([jsaninpineda](https://github.com/jsaninpineda))
+
+
+
 ## [v4.45.0](https://github.com/recurly/recurly-js/tree/v4.45.0) (2026-09-25)
 
 [Full Changelog](https://github.com/recurly/recurly-js/compare/v4.44.4...v4.45.0)
