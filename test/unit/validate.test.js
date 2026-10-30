@@ -41,6 +41,9 @@ describe('Recurly.validate', function () {
     it('should parse discover', function () {
       assert.strictEqual(recurly.validate.cardType('6011000090139424'), 'discover');
       assert.strictEqual(recurly.validate.cardType('6011039990139424'), 'discover');
+      assert.strictEqual(recurly.validate.cardType('6043550000000000'), 'discover');
+      assert.strictEqual(recurly.validate.cardType('6500870000000008'), 'discover');
+      assert.strictEqual(recurly.validate.cardType('5896578742026538'), 'discover');
     });
 
     it('should parse union_pay', function () {
@@ -59,6 +62,8 @@ describe('Recurly.validate', function () {
       assert.strictEqual(recurly.validate.cardType('5555555555554444'), 'master');
       assert.strictEqual(recurly.validate.cardType('2222000222222224'), 'master');
       assert.strictEqual(recurly.validate.cardType('2720989999999955'), 'master');
+      assert.strictEqual(recurly.validate.cardType('5062224607440872'), 'master');
+      assert.strictEqual(recurly.validate.cardType('2869000000000006'), 'master');
     });
 
     it('should parse american_express', function () {
@@ -87,10 +92,81 @@ describe('Recurly.validate', function () {
       assert.strictEqual(recurly.validate.cardType('627781000000000'), 'maestro');
       assert.strictEqual(recurly.validate.cardType('6010999990139424'), 'maestro');
       assert.strictEqual(recurly.validate.cardType('6219803011113245'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('5061990000000000'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('5064510000000000'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('6043540000000000'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('6043560000000000'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('5896560000000000'), 'maestro');
+      assert.strictEqual(recurly.validate.cardType('5896580000000000'), 'maestro');
+    });
+
+    it('should parse Tarjeta Naranja Brazilian BINs', function () {
+      assert.strictEqual(recurly.validate.cardType('4050100000000001'), 'tarjeta_naranja');
+      assert.strictEqual(recurly.validate.cardType('4144270000000002'), 'tarjeta_naranja');
+      assert.strictEqual(recurly.validate.cardType('4154750000000003'), 'tarjeta_naranja');
+      assert.strictEqual(recurly.validate.cardType('4317640000000004'), 'tarjeta_naranja');
+      assert.strictEqual(recurly.validate.cardType('4326360000000005'), 'tarjeta_naranja');
+      assert.strictEqual(recurly.validate.cardType('4779380000000006'), 'tarjeta_naranja');
+    });
+
+    it('should parse Brazilian debit Visa BINs', function () {
+      assert.strictEqual(recurly.validate.cardType('4066470000000001'), 'visa_debit');
+      assert.strictEqual(recurly.validate.cardType('4237100000000002'), 'visa_debit');
+      assert.strictEqual(recurly.validate.cardType('4237570000000003'), 'visa_debit');
+      assert.strictEqual(recurly.validate.cardType('4237710000000004'), 'visa_debit');
+      assert.strictEqual(recurly.validate.cardType('4237730000000005'), 'visa_debit');
+      assert.strictEqual(recurly.validate.cardType('4278350000000006'), 'visa_debit');
+      assert.strictEqual(recurly.validate.cardType('4700610000000007'), 'visa_debit');
+      assert.strictEqual(recurly.validate.cardType('4700830000000008'), 'visa_debit');
+      assert.strictEqual(recurly.validate.cardType('4700840000000009'), 'visa_debit');
+      assert.strictEqual(recurly.validate.cardType('4700880000000010'), 'visa_debit');
+      assert.strictEqual(recurly.validate.cardType('4700890000000011'), 'visa_debit');
+      assert.strictEqual(recurly.validate.cardType('4760950000000012'), 'visa_debit');
+    });
+
+    it('should parse Brazilian debit MasterCard BINs', function () {
+      assert.strictEqual(recurly.validate.cardType('5340900000000001'), 'mastercard_debit');
+      assert.strictEqual(recurly.validate.cardType('5453710000000002'), 'mastercard_debit');
+    });
+
+    it('should keep neighboring BINs on their current card types', function () {
+      assert.strictEqual(recurly.validate.cardType('4050090000000001'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4050110000000003'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4237720000000007'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4779390000000019'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('5340890000000001'), 'master');
+      assert.strictEqual(recurly.validate.cardType('5340910000000003'), 'master');
+      assert.strictEqual(recurly.validate.cardType('5453720000000006'), 'master');
+      assert.strictEqual(recurly.validate.cardType('5062000000000000'), 'master');
+      assert.strictEqual(recurly.validate.cardType('5064500000000000'), 'master');
+      assert.strictEqual(recurly.validate.cardType('4066460000000002'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4066480000000006'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4700600000000010'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4700620000000012'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4700850000000013'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4700900000000015'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4760960000000016'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('4779370000000017'), 'visa');
+      assert.strictEqual(recurly.validate.cardType('5453700000000004'), 'master');
     });
 
     it('should parse unknown', function () {
       assert.strictEqual(recurly.validate.cardType('867-5309-jenny'), 'unknown');
+    });
+
+    it('should return unknown for 13-digit carved BIN numbers', function () {
+      assert.strictEqual(recurly.validate.cardType('4050100000000'), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('4066470000000'), 'unknown');
+      assert.strictEqual(recurly.validate.cardType('5340900000000'), 'unknown');
+    });
+
+    it('should parse partial BIN prefixes for the new types', function () {
+      assert.strictEqual(recurly.validate.cardType('405010', true), 'tarjeta_naranja');
+      assert.strictEqual(recurly.validate.cardType('40500', true), 'visa');
+      assert.strictEqual(recurly.validate.cardType('406647', true), 'visa_debit');
+      assert.strictEqual(recurly.validate.cardType('534090', true), 'mastercard_debit');
+      assert.strictEqual(recurly.validate.cardType('545371', true), 'mastercard_debit');
+      assert.strictEqual(recurly.validate.cardType('53408', true), 'master');
     });
 
     it('should not parse partial numbers', function () {
