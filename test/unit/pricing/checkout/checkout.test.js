@@ -232,6 +232,16 @@ describe('CheckoutPricing', function () {
       });
     });
 
+    it('publishes finite amounts for magnitudes whose shifted value stringifies exponentially', function (done) {
+      this.pricing.adjustment({ amount: 2e12 }).done(price => {
+        assert.strictEqual(price.now.items[0].amount, '2000000000000.00');
+        assert.strictEqual(price.now.items[0].unitAmount, '2000000000000.00');
+        assert.strictEqual(price.now.subtotal, '2000000000000.00');
+        assert.strictEqual(price.now.total, '2000000000000.00');
+        done();
+      });
+    });
+
     it('passes the new adjustment which does not mutate pricing', function (done) {
       const amount = 3.99;
       this.pricing.adjustment({ amount }).then(adjustment => {
@@ -523,6 +533,74 @@ describe('CheckoutPricing', function () {
               assert.strictEqual(err.code, 'not-found');
               done();
             });
+        });
+      });
+
+      describe('when the item has a decimal price', function () {
+        beforeEach(function () {
+          this.decimal = { itemCode: 'decimal-item' };
+        });
+
+        it('resolves the unit amount from unit_amount_decimal', function (done) {
+          const { decimal, pricing } = this;
+          pricing.adjustment(decimal).then(() => {
+            const newAdjustment = pricing.items.adjustments[0];
+            assert.strictEqual(pricing.items.adjustments.length, 1);
+            assert.strictEqual(newAdjustment.amount, 0.425);
+            assert.strictEqual(newAdjustment.quantity, 1);
+            assert.strictEqual(newAdjustment.currency, 'USD');
+            done();
+          });
+        });
+
+        it('resolves the unit amount for the specified currency', function (done) {
+          const { decimal, pricing } = this;
+          pricing.adjustment({ ...decimal, currency: 'GBP' }).then(() => {
+            assert.strictEqual(pricing.items.adjustments[0].amount, 0.475);
+            done();
+          });
+        });
+
+        it('rejects with an invalid-item-price error when the currency has no price', function (done) {
+          const { decimal, pricing, sandbox } = this;
+          const stub = sandbox.stub();
+          pricing
+            .adjustment({ ...decimal, currency: 'EUR' })
+            .then(stub)
+            .catch(err => {
+              assert(stub.notCalled);
+              assert.strictEqual(err.code, 'invalid-item-price');
+              done();
+            });
+        });
+
+        describe('price publication', function () {
+          it('preserves sub-cent precision on itemized amounts', function (done) {
+            const { decimal, pricing } = this;
+            pricing
+              .adjustment({ ...decimal, quantity: 100 })
+              .done(price => {
+                assert.strictEqual(price.now.items.length, 1);
+                assert.strictEqual(price.now.items[0].unitAmount, '0.425000000');
+                assert.strictEqual(price.now.items[0].amount, '42.50');
+                assert.equal(price.now.subtotal, '42.50');
+                assert.equal(price.now.total, '42.50');
+                done();
+              });
+          });
+
+          it('preserves sub-cent unit amounts for a quantity of one', function (done) {
+            const { decimal, pricing } = this;
+            pricing
+              .adjustment(decimal)
+              .done(price => {
+                assert.strictEqual(price.now.items[0].unitAmount, '0.425000000');
+                assert.strictEqual(price.now.items[0].amount, '0.425000000');
+                assert.equal(price.now.subtotal, '0.43');
+                assert.equal(price.now.total, '0.43');
+                done();
+              });
+          });
         });
       });
 

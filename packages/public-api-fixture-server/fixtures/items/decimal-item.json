@@ -1,0 +1,22 @@
+{
+  "code": "decimal-item",
+  "name": "Decimal Item",
+  "tax_code": null,
+  "tax_exempt": true,
+  "currencies": [
+    {
+      "currency_code": "USD",
+      "currency_symbol": "$",
+      "unit_amount_decimal": "0.425"
+    },
+    {
+      "currency_code": "GBP",
+      "currency_symbol": "£",
+      "unit_amount_decimal": "0.475"
+    },
+    {
+      "currency_code": "EUR",
+      "currency_symbol": "€"
+    }
+  ]
+}
