@@ -1,10 +1,16 @@
 # Changelog
 
-## [Unreleased]
+## [v4.45.4](https://github.com/recurly/recurly-js/tree/v4.45.4) (2026-11-05)
 
-**Changed**
+[Full Changelog](https://github.com/recurly/recurly-js/compare/v4.45.3...v4.45.4)
 
-- cardType() classifies Cabal/Carnet BINs via their parent schemes (discover/master) and returns new values for Tarjeta Naranja BINs (405010, 414427, 415475, 431764, 432636, 477938 → tarjeta_naranja). Merchant integrations switching on the returned string see these new enum values.
+
+**Merged Pull Requests**
+
+- fix(checkout-pricing): support sub-cent item prices via unit_amount_decimal [#1010](https://github.com/recurly/recurly-js/pull/1010) ([Patrick-Duvall](https://github.com/Patrick-Duvall))
+- Classifies Cabal/Carnet BINs via their parent schemes and carves Naranja BINs [#1005](https://github.com/recurly/recurly-js/pull/1005) ([ftovaro-recurly](https://github.com/ftovaro-recurly))
+
+
 
 ## [v4.45.3](https://github.com/recurly/recurly-js/tree/v4.45.3) (2026-10-26)
 
@@ -38,8 +44,6 @@
 - Forward `billingInfoId` in the Braintree proactive 3-D Secure preflight [#1001](https://github.com/recurly/recurly-js/pull/1001) ([javimbk](https://github.com/javimbk))
 - allow passing custom fields to BrainTree's rules manager [#998](https://github.com/recurly/recurly-js/pull/998) ([clarkstuth](https://github.com/clarkstuth))
 -  Add PayPay as a new Adyen APM [#991](https://github.com/recurly/recurly-js/pull/991) ([jsaninpineda](https://github.com/jsaninpineda))
-
-
 
 
 
