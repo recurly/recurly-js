@@ -46,6 +46,7 @@ describe('Risk', function () {
       assert.deepStrictEqual(Object.keys(browserInfo), [
         'color_depth',
         'java_enabled',
+        'java_script_enabled',
         'language',
         'referrer_url',
         'screen_height',
@@ -56,6 +57,7 @@ describe('Risk', function () {
 
       assert.strictEqual(browserInfo.color_depth, 'fake-color-depth');
       assert.strictEqual(browserInfo.java_enabled, 'fake-java-enabled');
+      assert.strictEqual(browserInfo.java_script_enabled, true);
       assert.strictEqual(browserInfo.language, 'fake-language');
       assert.strictEqual(browserInfo.referrer_url, location.href);
       assert.strictEqual(browserInfo.screen_height, 'fake-height');
