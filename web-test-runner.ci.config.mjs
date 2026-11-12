@@ -144,15 +144,17 @@ function toBSCapabilities (cap) {
     project: projectName,
     build: BUILD_NAME,
     name: 'recurly-js unit test',
+    'bstack:options': {
+      consoleLogs: 'errors'
+    }
   };
 
-  if (cap.browserName) result.browser = cap.browserName;
-  if (cap.browserVersion) result.browser_version = cap.browserVersion;
-  if (cap.os) result.os = cap.os;
-  if (cap.osVersion) result.os_version = cap.osVersion;
-  if (cap.deviceName) result.device = cap.deviceName;
-  if (cap.realMobile !== undefined) result.real_mobile = cap.realMobile;
-  result['browserstack.consoleLogs'] = 'errors';
+  if (cap.browserName) result.browserName = cap.browserName;
+  if (cap.browserVersion) result.browserVersion = cap.browserVersion;
+  if (cap.os) result['bstack:options'].os = cap.os;
+  if (cap.osVersion) result['bstack:options'].osVersion = cap.osVersion;
+  if (cap.deviceName) result['bstack:options'].deviceName = cap.deviceName;
+  if (cap.realMobile !== undefined) result['bstack:options'].realMobile = cap.realMobile;
 
   return result;
 }

@@ -76,7 +76,7 @@ function capabilities () {
       'appium:deviceName': 'Android Emulator',
       'appium:platformVersion': BROWSER_VERSION || '10.0',
       'appium:automationName': 'UIAutomator2',
-      'appium:chromedriver_autodownload': true
+      'appium:chromedriverAutodownload': true
     }];
   }
 
