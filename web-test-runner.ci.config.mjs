@@ -159,9 +159,41 @@ function toBSCapabilities (cap) {
   return result;
 }
 
+// The browserstack launcher stamps legacy flat capabilities (timeout,
+// browserstack.local, browserstack.<browser>.enablePopups) onto the caps it
+// hands to the WebDriver client. webdriver's session validation rejects any
+// capability set that mixes vendor-prefixed ("bstack:options") and unprefixed
+// capabilities, so rewrite options.capabilities into pure W3C form with every
+// flat vendor key folded into bstack:options. launcher.capabilities keeps the
+// flat originals for the launcher's own credential and tunnel lookups.
+function sanitizeLauncherCapabilities (launcher) {
+  const caps = launcher.capabilities;
+  const bsOptions = {
+    ...caps['bstack:options'],
+    projectName: caps.project,
+    buildName: caps.build,
+    sessionName: caps.name,
+    userName: caps['browserstack.user'],
+    accessKey: caps['browserstack.key'],
+    local: caps['browserstack.local'],
+    localIdentifier: caps['browserstack.localIdentifier']
+  };
+  for (const key of Object.keys(caps)) {
+    const browser = /^browserstack\.(\w+)\.enablePopups$/.exec(key);
+    if (browser) bsOptions[browser[1]] = { enablePopups: caps[key] };
+  }
+  launcher.options.capabilities = {
+    browserName: caps.browserName ?? caps.browser,
+    ...(caps.browserVersion && { browserVersion: caps.browserVersion }),
+    'bstack:options': bsOptions
+  };
+}
+
 function getBrowserLaunchers () {
   if (BS_CAP) {
-    return [browserstackLauncher({ capabilities: toBSCapabilities(BS_CAP) })];
+    const launcher = browserstackLauncher({ capabilities: toBSCapabilities(BS_CAP) });
+    sanitizeLauncherCapabilities(launcher);
+    return [launcher];
   }
   if (BROWSER === 'Edge') {
     return [playwrightLauncher({
