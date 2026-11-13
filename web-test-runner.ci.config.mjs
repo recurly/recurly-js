@@ -159,13 +159,6 @@ function toBSCapabilities (cap) {
   return result;
 }
 
-// The browserstack launcher stamps legacy flat capabilities (timeout,
-// browserstack.local, browserstack.<browser>.enablePopups) onto the caps it
-// hands to the WebDriver client. webdriver's session validation rejects any
-// capability set that mixes vendor-prefixed ("bstack:options") and unprefixed
-// capabilities, so rewrite options.capabilities into pure W3C form with every
-// flat vendor key folded into bstack:options. launcher.capabilities keeps the
-// flat originals for the launcher's own credential and tunnel lookups.
 function sanitizeLauncherCapabilities (launcher) {
   const caps = launcher.capabilities;
   const bsOptions = {
