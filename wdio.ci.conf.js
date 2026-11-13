@@ -36,8 +36,6 @@ if (useBrowserstack) {
           ...{
             projectName,
             buildName: GITHUB_RUN_ID ? `${GITHUB_RUN_ID}/e2e/${BROWSER}` : `Local e2e [${branchName()}]`,
-            seleniumVersion: '3.141.59',
-            appiumVersion: '1.17.0',
             local: true,
             debug: true,
             networkLogs: true,

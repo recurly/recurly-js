@@ -144,22 +144,49 @@ function toBSCapabilities (cap) {
     project: projectName,
     build: BUILD_NAME,
     name: 'recurly-js unit test',
+    'bstack:options': {
+      consoleLogs: 'errors'
+    }
   };
 
-  if (cap.browserName) result.browser = cap.browserName;
-  if (cap.browserVersion) result.browser_version = cap.browserVersion;
-  if (cap.os) result.os = cap.os;
-  if (cap.osVersion) result.os_version = cap.osVersion;
-  if (cap.deviceName) result.device = cap.deviceName;
-  if (cap.realMobile !== undefined) result.real_mobile = cap.realMobile;
-  result['browserstack.consoleLogs'] = 'errors';
+  if (cap.browserName) result.browserName = cap.browserName;
+  if (cap.browserVersion) result.browserVersion = cap.browserVersion;
+  if (cap.os) result['bstack:options'].os = cap.os;
+  if (cap.osVersion) result['bstack:options'].osVersion = cap.osVersion;
+  if (cap.deviceName) result['bstack:options'].deviceName = cap.deviceName;
+  if (cap.realMobile !== undefined) result['bstack:options'].realMobile = cap.realMobile;
 
   return result;
 }
 
+function sanitizeLauncherCapabilities (launcher) {
+  const caps = launcher.capabilities;
+  const bsOptions = {
+    ...caps['bstack:options'],
+    projectName: caps.project,
+    buildName: caps.build,
+    sessionName: caps.name,
+    userName: caps['browserstack.user'],
+    accessKey: caps['browserstack.key'],
+    local: caps['browserstack.local'],
+    localIdentifier: caps['browserstack.localIdentifier']
+  };
+  for (const key of Object.keys(caps)) {
+    const browser = /^browserstack\.(\w+)\.enablePopups$/.exec(key);
+    if (browser) bsOptions[browser[1]] = { enablePopups: caps[key] };
+  }
+  launcher.options.capabilities = {
+    browserName: caps.browserName ?? caps.browser,
+    ...(caps.browserVersion && { browserVersion: caps.browserVersion }),
+    'bstack:options': bsOptions
+  };
+}
+
 function getBrowserLaunchers () {
   if (BS_CAP) {
-    return [browserstackLauncher({ capabilities: toBSCapabilities(BS_CAP) })];
+    const launcher = browserstackLauncher({ capabilities: toBSCapabilities(BS_CAP) });
+    sanitizeLauncherCapabilities(launcher);
+    return [launcher];
   }
   if (BROWSER === 'Edge') {
     return [playwrightLauncher({
