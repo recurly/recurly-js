@@ -36,22 +36,28 @@ class ApplePaySessionStub extends Emitter {
   }
   begin () {}
   completeMerchantValidation (ms) {
+    if (this.canceled) throw new DOMException('Session canceled', 'InvalidAccessError');
     this.merchantSession = ms;
     this.emit('completeMerchantValidation');
   }
   completePaymentMethodSelection (update) {
+    if (this.canceled) throw new DOMException('Session canceled', 'InvalidAccessError');
     this.emit('completePaymentMethodSelection', update);
   }
   completeCouponCodeChange (update) {
+    if (this.canceled) throw new DOMException('Session canceled', 'InvalidAccessError');
     this.emit('completeCouponCodeChange', update);
   }
   completeShippingContactSelection (update) {
+    if (this.canceled) throw new DOMException('Session canceled', 'InvalidAccessError');
     this.emit('completeShippingContactSelection', update);
   }
   completeShippingMethodSelection (update) {
+    if (this.canceled) throw new DOMException('Session canceled', 'InvalidAccessError');
     this.emit('completeShippingMethodSelection', update);
   }
   completePayment (update) {
+    if (this.canceled) throw new DOMException('Session canceled', 'InvalidAccessError');
     this.emit('completePayment', update);
   }
 
@@ -816,6 +822,114 @@ function applePayTest (integrationType) {
       beforeEach(function (done) {
         this.applePay = this.recurly.ApplePay(validOpts);
         this.applePay.ready(done);
+      });
+
+      describe('canceled sessions', function () {
+        beforeEach(function () {
+          this.session = this.applePay.session;
+          this.errors = this.sandbox.spy();
+          this.applePay.on('error', this.errors);
+          this.session.oncancel = () => {
+            this.session.canceled = true;
+            this.applePay.onCancel({});
+          };
+        });
+
+        function deferValidation (context) {
+          if (isDirectIntegration) {
+            let complete;
+            context.sandbox.stub(context.recurly.request, 'post').callsFake(({ done }) => { complete = done; });
+            return (err, value) => complete(err, value);
+          }
+          let resolve, reject;
+          context.applePay.braintree.applePay.performValidation = () => new Promise((res, rej) => {
+            resolve = res;
+            reject = rej;
+          });
+          return (err, value) => err ? reject(err) : resolve(value);
+        }
+
+        for (const fails of [false, true]) {
+          it(`ignores late merchant validation ${fails ? 'errors' : 'results'}`, async function () {
+            const complete = this.sandbox.spy(this.session, 'completeMerchantValidation');
+            const finish = deferValidation(this);
+            this.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
+            this.session.oncancel();
+            finish(fails ? new Error('validation failed') : null, 'MERCHANT_SESSION');
+            await new Promise(resolve => setTimeout(resolve, 20));
+            assert.equal(complete.called, false);
+            assert.equal(this.errors.called, false);
+          });
+        }
+
+        it('ignores an old validation result after another attempt begins', async function () {
+          const finish = deferValidation(this);
+          this.session.onvalidatemerchant({ validationURL: 'valid-test-url' });
+          this.session.oncancel();
+          this.applePay.begin();
+          const current = this.applePay.session;
+          const complete = this.sandbox.spy(current, 'completeMerchantValidation');
+          finish(null, 'OLD_SESSION');
+          await new Promise(resolve => setTimeout(resolve, 20));
+          assert.equal(complete.called, false);
+          current.onvalidatemerchant({ validationURL: 'valid-test-url' });
+          finish(null, 'NEW_SESSION');
+          await new Promise(resolve => setTimeout(resolve, 20));
+          assert.equal(complete.calledOnce, true);
+          assert.equal(current.merchantSession, 'NEW_SESSION');
+        });
+
+        for (const fails of [false, true]) {
+          it(`ignores late tokenization ${fails ? 'errors' : 'results'}`, async function () {
+            let finish;
+            if (isBraintreeIntegration) {
+              this.applePay.braintree.applePay.tokenize = () => new Promise((resolve, reject) => {
+                finish = () => fails ? reject(new Error('tokenization failed')) : resolve('GATEWAY_TOKEN');
+              });
+            } else {
+              this.sandbox.stub(this.recurly.request, 'post').callsFake(({ done }) => {
+                finish = () => done(fails ? new Error('tokenization failed') : null, { id: 'TOKEN' });
+              });
+            }
+            const complete = this.sandbox.spy(this.session, 'completePayment');
+            const token = this.sandbox.spy();
+            this.applePay.on('token', token);
+            this.session.onpaymentauthorized({ payment: { token: { paymentData: {}, paymentMethod: {} } } });
+            this.session.oncancel();
+            finish();
+            await new Promise(resolve => setTimeout(resolve, 20));
+            assert.equal(complete.called, false);
+            assert.equal(token.called, false);
+            assert.equal(this.errors.called, false);
+          });
+        }
+
+        it('skips payment selection when pricing finishes after cancellation', function () {
+          let finish;
+          this.sandbox.stub(this.applePay, 'setAddress').callsFake((type, contact, done) => { finish = done; });
+          const complete = this.sandbox.spy(this.session, 'completePaymentMethodSelection');
+          this.session.onpaymentmethodselected({ paymentMethod: { billingContact: {} } });
+          this.session.oncancel();
+          finish();
+          assert.equal(complete.called, false);
+        });
+
+        it('skips a selection callback resolved after a new attempt begins', async function () {
+          let finish;
+          this.applePay.config.callbacks = {
+            onShippingMethodSelected: () => new Promise(resolve => { finish = resolve; }),
+          };
+          // Callback configuration is captured when the session is created.
+          this.applePay.begin();
+          const old = this.applePay.session;
+          old.onshippingmethodselected({});
+          old.oncancel({});
+          this.applePay.begin();
+          const complete = this.sandbox.spy(this.applePay.session, 'completeShippingMethodSelection');
+          finish({});
+          await new Promise(resolve => setTimeout(resolve, 20));
+          assert.equal(complete.called, false);
+        });
       });
 
       describe('onValidateMerchant', function () {
