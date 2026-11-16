@@ -553,7 +553,7 @@ function googlePayTest (integrationType) {
           });
 
           nextTick(() => assertDone(done, () => {
-            assert.equal(window.google.payments.api.PaymentsClient.getCall(0).args[0].paymentDataCallbacks, callbacks);
+            assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0].paymentDataCallbacks, callbacks);
             const { callbackIntents } = window.google.payments.api.PaymentsClient.prototype.prefetchPaymentData.getCall(0).args[0];
             assert.deepEqual(callbackIntents, ['SHIPPING_ADDRESS']);
           }));
@@ -571,7 +571,7 @@ function googlePayTest (integrationType) {
           });
 
           nextTick(() => assertDone(done, () => {
-            assert.equal(window.google.payments.api.PaymentsClient.getCall(0).args[0].paymentDataCallbacks, callbacks);
+            assert.deepEqual(window.google.payments.api.PaymentsClient.getCall(0).args[0].paymentDataCallbacks, callbacks);
             const { callbackIntents } = window.google.payments.api.PaymentsClient.prototype.prefetchPaymentData.getCall(0).args[0];
             assert.deepEqual(callbackIntents, ['SHIPPING_OPTION']);
           }));
@@ -588,6 +588,40 @@ function googlePayTest (integrationType) {
                 });
               });
             };
+          });
+
+          it('does not mutate the supplied callbacks', async function () {
+            const onPaymentAuthorized = this.sandbox.stub().returns({});
+            const callbacks = { onPaymentAuthorized };
+            const emitter = this.recurly.GooglePay({ ...this.googlePayOpts, callbacks });
+            await new Promise(resolve => emitter.on('ready', resolve));
+
+            assert.equal(callbacks.onPaymentAuthorized, onPaymentAuthorized);
+          });
+
+          it('only tokenizes the active instance when callbacks are shared', async function () {
+            const onPaymentAuthorized = this.sandbox.stub().returns({});
+            const callbacks = { onPaymentAuthorized };
+            const firstToken = this.sandbox.spy();
+            const secondToken = this.sandbox.spy();
+            const first = this.recurly.GooglePay({ ...this.googlePayOpts, callbacks });
+            first.on('token', firstToken);
+            await new Promise(resolve => first.on('ready', resolve));
+            const second = this.recurly.GooglePay({ ...this.googlePayOpts, callbacks, gatewayCode: 'SECOND_GATEWAY' });
+            second.on('token', secondToken);
+            await new Promise(resolve => second.on('ready', resolve));
+
+            const client = window.google.payments.api.PaymentsClient;
+            const paymentData = await client.prototype.loadPaymentData();
+            const result = await client.getCall(1).args[0].paymentDataCallbacks.onPaymentAuthorized(paymentData);
+
+            assert.equal(result.transactionState, 'SUCCESS');
+            assert.equal(this.recurly.request.post.callCount, 1);
+            assert.equal(this.recurly.request.post.firstCall.args[0].route, '/google_pay/token');
+            assert.equal(firstToken.callCount, 0);
+            assert.equal(secondToken.callCount, 1);
+            assert.equal(onPaymentAuthorized.callCount, 1);
+            assert.equal(onPaymentAuthorized.firstCall.args[0].recurlyToken.id, 'TOKEN_123');
           });
 
           it('handles the payment authorized intent', function (done) {
