@@ -578,6 +578,18 @@ describe('CompleteStrategy', function () {
     });
   });
 
+  it('forwards errors from rendering the buttons', function (done) {
+    const example = new Error('render failed');
+    this.payPalSdkButtonRenderStub.returns(Promise.reject(example));
+    const paypal = this.initPaypal();
+
+    paypal.on('error', error => {
+      assert.strictEqual(error.code, 'paypal-complete-init-error');
+      assert.strictEqual(error.cause, example);
+      done();
+    });
+  });
+
   describe('withSdk', () => {
     it('loads the PayPal SDK with identifiers and configuration', async function () {
       const paypal = this.initPaypal();
