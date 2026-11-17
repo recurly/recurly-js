@@ -524,6 +524,33 @@ describe('CompleteStrategy', function () {
     });
   });
 
+  it('returns billing token failures to the SDK error handler', async function () {
+    const paypal = this.initPaypal();
+    await this.paypalInitialized();
+
+    const expected = new Error('billing token request failed');
+    const errorSpy = sinon.spy();
+    const tokenSpy = sinon.spy();
+    paypal.on('error', errorSpy);
+    paypal.on('token', tokenSpy);
+
+    let rejectRequest;
+    this.sandbox.stub(this.recurly.request, 'post').returns(new Promise((resolve, reject) => {
+      rejectRequest = reject;
+    }));
+    const { onApprove, onError } = this.paypalSdkStub.Buttons.getCall(0).firstArg;
+    const approval = onApprove({ vaultSetupToken: 'approved-setup-token' });
+
+    assert(approval && typeof approval.then === 'function', 'onApprove must return the tokenization promise');
+    // The SDK forwards rejected approval callbacks to onError.
+    const handled = approval.catch(onError);
+    rejectRequest(expected);
+    await handled;
+
+    assert(errorSpy.calledOnceWithExactly(expected));
+    assert(tokenSpy.notCalled);
+  });
+
   it('passes gatewayCode to the billing token request', function (done) {
     const { target } = this;
     const gatewayCode = 'test-gateway-code';
