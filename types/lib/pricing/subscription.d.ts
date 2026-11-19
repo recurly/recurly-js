@@ -16,45 +16,45 @@ export type SubscriptionPricingStateTax = {
   rate: string;
 };
 
-export type SubscriptionPricingState = {
-  price: {
-    now: {
-      subtotal: string;
-      plan: string;
-      addons: string;
+export type SubscriptionPrice = {
+  now: {
+    subtotal: string;
+    plan: string;
+    addons: string;
+    setup_fee: string;
+    discount: string;
+    tax: string;
+    total: string;
+  };
+  next: {
+    subtotal: string;
+    plan: string;
+    addons: string;
+    setup_fee: string;
+    discount: string;
+    tax: string;
+    total: string;
+  };
+  base: {
+    plan: {
+      unit: string;
       setup_fee: string;
-      discount: string;
-      tax: string;
-      total: string;
-    };
-    next: {
-      subtotal: string;
-      plan: string;
-      addons: string;
-      setup_fee: string;
-      discount: string;
-      tax: string;
-      total: string;
-    };
-    base: {
-      plan: {
-        unit: string;
-        setup_fee: string;
-      };
-      addons: {
-        [addon: string]: string;
-      };
     };
     addons: {
       [addon: string]: string;
     };
-    currency: {
-      code: string;
-      symbol: string;
-    };
-    taxes: SubscriptionPricingStateTax[];
   };
+  addons: {
+    [addon: string]: string;
+  };
+  currency: {
+    code: string;
+    symbol: string;
+  };
+  taxes: SubscriptionPricingStateTax[];
 };
+
+export type SubscriptionPricingState = SubscriptionPrice;
 
 export interface SubscriptionPricingMethods {
   addon: (addonCode: string, addonOptions?: AddonOptions) => SubscriptionPricingPromise;
