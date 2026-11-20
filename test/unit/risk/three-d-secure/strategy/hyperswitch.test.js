@@ -298,3 +298,284 @@ strategies.forEach(({ name, strategyClass, strategyName }) => {
     });
   });
 });
+
+describe('HyperswitchStrategy device data collection', function () {
+  this.ctx.fixture = 'threeDSecure';
+
+  applyFixtures();
+
+  const ddcActionToken = {
+    id: 'action-token-hyperswitch-ddc',
+    gateway: { type: 'hyperswitch' },
+    three_d_secure: {
+      params: {
+        threeDSMethodUrl: 'https://3ds.example/3ds_method',
+        threeDSMethodData: 'eyJ0ZXN0In0=',
+        threeDSMethodKey: 'threeDSMethodData',
+        threeDSMethodDataSubmission: true,
+        payment_id: 'pay_123',
+      },
+    },
+  };
+
+  beforeEach(function (done) {
+    const recurly = this.recurly = initRecurly();
+    const risk = recurly.Risk();
+    this.threeDSecure = risk.ThreeDSecure({ actionTokenId: 'action-token-test' });
+    this.target = testBed().querySelector('#three-d-secure-container');
+    this.sandbox = sinon.createSandbox();
+    this.strategy = new HyperswitchStrategy({ threeDSecure: this.threeDSecure, actionToken: ddcActionToken });
+    this.strategy.whenReady(() => done());
+  });
+
+  afterEach(function () {
+    document.querySelectorAll('iframe[name^=threeDSMethodFrame]').forEach(el => el.remove());
+    this.recurly.destroy();
+    this.strategy.remove();
+    this.sandbox.restore();
+  });
+
+  describe('methodInputs', function () {
+    it('extracts the device data collection inputs from the action token', function () {
+      const { methodInputs } = this.strategy;
+      assert.strictEqual(methodInputs.threeDSMethodUrl, 'https://3ds.example/3ds_method');
+      assert.strictEqual(methodInputs.threeDSMethodData, 'eyJ0ZXN0In0=');
+      assert.strictEqual(methodInputs.threeDSMethodKey, 'threeDSMethodData');
+      assert.strictEqual(methodInputs.submission, true);
+      assert.strictEqual(methodInputs.paymentId, 'pay_123');
+    });
+
+    it('is undefined when the action token is not invoke-shaped', function () {
+      const strategy = new HyperswitchStrategy({
+        threeDSecure: this.threeDSecure,
+        actionToken,
+      });
+      assert.strictEqual(strategy.methodInputs, undefined);
+      strategy.remove();
+    });
+
+    it('is defined when only the submission flag is present (null method url)', function () {
+      // The server maps a submission-false method_details verbatim to empty-string method
+      // inputs plus the flag and payment_id.
+      const strategy = new HyperswitchStrategy({
+        threeDSecure: this.threeDSecure,
+        actionToken: {
+          ...ddcActionToken,
+          three_d_secure: {
+            params: {
+              threeDSMethodUrl: '',
+              threeDSMethodData: '',
+              threeDSMethodKey: '',
+              threeDSMethodDataSubmission: false,
+              payment_id: 'pay_null_method_url',
+            },
+          },
+        },
+      });
+
+      const { methodInputs } = strategy;
+      assert.strictEqual(methodInputs.threeDSMethodUrl, '');
+      assert.strictEqual(methodInputs.submission, false);
+      assert.strictEqual(methodInputs.paymentId, 'pay_null_method_url');
+      strategy.remove();
+    });
+
+    describe('when the optional method-input keys are absent', function () {
+      it('applies the getter defaults for the method key and the submission flag', function () {
+        const strategy = new HyperswitchStrategy({
+          threeDSecure: this.threeDSecure,
+          actionToken: {
+            ...ddcActionToken,
+            three_d_secure: {
+              params: {
+                threeDSMethodUrl: 'https://3ds.example/3ds_method',
+                threeDSMethodData: 'eyJ0ZXN0In0=',
+                payment_id: 'pay_123',
+              },
+            },
+          },
+        });
+
+        const { methodInputs } = strategy;
+        assert.strictEqual(methodInputs.threeDSMethodKey, 'threeDSMethodData');
+        assert.strictEqual(methodInputs.submission, true);
+        strategy.remove();
+      });
+
+      it('falls back to camelCase paymentId when payment_id is absent', function () {
+        const strategy = new HyperswitchStrategy({
+          threeDSecure: this.threeDSecure,
+          actionToken: {
+            ...ddcActionToken,
+            three_d_secure: {
+              params: {
+                threeDSMethodUrl: 'https://3ds.example/3ds_method',
+                threeDSMethodData: 'eyJ0ZXN0In0=',
+                paymentId: 'pay_camel',
+              },
+            },
+          },
+        });
+
+        assert.strictEqual(strategy.methodInputs.paymentId, 'pay_camel');
+        strategy.remove();
+      });
+    });
+  });
+
+  describe('attach', function () {
+    it('submits the hidden-iframe form POST to the method url', function () {
+      const submit = this.sandbox.spy(HTMLFormElement.prototype, 'submit');
+      this.strategy.attach(this.target);
+
+      const iframe = document.querySelector('iframe[name^=threeDSMethodFrame]');
+      assert(iframe, 'hidden threeDSMethodFrame iframe exists');
+      assert.strictEqual(iframe.src, 'about:blank');
+
+      assert(submit.calledOnce, 'form was submitted once');
+      const form = submit.firstCall.thisValue;
+      assert.strictEqual(form.action, 'https://3ds.example/3ds_method');
+      assert.strictEqual(form.method, 'post');
+      assert.match(form.target, /^threeDSMethodFrame-/, 'the form targets the strategy-owned hidden iframe');
+      const input = form.querySelector('input');
+      assert.strictEqual(input.name, 'threeDSMethodData');
+      assert.strictEqual(input.value, 'eyJ0ZXN0In0=');
+      assert.strictEqual(form.target, iframe.name, 'the iframe name and form target match');
+    });
+
+    it('completes with "U" without fingerprinting when submission is false', function (done) {
+      const strategy = new HyperswitchStrategy({
+        threeDSecure: this.threeDSecure,
+        actionToken: {
+          ...ddcActionToken,
+          three_d_secure: {
+            params: { ...ddcActionToken.three_d_secure.params, threeDSMethodDataSubmission: false },
+          },
+        },
+      });
+      strategy.on('done', results => {
+        assert.deepStrictEqual(results, { comp_ind: 'U', payment_id: 'pay_123' });
+        assert.strictEqual(document.querySelector('iframe[name^=threeDSMethodFrame]'), null);
+        done();
+      });
+      strategy.attach(this.target);
+    });
+
+    it('completes with "U" and the payment id when the method url is absent (submission false)', function (done) {
+      // No method url to POST -- the guide prescribes skipping straight to the
+      // authentication call with comp_ind "U".
+      const strategy = new HyperswitchStrategy({
+        threeDSecure: this.threeDSecure,
+        actionToken: {
+          ...ddcActionToken,
+          three_d_secure: {
+            params: {
+              threeDSMethodUrl: '',
+              threeDSMethodData: '',
+              threeDSMethodKey: '',
+              threeDSMethodDataSubmission: false,
+              payment_id: 'pay_null_method_url',
+            },
+          },
+        },
+      });
+      strategy.on('done', results => {
+        assert.deepStrictEqual(results, { comp_ind: 'U', payment_id: 'pay_null_method_url' });
+        assert.strictEqual(document.querySelector('iframe[name^=threeDSMethodFrame]'), null);
+        done();
+      });
+      strategy.attach(this.target);
+    });
+
+    it('completes with "N" after the timeout when fingerprinting does not finish', function (done) {
+      this.sandbox.useFakeTimers({ toFake: ['setInterval', 'setTimeout', 'clearInterval', 'clearTimeout'] });
+      this.strategy.on('done', results => {
+        assert.deepStrictEqual(results, { comp_ind: 'N', payment_id: 'pay_123' });
+        assert.strictEqual(document.querySelector('iframe[name^=threeDSMethodFrame]'), null);
+        done();
+      });
+      this.strategy.attach(this.target);
+      this.sandbox.clock.tick(15001);
+    });
+
+    it('completes with "Y" when accessing the navigated iframe throws', function (done) {
+      this.sandbox.useFakeTimers({ toFake: ['setInterval', 'setTimeout', 'clearInterval', 'clearTimeout'] });
+      this.strategy.attach(this.target);
+
+      const iframe = document.querySelector('iframe[name^=threeDSMethodFrame]');
+      assert(iframe, 'hidden threeDSMethodFrame iframe exists');
+      // Simulate the cross-origin navigation away from about:blank: once the method url
+      // responds, accessing the frame's window throws, which the strategy treats as success.
+      Object.defineProperty(iframe, 'contentWindow', {
+        get () { throw new Error('Simulated cross-origin SecurityError'); }
+      });
+
+      this.strategy.on('done', results => {
+        assert.deepStrictEqual(results, { comp_ind: 'Y', payment_id: 'pay_123' });
+        assert.strictEqual(document.querySelector('iframe[name^=threeDSMethodFrame]'), null);
+        done();
+      });
+      this.sandbox.clock.tick(101);
+    });
+
+    it('does not open the challenge frame when the token is invoke-shaped', function () {
+      const { recurly, target, sandbox } = this;
+      sandbox.spy(recurly, 'Frame');
+      this.strategy.attach(target);
+
+      assert(recurly.Frame.notCalled);
+      assert(document.querySelector('iframe[name^=threeDSMethodFrame]'), 'device data collection iframe exists');
+    });
+
+    it('guards against a second device data collection run on re-attach', function () {
+      this.strategy.attach(this.target);
+      this.strategy.attach(this.target);
+
+      assert.strictEqual(
+        document.querySelectorAll('iframe[name^=threeDSMethodFrame]').length,
+        1,
+        'only one DDC iframe exists after a second attach'
+      );
+    });
+
+    it('names DDC iframes per instance', function () {
+      const first = this.strategy;
+      first.attach(this.target);
+      const second = new HyperswitchStrategy({ threeDSecure: this.threeDSecure, actionToken: ddcActionToken });
+      second.attach(this.target);
+
+      const names = [...document.querySelectorAll('iframe[name^=threeDSMethodFrame]')].map(el => el.name);
+      assert.strictEqual(names.length, 2, 'two strategies produce two distinct iframes');
+      assert.notStrictEqual(names[0], names[1], 'iframe names are unique per strategy instance');
+      second.remove();
+    });
+
+    it('cancels pending device data collection on remove', function () {
+      this.sandbox.useFakeTimers({ toFake: ['setInterval', 'setTimeout', 'clearInterval', 'clearTimeout'] });
+      const onDone = this.sandbox.spy();
+      this.strategy.on('done', onDone);
+      this.strategy.attach(this.target);
+      assert(document.querySelector('iframe[name^=threeDSMethodFrame]'), 'DDC iframe exists before remove');
+
+      this.strategy.remove();
+      assert.strictEqual(
+        document.querySelector('iframe[name^=threeDSMethodFrame]'),
+        null,
+        'remove() tears down the DDC iframe'
+      );
+
+      this.sandbox.clock.tick(15001);
+      assert(onDone.notCalled, 'an abandoned strategy must never emit done -- no action-result token is POSTed for a removed payment');
+    });
+  });
+
+  describe('completeDDC', function () {
+    it('emits done with the given completion indicator and the payment id', function (done) {
+      this.strategy.on('done', results => {
+        assert.deepStrictEqual(results, { comp_ind: 'Y', payment_id: 'pay_123' });
+        done();
+      });
+      this.strategy.completeDDC('Y');
+    });
+  });
+});
