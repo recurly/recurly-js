@@ -166,9 +166,7 @@ export type CheckoutPrice = {
   taxes: CheckoutPricingStateTax[];
 };
 
-export type CheckoutPricingState = {
-  price: CheckoutPrice;
-};
+export type CheckoutPricingState = CheckoutPrice;
 
 export interface CheckoutPricingMethods {
   address: (address: Address) => CheckoutPricingPromise;

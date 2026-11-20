@@ -57,52 +57,54 @@ export default function subscriptionPricing () {
     })
     .done(pricing => {
       if (pricing) {
+        // @ts-expect-error the resolved value is the price itself, not wrapped in `price`
+        pricing.price;
         // $ExpectType string
-        pricing.price.now.subtotal;
+        pricing.now.subtotal;
         // $ExpectType string
-        pricing.price.now.plan;
+        pricing.now.plan;
         // $ExpectType string
-        pricing.price.now.addons;
+        pricing.now.addons;
         // $ExpectType string
-        pricing.price.now.setup_fee;
+        pricing.now.setup_fee;
         // $ExpectType string
-        pricing.price.now.discount;
+        pricing.now.discount;
         // $ExpectType string
-        pricing.price.now.tax;
+        pricing.now.tax;
         // $ExpectType string
-        pricing.price.now.total;
+        pricing.now.total;
         // $ExpectType string
-        pricing.price.next.subtotal;
+        pricing.next.subtotal;
         // $ExpectType string
-        pricing.price.next.plan;
+        pricing.next.plan;
         // $ExpectType string
-        pricing.price.next.addons;
+        pricing.next.addons;
         // $ExpectType string
-        pricing.price.next.setup_fee;
+        pricing.next.setup_fee;
         // $ExpectType string
-        pricing.price.next.discount;
+        pricing.next.discount;
         // $ExpectType string
-        pricing.price.next.tax;
+        pricing.next.tax;
         // $ExpectType string
-        pricing.price.next.total;
+        pricing.next.total;
         // $ExpectType string
-        pricing.price.base.plan.unit;
+        pricing.base.plan.unit;
         // $ExpectType string
-        pricing.price.base.plan.setup_fee;
+        pricing.base.plan.setup_fee;
         // $ExpectType string
-        pricing.price.base.addons.myAddon;
+        pricing.base.addons.myAddon;
         // $ExpectType string
-        pricing.price.addons.myAddon;
+        pricing.addons.myAddon;
         // $ExpectType string
-        pricing.price.currency.code;
+        pricing.currency.code;
         // $ExpectType string
-        pricing.price.currency.symbol;
+        pricing.currency.symbol;
         // $ExpectType string
-        pricing.price.taxes[0].rate;
+        pricing.taxes[0].rate;
         // $ExpectType string
-        pricing.price.taxes[0].region;
+        pricing.taxes[0].region;
         // $ExpectType string
-        pricing.price.taxes[0].tax_type;
+        pricing.taxes[0].tax_type;
       }
     });
 }

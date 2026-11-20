@@ -100,67 +100,69 @@ export default function subscriptionPricing () {
     )
     .then(x => x)
     .done(pricing => {
+      // @ts-expect-error the resolved value is the price itself, not wrapped in `price`
+      pricing.price;
       // $ExpectType string
-      pricing.price.now.items[0].addons;
+      pricing.now.items[0].addons;
       // $ExpectType string
-      pricing.price.now.items[0].amount;
+      pricing.now.items[0].amount;
       // $ExpectType string
-      pricing.price.now.items[0].id;
+      pricing.now.items[0].id;
       // $ExpectType string
-      pricing.price.now.items[0].plan;
+      pricing.now.items[0].plan;
       // $ExpectType string
-      pricing.price.now.items[0].setupFee;
+      pricing.now.items[0].setupFee;
       // $ExpectType string
-      pricing.price.now.items[0].type;
+      pricing.now.items[0].type;
       // $ExpectType string
-      pricing.price.now.subscriptions;
+      pricing.now.subscriptions;
       // $ExpectType string
-      pricing.price.now.adjustments;
+      pricing.now.adjustments;
       // $ExpectType string
-      pricing.price.now.discount;
+      pricing.now.discount;
       // $ExpectType string
-      pricing.price.now.subtotal;
+      pricing.now.subtotal;
       // $ExpectType string
-      pricing.price.now.taxes;
+      pricing.now.taxes;
       // $ExpectType string
-      pricing.price.now.giftCard;
+      pricing.now.giftCard;
       // $ExpectType string
-      pricing.price.now.total;
+      pricing.now.total;
       // $ExpectType string
-      pricing.price.next.items[0].addons;
+      pricing.next.items[0].addons;
       // $ExpectType string
-      pricing.price.next.items[0].amount;
+      pricing.next.items[0].amount;
       // $ExpectType string
-      pricing.price.next.items[0].id;
+      pricing.next.items[0].id;
       // $ExpectType string
-      pricing.price.next.items[0].plan;
+      pricing.next.items[0].plan;
       // $ExpectType string
-      pricing.price.next.items[0].setupFee;
+      pricing.next.items[0].setupFee;
       // $ExpectType string
-      pricing.price.next.items[0].type;
+      pricing.next.items[0].type;
       // $ExpectType string
-      pricing.price.next.subscriptions;
+      pricing.next.subscriptions;
       // $ExpectType string
-      pricing.price.next.adjustments;
+      pricing.next.adjustments;
       // $ExpectType string
-      pricing.price.next.discount;
+      pricing.next.discount;
       // $ExpectType string
-      pricing.price.next.subtotal;
+      pricing.next.subtotal;
       // $ExpectType string
-      pricing.price.next.taxes;
+      pricing.next.taxes;
       // $ExpectType string
-      pricing.price.next.giftCard;
+      pricing.next.giftCard;
       // $ExpectType string
-      pricing.price.next.total;
+      pricing.next.total;
       // $ExpectType string
-      pricing.price.currency.code;
+      pricing.currency.code;
       // $ExpectType string
-      pricing.price.currency.symbol;
+      pricing.currency.symbol;
       // $ExpectType string
-      pricing.price.taxes[0].rate;
+      pricing.taxes[0].rate;
       // $ExpectType string
-      pricing.price.taxes[0].region;
+      pricing.taxes[0].region;
       // $ExpectType string
-      pricing.price.taxes[0].tax_type;
+      pricing.taxes[0].tax_type;
     });
 }
