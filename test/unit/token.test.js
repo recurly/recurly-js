@@ -3,6 +3,7 @@ import after from 'lodash.after';
 import clone from 'component-clone';
 import Promise from 'promise';
 import { Recurly } from '../../lib/recurly';
+import { Risk } from '../../lib/recurly/risk';
 import { applyFixtures } from './support/fixtures';
 import { initRecurly, testBed } from './support/helpers';
 
@@ -393,6 +394,27 @@ describe('Recurly.token', function () {
           assert.strictEqual(err.details[0].field, 'cvv');
           assert.strictEqual(err.details[0].messages.length, 1);
           assert.strictEqual(err.details[0].messages[0], 'is invalid');
+          assert(!token);
+          done();
+        });
+      });
+    });
+
+    describe('when the risk preflight request fails', function () {
+      prepareExample(valid, builder);
+
+      beforeEach(function () {
+        sinon.stub(Risk, 'preflight').callsFake(() => Promise.reject(new Error('preflight failed')));
+      });
+
+      afterEach(function () {
+        Risk.preflight.restore();
+      });
+
+      it('yields the error to the callback', function (done) {
+        this.subject((err, token) => {
+          assert(err);
+          assert.strictEqual(err.message, 'preflight failed');
           assert(!token);
           done();
         });
