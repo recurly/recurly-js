@@ -1,4 +1,5 @@
 import assert from 'assert';
+import BraintreeLoader from '../../../../lib/util/braintree-loader';
 import {
   initRecurly,
   stubBraintree,
@@ -36,6 +37,29 @@ describe('BraintreeStrategy', function () {
       this.sandbox.spy(this.venmo, 'off');
       this.venmo.destroy();
       assert(this.venmo.off.calledOnce);
+    });
+  });
+
+  describe('when Braintree modules fail to load', function () {
+    it('emits a venmo-load-error and does not initialize', function (done) {
+      const sandbox = sinon.createSandbox();
+      sandbox.stub(BraintreeLoader, 'loadModules').rejects(new Error('boom'));
+      const recurly = initRecurly();
+      const venmo = recurly.Venmo(validOpts);
+      const create = sandbox.spy(window.braintree.client, 'create');
+
+      venmo.on('error', err => {
+        if (err.code !== 'venmo-load-error') return;
+        setTimeout(() => {
+          try {
+            assert(!create.called);
+            done();
+          } catch (e) { done(e); } finally {
+            sandbox.restore();
+            recurly.destroy();
+          }
+        });
+      });
     });
   });
 });
