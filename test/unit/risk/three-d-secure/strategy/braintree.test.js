@@ -63,6 +63,21 @@ describe('BraintreeStrategy', function () {
         done();
       });
     });
+
+    it('does not mark the strategy as ready', function (done) {
+      const { strategy, threeDSecure } = this;
+      const ready = sinon.spy();
+      strategy.whenReady(ready);
+      threeDSecure.on('error', () => {
+        setTimeout(() => {
+          try {
+            assert(!ready.called);
+            assert.strictEqual(strategy.braintree, undefined);
+            done();
+          } catch (err) { done(err); }
+        });
+      });
+    });
   });
 
   describe('attach', function () {
