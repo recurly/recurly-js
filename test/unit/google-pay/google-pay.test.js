@@ -1,6 +1,7 @@
 import assert from 'assert';
 import recurlyError from '../../../lib/recurly/errors';
 import BraintreeLoader from '../../../lib/util/braintree-loader';
+import { GooglePayBraintree } from '../../../lib/recurly/google-pay/google-pay.braintree';
 import { initRecurly, nextTick, assertDone, stubGooglePaymentAPI } from '../support/helpers';
 import dom from '../../../lib/util/dom';
 import { Risk } from '../../../lib/recurly/risk';
@@ -175,6 +176,19 @@ function googlePayTest (integrationType) {
             assert.equal(err.code, 'google-pay-init-error');
             assert.match(err.message, /boom/);
           }));
+        });
+
+        it('emits only the init error and does not try to create the button', function (done) {
+          this.stubRequestAndGoogleApi();
+          const errors = [];
+          const createButton = this.sandbox.spy(GooglePayBraintree.prototype, 'createButton');
+          const result = this.recurly.GooglePay(this.googlePayOpts);
+          result.on('error', err => errors.push(err));
+
+          setTimeout(() => assertDone(done, () => {
+            assert.deepEqual(errors.map(err => err.code), ['google-pay-init-error']);
+            assert.equal(createButton.called, false);
+          }), 50);
         });
       });
 
