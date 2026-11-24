@@ -1,4 +1,5 @@
 import assert from 'assert';
+import BraintreeLoader from '../../../lib/util/braintree-loader';
 import { DirectStrategy } from '../../../lib/recurly/paypal/strategy/direct';
 import { BraintreeStrategy } from '../../../lib/recurly/paypal/strategy/braintree';
 import {
@@ -69,6 +70,30 @@ describe('Recurly.PayPal', function () {
         });
       });
     });
+  });
+
+  it('falls back to direct PayPal when Braintree modules fail to load', async function () {
+    const cause = new Error('Braintree script failed to load');
+    this.sandbox.stub(BraintreeLoader, 'loadModules').rejects(cause);
+    const initialize = this.sandbox.stub(BraintreeStrategy.prototype, 'initialize');
+    const onError = this.sandbox.spy();
+    const onFail = this.sandbox.spy();
+    this.paypal = this.recurly.PayPal({ braintree: { clientAuthorization: 'valid' } });
+    this.paypal.on('error', onError);
+    this.paypal.strategy.on('fail', onFail);
+
+    // Let the load rejection and any chained initialization settle.
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    sinon.assert.calledOnce(onError);
+    const error = onError.firstCall.args[0];
+    assert.strictEqual(error.code, 'paypal-load-error');
+    assert.strictEqual(error.cause, cause);
+    sinon.assert.notCalled(initialize);
+    sinon.assert.calledOnce(onFail);
+    assert.strictEqual(onFail.firstCall.args[0], error);
+    assert(this.paypal.strategy instanceof DirectStrategy);
+    assert.strictEqual(this.paypal.isReady, true);
   });
 
   describe('when configured using PayPal Complete', function () {
