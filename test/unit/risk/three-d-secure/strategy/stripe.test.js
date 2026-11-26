@@ -96,6 +96,40 @@ describe('StripeStrategy', function () {
           strategy.attach(target);
         });
       });
+      describe('when the intent has already been processed', function () {
+        beforeEach(function () {
+          const integrationError = this.integrationError = new Error('already processed');
+          integrationError.name = 'IntegrationError';
+          this.strategy.stripe.handleNextAction = sinon.stub().rejects(integrationError);
+        });
+
+        ['succeeded', 'processing', 'requires_capture'].forEach(status => {
+          it(`emits done when the status is ${status}`, function (done) {
+            const { strategy, target } = this;
+            strategy.stripe.retrievePaymentIntent = sinon.stub().resolves({
+              paymentIntent: { id: 'pi-test-id', status, next_action: null }
+            });
+            strategy.on('done', result => {
+              assert.deepEqual(result, { id: 'pi-test-id' });
+              done();
+            });
+            strategy.attach(target);
+          });
+        });
+
+        it('emits an error on threeDSecure when the intent was not authenticated', function (done) {
+          const { threeDSecure, strategy, target, integrationError } = this;
+          strategy.stripe.retrievePaymentIntent = sinon.stub().resolves({
+            paymentIntent: { id: 'pi-test-id', status: 'requires_payment_method', next_action: null }
+          });
+          threeDSecure.on('error', error => {
+            assert.strictEqual(error.code, '3ds-auth-error');
+            assert.strictEqual(error.cause, integrationError);
+            done();
+          });
+          strategy.attach(target);
+        });
+      });
     });
 
     describe('setup intents', function () {
