@@ -434,6 +434,15 @@ describe('Recurly.AlternativePaymentMethods', () => {
                   assert.deepEqual(webComponent.handleAction.getCall(0).args[0], { action: 'RedirectShopper' });
                 }));
             });
+
+            it('emits an error when the web component rejects the action', done => {
+              const error = new Error('unsupported action');
+              webComponent.handleAction.throws(error);
+              paymentMethods.on('error', err => assertDone(done, () => {
+                assert.strictEqual(err, error);
+              }));
+              paymentMethods.handleAction(paymentResponse);
+            });
           });
         });
       });
