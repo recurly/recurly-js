@@ -674,6 +674,32 @@ describe('CompleteStrategy', function () {
         }
       })));
     });
+
+    context('when the frame reports an error', function () {
+      beforeEach(function () {
+        const paypal = this.initPaypal({ payPalComplete: true });
+        this.cancelSpy = sinon.spy();
+        this.errorSpy = sinon.spy();
+        paypal.on('cancel', this.cancelSpy);
+        paypal.on('error', this.errorSpy);
+        paypal.start();
+        this.frame = this.recurly.Frame.getCall(0).returnValue;
+      });
+
+      it('emits only a cancel event when the customer cancels the PayPal flow', function () {
+        this.frame.emit('error', { code: 'paypal-cancel' });
+        assert(this.cancelSpy.calledOnce);
+        assert(this.errorSpy.notCalled);
+      });
+
+      it('emits only an error event for any other failure', function () {
+        const cause = { code: 'paypal-error' };
+        this.frame.emit('error', cause);
+        assert(this.cancelSpy.notCalled);
+        assert(this.errorSpy.calledOnce);
+        assert(this.errorSpy.calledWithMatch({ code: 'paypal-tokenize-error', cause }));
+      });
+    });
   });
 });
 

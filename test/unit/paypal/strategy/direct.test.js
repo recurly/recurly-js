@@ -78,6 +78,31 @@ describe('DirectStrategy', function () {
     setTimeout(() => this.recurly.Frame.getCall(0).returnValue.emit('close'), 500);
   });
 
+  context('when the frame reports an error', function () {
+    beforeEach(function () {
+      this.cancelSpy = this.sandbox.spy();
+      this.errorSpy = this.sandbox.spy();
+      this.paypal.on('cancel', this.cancelSpy);
+      this.paypal.on('error', this.errorSpy);
+      this.paypal.start();
+      this.frame = this.recurly.Frame.getCall(0).returnValue;
+    });
+
+    it('emits only a cancel event when the customer cancels the PayPal flow', function () {
+      this.frame.emit('error', { code: 'paypal-cancel' });
+      assert(this.cancelSpy.calledOnce);
+      assert(this.errorSpy.notCalled);
+    });
+
+    it('emits only an error event for any other failure', function () {
+      const cause = { code: 'paypal-error' };
+      this.frame.emit('error', cause);
+      assert(this.cancelSpy.notCalled);
+      assert(this.errorSpy.calledOnce);
+      assert(this.errorSpy.calledWithMatch({ code: 'paypal-tokenize-error', cause }));
+    });
+  });
+
   describe('destroy', function () {
     it('closes the window and removes listeners', function () {
       this.sandbox.spy(this.paypal, 'off');
