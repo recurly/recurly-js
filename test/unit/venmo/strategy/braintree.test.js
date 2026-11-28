@@ -32,6 +32,45 @@ describe('BraintreeStrategy', function () {
     });
   });
 
+  describe('when Braintree tokenization fails', function () {
+    beforeEach(function () {
+      this.cancelSpy = this.sandbox.spy();
+      this.errorSpy = this.sandbox.spy();
+      this.venmo.on('cancel', this.cancelSpy);
+      this.venmo.on('error', this.errorSpy);
+    });
+
+    ['VENMO_CANCELED', 'VENMO_APP_CANCELED', 'VENMO_DESKTOP_CANCELED'].forEach(code => {
+      it(`emits only a cancel event when the error code is ${code}`, function (done) {
+        this.sandbox.stub(this.venmo.strategy.venmo, 'tokenize').rejects({ code });
+        this.venmo.start();
+        setTimeout(() => {
+          try {
+            assert(this.cancelSpy.calledOnce);
+            assert(!this.errorSpy.called);
+            done();
+          } catch (e) { done(e); }
+        });
+      });
+    });
+
+    it('emits only an error event for any other error', function (done) {
+      const cause = { code: 'VENMO_TOKENIZATION_FAILED' };
+      this.sandbox.stub(this.venmo.strategy.venmo, 'tokenize').rejects(cause);
+      this.venmo.start();
+      setTimeout(() => {
+        try {
+          assert(!this.cancelSpy.called);
+          assert(this.errorSpy.calledOnce);
+          const [err] = this.errorSpy.firstCall.args;
+          assert.strictEqual(err.code, 'venmo-braintree-tokenize-braintree-error');
+          assert.strictEqual(err.cause, cause);
+          done();
+        } catch (e) { done(e); }
+      });
+    });
+  });
+
   describe('destroy', function () {
     it('closes the window and removes listeners', function () {
       this.sandbox.spy(this.venmo, 'off');
